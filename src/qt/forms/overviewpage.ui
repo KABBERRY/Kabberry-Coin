@@ -91,7 +91,6 @@
               <number>6</number>
              </property>
              <item>
-          
               <widget class="QLabel" name="labelOverviewHeaderLeft">
                <property name="minimumSize">
                 <size>
@@ -113,13 +112,12 @@
                 </font>
                </property>
                <property name="text">
-                <string> </string>
+                <string/>
                </property>
                <property name="alignment">
                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
-                
              </item>
              <item>
               <spacer name="horizontalSpacer_Header">
@@ -313,11 +311,10 @@
                        <property name="spacing">
                         <number>12</number>
                        </property>
-
                        <item row="1" column="0">
                         <widget class="QLabel" name="labelBalanceTextz">
                          <property name="text">
-                          <string>Available:</string> 
+                          <string>Available:</string>
                          </property>
                         </widget>
                        </item>
@@ -1098,9 +1095,9 @@ Immature: confirmed, but less than 1 mint of the same denomination after it was 
                       </property>
                       <property name="font">
                        <font>
-                        <pointsize>12</pointsize>
-                        <weight>75</weight>
-                        <bold>true</bold>
+                        <pointsize>20</pointsize>
+                        <weight>50</weight>
+                        <bold>false</bold>
                        </font>
                       </property>
                       <property name="text">

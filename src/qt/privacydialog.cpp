@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018 The PrimeStone developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -25,93 +25,67 @@
 #include <QtWidgets>
 #include <primitives/deterministicmint.h>
 #include <accumulators.h>
-
+#include <QDesktopServices>
+#include <QUrl>
 PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowCloseButtonHint),
                                                           ui(new Ui::PrivacyDialog),
                                                           walletModel(0)
                                                         
 {
     ui->setupUi(this);
-    this->setStyleSheet("{background-image: url(:/src/qt/res/images/walletFrame_bg.png);}");
-/*
-    // "Spending 999999 zPSC ought to be enough for anybody." - Bill Gates, 2017
-    ui->zPSCpayAmount->setValidator( new QDoubleValidator(0.0, 21000000.0, 20, this) );
-    ui->labelMintAmountValue->setValidator( new QIntValidator(0, 999999, this) );
-
-    // Default texts for (mini-) coincontrol
-    ui->labelCoinControlQuantity->setText (tr("Coins automatically selected"));
-    ui->labelCoinControlAmount->setText (tr("Coins automatically selected"));
-    ui->labelzPSCSyncStatus->setText("(" + tr("out of sync") + ")");
-
-    // Sunken frame for minting messages
-    ui->TEMintStatus->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
-    ui->TEMintStatus->setLineWidth (2);
-    ui->TEMintStatus->setMidLineWidth (2);
-    ui->TEMintStatus->setPlainText(tr("Mint Status: Okay"));
-
-    // Coin Control signals
-    connect(ui->pushButtonCoinControl, SIGNAL(clicked()), this, SLOT(coinControlButtonClicked()));
-
-    // Coin Control: clipboard actions
-    QAction* clipboardQuantityAction = new QAction(tr("Copy quantity"), this);
-    QAction* clipboardAmountAction = new QAction(tr("Copy amount"), this);
-    connect(clipboardQuantityAction, SIGNAL(triggered()), this, SLOT(coinControlClipboardQuantity()));
-    connect(clipboardAmountAction, SIGNAL(triggered()), this, SLOT(coinControlClipboardAmount()));
-    ui->labelCoinControlQuantity->addAction(clipboardQuantityAction);
-    ui->labelCoinControlAmount->addAction(clipboardAmountAction);
-
-    // Denomination labels
-    ui->labelzDenom1Text->setText(tr("Denom. with value <b>1</b>:"));
-    ui->labelzDenom2Text->setText(tr("Denom. with value <b>5</b>:"));
-    ui->labelzDenom3Text->setText(tr("Denom. with value <b>10</b>:"));
-    ui->labelzDenom4Text->setText(tr("Denom. with value <b>50</b>:"));
-    ui->labelzDenom5Text->setText(tr("Denom. with value <b>100</b>:"));
-    ui->labelzDenom6Text->setText(tr("Denom. with value <b>500</b>:"));
-    ui->labelzDenom7Text->setText(tr("Denom. with value <b>1000</b>:"));
-    ui->labelzDenom8Text->setText(tr("Denom. with value <b>5000</b>:"));
-
-    // AutoMint status
-    ui->label_AutoMintStatus->setText(tr("AutoMint Status:"));
-
-    // Global Supply labels
-    ui->labelZsupplyText1->setText(tr("Denom. <b>1</b>:"));
-    ui->labelZsupplyText5->setText(tr("Denom. <b>5</b>:"));
-    ui->labelZsupplyText10->setText(tr("Denom. <b>10</b>:"));
-    ui->labelZsupplyText50->setText(tr("Denom. <b>50</b>:"));
-    ui->labelZsupplyText100->setText(tr("Denom. <b>100</b>:"));
-    ui->labelZsupplyText500->setText(tr("Denom. <b>500</b>:"));
-    ui->labelZsupplyText1000->setText(tr("Denom. <b>1000</b>:"));
-    ui->labelZsupplyText5000->setText(tr("Denom. <b>5000</b>:"));
-
-    // PrimeStone settings
-    QSettings settings;
-    if (!settings.contains("nSecurityLevel")){
-        nSecurityLevel = 42;
-        settings.setValue("nSecurityLevel", nSecurityLevel);
-    }
-    else{
-        nSecurityLevel = settings.value("nSecurityLevel").toInt();
-    }
-
-    if (!settings.contains("fMinimizeChange")){
-        fMinimizeChange = false;
-        settings.setValue("fMinimizeChange", fMinimizeChange);
-    }
-    else{
-        fMinimizeChange = settings.value("fMinimizeChange").toBool();
-    }
-    ui->checkBoxMinimizeChange->setChecked(fMinimizeChange);
-
-    // Start with displaying the "out of sync" warnings
-    showOutOfSyncWarning(true);
-
-    // Hide those placeholder elements needed for CoinControl interaction
-    ui->WarningLabel->hide();    // Explanatory text visible in QT-Creator
-    ui->dummyHideWidget->hide(); // Dummy widget with elements to hide
-
-    // Set labels/buttons depending on SPORK_16 status
-    updateSPORK16Status();
+    #ifndef Q_OS_MAC
+    /*ui->officialWebsiteButton->setIcon(QIcon(":/icons/Manuals_icon"));
+    ui->mnVPSButton->setIcon(QIcon(":/icons/Manuals_icon"));
+    ui->mnWindowsButton->setIcon(QIcon(":/icons/Manuals_icon"));
+    ui->coinmarketcapButton->setIcon(QIcon(":/icons/Manuals_icon"));
+    ui->DiscordButton->setIcon(QIcon(":/icons/Manuals_icon"));
+    ui->GithubButton->setIcon(QIcon(":/icons/Manuals_icon"));
     */
+    ui->officialWebsiteButton->setIcon(QIcon(":/icons/Manuals_icon.png"));
+    ui->mnVPSButton->setIcon(QIcon(":/icons/Manuals_icon.png"));
+    ui->mnWindowsButton->setIcon(QIcon());
+    ui->coinmarketcapButton->setIcon(QIcon());
+    ui->DiscordButton->setIcon(QIcon());
+    ui->GithubButton->setIcon(QIcon());
+    #endif
+    //this->setStyleSheet("{background-image: url(:/src/qt/res/images/walletFrame_bg.png);}");
+    //QIcon(":/icons/receiving_addresses")
+}
+void PrivacyDialog::setModel(WalletModel* walletModel)
+{
+    this->walletModel = walletModel;
+
+}
+
+void PrivacyDialog::on_officialWebsiteButton_clicked()
+{
+    QString link = "https://primestone.global/primestone-cryptocurrency-wallet-platform/";
+    QDesktopServices::openUrl(QUrl(link));
+}
+void PrivacyDialog::on_mnVPSButton_clicked()
+{
+    QString link = "https://primestone.global/wp-content/uploads/2018/11/Masternode_VPS-ENG.pdf";
+    QDesktopServices::openUrl(QUrl(link));
+}
+void PrivacyDialog::on_mnWindowsButton_clicked()
+{
+    QString link = "https://primestone.global/wp-content/uploads/2018/08/MasterNode-ENG.pdf";
+    QDesktopServices::openUrl(QUrl(link));
+}
+void PrivacyDialog::on_coinmarketcapButton_clicked()
+{
+    QString link = "https://coinmarketcap.com/currencies/primestone";
+    QDesktopServices::openUrl(QUrl(link));
+}
+void PrivacyDialog::on_DiscordButton_clicked()
+{
+    QString link = "https://discord.gg/rjyTX7g";
+    QDesktopServices::openUrl(QUrl(link));
+}
+void PrivacyDialog::on_GithubButton_clicked()
+{
+    QString link = "https://github.com/Primestonecoin";
+    QDesktopServices::openUrl(QUrl(link));
 }
 
 PrivacyDialog::~PrivacyDialog()

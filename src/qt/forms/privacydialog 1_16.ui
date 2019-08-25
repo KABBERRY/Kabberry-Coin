@@ -175,21 +175,27 @@
                <property name="frameShadow">
                 <enum>QFrame::Raised</enum>
                </property>
+               <widget class="QLabel" name="label">
+                <property name="geometry">
+                 <rect>
+                  <x>140</x>
+                  <y>30</y>
+                  <width>681</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>PrimeStone Official Website</string>
+                </property>
+               </widget>
                <widget class="QPushButton" name="officialWebsiteButton">
                 <property name="geometry">
                  <rect>
-                  <x>250</x>
+                  <x>60</x>
                   <y>20</y>
-                  <width>461</width>
+                  <width>41</width>
                   <height>41</height>
                  </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">#upLeft {
@@ -205,7 +211,7 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
-                 <string>PrimeStone Official Website</string>
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset>
@@ -218,11 +224,6 @@ background-repeat: none;
                  </size>
                 </property>
                </widget>
-               <zorder>officialWebsiteButton</zorder>
-               <zorder>DiscordButton</zorder>
-               <zorder>mnWindowsButton</zorder>
-               <zorder>coinmarketcapButton</zorder>
-               <zorder>mnVPSButton</zorder>
               </widget>
              </item>
              <item>
@@ -236,18 +237,11 @@ background-repeat: none;
                <widget class="QPushButton" name="mnVPSButton">
                 <property name="geometry">
                  <rect>
-                  <x>250</x>
+                  <x>60</x>
                   <y>20</y>
-                  <width>461</width>
+                  <width>41</width>
                   <height>41</height>
                  </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">#upLeft {
@@ -263,7 +257,7 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
-                 <string>Masternode VPS Setup</string>
+                 <string/>
                 </property>
                 <property name="icon">
                  <iconset>
@@ -274,6 +268,19 @@ background-repeat: none;
                   <width>40</width>
                   <height>40</height>
                  </size>
+                </property>
+               </widget>
+               <widget class="QLabel" name="label_3">
+                <property name="geometry">
+                 <rect>
+                  <x>140</x>
+                  <y>30</y>
+                  <width>681</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Masternode VPS Setup</string>
                 </property>
                </widget>
               </widget>
@@ -296,24 +303,17 @@ background-repeat: none;
                  </rect>
                 </property>
                 <property name="text">
-                 <string/>
+                 <string>Masternode Windows Setup</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="mnWindowsButton">
                 <property name="geometry">
                  <rect>
-                  <x>250</x>
+                  <x>60</x>
                   <y>20</y>
-                  <width>461</width>
+                  <width>41</width>
                   <height>41</height>
                  </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>75</weight>
-                  <bold>true</bold>
-                 </font>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">#upLeft {
@@ -329,17 +329,7 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
-                 <string>Masternode Windows Setup</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>../res/icons/Manuals_icon.png</normaloff>../res/icons/Manuals_icon.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>40</width>
-                  <height>40</height>
-                 </size>
+                 <string/>
                 </property>
                </widget>
               </widget>
@@ -355,18 +345,11 @@ background-repeat: none;
                <widget class="QPushButton" name="coinmarketcapButton">
                 <property name="geometry">
                  <rect>
-                  <x>250</x>
+                  <x>60</x>
                   <y>20</y>
-                  <width>461</width>
+                  <width>41</width>
                   <height>41</height>
                  </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">#upLeft {
@@ -382,17 +365,20 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
+                </property>
+               </widget>
+               <widget class="QLabel" name="label_5">
+                <property name="geometry">
+                 <rect>
+                  <x>140</x>
+                  <y>30</y>
+                  <width>681</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="text">
                  <string>PrimeStone Coinmarketcap</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>../res/icons/Manuals_icon.png</normaloff>../res/icons/Manuals_icon.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>16</width>
-                  <height>16</height>
-                 </size>
                 </property>
                </widget>
               </widget>
@@ -405,21 +391,27 @@ background-repeat: none;
                <property name="frameShadow">
                 <enum>QFrame::Raised</enum>
                </property>
+               <widget class="QLabel" name="DiscordButtonLabel">
+                <property name="geometry">
+                 <rect>
+                  <x>140</x>
+                  <y>30</y>
+                  <width>681</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>PrimeStone Discord Channel</string>
+                </property>
+               </widget>
                <widget class="QPushButton" name="DiscordButton">
                 <property name="geometry">
                  <rect>
-                  <x>250</x>
+                  <x>60</x>
                   <y>20</y>
-                  <width>461</width>
+                  <width>41</width>
                   <height>41</height>
                  </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">#upLeft {
@@ -435,17 +427,7 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
-                 <string>PrimeStone Discord Channel</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>../res/icons/Manuals_icon.png</normaloff>../res/icons/Manuals_icon.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>32</width>
-                  <height>32</height>
-                 </size>
+                 <string/>
                 </property>
                </widget>
               </widget>
@@ -461,18 +443,11 @@ background-repeat: none;
                <widget class="QPushButton" name="GithubButton">
                 <property name="geometry">
                  <rect>
-                  <x>250</x>
+                  <x>60</x>
                   <y>20</y>
-                  <width>461</width>
+                  <width>41</width>
                   <height>41</height>
                  </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <weight>50</weight>
-                  <bold>false</bold>
-                 </font>
                 </property>
                 <property name="styleSheet">
                  <string notr="true">#upLeft {
@@ -488,17 +463,20 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
+                 <string/>
+                </property>
+               </widget>
+               <widget class="QLabel" name="GithubButtonLabel">
+                <property name="geometry">
+                 <rect>
+                  <x>140</x>
+                  <y>30</y>
+                  <width>681</width>
+                  <height>21</height>
+                 </rect>
+                </property>
+                <property name="text">
                  <string>PrimeStone Github</string>
-                </property>
-                <property name="icon">
-                 <iconset>
-                  <normaloff>../res/icons/Manuals_icon.png</normaloff>../res/icons/Manuals_icon.png</iconset>
-                </property>
-                <property name="iconSize">
-                 <size>
-                  <width>32</width>
-                  <height>32</height>
-                 </size>
                 </property>
                </widget>
               </widget>

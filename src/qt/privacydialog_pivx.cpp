@@ -32,7 +32,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
 {
     nDisplayUnit = 0; // just make sure it's not unitialized
     ui->setupUi(this);
-
+/*
     // "Spending 999999 zPSC ought to be enough for anybody." - Bill Gates, 2017
     ui->zPSCpayAmount->setValidator( new QDoubleValidator(0.0, 21000000.0, 20, this) );
     ui->labelMintAmountValue->setValidator( new QIntValidator(0, 999999, this) );
@@ -50,7 +50,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
 
     // Coin Control signals
     connect(ui->pushButtonCoinControl, SIGNAL(clicked()), this, SLOT(coinControlButtonClicked()));
-
+*/
     // Coin Control: clipboard actions
     QAction* clipboardQuantityAction = new QAction(tr("Copy quantity"), this);
     QAction* clipboardAmountAction = new QAction(tr("Copy amount"), this);
@@ -150,7 +150,7 @@ void PrivacyDialog::on_addressBookButton_clicked()
     dlg.setModel(walletModel->getAddressTableModel());
     if (dlg.exec()) {
         ui->payTo->setText(dlg.getReturnValue());
-        ui->zPSCpayAmount->setFocus();
+     //   ui->zPSCpayAmount->setFocus();
     }
 }
 
@@ -304,8 +304,8 @@ void PrivacyDialog::on_pushButtonZPSCControl_clicked()
 
 void PrivacyDialog::setZPSCControlLabels(int64_t nAmount, int nQuantity)
 {
-    ui->labelzPSCSelected_int->setText(QString::number(nAmount));
-    ui->labelQuantitySelected_int->setText(QString::number(nQuantity));
+//    ui->labelzPSCSelected_int->setText(QString::number(nAmount));
+//    ui->labelQuantitySelected_int->setText(QString::number(nQuantity));
 }
 
 static inline int64_t roundint64(double d)
@@ -331,13 +331,14 @@ void PrivacyDialog::sendzPSC()
     }
 
     // Double is allowed now
-    double dAmount = ui->zPSCpayAmount->text().toDouble();
+    double dAmount=0;
+    //double dAmount = ui->zPSCpayAmount->text().toDouble();
     CAmount nAmount = roundint64(dAmount* COIN);
 
     // Check amount validity
     if (!MoneyRange(nAmount) || nAmount <= 0.0) {
         QMessageBox::warning(this, tr("Spend Zerocoin"), tr("Invalid Send Amount"), QMessageBox::Ok, QMessageBox::Ok);
-        ui->zPSCpayAmount->setFocus();
+    //    ui->zPSCpayAmount->setFocus();
         return;
     }
 
@@ -365,7 +366,7 @@ void PrivacyDialog::sendzPSC()
 
         if (retval != QMessageBox::Yes) {
             // Sending canceled
-            ui->zPSCpayAmount->setFocus();
+        //    ui->zPSCpayAmount->setFocus();
             return;
         }
     }
@@ -470,7 +471,7 @@ void PrivacyDialog::sendzPSC()
             QMessageBox::warning(this, tr("Spend Zerocoin"), receipt.GetStatusMessage().c_str(), QMessageBox::Ok, QMessageBox::Ok);
             ui->TEMintStatus->setPlainText(tr("Spend Zerocoin failed with status = ") +QString::number(receipt.GetStatus(), 10) + "\n" + "Message: " + QString::fromStdString(receipt.GetStatusMessage()));
         }
-        ui->zPSCpayAmount->setFocus();
+    //    ui->zPSCpayAmount->setFocus();
         ui->TEMintStatus->repaint();
         ui->TEMintStatus->verticalScrollBar()->setValue(ui->TEMintStatus->verticalScrollBar()->maximum()); // Automatically scroll to end of text
         return;
@@ -487,8 +488,8 @@ void PrivacyDialog::sendzPSC()
 
     // Clear zPSC selector in case it was used
     zPSCControlDialog::setSelectedMints.clear();
-    ui->labelzPSCSelected_int->setText(QString("0"));
-    ui->labelQuantitySelected_int->setText(QString("0"));
+ //   ui->labelzPSCSelected_int->setText(QString("0"));
+ //   ui->labelQuantitySelected_int->setText(QString("0"));
 
     // Some statistics for entertainment
     QString strStats = "";
@@ -526,7 +527,7 @@ void PrivacyDialog::sendzPSC()
     strReturn += strStats;
 
     // Clear amount to avoid double spending when accidentally clicking twice
-    ui->zPSCpayAmount->setText ("0");
+//    ui->zPSCpayAmount->setText ("0");
 
     ui->TEMintStatus->setPlainText(strReturn);
     ui->TEMintStatus->repaint();
@@ -699,9 +700,9 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
         nLockedBalance = walletModel->getLockedBalance();
     }
 
-    ui->labelzAvailableAmount->setText(QString::number(zerocoinBalance/COIN) + QString(" zPSC "));
-    ui->labelzAvailableAmount_2->setText(QString::number(matureZerocoinBalance/COIN) + QString(" zPSC "));
-    ui->labelzPSCAmountValue->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance - immatureBalance - nLockedBalance, false, BitcoinUnits::separatorAlways));
+ //   ui->labelzAvailableAmount->setText(QString::number(zerocoinBalance/COIN) + QString(" zPSC "));
+ //   ui->labelzAvailableAmount_2->setText(QString::number(matureZerocoinBalance/COIN) + QString(" zPSC "));
+ //   ui->labelzPSCAmountValue->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance - immatureBalance - nLockedBalance, false, BitcoinUnits::separatorAlways));
 
     // Display AutoMint status
     updateAutomintStatus();
@@ -760,7 +761,7 @@ void PrivacyDialog::updateDisplayUnit()
 
 void PrivacyDialog::showOutOfSyncWarning(bool fShow)
 {
-    ui->labelzPSCSyncStatus->setVisible(fShow);
+//    ui->labelzPSCSyncStatus->setVisible(fShow);
 }
 
 void PrivacyDialog::keyPressEvent(QKeyEvent* event)
@@ -790,6 +791,7 @@ void PrivacyDialog::updateAutomintStatus()
 
 void PrivacyDialog::updateSPORK16Status()
 {
+    /*
     // Update/enable labels, buttons and tooltips depending on the current SPORK_16 status
     bool fButtonsEnabled =  ui->pushButtonMintzPSC->isEnabled();
     bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE);
@@ -810,4 +812,5 @@ void PrivacyDialog::updateSPORK16Status()
         ui->pushButtonSpendzPSC->setEnabled(true);
         ui->pushButtonSpendzPSC->setToolTip(tr("Spend Zerocoin. Without 'Pay To:' address creates payments to yourself."));
     }
+    */
 }

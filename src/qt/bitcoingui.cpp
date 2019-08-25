@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The PrimeStone developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -216,7 +216,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
         frameBlocksLayout->addStretch();
         frameBlocksLayout->addWidget(labelStakingIcon);
         frameBlocksLayout->addStretch();
-        // frameBlocksLayout->addWidget(labelAutoMintIcon);
+    //    frameBlocksLayout->addWidget(labelAutoMintIcon);
     }
 #endif // ENABLE_WALLET
     frameBlocksLayout->addWidget(labelTorIcon);
@@ -356,14 +356,14 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     privacyAction->setStatusTip(tr("User Manuals"));
     privacyAction->setToolTip(privacyAction->statusTip());
     privacyAction->setCheckable(true);
-/*
+
 #ifdef Q_OS_MAC
     privacyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
 #else
     privacyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
 #endif
     tabGroup->addAction(privacyAction);
-*/
+
 #ifdef ENABLE_WALLET
 
     QSettings settings;
@@ -375,7 +375,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #ifdef Q_OS_MAC
         masternodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_5));
 #else
-        masternodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+        masternodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_5));
 #endif
         tabGroup->addAction(masternodeAction);
         connect(masternodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
@@ -573,39 +573,23 @@ void BitcoinGUI::createToolBars()
 //        QAction* spacer = new QAction(this);
 //        toolbar->addAction(spacer);
 //        toolbar->widgetForAction(spacer)->setObjectName("ToolbarSpacer");
-
+        
+        
         toolbar->addAction(overviewAction);
         toolbar->addAction(sendCoinsAction);
         toolbar->addAction(receiveCoinsAction);
         toolbar->addAction(historyAction);
+        //toolbar->addAction(privacyAction);
         QSettings settings;
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
+        toolbar->addAction(privacyAction);
         
-        //toolbar->addAction(privacyAction);
-        
-        toolbar->setMovable(true); // remove unused icon in upper left corner
+        toolbar->setMovable(false); // remove unused icon in upper left corner
         toolbar->setOrientation(Qt::Vertical);
         toolbar->setIconSize(QSize(40,40));
-        //toolbar->setFixedHeight(300);
-        //toolbar->setFloatable(true);
         overviewAction->setChecked(true);
-        
-        /*
-        toolbar->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint);
-        toolbar->move(QPoint(30,50));
-        toolbar->adjustSize();
-        */
-       // toolbar->move(toolbar->mapToGlobal(QtCore.QPoint(0, 0)).x()+30, toolbar->mapToGlobal(QtCore.QPoint(0, 0)).y() + 50);
-        
-        //toolbar->setStyleSheet("background: transparent;");
-/*
-        QPalette pal;
-        pal.setColor(QPalette::Background, Qt::transparent);        
-        toolbar->setPalette(pal);
-  */
-
         /** Create additional container for toolbar and walletFrame and make it the central widget.
             This is a workaround mostly for toolbar styling on Mac OS but should work fine for every other OSes too.
         */

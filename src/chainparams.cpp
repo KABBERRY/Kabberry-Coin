@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The PrimeStone developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -56,9 +56,9 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
     (0, uint256("00000fe79c10addf7e023042d3ef98ce24d36262ae7c05c46c085c1ee14434d1"))
     (50, uint256("000000588e9fc1ef432d1a656958be1dd44cd2b9e2322a80f2e35817283d575e"))
-    (2000, uint256("0000002802c61a1ce8021322e5ee67465ad118c7db76ffb244bb096be720a439")) //first block to use modifierV2
-    // (623933, uint256("c7aafa648a0f1450157dc93bd4d7448913a85b7448f803b4ab970d91fc2a7da7"))
-    // (791150, uint256("8e76f462e4e82d1bd21cb72e1ce1567d4ddda2390f26074ffd1f5d9c270e5e50"))
+    (2000, uint256("0000002802c61a1ce8021322e5ee67465ad118c7db76ffb244bb096be720a439")) 
+    (5000, uint256("000000313c1d849f6c6ae1cad1b10e5a2e56da6593c1ba658b7152b644b4cf91"))
+    (10000, uint256("000000000003ca43cf16ab5d4ebdaccc6f0ee6108bfaa0b149e070208e1263ac"))
     // (795000, uint256("4423cceeb9fd574137a18733416275a70fdf95283cc79ad976ca399aa424a443"))
     // (863787, uint256("5b2482eca24caf2a46bb22e0545db7b7037282733faa3a42ec20542509999a64"))
     // (863795, uint256("2ad866818c4866e0d555181daccc628056216c0db431f88a825e84ed4f469067"))
@@ -74,7 +74,7 @@ static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
     1545970000, // * UNIX timestamp of last checkpoint block
     0,    // * total number of transactions between genesis and last checkpoint
-                //   (the tx=... number in the SetBestChain debug.log lines)
+                //   (the tx=... number in the  SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
 };
 
@@ -149,7 +149,7 @@ public:
         nLastPOWBlock = 13440;
         nModifierUpdateBlock = 1999999999;
         nZerocoinStartHeight = 260000;    
-        nZerocoinStartTime = 1566339200; // July 1, 2019 12:00:00 PM
+        nZerocoinStartTime = 1567339200; // July 1, 2019 12:00:00 PM
         nBlockEnforceSerialRange = 1999999999; //Enforce serial range starting this block
         nBlockRecalculateAccumulators = 1999999999; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 1999999999; //First block that bad serials emerged

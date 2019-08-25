@@ -406,11 +406,11 @@
     </message>
     <message>
         <source>Sign &amp;message...</source>
-        <translation>&amp;Zatwierdź wiaprimestoneść</translation>
+        <translation>&amp;Zatwierdź Wartość</translation>
     </message>
     <message>
         <source>&amp;Verify message...</source>
-        <translation>&amp;Zweryfikuj wiaprimestoneść</translation>
+        <translation>&amp;Zweryfikuj Wartość</translation>
     </message>
     <message>
         <source>&amp;Information</source>
@@ -510,7 +510,7 @@
     </message>
     <message>
         <source>PrimeStone</source>
-        <translation>&amp;Rdzeń PrimeStone</translation>
+        <translation>Rdzeń PrimeStone</translation>
     </message>
     <message>
         <source>Send coins to a PrimeStone address</source>
@@ -542,7 +542,7 @@
     </message>
     <message>
         <source>Sign messages with your PrimeStone addresses to prove you own them</source>
-        <translation>Zatwierdź wiaprimestoneść z twoimi adresami PrimeStone, by udowodnić, że jesteś w ich posiadaniu</translation>
+        <translation>Zatwierdź Wartość z twoimi adresami PrimeStone, by udowodnić, że jesteś w ich posiadaniu</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified PrimeStone addresses</source>
@@ -586,7 +586,7 @@
     </message>
     <message>
         <source>Show the PrimeStone help message to get a list with possible PrimeStone command-line options</source>
-        <translation>Pokaż wiaprimestoneść pomocy rdzenia PrimeStone, aby dostać listę możliwych opcji PrimeStone command-line</translation>
+        <translation>Pokaż Wartość pomocy rdzenia PrimeStone, aby dostać listę możliwych opcji PrimeStone command-line</translation>
     </message>
     <message>
         <source>PrimeStone client</source>
@@ -900,7 +900,7 @@ MultiWysyłlka: %1</translation>
     <name>HelpMessageDialog</name>
     <message>
         <source>PrimeStone</source>
-        <translation>&amp;Rdzeń PrimeStone</translation>
+        <translation>Rdzeń PrimeStone</translation>
     </message>
     </context>
 <context>
@@ -915,7 +915,7 @@ MultiWysyłlka: %1</translation>
     </message>
     <message>
         <source>PrimeStone</source>
-        <translation>&amp;Rdzeń PrimeStone</translation>
+        <translation>Rdzeń PrimeStone</translation>
     </message>
     <message>
         <source>Error</source>
@@ -1741,7 +1741,7 @@ https://www.transifex.com/primestone-project/primestone-project-translations </t
     <name>ReceiveCoinsDialog</name>
     <message>
         <source>&amp;Message:</source>
-        <translation>&amp;Wiaprimestoneść:</translation>
+        <translation>&amp;Wartość:</translation>
     </message>
     <message>
         <source>Copy label</source>
@@ -1895,7 +1895,7 @@ https://www.transifex.com/primestone-project/primestone-project-translations </t
     </message>
     <message>
         <source>Sign the message to prove you own this PrimeStone address</source>
-        <translation>Zatwierdź wiaprimestoneść, aby udowodnić, że podany adres PrimeStone jest w twoim posiadaniu</translation>
+        <translation>Zatwierdź Wartość, aby udowodnić, że podany adres PrimeStone jest w twoim posiadaniu</translation>
     </message>
     <message>
         <source>Clear &amp;All</source>
@@ -1930,7 +1930,7 @@ https://www.transifex.com/primestone-project/primestone-project-translations </t
     <name>SplashScreen</name>
     <message>
         <source>PrimeStone</source>
-        <translation>&amp;Rdzeń PrimeStone</translation>
+        <translation>Rdzeń PrimeStone</translation>
     </message>
     </context>
 <context>
