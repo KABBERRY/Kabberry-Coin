@@ -1,5 +1,6 @@
 // Copyright (c) 2014-2017 The Bitcoin developers
-// Copyright (c) 2017-2019 The PIVX developers
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,11 +8,13 @@
 
 #include "netbase.h"
 #include "sync.h"
-#include "guiinterface.h"
+#include "ui_interface.h"
 #include "util.h"
 #include "utilstrencodings.h"
 
+#include <boost/foreach.hpp>
 
+using namespace std;
 
 static CCriticalSection cs_nTimeOffset;
 static int64_t nTimeOffset = 0;
@@ -43,7 +46,7 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
 {
     LOCK(cs_nTimeOffset);
     // Ignore duplicates
-    static std::set<CNetAddr> setKnown;
+    static set<CNetAddr> setKnown;
     if (!setKnown.insert(ip).second)
         return;
 
@@ -82,13 +85,13 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
             if (!fDone) {
                 // If nobody has a time different than ours but within 5 minutes of ours, give a warning
                 bool fMatch = false;
-                for (int64_t nOffset : vSorted)
+                BOOST_FOREACH (int64_t nOffset, vSorted)
                     if (nOffset != 0 && abs64(nOffset) < 5 * 60)
                         fMatch = true;
 
                 if (!fMatch) {
                     fDone = true;
-                    std::string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong PIVX Core will not work properly.");
+                    string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong PrimeStone will not work properly.");
                     strMiscWarning = strMessage;
                     LogPrintf("*** %s\n", strMessage);
                     uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_WARNING);
@@ -96,7 +99,7 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample)
             }
         }
         if (fDebug) {
-            for (int64_t n : vSorted)
+            BOOST_FOREACH (int64_t n, vSorted)
                 LogPrintf("%+d  ", n);
             LogPrintf("|  ");
         }

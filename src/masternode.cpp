@@ -1,5 +1,6 @@
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,9 +10,10 @@
 #include "obfuscation.h"
 #include "sync.h"
 #include "util.h"
+#include <boost/lexical_cast.hpp>
 
 // keep track of the scanning errors I've seen
-std::map<uint256, int> mapSeenMasternodeScanningErrors;
+map<uint256, int> mapSeenMasternodeScanningErrors;
 // cache block hashes as we calculate them
 std::map<int64_t, uint256> mapCacheBlockHashes;
 
@@ -147,7 +149,7 @@ bool CMasternode::UpdateFromNewBroadcast(CMasternodeBroadcast& mnb)
         int nDoS = 0;
         if (mnb.lastPing == CMasternodePing() || (mnb.lastPing != CMasternodePing() && mnb.lastPing.CheckAndUpdate(nDoS, false))) {
             lastPing = mnb.lastPing;
-            mnodeman.mapSeenMasternodePing.insert(std::make_pair(lastPing.GetHash(), lastPing));
+            mnodeman.mapSeenMasternodePing.insert(make_pair(lastPing.GetHash(), lastPing));
         }
         return true;
     }
@@ -207,10 +209,10 @@ void CMasternode::Check(bool forceCheck)
         return;
     }
 
-    if(lastPing.sigTime - sigTime < MASTERNODE_MIN_MNP_SECONDS){
-    	activeState = MASTERNODE_PRE_ENABLED;
-    	return;
-    }
+    // if(lastPing.sigTime - sigTime < MASTERNODE_MIN_MNP_SECONDS){
+    // 	activeState = MASTERNODE_PRE_ENABLED;
+    // 	return;
+    // }
 
     if (!unitTest) {
         CValidationState state;
@@ -465,12 +467,12 @@ bool CMasternodeBroadcast::CheckDefaultPort(std::string strService, std::string&
     CService service = CService(strService);
     int nDefaultPort = Params().GetDefaultPort();
 
-    if (service.GetPort() != nDefaultPort) {
-        strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.",
-                                        service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
-        LogPrint("masternode", "%s - %s\n", strContext, strErrorRet);
-        return false;
-    }
+    // if (service.GetPort() != nDefaultPort) {
+    //     strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.",
+    //                                     service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
+    //     LogPrint("masternode", "%s - %s\n", strContext, strErrorRet);
+    //     return false;
+    // }
 
     return true;
 }
@@ -525,10 +527,10 @@ bool CMasternodeBroadcast::CheckAndUpdate(int& nDos)
         return error("CMasternodeBroadcast::CheckAndUpdate - Got bad Masternode address signature : %s", errorMessage);
     }
 
-    if (Params().NetworkID() == CBaseChainParams::MAIN) {
-        if (addr.GetPort() != 51472) return false;
-    } else if (addr.GetPort() == 51472)
-        return false;
+    // if (Params().NetworkID() == CBaseChainParams::MAIN) {
+    //     if (addr.GetPort() != 34124) return false;
+    // } else if (addr.GetPort() == 34124)
+    //     return false;
 
     //search existing Masternode list, this is where we update existing Masternodes with new mnb broadcasts
     CMasternode* pmn = mnodeman.Find(vin);
@@ -616,13 +618,13 @@ bool CMasternodeBroadcast::CheckInputsAndAdd(int& nDoS)
     }
 
     // verify that sig time is legit in past
-    // should be at least not earlier than block when 1000 PIV tx got MASTERNODE_MIN_CONFIRMATIONS
+    // should be at least not earlier than block when 1000 PrimeStone tx got MASTERNODE_MIN_CONFIRMATIONS
     uint256 hashBlock = 0;
     CTransaction tx2;
     GetTransaction(vin.prevout.hash, tx2, hashBlock, true);
     BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
     if (mi != mapBlockIndex.end() && (*mi).second) {
-        CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 1000 PIVX tx -> 1 confirmation
+        CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 1000 PrimeStone tx -> 1 confirmation
         CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + MASTERNODE_MIN_CONFIRMATIONS - 1]; // block where tx got MASTERNODE_MIN_CONFIRMATIONS
         if (pConfIndex->GetBlockTime() > sigTime) {
             LogPrint("masternode","mnb - Bad sigTime %d for Masternode %s (%i conf block is at %d)\n",
@@ -692,7 +694,7 @@ std::string CMasternodeBroadcast::GetOldStrMessage()
 
     std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
     std::string vchPubKey2(pubKeyMasternode.begin(), pubKeyMasternode.end());
-    strMessage = addr.ToString() + std::to_string(sigTime) + vchPubKey + vchPubKey2 + std::to_string(protocolVersion);
+    strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
 
     return strMessage;
 }
@@ -701,7 +703,7 @@ std:: string CMasternodeBroadcast::GetNewStrMessage()
 {
     std::string strMessage;
 
-    strMessage = addr.ToString() + std::to_string(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyMasternode.GetID().ToString() + std::to_string(protocolVersion);
+    strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyMasternode.GetID().ToString() + boost::lexical_cast<std::string>(protocolVersion);
 
     return strMessage;
 }
@@ -729,7 +731,7 @@ bool CMasternodePing::Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode)
     std::string strMasterNodeSignMessage;
 
     sigTime = GetAdjustedTime();
-    std::string strMessage = vin.ToString() + blockHash.ToString() + std::to_string(sigTime);
+    std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTime);
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyMasternode)) {
         LogPrint("masternode","CMasternodePing::Sign() - Error: %s\n", errorMessage);
@@ -744,9 +746,8 @@ bool CMasternodePing::Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode)
     return true;
 }
 
-bool CMasternodePing::VerifySignature(CPubKey& pubKeyMasternode, int &nDos)
-{
-    std::string strMessage = vin.ToString() + blockHash.ToString() + std::to_string(sigTime);
+bool CMasternodePing::VerifySignature(CPubKey& pubKeyMasternode, int &nDos) {
+	std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTime);
 	std::string errorMessage = "";
 
 	if(!obfuScationSigner.VerifyMessage(pubKeyMasternode, vchSig, strMessage, errorMessage)){

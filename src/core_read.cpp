@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,12 +22,15 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/assign/list_of.hpp>
 
+using namespace boost;
+using namespace boost::algorithm;
+using namespace std;
 
 CScript ParseScript(std::string s)
 {
     CScript result;
 
-    static std::map<std::string, opcodetype> mapOpNames;
+    static map<string, opcodetype> mapOpNames;
 
     if (mapOpNames.empty()) {
         for (int op = 0; op <= OP_ZEROCOINSPEND; op++) {
@@ -37,30 +41,30 @@ CScript ParseScript(std::string s)
             const char* name = GetOpName((opcodetype)op);
             if (strcmp(name, "OP_UNKNOWN") == 0)
                 continue;
-            std::string strName(name);
+            string strName(name);
             mapOpNames[strName] = (opcodetype)op;
             // Convenience: OP_ADD and just ADD are both recognized:
-            boost::algorithm::replace_first(strName, "OP_", "");
+            replace_first(strName, "OP_", "");
             mapOpNames[strName] = (opcodetype)op;
         }
     }
 
-    std::vector<std::string> words;
-    boost::algorithm::split(words, s, boost::algorithm::is_any_of(" \t\n"), boost::algorithm::token_compress_on);
+    vector<string> words;
+    split(words, s, is_any_of(" \t\n"), token_compress_on);
 
     for (std::vector<std::string>::const_iterator w = words.begin(); w != words.end(); ++w) {
         if (w->empty()) {
             // Empty string, ignore. (boost::split given '' will return one word)
-        } else if (all(*w, boost::algorithm::is_digit()) ||
-                   (boost::algorithm::starts_with(*w, "-") && all(std::string(w->begin() + 1, w->end()), boost::algorithm::is_digit()))) {
+        } else if (all(*w, is_digit()) ||
+                   (starts_with(*w, "-") && all(string(w->begin() + 1, w->end()), is_digit()))) {
             // Number
             int64_t n = atoi64(*w);
             result << n;
-        } else if (boost::algorithm::starts_with(*w, "0x") && (w->begin() + 2 != w->end()) && IsHex(std::string(w->begin() + 2, w->end()))) {
+        } else if (starts_with(*w, "0x") && (w->begin() + 2 != w->end()) && IsHex(string(w->begin() + 2, w->end()))) {
             // Raw hex data, inserted NOT pushed onto stack:
-            std::vector<unsigned char> raw = ParseHex(std::string(w->begin() + 2, w->end()));
+            std::vector<unsigned char> raw = ParseHex(string(w->begin() + 2, w->end()));
             result.insert(result.end(), raw.begin(), raw.end());
-        } else if (w->size() >= 2 && boost::algorithm::starts_with(*w, "'") && boost::algorithm::ends_with(*w, "'")) {
+        } else if (w->size() >= 2 && starts_with(*w, "'") && ends_with(*w, "'")) {
             // Single-quoted string, pushed as data. NOTE: this is poor-man's
             // parsing, spaces/tabs/newlines in single-quoted strings won't work.
             std::vector<unsigned char> value(w->begin() + 1, w->end() - 1);
@@ -69,7 +73,7 @@ CScript ParseScript(std::string s)
             // opcode, e.g. OP_ADD or ADD:
             result << mapOpNames[*w];
         } else {
-            throw std::runtime_error("script parse error");
+            throw runtime_error("script parse error");
         }
     }
 
@@ -81,7 +85,7 @@ bool DecodeHexTx(CTransaction& tx, const std::string& strHexTx)
     if (!IsHex(strHexTx))
         return false;
 
-    std::vector<unsigned char> txData(ParseHex(strHexTx));
+    vector<unsigned char> txData(ParseHex(strHexTx));
     CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
     try {
         ssData >> tx;
@@ -108,30 +112,30 @@ bool DecodeHexBlk(CBlock& block, const std::string& strHexBlk)
     return true;
 }
 
-uint256 ParseHashUV(const UniValue& v, const std::string& strName)
+uint256 ParseHashUV(const UniValue& v, const string& strName)
 {
-    std::string strHex;
+    string strHex;
     if (v.isStr())
         strHex = v.getValStr();
-    return ParseHashStr(strHex, strName); // Note: ParseHashStr("") throws a std::runtime_error
+    return ParseHashStr(strHex, strName); // Note: ParseHashStr("") throws a runtime_error
 }
 
 uint256 ParseHashStr(const std::string& strHex, const std::string& strName)
 {
     if (!IsHex(strHex)) // Note: IsHex("") is false
-        throw std::runtime_error(strName + " must be hexadecimal string (not '" + strHex + "')");
+        throw runtime_error(strName + " must be hexadecimal string (not '" + strHex + "')");
 
     uint256 result;
     result.SetHex(strHex);
     return result;
 }
 
-std::vector<unsigned char> ParseHexUV(const UniValue& v, const std::string& strName)
+vector<unsigned char> ParseHexUV(const UniValue& v, const string& strName)
 {
-    std::string strHex;
+    string strHex;
     if (v.isStr())
         strHex = v.getValStr();
     if (!IsHex(strHex))
-        throw std::runtime_error(strName + " must be hexadecimal string (not '" + strHex + "')");
+        throw runtime_error(strName + " must be hexadecimal string (not '" + strHex + "')");
     return ParseHex(strHex);
 }

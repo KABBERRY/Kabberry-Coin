@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -38,13 +39,12 @@ public:
         Encrypt,        /** Encrypt unencrypted wallet */
         ToggleLock,     /** Toggle wallet lock state */
         ChangePass,     /** Change passphrase */
-        Send_PIV,       /** Send PIV */
-        Send_zPIV,      /** Send zPIV */
-        Mint_zPIV,      /** Mint zPIV */
+        Send_PrimeStone,       /** Send PrimeStone */
+        Send_zPSC,      /** Send zPSC */
+        Mint_zPSC,      /** Mint zPSC */
         BIP_38,         /** BIP38 menu */
         Multi_Sig,      /** Multi-Signature dialog */
-        Sign_Message,   /** Sign/verify message dialog */
-        UI_Vote,        /** Governance Tab UI Voting */
+        Sign_Message    /** Sign/verify message dialog */
     };
 
     explicit AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel* model, Context context);

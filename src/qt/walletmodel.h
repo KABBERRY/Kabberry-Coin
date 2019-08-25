@@ -1,6 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2016 The Dash developers
-// Copyright (c) 2017-2019 The PIVX developers
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +14,7 @@
 
 #include "allocators.h" /* for SecureString */
 #include "swifttx.h"
-#include "wallet/wallet.h"
+#include "wallet.h"
 
 #include <map>
 #include <vector>
@@ -146,7 +147,7 @@ public:
     CAmount getWatchImmatureBalance() const;
     EncryptionStatus getEncryptionStatus() const;
     CKey generateNewKey() const; //for temporary paper wallet key generation
-    bool setAddressBook(const CTxDestination& address, const std::string& strName, const std::string& strPurpose);
+    bool setAddressBook(const CTxDestination& address, const string& strName, const string& strPurpose);
     void encryptKey(const CKey key, const std::string& pwd, const std::string& slt, std::vector<unsigned char>& crypted);
     void decryptKey(const std::vector<unsigned char>& crypted, const std::string& slt, const std::string& pwd, CKey& key);
     void emitBalanceChanged(); // Force update of UI-elements even when no values have changed
@@ -204,7 +205,6 @@ public:
 
     bool getPubKey(const CKeyID& address, CPubKey& vchPubKeyOut) const;
     bool isMine(CBitcoinAddress address);
-    bool isUsed(CBitcoinAddress address);
     void getOutputs(const std::vector<COutPoint>& vOutpoints, std::vector<COutput>& vOutputs);
     bool isSpent(const COutPoint& outpoint) const;
     void listCoins(std::map<QString, std::vector<COutput> >& mapCoins) const;
@@ -214,9 +214,9 @@ public:
     void unlockCoin(COutPoint& output);
     void listLockedCoins(std::vector<COutPoint>& vOutpts);
 
-    void listZerocoinMints(std::set<CMintMeta>& setMints, bool fUnusedOnly = false, bool fMaturedOnly = false, bool fUpdateStatus = false, bool fWrongSeed = false);
+    void listZerocoinMints(std::set<CMintMeta>& setMints, bool fUnusedOnly = false, bool fMaturedOnly = false, bool fUpdateStatus = false);
 
-    std::string GetUniqueWalletBackupName();
+    string GetUniqueWalletBackupName();
     void loadReceiveRequests(std::vector<std::string>& vReceiveRequests);
     bool saveReceiveRequest(const std::string& sAddress, const int64_t nId, const std::string& sRequest);
 
@@ -257,8 +257,8 @@ private:
 
 signals:
     // Signal that balance in wallet changed
-    void balanceChanged(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
-                        const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
+    void balanceChanged(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
+                        const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance, 
                         const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
 
     // Encryption status of wallet changed
@@ -284,9 +284,6 @@ signals:
     // MultiSig address added
     void notifyMultiSigChanged(bool fHaveMultiSig);
 
-    // Receive tab address may have changed
-    void notifyReceiveAddressChanged();
-
 public slots:
     /* Wallet status might have changed */
     void updateStatus();
@@ -303,7 +300,7 @@ public slots:
     /* Current, immature or unconfirmed balance might have changed - emit 'balanceChanged' if so */
     void pollBalanceChanged();
     /* Update address book labels in the database */
-    void updateAddressBookLabels(const CTxDestination& address, const std::string& strName, const std::string& strPurpose);
+    void updateAddressBookLabels(const CTxDestination& address, const string& strName, const string& strPurpose);
 };
 
 #endif // BITCOIN_QT_WALLETMODEL_H

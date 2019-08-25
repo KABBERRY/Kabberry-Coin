@@ -678,7 +678,7 @@ static SECP256K1_INLINE void secp256k1_ge_storage_cmov(secp256k1_ge_storage *r, 
     secp256k1_fe_storage_cmov(&r->y, &a->y, flag);
 }
 
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
 static void secp256k1_ge_mul_lambda(secp256k1_ge *r, const secp256k1_ge *a) {
     static const secp256k1_fe beta = SECP256K1_FE_CONST(
         0x7ae96a2bul, 0x657c0710ul, 0x6e64479eul, 0xac3434e9ul,

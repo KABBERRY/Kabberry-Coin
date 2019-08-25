@@ -1,5 +1,6 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -84,8 +85,8 @@ public:
 
     void CleanKey()
     {
-        memory_cleanse(chKey, sizeof(chKey));
-        memory_cleanse(chIV, sizeof(chIV));
+        OPENSSL_cleanse(chKey, sizeof(chKey));
+        OPENSSL_cleanse(chIV, sizeof(chIV));
         fKeySet = false;
     }
 

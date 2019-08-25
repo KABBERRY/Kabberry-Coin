@@ -33,7 +33,7 @@
 #define WINDOW_A 5
 /** larger numbers may result in slightly better performance, at the cost of
     exponentially larger precomputed tables. */
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
 /** Two tables for window size 15: 1.375 MiB. */
 #define WINDOW_G 15
 #else
@@ -42,7 +42,7 @@
 #endif
 #endif
 
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     #define WNAF_BITS 128
 #else
     #define WNAF_BITS 256
@@ -60,13 +60,13 @@
 #define PIPPENGER_MAX_BUCKET_WINDOW 12
 
 /* Minimum number of points for which pippenger_wnaf is faster than strauss wnaf */
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     #define ECMULT_PIPPENGER_THRESHOLD 88
 #else
     #define ECMULT_PIPPENGER_THRESHOLD 160
 #endif
 
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     #define ECMULT_MAX_POINTS_PER_BATCH 5000000
 #else
     #define ECMULT_MAX_POINTS_PER_BATCH 10000000
@@ -184,7 +184,7 @@ static void secp256k1_ecmult_odd_multiples_table_storage_var(int n, secp256k1_ge
 
 static void secp256k1_ecmult_context_init(secp256k1_ecmult_context *ctx) {
     ctx->pre_g = NULL;
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     ctx->pre_g_128 = NULL;
 #endif
 }
@@ -204,7 +204,7 @@ static void secp256k1_ecmult_context_build(secp256k1_ecmult_context *ctx, const 
     /* precompute the tables with odd multiples */
     secp256k1_ecmult_odd_multiples_table_storage_var(ECMULT_TABLE_SIZE(WINDOW_G), *ctx->pre_g, &gj, cb);
 
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     {
         secp256k1_gej g_128j;
         int i;
@@ -230,7 +230,7 @@ static void secp256k1_ecmult_context_clone(secp256k1_ecmult_context *dst,
         dst->pre_g = (secp256k1_ge_storage (*)[])checked_malloc(cb, size);
         memcpy(dst->pre_g, src->pre_g, size);
     }
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     if (src->pre_g_128 == NULL) {
         dst->pre_g_128 = NULL;
     } else {
@@ -247,7 +247,7 @@ static int secp256k1_ecmult_context_is_built(const secp256k1_ecmult_context *ctx
 
 static void secp256k1_ecmult_context_clear(secp256k1_ecmult_context *ctx) {
     free(ctx->pre_g);
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     free(ctx->pre_g_128);
 #endif
     secp256k1_ecmult_context_init(ctx);
@@ -312,7 +312,7 @@ static int secp256k1_ecmult_wnaf(int *wnaf, int len, const secp256k1_scalar *a, 
 }
 
 struct secp256k1_strauss_point_state {
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     secp256k1_scalar na_1, na_lam;
     int wnaf_na_1[130];
     int wnaf_na_lam[130];
@@ -329,7 +329,7 @@ struct secp256k1_strauss_state {
     secp256k1_gej* prej;
     secp256k1_fe* zr;
     secp256k1_ge* pre_a;
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     secp256k1_ge* pre_a_lam;
 #endif
     struct secp256k1_strauss_point_state* ps;
@@ -338,7 +338,7 @@ struct secp256k1_strauss_state {
 static void secp256k1_ecmult_strauss_wnaf(const secp256k1_ecmult_context *ctx, const struct secp256k1_strauss_state *state, secp256k1_gej *r, int num, const secp256k1_gej *a, const secp256k1_scalar *na, const secp256k1_scalar *ng) {
     secp256k1_ge tmpa;
     secp256k1_fe Z;
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     /* Splitted G factors. */
     secp256k1_scalar ng_1, ng_128;
     int wnaf_ng_1[129];
@@ -359,7 +359,7 @@ static void secp256k1_ecmult_strauss_wnaf(const secp256k1_ecmult_context *ctx, c
             continue;
         }
         state->ps[no].input_pos = np;
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
         /* split na into na_1 and na_lam (where na = na_1 + na_lam*lambda, and na_1 and na_lam are ~128 bit) */
         secp256k1_scalar_split_lambda(&state->ps[no].na_1, &state->ps[no].na_lam, &na[np]);
 
@@ -412,7 +412,7 @@ static void secp256k1_ecmult_strauss_wnaf(const secp256k1_ecmult_context *ctx, c
         secp256k1_fe_set_int(&Z, 1);
     }
 
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     for (np = 0; np < no; ++np) {
         for (i = 0; i < ECMULT_TABLE_SIZE(WINDOW_A); i++) {
             secp256k1_ge_mul_lambda(&state->pre_a_lam[np * ECMULT_TABLE_SIZE(WINDOW_A) + i], &state->pre_a[np * ECMULT_TABLE_SIZE(WINDOW_A) + i]);
@@ -447,7 +447,7 @@ static void secp256k1_ecmult_strauss_wnaf(const secp256k1_ecmult_context *ctx, c
     for (i = bits - 1; i >= 0; i--) {
         int n;
         secp256k1_gej_double_var(r, r, NULL);
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
         for (np = 0; np < no; ++np) {
             if (i < state->ps[np].bits_na_1 && (n = state->ps[np].wnaf_na_1[i])) {
                 ECMULT_TABLE_GET_GE(&tmpa, state->pre_a + np * ECMULT_TABLE_SIZE(WINDOW_A), n, WINDOW_A);
@@ -490,7 +490,7 @@ static void secp256k1_ecmult(const secp256k1_ecmult_context *ctx, secp256k1_gej 
     secp256k1_fe zr[ECMULT_TABLE_SIZE(WINDOW_A)];
     secp256k1_ge pre_a[ECMULT_TABLE_SIZE(WINDOW_A)];
     struct secp256k1_strauss_point_state ps[1];
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     secp256k1_ge pre_a_lam[ECMULT_TABLE_SIZE(WINDOW_A)];
 #endif
     struct secp256k1_strauss_state state;
@@ -498,7 +498,7 @@ static void secp256k1_ecmult(const secp256k1_ecmult_context *ctx, secp256k1_gej 
     state.prej = prej;
     state.zr = zr;
     state.pre_a = pre_a;
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     state.pre_a_lam = pre_a_lam;
 #endif
     state.ps = ps;
@@ -506,7 +506,7 @@ static void secp256k1_ecmult(const secp256k1_ecmult_context *ctx, secp256k1_gej 
 }
 
 static size_t secp256k1_strauss_scratch_size(size_t n_points) {
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     static const size_t point_size = (2 * sizeof(secp256k1_ge) + sizeof(secp256k1_gej) + sizeof(secp256k1_fe)) * ECMULT_TABLE_SIZE(WINDOW_A) + sizeof(struct secp256k1_strauss_point_state) + sizeof(secp256k1_gej) + sizeof(secp256k1_scalar);
 #else
     static const size_t point_size = (sizeof(secp256k1_ge) + sizeof(secp256k1_gej) + sizeof(secp256k1_fe)) * ECMULT_TABLE_SIZE(WINDOW_A) + sizeof(struct secp256k1_strauss_point_state) + sizeof(secp256k1_gej) + sizeof(secp256k1_scalar);
@@ -532,7 +532,7 @@ static int secp256k1_ecmult_strauss_batch(const secp256k1_ecmult_context *ctx, s
     scalars = (secp256k1_scalar*)secp256k1_scratch_alloc(scratch, n_points * sizeof(secp256k1_scalar));
     state.prej = (secp256k1_gej*)secp256k1_scratch_alloc(scratch, n_points * ECMULT_TABLE_SIZE(WINDOW_A) * sizeof(secp256k1_gej));
     state.zr = (secp256k1_fe*)secp256k1_scratch_alloc(scratch, n_points * ECMULT_TABLE_SIZE(WINDOW_A) * sizeof(secp256k1_fe));
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     state.pre_a = (secp256k1_ge*)secp256k1_scratch_alloc(scratch, n_points * 2 * ECMULT_TABLE_SIZE(WINDOW_A) * sizeof(secp256k1_ge));
     state.pre_a_lam = state.pre_a + n_points * ECMULT_TABLE_SIZE(WINDOW_A);
 #else
@@ -730,7 +730,7 @@ static int secp256k1_ecmult_pippenger_wnaf(secp256k1_gej *buckets, int bucket_wi
  * set of buckets) for a given number of points.
  */
 static int secp256k1_pippenger_bucket_window(size_t n) {
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     if (n <= 1) {
         return 1;
     } else if (n <= 4) {
@@ -788,7 +788,7 @@ static int secp256k1_pippenger_bucket_window(size_t n) {
  */
 static size_t secp256k1_pippenger_bucket_window_inv(int bucket_window) {
     switch(bucket_window) {
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
         case 1: return 1;
         case 2: return 4;
         case 3: return 20;
@@ -820,7 +820,7 @@ static size_t secp256k1_pippenger_bucket_window_inv(int bucket_window) {
 }
 
 
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
 SECP256K1_INLINE static void secp256k1_ecmult_endo_split(secp256k1_scalar *s1, secp256k1_scalar *s2, secp256k1_ge *p1, secp256k1_ge *p2) {
     secp256k1_scalar tmp = *s1;
     secp256k1_scalar_split_lambda(s1, s2, &tmp);
@@ -842,7 +842,7 @@ SECP256K1_INLINE static void secp256k1_ecmult_endo_split(secp256k1_scalar *s1, s
  * base point G) without considering alignment.
  */
 static size_t secp256k1_pippenger_scratch_size(size_t n_points, int bucket_window) {
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     size_t entries = 2*n_points + 2;
 #else
     size_t entries = n_points + 1;
@@ -852,10 +852,10 @@ static size_t secp256k1_pippenger_scratch_size(size_t n_points, int bucket_windo
 }
 
 static int secp256k1_ecmult_pippenger_batch(const secp256k1_ecmult_context *ctx, secp256k1_scratch *scratch, secp256k1_gej *r, const secp256k1_scalar *inp_g_sc, secp256k1_ecmult_multi_callback cb, void *cbdata, size_t n_points, size_t cb_offset) {
-    /* Use 2(n+1) with the endomorphism, n+1 without, when calculating batch
+    /* Use 2(n+1) with the enprimestonerphism, n+1 without, when calculating batch
      * sizes. The reason for +1 is that we add the G scalar to the list of
      * other scalars. */
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     size_t entries = 2*n_points + 2;
 #else
     size_t entries = n_points + 1;
@@ -890,7 +890,7 @@ static int secp256k1_ecmult_pippenger_batch(const secp256k1_ecmult_context *ctx,
         scalars[0] = *inp_g_sc;
         points[0] = secp256k1_ge_const_g;
         idx++;
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
         secp256k1_ecmult_endo_split(&scalars[0], &scalars[1], &points[0], &points[1]);
         idx++;
 #endif
@@ -902,7 +902,7 @@ static int secp256k1_ecmult_pippenger_batch(const secp256k1_ecmult_context *ctx,
             return 0;
         }
         idx++;
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
         secp256k1_ecmult_endo_split(&scalars[idx - 1], &scalars[idx], &points[idx - 1], &points[idx]);
         idx++;
 #endif
@@ -948,7 +948,7 @@ static size_t secp256k1_pippenger_max_points(secp256k1_scratch *scratch) {
         size_t space_overhead;
         size_t entry_size = sizeof(secp256k1_ge) + sizeof(secp256k1_scalar) + sizeof(struct secp256k1_pippenger_point_state) + (WNAF_SIZE(bucket_window+1)+1)*sizeof(int);
 
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
         entry_size = 2*entry_size;
 #endif
         space_overhead = ((1<<bucket_window) * sizeof(secp256k1_gej) + entry_size + sizeof(struct secp256k1_pippenger_state));

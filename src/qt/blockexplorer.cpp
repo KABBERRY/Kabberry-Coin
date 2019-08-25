@@ -1,4 +1,5 @@
-// Copyright (c) 2017-2019 The PIVX developers
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018 The PSC developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +13,7 @@
 #include "net.h"
 #include "txdb.h"
 #include "ui_blockexplorer.h"
-#include "guiinterface.h"
+#include "ui_interface.h"
 #include "util.h"
 #include "utilstrencodings.h"
 #include <QDateTime>
@@ -48,7 +49,7 @@ static std::string ValueToString(CAmount nValue, bool AllowNegative = false)
     if (nValue < 0 && !AllowNegative)
         return "<span>" + _("unknown") + "</span>";
 
-    QString Str = BitcoinUnits::formatWithUnit(BitcoinUnits::PIV, nValue);
+    QString Str = BitcoinUnits::formatWithUnit(BitcoinUnits::PSC, nValue);
     if (AllowNegative && nValue > 0)
         Str = '+' + Str;
     return std::string("<span>") + Str.toUtf8().data() + "</span>";
@@ -405,7 +406,7 @@ std::string AddressToString(const CBitcoinAddress& Address)
     {
         std::vector<CDiskTxPos> Txs;
         paddressmap->GetTxs(Txs, AddressScript.GetID());
-        for (const CDiskTxPos& pos : Txs)
+        BOOST_FOREACH (const CDiskTxPos& pos, Txs)
         {
             CTransaction tx;
             CBlock block;
@@ -477,8 +478,8 @@ void BlockExplorer::showEvent(QShowEvent*)
         updateNavButtons();
 
         if (!GetBoolArg("-txindex", true)) {
-            QString Warning = tr("Not all transactions will be shown. To view all transactions you need to set txindex=1 in the configuration file (pivx.conf).");
-            QMessageBox::warning(this, "PIVX Core Blockchain Explorer", Warning, QMessageBox::Ok);
+            QString Warning = tr("Not all transactions will be shown. To view all transactions you need to set txindex=1 in the configuration file (PSC.conf).");
+            QMessageBox::warning(this, "PSC Core Blockchain Explorer", Warning, QMessageBox::Ok);
         }
     }
 }

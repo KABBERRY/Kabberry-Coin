@@ -1920,7 +1920,7 @@ void ge_equals_gej(const secp256k1_ge *a, const secp256k1_gej *b) {
 
 void test_ge(void) {
     int i, i1;
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
     int runs = 6;
 #else
     int runs = 4;
@@ -1930,7 +1930,7 @@ void test_ge(void) {
      * All magnitudes are randomized.
      * All 17*17 combinations of points are added to each other, using all applicable methods.
      *
-     * When the endomorphism code is compiled in, p5 = lambda*p1 and p6 = lambda^2*p1 are added as well.
+     * When the enprimestonerphism code is compiled in, p5 = lambda*p1 and p6 = lambda^2*p1 are added as well.
      */
     secp256k1_ge *ge = (secp256k1_ge *)checked_malloc(&ctx->error_callback, sizeof(secp256k1_ge) * (1 + 4 * runs));
     secp256k1_gej *gej = (secp256k1_gej *)checked_malloc(&ctx->error_callback, sizeof(secp256k1_gej) * (1 + 4 * runs));
@@ -1945,7 +1945,7 @@ void test_ge(void) {
         int j;
         secp256k1_ge g;
         random_group_element_test(&g);
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
         if (i >= runs - 2) {
             secp256k1_ge_mul_lambda(&g, &ge[1]);
         }
@@ -2142,7 +2142,7 @@ void test_add_neg_y_diff_x(void) {
      * G = C.lift_x(0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798)
      * N = FiniteField(G.order())
      *
-     * # endomorphism values (lambda is 1^{1/3} in N, beta is 1^{1/3} in F)
+     * # enprimestonerphism values (lambda is 1^{1/3} in N, beta is 1^{1/3} in F)
      * x = polygen(N)
      * lam  = (1 - x^3).roots()[1][0]
      *
@@ -2725,11 +2725,6 @@ void test_ecmult_multi(secp256k1_scratch *scratch, secp256k1_ecmult_multi_func e
     }
 
     /* Sanity check that zero scalars don't cause problems */
-    for (ncount = 0; ncount < 20; ncount++) {
-        random_scalar_order(&sc[ncount]);
-        random_group_element_test(&pt[ncount]);
-    }
-
     secp256k1_scalar_clear(&sc[0]);
     CHECK(ecmult_multi(&ctx->ecmult_ctx, scratch, &r, &szero, ecmult_multi_callback, &data, 20));
     secp256k1_scalar_clear(&sc[1]);
@@ -2798,7 +2793,7 @@ void test_secp256k1_pippenger_bucket_window_inv(void) {
 
     CHECK(secp256k1_pippenger_bucket_window_inv(0) == 0);
     for(i = 1; i <= PIPPENGER_MAX_BUCKET_WINDOW; i++) {
-#ifdef USE_ENDOMORPHISM
+#ifdef USE_ENPrimeStoneRPHISM
         /* Bucket_window of 8 is not used with endo */
         if (i == 8) {
             continue;
@@ -2981,8 +2976,8 @@ void test_constant_wnaf(const secp256k1_scalar *number, int w) {
 
     secp256k1_scalar_set_int(&x, 0);
     secp256k1_scalar_set_int(&shift, 1 << w);
-    /* With USE_ENDOMORPHISM on we only consider 128-bit numbers */
-#ifdef USE_ENDOMORPHISM
+    /* With USE_ENPrimeStoneRPHISM on we only consider 128-bit numbers */
+#ifdef USE_ENPrimeStoneRPHISM
     for (i = 0; i < 16; ++i) {
         secp256k1_scalar_shr_int(&num, 8);
     }
@@ -3021,8 +3016,8 @@ void test_fixed_wnaf(const secp256k1_scalar *number, int w) {
 
     secp256k1_scalar_set_int(&x, 0);
     secp256k1_scalar_set_int(&shift, 1 << w);
-    /* With USE_ENDOMORPHISM on we only consider 128-bit numbers */
-#ifdef USE_ENDOMORPHISM
+    /* With USE_ENPrimeStoneRPHISM on we only consider 128-bit numbers */
+#ifdef USE_ENPrimeStoneRPHISM
     for (i = 0; i < 16; ++i) {
         secp256k1_scalar_shr_int(&num, 8);
     }
@@ -3223,8 +3218,8 @@ void run_ecmult_gen_blind(void) {
     }
 }
 
-#ifdef USE_ENDOMORPHISM
-/***** ENDOMORPHISH TESTS *****/
+#ifdef USE_ENPrimeStoneRPHISM
+/***** ENPrimeStoneRPHISH TESTS *****/
 void test_scalar_split(void) {
     secp256k1_scalar full;
     secp256k1_scalar s1, slam;
@@ -3248,7 +3243,7 @@ void test_scalar_split(void) {
     CHECK(memcmp(zero, tmp, 16) == 0);
 }
 
-void run_endomorphism_tests(void) {
+void run_enprimestonerphism_tests(void) {
     test_scalar_split();
 }
 #endif
@@ -5044,9 +5039,9 @@ int main(int argc, char **argv) {
     run_ecmult_multi_tests();
     run_ec_combine();
 
-    /* endomorphism tests */
-#ifdef USE_ENDOMORPHISM
-    run_endomorphism_tests();
+    /* enprimestonerphism tests */
+#ifdef USE_ENPrimeStoneRPHISM
+    run_enprimestonerphism_tests();
 #endif
 
     /* EC point parser test */

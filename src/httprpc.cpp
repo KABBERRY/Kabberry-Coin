@@ -1,5 +1,6 @@
 // Copyright (c) 2015-2017 The Bitcoin Core developers
-// Copyright (c) 2017-2019 The PIVX developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,13 +9,13 @@
 #include "base58.h"
 #include "chainparams.h"
 #include "httpserver.h"
-#include "rpc/protocol.h"
-#include "rpc/server.h"
+#include "rpcprotocol.h"
+#include "rpcserver.h"
 #include "random.h"
 #include "sync.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "guiinterface.h"
+#include "ui_interface.h"
 
 #include <boost/algorithm/string.hpp> // boost::trim
 
@@ -177,7 +178,7 @@ bool StartHTTPRPC()
 
     assert(EventBase());
     httpRPCTimerInterface = new HTTPRPCTimerInterface(EventBase());
-    RPCSetTimerInterface(httpRPCTimerInterface);
+    RPCRegisterTimerInterface(httpRPCTimerInterface);
     return true;
 }
 
@@ -191,7 +192,7 @@ void StopHTTPRPC()
     LogPrint("rpc", "Stopping HTTP RPC server\n");
     UnregisterHTTPHandler("/", true);
     if (httpRPCTimerInterface) {
-        RPCUnsetTimerInterface(httpRPCTimerInterface);
+        RPCUnregisterTimerInterface(httpRPCTimerInterface);
         delete httpRPCTimerInterface;
         httpRPCTimerInterface = 0;
     }

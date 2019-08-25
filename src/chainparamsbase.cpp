@@ -1,6 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2016-2018 The PIVX developers
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,6 +13,7 @@
 
 #include <boost/assign/list_of.hpp>
 
+using namespace boost::assign;
 
 /**
  * Main network
@@ -22,7 +24,7 @@ public:
     CBaseMainParams()
     {
         networkID = CBaseChainParams::MAIN;
-        nRPCPort = 51473;
+        nRPCPort = 34126;
     }
 };
 static CBaseMainParams mainParams;
@@ -36,7 +38,7 @@ public:
     CBaseTestNetParams()
     {
         networkID = CBaseChainParams::TESTNET;
-        nRPCPort = 51475;
+        nRPCPort = 41995;
         strDataDir = "testnet4";
     }
 };

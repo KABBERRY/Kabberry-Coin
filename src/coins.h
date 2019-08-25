@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2016-2019 The PIVX developers
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,11 +17,12 @@
 #include <assert.h>
 #include <stdint.h>
 
+#include <boost/foreach.hpp>
 #include <boost/unordered_map.hpp>
 
 /** 
 
-    ****Note - for PIVX we added fCoinStake to the 2nd bit. Keep in mind when reading the following and adjust as needed.
+    ****Note - for PrimeStone we added fCoinStake to the 2nd bit. Keep in mind when reading the following and adjust as needed.
  * Pruned version of CTransaction: only retains metadata and unspent transaction outputs
  *
  * Serialized format:
@@ -127,7 +129,7 @@ public:
 
     void ClearUnspendable()
     {
-        for (CTxOut& txout : vout) {
+        BOOST_FOREACH (CTxOut& txout, vout) {
             if (txout.scriptPubKey.IsUnspendable())
                 txout.SetNull();
         }
@@ -271,14 +273,14 @@ public:
     //! check whether a particular output is still available
     bool IsAvailable(unsigned int nPos) const
     {
-        return (nPos < vout.size() && !vout[nPos].IsNull() && !vout[nPos].IsZerocoinMint());
+        return (nPos < vout.size() && !vout[nPos].IsNull() && !vout[nPos].scriptPubKey.IsZerocoinMint());
     }
 
     //! check whether the entire CCoins is spent
     //! note that only !IsPruned() CCoins can be serialized
     bool IsPruned() const
     {
-        for (const CTxOut& out : vout)
+        BOOST_FOREACH (const CTxOut& out, vout)
             if (!out.IsNull())
                 return false;
         return true;
@@ -457,7 +459,7 @@ public:
     unsigned int GetCacheSize() const;
 
     /** 
-     * Amount of pivx coming in to a transaction
+     * Amount of primestone coming in to a transaction
      * Note that lightweight clients may not know anything besides the hash of previous transactions,
      * so may not be able to calculate this.
      *

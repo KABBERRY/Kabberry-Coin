@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2016-2019 The PIVX developers
+// Copyright (c) 2016-2018 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,6 +17,7 @@ class ClientModel;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
+class TradingDialog;
 class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -56,8 +58,6 @@ public slots:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to governance page */
-    void gotoGovernancePage();
     /** Switch to masternode page */
     void gotoMasternodePage();
     /** Switch to receive coins page */

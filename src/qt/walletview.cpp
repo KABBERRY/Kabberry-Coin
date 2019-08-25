@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2015 The Bitcoin developers
-// Copyright (c) 2016-2019 The PIVX developers
+// Copyright (c) 2016-2018 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,7 +11,6 @@
 #include "bitcoingui.h"
 #include "blockexplorer.h"
 #include "clientmodel.h"
-#include "governancepage.h"
 #include "guiutil.h"
 #include "masternodeconfig.h"
 #include "multisenddialog.h"
@@ -25,7 +25,7 @@
 #include "transactionview.h"
 #include "walletmodel.h"
 
-#include "guiinterface.h"
+#include "ui_interface.h"
 
 #include <QAction>
 #include <QActionGroup>
@@ -61,7 +61,9 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
     labelOverviewHeaderLeft->setObjectName(QStringLiteral("labelOverviewHeaderLeft"));
     labelOverviewHeaderLeft->setMinimumSize(QSize(464, 60));
     labelOverviewHeaderLeft->setMaximumSize(QSize(16777215, 60));
-    labelOverviewHeaderLeft->setText(tr("HISTORY"));
+//    labelOverviewHeaderLeft->setText(tr("HISTORY"));
+    labelOverviewHeaderLeft->setText("");
+
     QFont fontHeaderLeft;
     fontHeaderLeft.setPointSize(20);
     fontHeaderLeft.setBold(true);
@@ -117,14 +119,12 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
     transactionsPage->setLayout(vbox);
 
     privacyPage = new PrivacyDialog();
-    governancePage = new GovernancePage();
     receiveCoinsPage = new ReceiveCoinsDialog();
     sendCoinsPage = new SendCoinsDialog();
 
     addWidget(overviewPage);
     addWidget(transactionsPage);
     addWidget(privacyPage);
-    addWidget(governancePage);
     addWidget(receiveCoinsPage);
     addWidget(sendCoinsPage);
     addWidget(explorerWindow);
@@ -185,7 +185,6 @@ void WalletView::setClientModel(ClientModel* clientModel)
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeListPage->setClientModel(clientModel);
     }
-    governancePage->setClientModel(clientModel);
 }
 
 void WalletView::setWalletModel(WalletModel* walletModel)
@@ -199,10 +198,9 @@ void WalletView::setWalletModel(WalletModel* walletModel)
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeListPage->setWalletModel(walletModel);
     }
-    privacyPage->setModel(walletModel);
+//    privacyPage->setModel(walletModel);
     receiveCoinsPage->setModel(walletModel);
     sendCoinsPage->setModel(walletModel);
-    governancePage->setWalletModel(walletModel);
 
     if (walletModel) {
         // Receive and pass through messages from wallet model
@@ -254,10 +252,6 @@ void WalletView::gotoHistoryPage()
     setCurrentWidget(transactionsPage);
 }
 
-void WalletView::gotoGovernancePage()
-{
-    setCurrentWidget(governancePage);
-}
 
 void WalletView::gotoBlockExplorerPage()
 {
@@ -346,7 +340,7 @@ bool WalletView::handlePaymentRequest(const SendCoinsRecipient& recipient)
 void WalletView::showOutOfSyncWarning(bool fShow)
 {
     overviewPage->showOutOfSyncWarning(fShow);
-    privacyPage->showOutOfSyncWarning(fShow);
+//    privacyPage->showOutOfSyncWarning(fShow);
 }
 
 void WalletView::updateEncryptionStatus()

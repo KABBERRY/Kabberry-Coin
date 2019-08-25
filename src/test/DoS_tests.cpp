@@ -16,12 +16,11 @@
 #include "serialize.h"
 #include "util.h"
 
-#include "test/test_pivx.h"
-
 #include <stdint.h>
 
 #include <boost/assign/list_of.hpp> // for 'map_list_of()'
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 
 // Tests this internal-to-main.cpp method:
@@ -42,7 +41,7 @@ CService ip(uint32_t i)
     return CService(CNetAddr(s), Params().GetDefaultPort());
 }
 
-BOOST_FIXTURE_TEST_SUITE(DoS_tests, TestingSetup)
+BOOST_AUTO_TEST_SUITE(DoS_tests)
 
 BOOST_AUTO_TEST_CASE(DoS_banning)
 {
@@ -107,7 +106,7 @@ BOOST_AUTO_TEST_CASE(DoS_bantime)
     BOOST_CHECK(!CNode::IsBanned(addr));
 }
 
-CTransaction RandomOrphan()
+CTransaction RanPrimeStonerphan()
 {
     std::map<uint256, COrphanTx>::iterator it;
     it = mapOrphanTransactions.lower_bound(GetRandHash());
@@ -141,7 +140,7 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
     // ... and 50 that depend on other orphans:
     for (int i = 0; i < 50; i++)
     {
-        CTransaction txPrev = RandomOrphan();
+        CTransaction txPrev = RanPrimeStonerphan();
 
         CMutableTransaction tx;
         tx.vin.resize(1);
@@ -158,7 +157,7 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
     // This really-big orphan should be ignored:
     for (int i = 0; i < 10; i++)
     {
-        CTransaction txPrev = RandomOrphan();
+        CTransaction txPrev = RanPrimeStonerphan();
 
         CMutableTransaction tx;
         tx.vout.resize(1);

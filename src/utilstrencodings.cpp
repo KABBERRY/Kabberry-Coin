@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2016-2018 The PIVX developers
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,55 +16,25 @@
 
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
+#include <openssl/crypto.h> // for OPENSSL_cleanse()
 #include <openssl/evp.h>
 
 
+using namespace std;
 
-static const std::string CHARS_ALPHA_NUM = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-static const std::string SAFE_CHARS[] =
+string SanitizeString(const string& str)
 {
-    CHARS_ALPHA_NUM + " .,;-_/:?@()", // SAFE_CHARS_DEFAULT
-    CHARS_ALPHA_NUM + " .,;-_?@", // SAFE_CHARS_UA_COMMENT
-    CHARS_ALPHA_NUM + ".-_", // SAFE_CHARS_FILENAME
-};
-
-std::string SanitizeString(const std::string& str, int rule)
-{
-    std::string strResult;
-    for (std::string::size_type i = 0; i < str.size(); i++)
-    {
-        if (SAFE_CHARS[rule].find(str[i]) != std::string::npos)
+    /**
+     * safeChars chosen to allow simple messages/URLs/email addresses, but avoid anything
+     * even possibly remotely dangerous like & or >
+     */
+    static string safeChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890 .,;_-/:?@()");
+    string strResult;
+    for (std::string::size_type i = 0; i < str.size(); i++) {
+        if (safeChars.find(str[i]) != std::string::npos)
             strResult.push_back(str[i]);
     }
     return strResult;
-}
-
-bool validateURL(std::string strURL, std::string& strErr, unsigned int maxSize) {
-
-    // Check URL size
-    if (strURL.size() > maxSize) {
-        strErr = strprintf("Invalid URL: %d exceeds limit of %d characters.", strURL.size(), maxSize);
-        return false;
-    }
-
-    std::vector<std::string> reqPre;
-
-    // Required initial strings; URL must contain one
-    reqPre.push_back("http://");
-    reqPre.push_back("https://");
-
-    // check fronts
-    bool found = false;
-    for (int i=0; i < reqPre.size() && !found; i++) {
-        if (strURL.find(reqPre[i]) == 0) found = true;
-    }
-    if ((!found) && (reqPre.size() > 0)) {
-        strErr = "Invalid URL, check scheme (e.g. https://)";
-        return false;
-    }
-
-    return true;
 }
 
 const signed char p_util_hexdigit[256] =
@@ -91,7 +62,7 @@ signed char HexDigit(char c)
     return p_util_hexdigit[(unsigned char)c];
 }
 
-bool IsHex(const std::string& str)
+bool IsHex(const string& str)
 {
     for (std::string::const_iterator it(str.begin()); it != str.end(); ++it) {
         if (HexDigit(*it) < 0)
@@ -100,10 +71,10 @@ bool IsHex(const std::string& str)
     return (str.size() > 0) && (str.size() % 2 == 0);
 }
 
-std::vector<unsigned char> ParseHex(const char* psz)
+vector<unsigned char> ParseHex(const char* psz)
 {
     // convert hex dump to vector
-    std::vector<unsigned char> vch;
+    vector<unsigned char> vch;
     while (true) {
         while (isspace(*psz))
             psz++;
@@ -120,16 +91,16 @@ std::vector<unsigned char> ParseHex(const char* psz)
     return vch;
 }
 
-std::vector<unsigned char> ParseHex(const std::string& str)
+vector<unsigned char> ParseHex(const string& str)
 {
     return ParseHex(str.c_str());
 }
 
-std::string EncodeBase64(const unsigned char* pch, size_t len)
+string EncodeBase64(const unsigned char* pch, size_t len)
 {
     static const char* pbase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-    std::string strRet = "";
+    string strRet = "";
     strRet.reserve((len + 2) / 3 * 4);
 
     int mode = 0, left = 0;
@@ -168,12 +139,12 @@ std::string EncodeBase64(const unsigned char* pch, size_t len)
     return strRet;
 }
 
-std::string EncodeBase64(const std::string& str)
+string EncodeBase64(const string& str)
 {
     return EncodeBase64((const unsigned char*)str.c_str(), str.size());
 }
 
-std::vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)
+vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)
 {
     static const int decode64_table[256] =
         {
@@ -194,7 +165,7 @@ std::vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)
     if (pfInvalid)
         *pfInvalid = false;
 
-    std::vector<unsigned char> vchRet;
+    vector<unsigned char> vchRet;
     vchRet.reserve(strlen(p) * 3 / 4);
 
     int mode = 0;
@@ -252,10 +223,10 @@ std::vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)
     return vchRet;
 }
 
-std::string DecodeBase64(const std::string& str)
+string DecodeBase64(const string& str)
 {
-    std::vector<unsigned char> vchRet = DecodeBase64(str.c_str());
-    return (vchRet.size() == 0) ? std::string() : std::string((const char*)&vchRet[0], vchRet.size());
+    vector<unsigned char> vchRet = DecodeBase64(str.c_str());
+    return (vchRet.size() == 0) ? string() : string((const char*)&vchRet[0], vchRet.size());
 }
 
 // Base64 decoding with secure memory allocation
@@ -272,7 +243,7 @@ SecureString DecodeBase64Secure(const SecureString& input)
 
     // Prepare buffer to receive decoded data
     if (input.size() % 4 != 0) {
-        throw std::runtime_error("Input length should be a multiple of 4");
+        throw runtime_error("Input length should be a multiple of 4");
     }
     size_t nMaxLen = input.size() / 4 * 3; // upper bound, guaranteed divisible by 4
     output.resize(nMaxLen);
@@ -307,18 +278,18 @@ SecureString EncodeBase64Secure(const SecureString& input)
     SecureString output(bptr->data, bptr->length);
 
     // Cleanse secure data buffer from memory
-    memory_cleanse((void*)bptr->data, bptr->length);
+    OPENSSL_cleanse((void*)bptr->data, bptr->length);
 
     // Free memory
     BIO_free_all(b64);
     return output;
 }
 
-std::string EncodeBase32(const unsigned char* pch, size_t len)
+string EncodeBase32(const unsigned char* pch, size_t len)
 {
     static const char* pbase32 = "abcdefghijklmnopqrstuvwxyz234567";
 
-    std::string strRet = "";
+    string strRet = "";
     strRet.reserve((len + 4) / 5 * 8);
 
     int mode = 0, left = 0;
@@ -370,12 +341,12 @@ std::string EncodeBase32(const unsigned char* pch, size_t len)
     return strRet;
 }
 
-std::string EncodeBase32(const std::string& str)
+string EncodeBase32(const string& str)
 {
     return EncodeBase32((const unsigned char*)str.c_str(), str.size());
 }
 
-std::vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid)
+vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid)
 {
     static const int decode32_table[256] =
         {
@@ -396,7 +367,7 @@ std::vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid)
     if (pfInvalid)
         *pfInvalid = false;
 
-    std::vector<unsigned char> vchRet;
+    vector<unsigned char> vchRet;
     vchRet.reserve((strlen(p)) * 5 / 8);
 
     int mode = 0;
@@ -488,10 +459,10 @@ std::vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid)
     return vchRet;
 }
 
-std::string DecodeBase32(const std::string& str)
+string DecodeBase32(const string& str)
 {
-    std::vector<unsigned char> vchRet = DecodeBase32(str.c_str());
-    return (vchRet.size() == 0) ? std::string() : std::string((const char*)&vchRet[0], vchRet.size());
+    vector<unsigned char> vchRet = DecodeBase32(str.c_str());
+    return (vchRet.size() == 0) ? string() : string((const char*)&vchRet[0], vchRet.size());
 }
 
 static bool ParsePrechecks(const std::string& str)

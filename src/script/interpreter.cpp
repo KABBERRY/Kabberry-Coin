@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017-2019 The PIVX developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,8 +15,9 @@
 #include "script/script.h"
 #include "uint256.h"
 
+using namespace std;
 
-typedef std::vector<unsigned char> valtype;
+typedef vector<unsigned char> valtype;
 
 namespace {
 
@@ -56,10 +58,10 @@ bool CastToBool(const valtype& vch)
  */
 #define stacktop(i)  (stack.at(stack.size()+(i)))
 #define altstacktop(i)  (altstack.at(altstack.size()+(i)))
-static inline void popstack(std::vector<valtype>& stack)
+static inline void popstack(vector<valtype>& stack)
 {
     if (stack.empty())
-        throw std::runtime_error("popstack() : stack empty");
+        throw runtime_error("popstack() : stack empty");
     stack.pop_back();
 }
 
@@ -90,7 +92,7 @@ bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
  * Where R and S are not negative (their first byte has its highest bit not set), and not
  * excessively padded (do not start with a 0 byte, unless an otherwise negative number follows,
  * in which case a single 0 byte is necessary and even required).
- *
+ * 
  * See https://bitcointalk.org/index.php?topic=8392.msg127623#msg127623
  *
  * This function is consensus-critical since BIP66.
@@ -130,7 +132,7 @@ bool static IsValidSignatureEncoding(const std::vector<unsigned char> &sig) {
     // Verify that the length of the signature matches the sum of the length
     // of the elements.
     if ((size_t)(lenR + lenS + 7) != sig.size()) return false;
-
+ 
     // Check whether the R element is an integer.
     if (sig[2] != 0x02) return false;
 
@@ -235,7 +237,7 @@ bool static CheckMinimalPush(const valtype& data, opcodetype opcode) {
     return true;
 }
 
-bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
+bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
 {
     static const CScriptNum bnZero(0);
     static const CScriptNum bnOne(1);
@@ -250,8 +252,8 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
     CScript::const_iterator pbegincodehash = script.begin();
     opcodetype opcode;
     valtype vchPushValue;
-    std::vector<bool> vfExec;
-    std::vector<valtype> altstack;
+    vector<bool> vfExec;
+    vector<valtype> altstack;
     set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
     if (script.size() > 10000)
         return set_error(serror, SCRIPT_ERR_SCRIPT_SIZE);
@@ -335,54 +337,9 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                 // Control
                 //
                 case OP_NOP:
-                    break;
+                break;
 
-                case OP_CHECKLOCKTIMEVERIFY:
-                {
-                    if (!(flags & SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY)) {
-                        // not enabled; treat as a NOP2
-                        if (flags & SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS) {
-                            return set_error(serror, SCRIPT_ERR_DISCOURAGE_UPGRADABLE_NOPS);
-                        }
-                        break;
-                    }
-
-                    if (stack.size() < 1)
-                        return set_error(serror, SCRIPT_ERR_INVALID_STACK_OPERATION);
-
-                    // CLTV will only be verified if it is a supermajority.
-                    // Otherwise it will be ignored and transaction will be treated as normal.
-
-                    // Note that elsewhere numeric opcodes are limited to
-                    // operands in the range -2**31+1 to 2**31-1, however it is
-                    // legal for opcodes to produce results exceeding that
-                    // range. This limitation is implemented by CScriptNum's
-                    // default 4-byte limit.
-                    //
-                    // If we kept to that limit we'd have a year 2038 problem,
-                    // even though the nLockTime field in transactions
-                    // themselves is uint32 which only becomes meaningless
-                    // after the year 2106.
-                    //
-                    // Thus as a special case we tell CScriptNum to accept up
-                    // to 5-byte bignums, which are good until 2**39-1, well
-                    // beyond the 2**32-1 limit of the nLockTime field itself.
-                    const CScriptNum nLockTime(stacktop(-1), fRequireMinimal, 5);
-
-                    // In the rare event that the argument may be < 0 due to
-                    // some arithmetic being done first, you can always use
-                    // 0 MAX CHECKLOCKTIMEVERIFY.
-                    if (nLockTime < 0)
-                        return set_error(serror, SCRIPT_ERR_NEGATIVE_LOCKTIME);
-
-                    // Actually compare the specified lock time with the transaction.
-                    if (!checker.CheckLockTime(nLockTime))
-                        return set_error(serror, SCRIPT_ERR_UNSATISFIED_LOCKTIME);
-
-                    break;
-                }
-
-                case OP_NOP1: case OP_NOP3: case OP_NOP4: case OP_NOP5:
+                case OP_NOP1: case OP_NOP2: case OP_NOP3: case OP_NOP4: case OP_NOP5:
                 case OP_NOP6: case OP_NOP7: case OP_NOP8: case OP_NOP9: case OP_NOP10:
                 {
                     if (flags & SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS)
@@ -806,19 +763,19 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     valtype& vch = stacktop(-1);
                     valtype vchHash((opcode == OP_RIPEMD160 || opcode == OP_SHA1 || opcode == OP_HASH160) ? 20 : 32);
                     if (opcode == OP_RIPEMD160)
-                        CRIPEMD160().Write(vch.data(), vch.size()).Finalize(vchHash.data());
+                        CRIPEMD160().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
                     else if (opcode == OP_SHA1)
-                        CSHA1().Write(vch.data(), vch.size()).Finalize(vchHash.data());
+                        CSHA1().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
                     else if (opcode == OP_SHA256)
-                        CSHA256().Write(vch.data(), vch.size()).Finalize(vchHash.data());
+                        CSHA256().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
                     else if (opcode == OP_HASH160)
-                        CHash160().Write(vch.data(), vch.size()).Finalize(vchHash.data());
+                        CHash160().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
                     else if (opcode == OP_HASH256)
-                        CHash256().Write(vch.data(), vch.size()).Finalize(vchHash.data());
+                        CHash256().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
                     popstack(stack);
                     stack.push_back(vchHash);
                 }
-                break;
+                break;                                   
 
                 case OP_CODESEPARATOR:
                 {
@@ -1107,14 +1064,14 @@ bool TransactionSignatureChecker::VerifySignature(const std::vector<unsigned cha
     return pubkey.Verify(sighash, vchSig);
 }
 
-bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vchSigIn, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode) const
+bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn, const vector<unsigned char>& vchPubKey, const CScript& scriptCode) const
 {
     CPubKey pubkey(vchPubKey);
     if (!pubkey.IsValid())
         return false;
 
     // Hash type is one byte tacked on to the end of the signature
-    std::vector<unsigned char> vchSig(vchSigIn);
+    vector<unsigned char> vchSig(vchSigIn);
     if (vchSig.empty())
         return false;
     int nHashType = vchSig.back();
@@ -1128,43 +1085,6 @@ bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vch
     return true;
 }
 
-bool TransactionSignatureChecker::CheckLockTime(const CScriptNum& nLockTime) const
-{
-    // There are two times of nLockTime: lock-by-blockheight
-    // and lock-by-blocktime, distinguished by whether
-    // nLockTime < LOCKTIME_THRESHOLD.
-    //
-    // We want to compare apples to apples, so fail the script
-    // unless the type of nLockTime being tested is the same as
-    // the nLockTime in the transaction.
-    if (!(
-        (txTo->nLockTime <  LOCKTIME_THRESHOLD && nLockTime <  LOCKTIME_THRESHOLD) ||
-        (txTo->nLockTime >= LOCKTIME_THRESHOLD && nLockTime >= LOCKTIME_THRESHOLD)
-    ))
-        return false;
-
-    // Now that we know we're comparing apples-to-apples, the
-    // comparison is a simple numeric one.
-    if (nLockTime > (int64_t)txTo->nLockTime)
-        return false;
-
-    // Finally the nLockTime feature can be disabled and thus
-    // CHECKLOCKTIMEVERIFY bypassed if every txin has been
-    // finalized by setting nSequence to maxint. The
-    // transaction would be allowed into the blockchain, making
-    // the opcode ineffective.
-    //
-    // Testing if this vin is not final is sufficient to
-    // prevent this condition. Alternatively we could test all
-    // inputs, but testing just this input minimizes the data
-    // required to prove correct CHECKLOCKTIMEVERIFY execution.
-    if (txTo->vin[nIn].IsFinal())
-        return false;
-
-    return true;
-}
-
-
 bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
 {
     set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
@@ -1173,7 +1093,7 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigne
         return set_error(serror, SCRIPT_ERR_SIG_PUSHONLY);
     }
 
-    std::vector<std::vector<unsigned char> > stack, stackCopy;
+    vector<vector<unsigned char> > stack, stackCopy;
     if (!EvalScript(stack, scriptSig, flags, checker, serror))
         // serror is set
         return false;

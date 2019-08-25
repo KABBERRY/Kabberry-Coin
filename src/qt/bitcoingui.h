@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,7 +8,7 @@
 #define BITCOIN_QT_BITCOINGUI_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/pivx-config.h"
+#include "config/primestone-config.h"
 #endif
 
 #include "amount.h"
@@ -109,7 +110,6 @@ private:
     QAction* multisigSignAction;
     QAction* aboutAction;
     QAction* receiveCoinsAction;
-    QAction* governanceAction;
     QAction* privacyAction;
     QAction* optionsAction;
     QAction* toggleHideAction;
@@ -210,8 +210,6 @@ private slots:
     void gotoOverviewPage();
     /** Switch to history (transactions) page */
     void gotoHistoryPage();
-    /** Switch to Governance Page */
-    void gotoGovernancePage();
     /** Switch to Explorer Page */
     void gotoBlockExplorerPage();
     /** Switch to masternode page */
