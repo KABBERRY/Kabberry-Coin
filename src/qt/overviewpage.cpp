@@ -25,7 +25,10 @@
 #include <QPainter>
 #include <QSettings>
 #include <QTimer>
-
+#include <QtNetwork>
+#include <QJsonDocument>
+#include <QtDebug>
+#include <qt4/Qt/qdebug.h>
 #define DECORATION_SIZE 48
 #define ICON_OFFSET 16
 #define NUM_ITEMS 9
@@ -251,6 +254,21 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelBalancez->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, availableTotalBalance, false, BitcoinUnits::separatorAlways));
     ui->labelTotalz->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, sumTotalBalance, false, BitcoinUnits::separatorAlways));
 
+// hcs Get Price From Gecko
+    /*$.ajax({url: 'https://api.coingecko.com/api/v3/coins/primestone?localization=false', success: function(coin_price){
+            
+             ui->labelPricez->setText((coin_price.market_data.current_price.usd.toFixed(8)));
+
+          }});
+        }*/
+    //request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+
+    connect(manager, SIGNAL(finished(QNetworkReply*)),
+            this, SLOT(syncRequestFinished(QNetworkReply*)));
+
+    manager->get(QNetworkRequest(QUrl("https://api.coingecko.com/api/v3/coins/primestone?localization=false")));
+  
     // Percentage labels
     ui->labelPrimeStonePercent->setText(sPercentage);
     ui->labelzPSCPercent->setText(szPercentage);
@@ -416,4 +434,45 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
+}
+//GET Price from Gecko
+void OverviewPage::syncRequestFinished(QNetworkReply *reply)
+{
+    //market_data / current_price / usd
+
+    if (reply->error() == QNetworkReply::NoError)
+    {
+        QByteArray strReply =  reply->readAll();
+  
+        QJsonDocument jsonResponse = QJsonDocument::fromJson(strReply);
+        if(jsonResponse.isEmpty())
+        {
+            ui->labelPricez->setText("NON");
+            return;
+        }
+        
+        QJsonObject jsonObject = jsonResponse.object();
+
+            QJsonObject sett3 = jsonObject["market_data"].toObject();
+            QJsonDocument doc(sett3);
+            QByteArray strJson(doc.toJson(QJsonDocument::Compact));
+ 
+            QJsonObject sett4 = sett3["current_price"].toObject();
+            QJsonDocument doc1(sett4);
+            QByteArray strJson1(doc1.toJson(QJsonDocument::Compact));
+
+            float priceVal =  sett4["usd"].toVariant().toFloat();
+            float totalBalance = currentBalance/100000000;
+
+            QString unitPrice = QString::number(priceVal) + QString(" USD");
+            QString totalPrice = QString::number(priceVal* totalBalance) + QString(" USD");
+
+            ui->labelPricez->setText(totalPrice);  
+            ui->labelUSDPricez->setText(unitPrice);
+
+    }    
+    else{
+        ui->labelPricez->setText("NULL");
+    }
+    delete reply;
 }

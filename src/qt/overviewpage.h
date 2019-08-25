@@ -10,6 +10,7 @@
 #include "amount.h"
 
 #include <QWidget>
+#include <QObject>
 
 class ClientModel;
 class TransactionFilterProxy;
@@ -23,6 +24,10 @@ class OverviewPage;
 
 QT_BEGIN_NAMESPACE
 class QModelIndex;
+class QNetworkAccessManager;
+class QNetworkReply;
+class QSslError;
+class QUrl;
 QT_END_NAMESPACE
 
 /** Overview ("home") page widget */
@@ -38,6 +43,7 @@ public:
     void setWalletModel(WalletModel* walletModel);
     void showOutOfSyncWarning(bool fShow);
 
+
 public slots:
     void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
                     const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
@@ -45,7 +51,7 @@ public slots:
 
 signals:
     void transactionClicked(const QModelIndex& index);
-
+    
 private:
     QTimer* timer;
     Ui::OverviewPage* ui;
@@ -62,7 +68,7 @@ private:
     CAmount currentWatchImmatureBalance;
     int nDisplayUnit;
     void getPercentage(CAmount nTotalBalance, CAmount nZerocoinBalance, QString& sPrimeStonePercentage, QString& szPSCPercentage);
-
+   
     TxViewDelegate* txdelegate;
     TransactionFilterProxy* filter;
 
@@ -71,6 +77,7 @@ private slots:
     void handleTransactionClicked(const QModelIndex& index);
     void updateAlerts(const QString& warnings);
     void updateWatchOnlyLabels(bool showWatchOnly);
+    void syncRequestFinished(QNetworkReply *reply);
 };
 
 #endif // BITCOIN_QT_OVERVIEWPAGE_H
