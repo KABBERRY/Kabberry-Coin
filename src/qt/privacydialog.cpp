@@ -59,7 +59,7 @@ void PrivacyDialog::setModel(WalletModel* walletModel)
 
 void PrivacyDialog::on_officialWebsiteButton_clicked()
 {
-    QString link = "https://primestone.global/primestone-cryptocurrency-wallet-platform/";
+    QString link = "https://primestone.global/";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_mnVPSButton_clicked()
