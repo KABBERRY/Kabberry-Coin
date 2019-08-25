@@ -153,7 +153,7 @@ void OptionsModel::Init()
     if (!settings.contains("digits"))
         settings.setValue("digits", "2");
     if (!settings.contains("theme"))
-        settings.setValue("theme", "");
+        settings.setValue("theme", "Default");
     if (!settings.contains("fCSSexternal"))
         settings.setValue("fCSSexternal", false);
     if (!settings.contains("language"))
