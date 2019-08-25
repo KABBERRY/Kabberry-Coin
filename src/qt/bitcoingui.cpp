@@ -351,6 +351,18 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     historyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_4));
 #endif
     tabGroup->addAction(historyAction);
+  
+    openBlockExplorerAction = new QAction(QIcon(":/icons/bexplorer"), "Blockchain Explorer", this);
+    openBlockExplorerAction->setStatusTip(tr("Blockchain Explorer"));
+    openBlockExplorerAction->setToolTip(openBlockExplorerAction->statusTip());
+    openBlockExplorerAction->setCheckable(true);
+
+#ifdef Q_OS_MAC
+    openBlockExplorerAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+#else
+    openBlockExplorerAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+#endif
+    tabGroup->addAction(openBlockExplorerAction);
 
     privacyAction = new QAction(QIcon(":/icons/privacy"), "Manuals", this);
     privacyAction->setStatusTip(tr("User Manuals"));
@@ -358,9 +370,9 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     privacyAction->setCheckable(true);
 
 #ifdef Q_OS_MAC
-    privacyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+    privacyAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_7));
 #else
-    privacyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+    privacyAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_7));
 #endif
     tabGroup->addAction(privacyAction);
 
@@ -468,7 +480,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 
     openAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Open &URI..."), this);
     openAction->setStatusTip(tr("Open a PrimeStone: URI or payment request"));
-    openBlockExplorerAction = new QAction(QIcon(":/icons/explorer"), tr("&Blockchain explorer"), this);
+    openBlockExplorerAction = new QAction(QIcon(":/icons/explorer"), tr("&Block explorer"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
 
     showHelpMessageAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Command-line options"), this);
@@ -584,6 +596,7 @@ void BitcoinGUI::createToolBars()
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
+        toolbar->addAction(openBlockExplorerAction);
         toolbar->addAction(privacyAction);
         
         toolbar->setMovable(false); // remove unused icon in upper left corner

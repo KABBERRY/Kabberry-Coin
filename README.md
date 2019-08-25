@@ -6,11 +6,11 @@ https://primestone.global
 
 <br>For setup PSC Masternode on Ubuntu 16.04 and 18.04 with IPv4 you need start script:
 
-<br>apt-get update -y && cd ~/ && sudo apt-get install curl -y && bash <(curl -s https://github.com/Primestonecoin/MN-Script-IPv4/blob/master/prime_IPv4.sh) | tee ~/prime_masternode_installation.log
+<br>apt-get update -y && cd ~/ && sudo apt-get install curl -y && bash <(curl -s https://raw.githubusercontent.com/Primestonecoin/MN-Script-IPv4/master/prime_IPv4.sh) | tee ~/prime_masternode_installation.log
 
 <br>For setup PSC Masternode on Ubuntu 16.04 and 18.04 with IPv6 you need start script:
 
-<br>apt-get update -y && cd ~/ && sudo apt-get install curl -y && bash <(curl -s https://github.com/Primestonecoin/MN-Script-IPv6/blob/master/prime_IPv6.sh) | tee ~/prime_masternode_installation.log
+<br>apt-get update -y && cd ~/ && sudo apt-get install curl -y && bash <(curl -s https://raw.githubusercontent.com/Primestonecoin/MN-Script-IPv6/master/prime_IPv6.sh) | tee ~/prime_masternode_installation.log
 
 
 <br>BLOCK EXPLORER

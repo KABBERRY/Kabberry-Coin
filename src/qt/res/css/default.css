@@ -1263,6 +1263,46 @@ WalletFrame {
     font-weight:bold;
     font-size:13px;
     }
+
+    QWidget .QFrame#frame_CombinedBalances .QLabel#labelPriceTextz { /* Available total Price */
+    qproperty-alignment: 'AlignVCenter | AlignLeft';
+    min-width:160px;
+    color:#000000;
+    margin-right:5px;
+    padding-right:5px;
+    font-weight:bold;
+    font-size:13px;
+    }
+
+    QWidget .QFrame#frame_CombinedBalances .QLabel#labelUSDPriceTextz { /* Available USD Price */
+    qproperty-alignment: 'AlignVCenter | AlignLeft';
+    min-width:160px;
+    color:#000000;
+    margin-right:5px;
+    padding-right:5px;
+    font-weight:bold;
+    font-size:13px;
+    }
+
+    QWidget .QFrame#frame_CombinedBalances .QLabel#labelPricez { /* Available 1PSC Label */
+    qproperty-alignment: 'AlignVCenter | AlignLeft';
+    min-width:160px;
+    color:#000000;
+    margin-right:5px;
+    padding-right:5px;
+    font-weight:bold;
+    font-size:13px;
+    }
+
+    QWidget .QFrame#frame_CombinedBalances .QLabel#labelUSDPricez { /* Available 1PSC Price */
+    qproperty-alignment: 'AlignVCenter | AlignLeft';
+    min-width:160px;
+    color:#000000;
+    margin-right:5px;
+    padding-right:5px;
+    font-weight:bold;
+    font-size:13px;
+    }
     
     QWidget .QFrame#frame_CombinedBalances .QLabel#labelTotalz { /* Available total Balance */
     qproperty-alignment: 'AlignVCenter | AlignLeft';

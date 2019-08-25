@@ -1,72 +1,88 @@
-PrimeStone
-=====================
+Bitcoin Core
+=============
 
 Setup
 ---------------------
-[PrimeStone](http://primestone.org/wallet) is the original PrimeStone client and it builds the backbone of the network. However, it downloads and stores the entire history of PrimeStone transactions; depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more. Thankfully you only have to do this once.
+Bitcoin Core is the original Bitcoin client and it builds the backbone of the network. It downloads and, by default, stores the entire history of Bitcoin transactions, which requires a few hundred gigabytes of disk space. Depending on the speed of your computer and network connection, the synchronization process can take anywhere from a few hours to a day or more.
+
+To download Bitcoin Core, visit [bitcoincore.org](https://bitcoincore.org/en/download/).
 
 Running
 ---------------------
-The following are some helpful notes on how to run PrimeStone on your native platform.
+The following are some helpful notes on how to run Bitcoin Core on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- bin/32/primestone-qt (GUI, 32-bit) or bin/32/primestoned (headless, 32-bit)
-- bin/64/primestone-qt (GUI, 64-bit) or bin/64/primestoned (headless, 64-bit)
+- `bin/bitcoin-qt` (GUI) or
+- `bin/bitcoind` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run primestone-qt.exe.
+Unpack the files into a directory, and then run bitcoin-qt.exe.
 
-### OSX
+### macOS
 
-Drag PrimeStone-Qt to your applications folder, and then run PrimeStone-Qt.
+Drag Bitcoin Core to your applications folder, and then run Bitcoin Core.
 
 ### Need Help?
 
-* See the documentation at the [PrimeStone Wiki](https://en.bitcoin.it/wiki/Main_Page) ***TODO***
+* See the documentation at the [Bitcoin Wiki](https://en.bitcoin.it/wiki/Main_Page)
 for help and more information.
-* Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [PrimeStone Forum](http://forum.primestone.org/).
-* Join our Discord server [Discord Server](https://discord.primestone.org)
-* Join one of our Slack groups [PrimeStone Slack Groups](https://primestone.org/slack-logins/) (Main community is replaced by Discord).
+* Ask for help on [#bitcoin](http://webchat.freenode.net?channels=bitcoin) on Freenode. If you don't have an IRC client, use [webchat here](http://webchat.freenode.net?channels=bitcoin).
+* Ask for help on the [BitcoinTalk](https://bitcointalk.org/) forums, in the [Technical Support board](https://bitcointalk.org/index.php?board=4.0).
 
 Building
 ---------------------
-The following are developer notes on how to build PrimeStone on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build Bitcoin Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
-- [OSX Build Notes](build-osx.md)
+- [Dependencies](dependencies.md)
+- [macOS Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
-- [Gitian Building Guide](gitian-building.md)
+- [Windows Build Notes](build-windows.md)
+- [FreeBSD Build Notes](build-freebsd.md)
+- [OpenBSD Build Notes](build-openbsd.md)
+- [NetBSD Build Notes](build-netbsd.md)
+- [Gitian Building Guide (External Link)](https://github.com/bitcoin-core/docs/blob/master/gitian-building.md)
 
 Development
 ---------------------
-The PrimeStone repo's [root README](https://github.com/PrimeStone-Project/PrimeStone/blob/master/README.md) contains relevant information on the development process and automated testing.
+The Bitcoin repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
-- [Multiwallet Qt Development](multiwallet-qt.md)
+- [Productivity Notes](productivity.md)
 - [Release Notes](release-notes.md)
 - [Release Process](release-process.md)
-- [Source Code Documentation (External Link)](https://dev.visucore.com/bitcoin/doxygen/) ***TODO***
+- [Source Code Documentation (External Link)](https://dev.visucore.com/bitcoin/doxygen/)
 - [Translation Process](translation_process.md)
-- [Unit Tests](unit-tests.md)
+- [Translation Strings Policy](translation_strings_policy.md)
+- [Travis CI](travis-ci.md)
+- [JSON-RPC Interface](JSON-RPC-interface.md)
 - [Unauthenticated REST Interface](REST-interface.md)
+- [Shared Libraries](shared-libraries.md)
+- [BIPS](bips.md)
 - [Dnsseed Policy](dnsseed-policy.md)
+- [Benchmarking](benchmarking.md)
 
 ### Resources
-
-* Discuss on the [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or the [PrimeStone](http://forum.primestone.org/) forum.
-* Join the [PrimeStone-Dev](https://primestone-dev.slack.com/) Slack group ([Sign-Up](https://primestone-dev.herokuapp.com/)).
+* Discuss on the [BitcoinTalk](https://bitcointalk.org/) forums, in the [Development & Technical Discussion board](https://bitcointalk.org/index.php?board=6.0).
+* Discuss project-specific development on #bitcoin-core-dev on Freenode. If you don't have an IRC client, use [webchat here](http://webchat.freenode.net/?channels=bitcoin-core-dev).
+* Discuss general Bitcoin development on #bitcoin-dev on Freenode. If you don't have an IRC client, use [webchat here](http://webchat.freenode.net/?channels=bitcoin-dev).
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)
+- [bitcoin.conf Configuration File](bitcoin-conf.md)
 - [Files](files.md)
+- [Fuzz-testing](fuzzing.md)
+- [Reduce Traffic](reduce-traffic.md)
 - [Tor Support](tor.md)
 - [Init Scripts (systemd/upstart/openrc)](init.md)
+- [ZMQ](zmq.md)
+- [PSBT support](psbt.md)
 
 License
 ---------------------
-Distributed under the [MIT/X11 software license](http://www.opensource.org/licenses/mit-license.php).
+Distributed under the [MIT software license](/COPYING).
 This product includes software developed by the OpenSSL Project for use in the [OpenSSL Toolkit](https://www.openssl.org/). This product includes
 cryptographic software written by Eric Young ([eay@cryptsoft.com](mailto:eay@cryptsoft.com)), and UPnP software written by Thomas Bernard.

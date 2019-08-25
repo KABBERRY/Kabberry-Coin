@@ -28,7 +28,6 @@
 #include <QtNetwork>
 #include <QJsonDocument>
 #include <QtDebug>
-#include <qt4/Qt/qdebug.h>
 #define DECORATION_SIZE 48
 #define ICON_OFFSET 16
 #define NUM_ITEMS 9

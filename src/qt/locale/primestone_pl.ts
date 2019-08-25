@@ -47,7 +47,7 @@
     </message>
     <message>
         <source>Sending addresses</source>
-        <translation>Adres do wysłania</translation>
+        <translation>Adres do wysłki</translation>
     </message>
     <message>
         <source>Receiving addresses</source>
@@ -674,7 +674,7 @@ MultiWysyłka: %1</translation>
         <source>Staking is not active
  MultiSend: %1</source>
         <translation>Staking nieaktywny
-MultiWysyłlka: %1</translation>
+MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
@@ -1336,7 +1336,7 @@ https://www.transifex.com/primestone-project/primestone-project-translations </t
     </message>
     <message>
         <source>Immature:</source>
-        <translation>Niedojrzały</translation>
+        <translation>Niezaksięgowany</translation>
     </message>
     <message>
         <source>Total:</source>
