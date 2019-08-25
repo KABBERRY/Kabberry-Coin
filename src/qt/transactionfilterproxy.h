@@ -52,8 +52,12 @@ public:
     /** Set whether to show conflicted transactions. */
     void setShowInactive(bool showInactive);
 
-    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    /** Set whether to hide orphan stakes. */
+    void setHideOrphans(bool fHide);
 
+    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    static bool isOrphan(const int status, const int type);
+	
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
@@ -66,6 +70,7 @@ private:
     CAmount minAmount;
     int limitRows;
     bool showInactive;
+    bool fHideOrphans;
 };
 
 #endif // BITCOIN_QT_TRANSACTIONFILTERPROXY_H
