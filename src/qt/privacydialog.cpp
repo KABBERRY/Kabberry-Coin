@@ -64,12 +64,12 @@ void PrivacyDialog::on_officialWebsiteButton_clicked()
 }
 void PrivacyDialog::on_mnVPSButton_clicked()
 {
-    QString link = "https://primestone.global/wp-content/uploads/2018/11/Masternode_VPS-ENG.pdf";
+    QString link = "https://primestone.global/wp-content/uploads/2019/02/MasterNode_VPS.pdf";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_mnWindowsButton_clicked()
 {
-    QString link = "https://primestone.global/wp-content/uploads/2018/08/MasterNode-ENG.pdf";
+    QString link = "https://primestone.global/wp-content/uploads/2019/02/MasterNode_WIN.pdf";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_coinmarketcapButton_clicked()

@@ -1,9 +1,9 @@
-<TS language="pl" version="2.1">
+﻿<TS language="pl" version="2.1">
 <context>
     <name>AddressBookPage</name>
     <message>
         <source>Right-click to edit address or label</source>
-        <translation>Kliknij prawy przycisk myszy by edytować adres lub zakładkę</translation>
+        <translation>Kliknij prawym przyciskiem myszy by edytować adres lub zakładkę</translation>
     </message>
     <message>
         <source>Create a new address</source>
