@@ -3,7 +3,7 @@
     <name>AddressBookPage</name>
     <message>
         <source>Right-click to edit address or label</source>
-        <translation>Kliknij prawym przyciskiem myszy by edytować adres lub zakładkę</translation>
+        <translation>Kliknij prawym przyciskiem myszy by edytować adres lub nazwę</translation>
     </message>
     <message>
         <source>Create a new address</source>
@@ -47,7 +47,7 @@
     </message>
     <message>
         <source>Sending addresses</source>
-        <translation>Adres do wysłki</translation>
+        <translation>Adres do wysyłki</translation>
     </message>
     <message>
         <source>Receiving addresses</source>
@@ -59,7 +59,7 @@
     </message>
     <message>
         <source>Copy &amp;Label</source>
-        <translation>Kopiuj &amp;Zakładkę</translation>
+        <translation>Kopiuj &amp;nazwę</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
@@ -75,14 +75,14 @@
     </message>
     <message>
         <source>There was an error trying to save the address list to %1. Please try again.</source>
-        <translation>Wystąpił problem podczas zapisywania listy adresów do %1. Spróbuj ponownie</translation>
+        <translation>Wystąpił problem podczas zapisywania listy adresów na %1. Spróbuj ponownie</translation>
     </message>
 </context>
 <context>
     <name>AddressTableModel</name>
     <message>
         <source>Label</source>
-        <translation>Zakładka</translation>
+        <translation>Nazwa</translation>
     </message>
     <message>
         <source>Address</source>
@@ -90,7 +90,7 @@
     </message>
     <message>
         <source>(no label)</source>
-        <translation>(brak zakładki)</translation>
+        <translation>(brak nazwy)</translation>
     </message>
 </context>
 <context>
@@ -113,7 +113,7 @@
     </message>
     <message>
         <source>This operation needs your wallet passphrase to unlock the wallet.</source>
-        <translation>Ta operacja wymaga twojego hasła, by odblokować portfel</translation>
+        <translation>Ta operacja wymaga hasła, by odblokować portfel</translation>
     </message>
     <message>
         <source>Unlock wallet</source>
@@ -121,11 +121,11 @@
     </message>
     <message>
         <source>This operation needs your wallet passphrase to decrypt the wallet.</source>
-        <translation>Ta operacja wymaga twojego hasła, by zakodować portfel</translation>
+        <translation>Ta operacja wymaga twojego hasła, by odkodować portfel</translation>
     </message>
     <message>
         <source>Decrypt wallet</source>
-        <translation>Zakoduj portfel</translation>
+        <translation>Odkoduj portfel</translation>
     </message>
     <message>
         <source>Change passphrase</source>
@@ -141,11 +141,11 @@
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
-        <translation>Czy na pewno chcesz zakodować portfel?</translation>
+        <translation>Czy na pewno chcesz odkodować portfel?</translation>
     </message>
     <message>
         <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PrimeStone&lt;/b&gt;!</source>
-        <translation>Ostrzeżenie: Jeżeli zakodujesz portfel i stracisz do niego hasło , UTRACISZ WSZYSTKIE PrimeStone!</translation>
+        <translation>Ostrzeżenie: Jeżeli zakodujesz portfel i stracisz hasło , UTRACISZ WSZYSTKIE PSC!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -165,23 +165,23 @@
     </message>
     <message>
         <source>Wallet unlock failed</source>
-        <translation>Odblokowanie portfela nieudane</translation>
+        <translation>Nieudane dblokowanie portfela</translation>
     </message>
     <message>
         <source>The passphrase entered for the wallet decryption was incorrect.</source>
-        <translation>Podane hasło do zakodowania portfela jest błędne</translation>
+        <translation>Hasło podane do odkodowania portfela jest błędne</translation>
     </message>
     <message>
         <source>Wallet decryption failed</source>
-        <translation>Kodowanie portfela nieudane</translation>
+        <translation>Nieudane odkodowanie portfela</translation>
     </message>
     <message>
         <source>Wallet passphrase was successfully changed.</source>
-        <translation>Hasło do portfela zostało zmienione</translation>
+        <translation>Hasło zostało zmienione</translation>
     </message>
     <message>
         <source>Warning: The Caps Lock key is on!</source>
-        <translation>Ostrzeżenie: Caps Lock włączony!</translation>
+        <translation>Ostrzeżenie: Caps Lock jest włączony!</translation>
     </message>
 </context>
 <context>
@@ -203,7 +203,7 @@
     </message>
     <message>
         <source>Choose previously used address</source>
-        <translation>Wybierz poprzednio używany adres</translation>
+        <translation>Wybierz poprzednio użyty adres</translation>
     </message>
     <message>
         <source>Alt+A</source>
@@ -227,23 +227,23 @@
     </message>
     <message>
         <source>Encrypt &amp;Key</source>
-        <translation>Kodowanie &amp;klucz</translation>
+        <translation>Kodowanie &amp;klucza</translation>
     </message>
     <message>
         <source>Clear &amp;All</source>
-        <translation>Wyczyść &amp;Wszystko</translation>
+        <translation>Wyczyść &amp;wszystko</translation>
     </message>
     <message>
         <source>&amp;BIP 38 Decrypt</source>
-        <translation>&amp;BIP 38 Zakoduj</translation>
+        <translation>&amp;BIP 38 odkoduj</translation>
     </message>
     <message>
         <source>Decrypted Key:</source>
-        <translation>Zakodowany klucz:</translation>
+        <translation>Odkodowany klucz:</translation>
     </message>
     <message>
         <source>Import Address</source>
-        <translation>Adres importu</translation>
+        <translation>Importuj adres</translation>
     </message>
     <message>
         <source>The entered passphrase is invalid. </source>
@@ -259,7 +259,7 @@
     </message>
     <message>
         <source>Please check the address and try again.</source>
-        <translation>Proszę sprawdzić adres i spróbować ponownie</translation>
+        <translation>Sprawdź adres i spróbuj ponownie</translation>
     </message>
     <message>
         <source>The entered address does not refer to a key.</source>
@@ -267,27 +267,27 @@
     </message>
     <message>
         <source>Wallet unlock was cancelled.</source>
-        <translation>Odblokowywanie anulowanie</translation>
+        <translation>Odblokowywanie portfela anulowane</translation>
     </message>
     <message>
         <source>Private key for the entered address is not available.</source>
-        <translation>Prywatny klucz do podanego adresu nie jest dostępny</translation>
+        <translation>Prywatny klucz dla podanego adresu jest niedostępny</translation>
     </message>
     <message>
         <source>Failed to decrypt.</source>
-        <translation>Błąd kodowania</translation>
+        <translation>Błąd odkodowania</translation>
     </message>
     <message>
         <source>Please check the key and passphrase and try again.</source>
-        <translation>Proszę sprawdzić klucz i hasło ponownie</translation>
+        <translation>Sprawdź klucz i hasło, następnie spróbuj ponownie</translation>
     </message>
     <message>
         <source>Data Not Valid.</source>
-        <translation>Dane nieprawdziwe</translation>
+        <translation>Dane nieprawidłowe</translation>
     </message>
     <message>
         <source>Please try again.</source>
-        <translation>Proszę spróbować ponownie</translation>
+        <translation>Spróbuj ponownie</translation>
     </message>
     <message>
         <source>Please wait while key is imported</source>
@@ -299,7 +299,7 @@
     </message>
     <message>
         <source>Error Adding Key To Wallet</source>
-        <translation>Błąd w dodawaniu klucza do portfela</translation>
+        <translation>Wystąpił błąd podczas dodawaniu klucza do portfela</translation>
     </message>
     <message>
         <source>Successfully Added Private Key To Wallet</source>
@@ -322,7 +322,7 @@
     </message>
     <message>
         <source>Show general overview of wallet</source>
-        <translation>Pokaż generalny przegląd portfela</translation>
+        <translation>Pokaż aktualny stan portfela</translation>
     </message>
     <message>
         <source>&amp;Send</source>
@@ -370,7 +370,7 @@
     </message>
     <message>
         <source>&amp;Encrypt Wallet...</source>
-        <translation>&amp;Zakoduj portfel</translation>
+        <translation>&amp;Odkoduj portfel</translation>
     </message>
     <message>
         <source>Encrypt the private keys that belong to your wallet</source>
@@ -382,7 +382,7 @@
     </message>
     <message>
         <source>Backup wallet to another location</source>
-        <translation>&amp;Kopia zapasowa portfela z innej lokacji</translation>
+        <translation>&amp;Wykonaj kopię zapasową portfela w innej lokalizacji</translation>
     </message>
     <message>
         <source>&amp;Change Passphrase...</source>
@@ -390,7 +390,7 @@
     </message>
     <message>
         <source>Change the passphrase used for wallet encryption</source>
-        <translation>Zmień hasło do zakodowania portfela</translation>
+        <translation>Zmień hasło wykorzystane do zakodowania portfela</translation>
     </message>
     <message>
         <source>&amp;Unlock Wallet...</source>
@@ -442,11 +442,11 @@
     </message>
     <message>
         <source>Show peers info</source>
-        <translation>Pokaż informacje peersów</translation>
+        <translation>Pokaż informacje o peersach</translation>
     </message>
     <message>
         <source>Wallet &amp;Repair</source>
-        <translation>Portfel &amp;Napraw</translation>
+        <translation>Napraw &amp;portfel</translation>
     </message>
     <message>
         <source>Show wallet repair options</source>
@@ -454,11 +454,11 @@
     </message>
     <message>
         <source>Open configuration file</source>
-        <translation>Otwórz plik konfiguracji</translation>
+        <translation>Otwórz plik konfiguracyjny</translation>
     </message>
     <message>
         <source>Show Automatic &amp;Backups</source>
-        <translation>Pokaż automatyczne &amp;Kopie zapasowe</translation>
+        <translation>Pokaż automatyczne &amp;kopie zapasowe</translation>
     </message>
     <message>
         <source>Show automatically created wallet backups</source>
@@ -470,7 +470,7 @@
     </message>
     <message>
         <source>Show the list of used sending addresses and labels</source>
-        <translation>Pokaż listę używanych adresów i zakładek do wysyłania</translation>
+        <translation>Pokaż listę używanych adresów do wysyłania i nazwy</translation>
     </message>
     <message>
         <source>&amp;Receiving addresses...</source>
@@ -478,7 +478,7 @@
     </message>
     <message>
         <source>Show the list of used receiving addresses and labels</source>
-        <translation>Pokaż listę używanych adresów odbiorczych i zakładek</translation>
+        <translation>Pokaż listę używanych adresów odbiorczych i nazwy</translation>
     </message>
     <message>
         <source>Open &amp;URI...</source>
@@ -510,31 +510,31 @@
     </message>
     <message>
         <source>PrimeStone</source>
-        <translation>Rdzeń PrimeStone</translation>
+        <translation>PrimeStone</translation>
     </message>
     <message>
         <source>Send coins to a PrimeStone address</source>
-        <translation>Wyślij monety do adresu PrimeStone</translation>
+        <translation>Wyślij monety na adres PrimeStone</translation>
     </message>
     <message>
         <source>Request payments (generates QR codes and primestone: URIs)</source>
-        <translation>Zarządaj płatności (generuje kod QR i primestone:URI)</translation>
+        <translation>Żądania płatności (generuje kod QR i primestone:URI)</translation>
     </message>
     <message>
-        <source>&amp;Masternodes</source>
-        <translation>&amp;Masternodes</translation>
+        <source>&amp;MasterNodes</source>
+        <translation>&amp;MasterNodes</translation>
     </message>
     <message>
-        <source>Browse masternodes</source>
-        <translation>Przeglądaj masternodes</translation>
+        <source>Browse MasterNodes</source>
+        <translation>Przeglądaj MasterNodes</translation>
     </message>
     <message>
         <source>&amp;About PrimeStone</source>
-        <translation>&amp;O rdzeniu bitcoina</translation>
+        <translation>&amp;O PrimeStone</translation>
     </message>
     <message>
         <source>Show information about PrimeStone</source>
-        <translation>Pokaż informacje o rdzeniu bitcoina</translation>
+        <translation>Pokaż informacje o PrimeStone</translation>
     </message>
     <message>
         <source>Modify configuration options for PrimeStone</source>
@@ -542,11 +542,11 @@
     </message>
     <message>
         <source>Sign messages with your PrimeStone addresses to prove you own them</source>
-        <translation>Zatwierdź Wartość z twoimi adresami PrimeStone, by udowodnić, że jesteś w ich posiadaniu</translation>
+        <translation>Zatwierdź wartość za pomocą twoich adresów PrimeStone, by udowodnić, że jesteś ich posiadaczem</translation>
     </message>
     <message>
         <source>Verify messages to ensure they were signed with specified PrimeStone addresses</source>
-        <translation>Zweryfikuj wiaprimestoneści by upewnić się, że zostały zatwierdzone z podanego adresu PrimeStone</translation>
+        <translation>Zweryfikuj wiadomości by upewnić się, że zostały zatwierdzone przy pomocy konkretnych adresów PrimeStone</translation>
     </message>
     <message>
         <source>&amp;BIP38 tool</source>
@@ -558,19 +558,19 @@
     </message>
     <message>
         <source>&amp;MultiSend</source>
-        <translation>&amp;MultiWysyłanie</translation>
+        <translation>&amp;MultiSend</translation>
     </message>
     <message>
         <source>MultiSend Settings</source>
-        <translation>Opcje MultiWysyłania</translation>
+        <translation>Ustawienia MultiSend</translation>
     </message>
     <message>
         <source>Open Wallet &amp;Configuration File</source>
-        <translation>Otwórz portfel &amp;Plik Konfiguracji</translation>
+        <translation>Otwórz plik &amp; konfiguracji portfela</translation>
     </message>
     <message>
         <source>Open &amp;Masternode Configuration File</source>
-        <translation>Otwórz &amp;Plik konfiguracji Masternode</translation>
+        <translation>Otwórz &amp;plik konfiguracji MasterNodów</translation>
     </message>
     <message>
         <source>Open a PrimeStone: URI or payment request</source>
@@ -578,23 +578,23 @@
     </message>
     <message>
         <source>&amp;Blockchain explorer</source>
-        <translation>&amp;Eksplorer blockchain</translation>
+        <translation>&amp;Block Explorer</translation>
     </message>
     <message>
         <source>Block explorer window</source>
-        <translation>Okno eksplorera bloków</translation>
+        <translation>Okno eksplorera</translation>
     </message>
     <message>
         <source>Show the PrimeStone help message to get a list with possible PrimeStone command-line options</source>
-        <translation>Pokaż Wartość pomocy rdzenia PrimeStone, aby dostać listę możliwych opcji PrimeStone command-line</translation>
+        <translation>Pokaż komunikat pomocniczy, aby uzyskać listę z możliwymi opcjami wiersza poleceń</translation>
     </message>
     <message>
         <source>PrimeStone client</source>
-        <translation>Rdzeń PrimeStone klient</translation>
+        <translation>Użytkownik</translation>
     </message>
     <message>
         <source>Synchronizing with network...</source>
-        <translation>Synchronizuję z siecią</translation>
+        <translation>Trwa synchronizacja z siecią</translation>
     </message>
     <message>
         <source>Importing blocks from disk...</source>
@@ -614,11 +614,11 @@
     </message>
     <message>
         <source>Last received block was generated %1 ago.</source>
-        <translation>Ostatni wygenerowany blok %1 wcześniej</translation>
+        <translation>Ostatni otrzymany blok został wygenerowany %1 temu.</translation>
     </message>
     <message>
         <source>Transactions after this will not yet be visible.</source>
-        <translation>Transakcji po nim nie będą jeszcze widoczne</translation>
+        <translation>Kolejne transakcje nie będą jeszcze widoczne</translation>
     </message>
     <message>
         <source>Error</source>
@@ -634,15 +634,15 @@
     </message>
     <message>
         <source>Sent transaction</source>
-        <translation>Wysłane transakcje</translation>
+        <translation>Wysłana transakcja</translation>
     </message>
     <message>
         <source>Incoming transaction</source>
-        <translation>Przychodzące transakcje</translation>
+        <translation>Przychodząca transakcja</translation>
     </message>
     <message>
         <source>Sent MultiSend transaction</source>
-        <translation>Wysłane transakcje MultiWysyłki</translation>
+        <translation>Wysłana transakcja MultiSend</translation>
     </message>
     <message>
         <source>Date: %1
@@ -660,7 +660,7 @@ Adres: %4
         <source>Staking is active
  MultiSend: %1</source>
         <translation>Staking aktywny
-MultiWysyłka: %1</translation>
+MultiSend: %1</translation>
     </message>
     <message>
         <source>Active</source>
@@ -674,7 +674,7 @@ MultiWysyłka: %1</translation>
         <source>Staking is not active
  MultiSend: %1</source>
         <translation>Staking nieaktywny
-MultiWysyłka: %1</translation>
+MultiSend: %1</translation>
     </message>
     <message>
         <source>Wallet is &lt;b&gt;encrypted&lt;/b&gt; and currently &lt;b&gt;unlocked&lt;/b&gt;</source>
@@ -689,7 +689,7 @@ MultiWysyłka: %1</translation>
     <name>BlockExplorer</name>
     <message>
         <source>Blockchain Explorer</source>
-        <translation>Eksplorer blockchain</translation>
+        <translation>Block Eksplorer</translation>
     </message>
     <message>
         <source>Address / Block / Transaction</source>
@@ -701,7 +701,7 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>TextLabel</source>
-        <translation>TekstZakładka</translation>
+        <translation>Tekst Nazwa</translation>
     </message>
     </context>
 <context>
@@ -755,7 +755,7 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Received with label</source>
-        <translation>Otrzymano z zakładką</translation>
+        <translation>Otrzymano z nazwą</translation>
     </message>
     <message>
         <source>Received with address</source>
@@ -783,7 +783,7 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Copy label</source>
-        <translation>Kopiuj zakładkę</translation>
+        <translation>Kopiuj nazwę</translation>
     </message>
     <message>
         <source>Copy amount</source>
@@ -871,7 +871,7 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>This label turns red, if the transaction size is greater than 1000 bytes.</source>
-        <translation>Ta zakładka staję się czerwona, gdy rozmiar transakcji przekracza 1000 bajtów</translation>
+        <translation>To pole staję się czerwone, gdy rozmiar transakcji przekracza 1000 bajtów</translation>
     </message>
     <message>
         <source>This means a fee of at least %1 per kB is required.</source>
@@ -879,15 +879,15 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Transactions with higher priority are more likely to get included into a block.</source>
-        <translation>Transakcje o wyższym priorytecie ma większe prawdopodobieństwo wdrożenia do bloku</translation>
+        <translation>Transakcje o wyższym priorytecie ma większe prawdopodobieństwo bycia uwzględnionym w bloku</translation>
     </message>
     <message>
         <source>This label turns red, if the priority is smaller than "medium".</source>
-        <translation>Ta zakładka staje się czerwona, jeżeli priorytet jest mniejszy niż "średni"</translation>
+        <translation>To pole staje się czerwone, jeżeli priorytet jest mniejszy niż "średni"</translation>
     </message>
     <message>
         <source>(no label)</source>
-        <translation>(brak zakładki)</translation>
+        <translation>(brak nazwy)</translation>
     </message>
     </context>
 <context>
@@ -900,22 +900,22 @@ MultiWysyłka: %1</translation>
     <name>HelpMessageDialog</name>
     <message>
         <source>PrimeStone</source>
-        <translation>Rdzeń PrimeStone</translation>
+        <translation>PrimeStone</translation>
     </message>
     </context>
 <context>
     <name>Intro</name>
     <message>
         <source>Use the default data directory</source>
-        <translation>Użyj domyślnej ścieżki danych</translation>
+        <translation>Użyj domyślnego zbioru danych</translation>
     </message>
     <message>
         <source>Use a custom data directory:</source>
-        <translation>Użyj niestandardowej ścieżki danych</translation>
+        <translation>Użyj niestandardowego zbioru danych</translation>
     </message>
     <message>
         <source>PrimeStone</source>
-        <translation>Rdzeń PrimeStone</translation>
+        <translation>PrimeStone</translation>
     </message>
     <message>
         <source>Error</source>
@@ -962,19 +962,19 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Start &amp;all</source>
-        <translation>Start &amp;Wszystkie</translation>
+        <translation>Uruchom &amp;wszystko</translation>
     </message>
     <message>
         <source>Start &amp;MISSING</source>
-        <translation>Start &amp;Brakujące</translation>
+        <translation>Uruchom &amp;brakujące</translation>
     </message>
     <message>
         <source>&amp;Update status</source>
-        <translation>&amp;Status aktualizacji</translation>
+        <translation>&amp;Aktualizacja statusu</translation>
     </message>
     <message>
         <source>Status will be updated automatically in (sec):</source>
-        <translation>Status będzie uaktualniany automatycznie (w sekundach)</translation>
+        <translation>Status będzie uaktualniany automatycznie za (w sekundach)</translation>
     </message>
     <message>
         <source>0</source>
@@ -986,54 +986,54 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Confirm masternode start</source>
-        <translation>Potwierdź rozpoczęcie Masternode</translation>
+        <translation>Potwierdź uruchomienie MasterNoda</translation>
     </message>
     <message>
         <source>Are you sure you want to start masternode %1?</source>
-        <translation>Czy jesteś pewien, że chcesz wystartować Masternode %1?</translation>
+        <translation>Czy jesteś pewien, że chcesz uruchomić MasterNoda %1?</translation>
     </message>
     <message>
         <source>Confirm all masternodes start</source>
-        <translation>Potwierdź start wszystkich Masternode</translation>
+        <translation>Potwierdź uruchomienie wszystkich MasterNodów</translation>
     </message>
     <message>
         <source>Are you sure you want to start ALL masternodes?</source>
-        <translation>Czy jesteś pewien, że chcesz wystartować wszystkie Masternode?</translation>
+        <translation>Czy jesteś pewien, że chcesz uruchomić wszystkie MasterNody?</translation>
     </message>
     <message>
         <source>Command is not available right now</source>
-        <translation>Komenda nie dostępna w chwili obecnej</translation>
+        <translation>Komenda nie jest dostępna w chwili obecnej</translation>
     </message>
     <message>
         <source>You can't use this command until masternode list is synced</source>
-        <translation>Nie możesz użyć tej komendy, dopóki masternode się nie zsynchronizują</translation>
+        <translation>Nie możesz użyć tej komendy, dopóki lista MasterNodów się nie zsynchronizuje</translation>
     </message>
     <message>
         <source>Confirm missing masternodes start</source>
-        <translation>Potwierdź start brakujących masternode</translation>
+        <translation>Potwierdź uruchomienie brakujących MasterNodów</translation>
     </message>
     <message>
         <source>Are you sure you want to start MISSING masternodes?</source>
-        <translation>Czy jesteś pewien, że chcesz rozpocząć BRAKUJĄCE masternode?</translation>
+        <translation>Czy jesteś pewien, że chcesz uruchomić BRAKUJĄCE MasterNody?</translation>
     </message>
 </context>
 <context>
     <name>MultiSendDialog</name>
     <message>
         <source>MultiSend</source>
-        <translation>MultiWysyłka</translation>
+        <translation>MultiSend</translation>
     </message>
     <message>
         <source>Enter whole numbers 1 - 100</source>
-        <translation>Wprowadź całkowite liczby 1-100</translation>
+        <translation>Wprowadź liczby całkowite 1-100</translation>
     </message>
     <message>
         <source>Enter % to Give (1-100)</source>
-        <translation>Wprowadź % by dać (1-100)</translation>
+        <translation>Wprowadź % by otrzymać (1-100)</translation>
     </message>
     <message>
         <source>Enter Address to Send to</source>
-        <translation>Wprowadź adres do wysłania</translation>
+        <translation>Wprowadź adres odbiorcy</translation>
     </message>
     <message>
         <source>Add</source>
@@ -1041,7 +1041,7 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Deactivate MultiSend</source>
-        <translation>Deaktywuj MultiWysyłkę</translation>
+        <translation>Deaktywuj MultiSend</translation>
     </message>
     <message>
         <source>Deactivate</source>
@@ -1057,7 +1057,7 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Percentage of stake to send</source>
-        <translation>Procent staku do wysłania</translation>
+        <translation>Procent stake do wysłania</translation>
     </message>
     <message>
         <source>Percentage:</source>
@@ -1073,7 +1073,7 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>Activate MultiSend</source>
-        <translation>Aktywuj MultiWysyłkę</translation>
+        <translation>Aktywuj MultiSend</translation>
     </message>
     <message>
         <source>Activate</source>
@@ -1081,11 +1081,11 @@ MultiWysyłka: %1</translation>
     </message>
     <message>
         <source>View MultiSend</source>
-        <translation>Podgląd MultiWysyłki</translation>
+        <translation>Podgląd MultiSend</translation>
     </message>
     <message>
         <source>(no label)</source>
-        <translation>(brak zakładki)</translation>
+        <translation>(brak nazwy)</translation>
     </message>
     <message>
         <source>The entered address:
@@ -1097,11 +1097,11 @@ MultiWysyłka: %1</translation>
         <source> is invalid.
 Please check the address and try again.</source>
         <translation>jest nieprawidłowy
-Proszę sprawdzić adres i spróbować ponownie</translation>
+Sprawdź adres i spróbuj ponownie</translation>
     </message>
     <message>
         <source>Please Enter 1 - 100 for percent.</source>
-        <translation>Proszę wprowadzić 1-100 procent</translation>
+        <translation>Wprowadź 1-100 procent</translation>
     </message>
     <message>
         <source>Removed </source>
@@ -1171,7 +1171,7 @@ Proszę sprawdzić adres i spróbować ponownie</translation>
     </message>
     <message>
         <source>Size of &amp;database cache</source>
-        <translation>Rozmiar &amp;bazy danych cache</translation>
+        <translation>Rozmiar &amp;pamięci podręcznej bazy danych </translation>
     </message>
     <message>
         <source>MB</source>
@@ -1203,11 +1203,11 @@ Proszę sprawdzić adres i spróbować ponownie</translation>
     </message>
     <message>
         <source>Enable coin &amp;control features</source>
-        <translation>Włącz cechy kontroli monety</translation>
+        <translation>Włącz kontrolę monety</translation>
     </message>
     <message>
-        <source>Show Masternodes Tab</source>
-        <translation>Pokaż Masternode Tab</translation>
+        <source>Show MasterNodes Tab</source>
+        <translation>Pokaż zakładkę MasterNodów</translation>
     </message>
     <message>
         <source>&amp;Network</source>

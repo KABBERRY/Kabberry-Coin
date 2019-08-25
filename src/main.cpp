@@ -1916,14 +1916,18 @@ int64_t GetBlockValue(int nHeight)
         nSubsidy = 40 * COIN;
     } else if (nHeight <= 192960 && nHeight > 40320) {
         nSubsidy = 40 * COIN;
-    } else if (nHeight <= 543360 && nHeight > 192960) {
+    } else if (nHeight <= 250000 && nHeight > 192960) {
         nSubsidy = 30 * COIN;
-    } else if (nHeight <= 8993760 && nHeight > 543360) {
-        nSubsidy = 20 * COIN;
-    } else if (nHeight <= 1244160 && nHeight > 8993760) {
+    } else if (nHeight <= 350000 && nHeight > 250000) {
+        nSubsidy = 15 * COIN;
+    } else if (nHeight <= 1000000 && nHeight > 350000) {
         nSubsidy = 10 * COIN;
-    } else if (nHeight <= 1594560 && nHeight > 1244160) {
+    } else if (nHeight <= 4993760 && nHeight > 1000000) {
         nSubsidy = 5 * COIN;
+    } else if (nHeight <= 8441600 && nHeight > 4993760) {
+        nSubsidy = 3 * COIN;
+    } else if (nHeight <= 12945600 && nHeight > 8441600) {
+        nSubsidy = 2 * COIN;
     } else {
         nSubsidy = 1 * COIN;
     }
@@ -2209,8 +2213,10 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
         ret = blockValue * 0.45; 
     } else if (nHeight <= 192960 && nHeight > 40320) {
         ret = blockValue * 0.35; 
+    } else if (nHeight <= 250000 && nHeight > 192960) {
+        ret = blockValue * 0.275; 
     } else {
-        ret = blockValue * 0.275; // 70% Masternode,  30% PoS
+        ret = blockValue * 0.65; // 65% Masternode,  35% PoS
     }
     return ret;
 }
@@ -4609,47 +4615,53 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             // Start at the block we're adding on to
             CBlockIndex *prev = pindexPrev;
 
-            int readBlock = 0;
-            vector<CBigNum> vBlockSerials;
+
             CBlock bl;
+			if (!ReadBlockFromDisk(bl, prev))
+            return error("%s: previous block %s not on disk", __func__, prev->GetBlockHash().GetHex());
+
+            vector<CBigNum> vBlockSerials;
+            int readBlock = 0;
             // Go backwards on the forked chain up to the split
-            do {
+            while (!chainActive.Contains(prev)) {
+
+                // Increase amount of read blocks
+                readBlock++;
                 // Check if the forked chain is longer than the max reorg limit
-                if(readBlock == Params().MaxReorganizationDepth()){
+                if (readBlock == Params().MaxReorganizationDepth()) {
                     // TODO: Remove this chain from disk.
                     return error("%s: forked chain longer than maximum reorg limit", __func__);
                 }
 
-                if(!ReadBlockFromDisk(bl, prev))
-                    // Previous block not on disk
-                    return error("%s: previous block %s not on disk", __func__, prev->GetBlockHash().GetHex());
-                // Increase amount of read blocks
-                readBlock++;
                 // Loop through every input from said block
-                for (const CTransaction& t : bl.vtx) {
-                    for (const CTxIn& in: t.vin) {
+                for (const CTransaction &t : bl.vtx) {
+                    for (const CTxIn &in: t.vin) {
                         // Loop through every input of the staking tx
-                        for (const CTxIn& stakeIn : pivInputs) {
+                        for (const CTxIn &stakeIn : pivInputs) {
                             // if it's already spent
 
                             // First regular staking check
-                            if(hasPIVInputs) {
+                            if (hasPIVInputs) {
                                 if (stakeIn.prevout == in.prevout) {
-                                    return state.DoS(100, error("%s: input already spent on a previous block", __func__));
+                                    return state.DoS(100, error("%s: input already spent on a previous block",
+                                                                __func__));
                                 }
 
                                 // Second, if there is zPoS staking then store the serials for later check
-                                if(in.scriptSig.IsZerocoinSpend()){
+                                if (in.scriptSig.IsZerocoinSpend()) {
                                     vBlockSerials.push_back(TxInToZerocoinSpend(in).getCoinSerialNumber());
                                 }
                             }
                         }
                     }
                 }
-
+                // Prev block
                 prev = prev->pprev;
-
-            } while (!chainActive.Contains(prev));
+                if (!ReadBlockFromDisk(bl, prev))
+                    // Previous block not on disk
+                    return error("%s: previous block %s not on disk", __func__, prev->GetBlockHash().GetHex());
+					
+            }
 
             // Split height
             splitHeight = prev->nHeight;
@@ -4710,9 +4722,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                     return error("%s: coin stake inputs not available on main chain, received height %d vs current %d", __func__, nHeight, chainActive.Height());
                 }
                 if(coin && !coin->IsAvailable(in.prevout.n)){
-                    // If this is not available get the height of the spent and validate it with the forked height
-                    // Check if this occurred before the chain split
-                    if(!(isBlockFromFork && coin->nHeight > splitHeight)){
+                    if(!isBlockFromFork){
                         // Coins not available
                         return error("%s: coin stake inputs already spent in main chain", __func__);
                     }

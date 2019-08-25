@@ -160,7 +160,7 @@ $(STATIC_OUTDIR)/helpers/memenv: | $(STATIC_OUTDIR)
 
 $(STATIC_OUTDIR)/port: | $(STATIC_OUTDIR)
 	mkdir $@
-	
+
 $(STATIC_OUTDIR)/table: | $(STATIC_OUTDIR)
 	mkdir $@
 
@@ -212,7 +212,7 @@ $(DEVICE_OUTDIR)/helpers/memenv: | $(DEVICE_OUTDIR)
 
 $(DEVICE_OUTDIR)/port: | $(DEVICE_OUTDIR)
 	mkdir $@
-	
+
 $(DEVICE_OUTDIR)/table: | $(DEVICE_OUTDIR)
 	mkdir $@
 
@@ -274,7 +274,8 @@ $(DEVICE_OUTDIR)/libmemenv.a: $(DEVICE_MEMENVOBJECTS)
 $(SIMULATOR_OUTDIR)/libmemenv.a: $(SIMULATOR_MEMENVOBJECTS)
 	rm -f $@
 	$(AR) -rs $@ $(SIMULATOR_MEMENVOBJECTS)
-# For iOS, create universal object files to be used on both the simulator and
+
+# For iOS, create universal object libraries to be used on both the simulator and
 # a device.
 $(STATIC_OUTDIR)/libleveldb.a: $(STATIC_OUTDIR) $(DEVICE_OUTDIR)/libleveldb.a $(SIMULATOR_OUTDIR)/libleveldb.a
 	lipo -create $(DEVICE_OUTDIR)/libleveldb.a $(SIMULATOR_OUTDIR)/libleveldb.a -output $@

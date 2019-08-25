@@ -9,7 +9,7 @@
  * @copyright  Copyright 2013 Ian Miers, Christina Garman and Matthew Green
  * @license    This project is released under the MIT license.
  **/
-// Copyright (c) 2017-2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 #ifndef ACCUMULATOR_H_
 #define ACCUMULATOR_H_
 
@@ -48,7 +48,7 @@ public:
 	 **/
 	Accumulator(const AccumulatorAndProofParams* p, const CoinDenomination d);
 
-	Accumulator(const ZerocoinParams* p, const CoinDenomination d, Bignum bnValue = 0);
+	Accumulator(const ZerocoinParams* p, const CoinDenomination d, CBigNum bnValue = 0);
 
 	/**
 	 * Accumulate a coin into the accumulator. Validates
@@ -87,7 +87,6 @@ public:
 	 * @return a refrence to the updated accumulator.
 	 */
 	Accumulator& operator +=(const PublicCoin& c);
-  Accumulator& operator =(Accumulator rhs);
 	bool operator==(const Accumulator rhs) const;
 	ADD_SERIALIZE_METHODS;
   template <typename Stream, typename Operation>  inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
@@ -150,7 +149,6 @@ public:
 	 */
 	AccumulatorWitness& operator +=(const PublicCoin& rhs);
 
-  AccumulatorWitness& operator =(AccumulatorWitness rhs);
 private:
 	Accumulator witness;
     PublicCoin element; // was const but changed to use setting in assignment

@@ -1204,7 +1204,7 @@ CAmount CWalletTx::GetLockedCredit() const
         }
 
         // Add masternode collaterals which are handled like locked coins
-        else if (fMasterNode && vout[i].nValue == 10000 * COIN) {
+        else if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) {
             nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         }
 
@@ -1323,7 +1323,7 @@ CAmount CWalletTx::GetLockedWatchOnlyCredit() const
         }
 
         // Add masternode collaterals which are handled like locked coins
-        else if (fMasterNode && vout[i].nValue == 10000 * COIN) {
+        else if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) {
             nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
         }
 
@@ -4109,7 +4109,7 @@ void CWallet::AutoCombineDust()
             if (!out.fSpendable)
                 continue;
             //no coins should get this far if they dont have proper maturity, this is double checking
-            if (out.tx->IsCoinStake() && out.tx->GetDepthInMainChain() < COINBASE_MATURITY + 1)
+            if (out.tx->IsCoinStake() && out.tx->GetDepthInMainChain() < Params().COINBASE_MATURITY() + 1)
                 continue;
 
             COutPoint outpt(out.tx->GetHash(), out.i);

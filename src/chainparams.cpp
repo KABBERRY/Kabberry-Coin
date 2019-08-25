@@ -72,7 +72,7 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     ;
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1556506214, // * UNIX timestamp of last checkpoint block
+    1556513414, // * UNIX timestamp of last checkpoint block
     0,    // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the  SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
@@ -196,15 +196,9 @@ public:
         // vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net")); // Single node address
         // vSeeds.push_back(CDNSSeedData("178.254.23.111", "178.254.23.111"));           // Single node address
 
-        vSeeds.push_back(CDNSSeedData("185.17.42.25", "185.17.42.25"));
-        vSeeds.push_back(CDNSSeedData("185.17.42.26", "185.17.42.26"));
-        vSeeds.push_back(CDNSSeedData("185.17.42.24", "185.17.42.24"));
-        vSeeds.push_back(CDNSSeedData("185.17.42.5", "185.17.42.5"));
-        vSeeds.push_back(CDNSSeedData("185.17.42.39", "185.17.42.39"));
-        vSeeds.push_back(CDNSSeedData("185.17.42.40", "185.17.42.40"));
-        vSeeds.push_back(CDNSSeedData("185.17.42.31", "185.17.42.31"));
-        vSeeds.push_back(CDNSSeedData("185.17.42.37", "185.17.42.37"));
-
+        vSeeds.push_back(CDNSSeedData("77.55.217.107", "77.55.217.107"));
+        vSeeds.push_back(CDNSSeedData("77.55.216.249", "77.55.216.249"));
+        
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 56);     //starts with 'P'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 118);    //starts with 'p'
         base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 212);
