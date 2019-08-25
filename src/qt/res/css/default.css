@@ -65,7 +65,7 @@ WalletFrame {
     
     QToolBar {
     
-    background-color: qlineargradient(y1: 0, y2: 1, stop: 0 #013b9c, stop: 0.75 #013b9c, stop: 0.99 #d9e3ef, stop: 1 #d9e3ef);
+    background-color: qlineargradient(y1: 0, y2: 1, stop: 0 #013b9c, stop: 0.75 #013b9c, stop: 0.99 #013b9c, stop: 1 #013b9c);
     
     
     border:0px solid #333;
@@ -256,7 +256,7 @@ WalletFrame {
     }
     
     QPushButton:pressed {
-    background-color: #382f44;
+    background-color: #523677;
     border:1px solid #000000;
     background-color: qlineargradient(y1:0, y2: 1, stop: 0 #00ff00, stop: 0.1 #00ff00, stop: 0.101 #6f5ca3, stop: 0.9 #6f5ca3, stop: 0.901 #00ff00, stop: 1 #00ff00);
     }
@@ -1660,7 +1660,11 @@ WalletFrame {
     /**************************** PRIVACY PAGE *****************************************/
     /* QDialog#PrivacyDialog */
     /* QWidget#PrivacyDialog */
-    
+
+    QWidget#PrivacyDialog 
+    {
+        background-color:transparent;
+    }
     QWidget#PrivacyDialog .QFrame[frameShape="4"] { /* QFrame::HLine == 0x0004 */
     border:1px solid #455270;
     }
