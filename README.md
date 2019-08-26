@@ -21,13 +21,13 @@ https://primestone.global
 <br>PRIMESTONE WALLETS 2.3
 
 <br> Windows wallet 2.3 64bit
-<br> https://github.com/Primestonecoin/PrimeStone/releases/download/v2.3.0/prime_windows_x64.zip
+<br> https://github.com/Primestonecoin/PrimeStone/releases/download/v2.3.1.0/prime_windows_x64.zip
 <br> Windows wallet 2.3 32bit
-<br> https://github.com/Primestonecoin/PrimeStone/releases/download/v2.3.0/prime_windows_x86.zip
+<br> https://github.com/Primestonecoin/PrimeStone/releases/download/v2.3.1.0/prime_windows_x86.zip
 <br> Linux wallet 2.3 (Ubuntu 18.04)
-<br> https://github.com/Primestonecoin/PrimeStone/releases/download/v2.3.0/prime_linux.zip
+<br> https://github.com/Primestonecoin/PrimeStone/releases/download/v2.3.1.0/prime_linux.zip
 <br> Linux wallet 2.3 (Ubuntu 16.04)
-<br> https://github.com/Primestonecoin/PrimeStone/releases/download/v2.3.0/prime_ubuntu_16.zip
+<br> https://github.com/Primestonecoin/PrimeStone/releases/download/v2.3.1.0/prime_ubuntu_16.zip
 
 <br>PRIMESTONE MASTERNODE SETUP MANUALS
 
