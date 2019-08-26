@@ -813,8 +813,8 @@ UniValue movecmd(const UniValue& params, bool fHelp)
     CAmount nAmount = AmountFromValue(params[2]);
     if (params.size() > 3)
         // unused parameter, used to be nMinDepth, keep type-checking it though
-        (void)params[3].get_int();
-    std::string strComment;
+        std::(void)params[3].get_int();
+    string strComment;
     if (params.size() > 4)
         strComment = params[4].get_str();
 
@@ -1799,7 +1799,7 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
 
     if (!pwalletMain->IsLocked() && pwalletMain->fWalletUnlockAnonymizeOnly && anonymizeOnly)
         throw JSONRPCError(RPC_WALLET_ALREADY_UNLOCKED, "Error: Wallet is already unlocked.");
-
+	
     // Get the timeout
     int64_t nSleepTime = params[1].get_int64();
     // Timeout cannot be negative, otherwise it will relock immediately
@@ -2309,7 +2309,7 @@ UniValue printMultiSend()
 
     UniValue vMS(UniValue::VOBJ);
     for (unsigned int i = 0; i < pwalletMain->vMultiSend.size(); i++) {
-        vMS.push_back(Pair("Address " + std::to_string(i), pwalletMain->vMultiSend[i].first));
+        vMS.push_back(Pair("Address " + boost::lexical_cast<std::string>(i), pwalletMain->vMultiSend[i].first));
         vMS.push_back(Pair("Percent", pwalletMain->vMultiSend[i].second));
     }
 
@@ -2437,7 +2437,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
         }
     }
     if (params.size() == 2 && params[0].get_str() == "delete") {
-        int del = std::stoi(params[1].get_str().c_str());
+        int del = boost::lexical_cast<int>(params[1].get_str());
         if (!walletdb.EraseMultiSend(pwalletMain->vMultiSend))
             throw JSONRPCError(RPC_DATABASE_ERROR, "failed to delete old MultiSend vector from database");
 
@@ -2493,11 +2493,11 @@ UniValue multisend(const UniValue& params, bool fHelp)
     CBitcoinAddress address(strAddress);
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PrimeStone address");
-    if (std::stoi(params[1].get_str().c_str()) < 0)
+    if (boost::lexical_cast<int>(params[1].get_str()) < 0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected valid percentage");
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
-    unsigned int nPercent = (unsigned int) std::stoul(params[1].get_str().c_str());
+    unsigned int nPercent = boost::lexical_cast<unsigned int>(params[1].get_str());
 
     LOCK(pwalletMain->cs_wallet);
     {
@@ -3066,7 +3066,7 @@ UniValue getarchivedzerocoin(const UniValue& params, bool fHelp)
         objMint.push_back(Pair("pubcoin", mint.GetValue().GetHex()));
         arrRet.push_back(objMint);
     }
-
+    
     for (const CDeterministicMint& dMint : listDMints) {
         UniValue objDMint(UniValue::VOBJ);
         objDMint.push_back(Pair("txid", dMint.GetTxHash().GetHex()));
@@ -3145,11 +3145,7 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
         objMint.push_back(Pair("u", mint.IsUsed()));
         objMint.push_back(Pair("v", mint.GetVersion()));
         if (mint.GetVersion() >= 2) {
-            CKey key;
-            key.SetPrivKey(mint.GetPrivKey(), true);
-            CBitcoinSecret cBitcoinSecret;
-            cBitcoinSecret.SetKey(key);
-            objMint.push_back(Pair("k", cBitcoinSecret.ToString()));
+            objMint.push_back(Pair("k", HexStr(mint.GetPrivKey())));
         }
         jsonList.push_back(objMint);
     }
@@ -3227,10 +3223,10 @@ UniValue importzerocoins(const UniValue& params, bool fHelp)
         CPrivKey privkey;
         if (nVersion >= libzerocoin::PrivateCoin::PUBKEY_VERSION) {
             std::string strPrivkey = find_value(o, "k").get_str();
-            CBitcoinSecret vchSecret;
-            bool fGood = vchSecret.SetString(strPrivkey);
-            CKey key = vchSecret.GetKey();
-            if (!key.IsValid() && fGood)
+            CKey key;
+            uint256 nPrivKey(strPrivkey);
+            key.Set(nPrivKey.begin(), nPrivKey.end(), true);
+            if (!key.IsValid())
                 return JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "privkey is not valid");
             privkey = key.GetPrivKey();
         }
