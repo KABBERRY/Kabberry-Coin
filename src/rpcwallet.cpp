@@ -813,7 +813,7 @@ UniValue movecmd(const UniValue& params, bool fHelp)
     CAmount nAmount = AmountFromValue(params[2]);
     if (params.size() > 3)
         // unused parameter, used to be nMinDepth, keep type-checking it though
-        std::(void)params[3].get_int();
+        (void)params[3].get_int();
     string strComment;
     if (params.size() > 4)
         strComment = params[4].get_str();
