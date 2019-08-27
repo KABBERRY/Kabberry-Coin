@@ -7,7 +7,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpc/server.h"
-
 #include "base58.h"
 #include "init.h"
 #include "main.h"

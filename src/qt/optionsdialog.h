@@ -48,9 +48,7 @@ private slots:
     void on_okButton_clicked();
     void on_cancelButton_clicked();
 
-    void updateHideOrphans(bool fHide);
-    
-	void showRestartWarning(bool fPersistent = false);
+    void showRestartWarning(bool fPersistent = false);
     void clearStatusLabel();
     void doProxyIpChecks(QValidatedLineEdit* pUiProxyIp, QLineEdit* pUiProxyPort);
 

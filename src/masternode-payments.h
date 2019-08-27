@@ -10,6 +10,7 @@
 #include "key.h"
 #include "main.h"
 #include "masternode.h"
+#include <boost/lexical_cast.hpp>
 
 using namespace std;
 
@@ -218,9 +219,9 @@ public:
     {
         std::string ret = "";
         ret += vinMasternode.ToString();
-        ret += ", " + std::to_string(nBlockHeight);
+        ret += ", " + boost::lexical_cast<std::string>(nBlockHeight);
         ret += ", " + payee.ToString();
-        ret += ", " + std::to_string((int)vchSig.size());
+        ret += ", " + boost::lexical_cast<std::string>((int)vchSig.size());
         return ret;
     }
 };
