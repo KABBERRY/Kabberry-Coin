@@ -817,7 +817,7 @@ UniValue getmasternodewinners (const UniValue& params, bool fHelp)
     return ret;
 }
 
-UniValue getmasternodescores (const UniValue& params, bool fHelp)
+UniValue getmasternodescores(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
@@ -841,7 +841,7 @@ UniValue getmasternodescores (const UniValue& params, bool fHelp)
     if (params.size() == 1) {
         try {
             nLast = std::stoi(params[0].get_str());
-        } catch (const boost::bad_lexical_cast &) {
+        } catch (const boost::bad_lexical_cast&) {
             throw runtime_error("Exception on param 2");
         }
     }
