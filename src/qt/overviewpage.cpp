@@ -465,7 +465,7 @@ void OverviewPage::syncRequestFinished(QNetworkReply *reply)
             QByteArray strJson1(doc1.toJson(QJsonDocument::Compact));
 
             float priceVal =  sett4["usd"].toVariant().toFloat();
-            float totalBalance = currentBalance/100000000;
+            float totalBalance = nTotalBalance/100000000;
 
             QString unitPrice = QString::number(priceVal) + QString(" USD");
             QString totalPrice = QString::number(priceVal* totalBalance) + QString(" USD");
