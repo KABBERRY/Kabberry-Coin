@@ -7,6 +7,7 @@
 #include "ui_zPSCcontroldialog.h"
 
 #include "accumulators.h"
+#include "bitcoingui.h" //TreeWidgetItem
 #include "main.h"
 #include "walletmodel.h"
 
@@ -15,13 +16,6 @@ using namespace libzerocoin;
 
 std::set<std::string> zPSCControlDialog::setSelectedMints;
 std::set<CMintMeta> zPSCControlDialog::setMints;
-
-bool CZPSCControlWidgetItem::operator<(const QTreeWidgetItem &other) const {
-    int column = treeWidget()->sortColumn();
-    if (column == ZPSCControlDialog::COLUMN_DENOMINATION || column == ZPSCControlDialog::COLUMN_VERSION || column == ZPSCControlDialog::COLUMN_CONFIRMATIONS)
-        return data(column, Qt::UserRole).toLongLong() < other.data(column, Qt::UserRole).toLongLong();
-    return QTreeWidgetItem::operator<(other);
-}
 
 zPSCControlDialog::zPSCControlDialog(QWidget *parent) :
     QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
@@ -61,7 +55,7 @@ void zPSCControlDialog::updateList()
     QFlags<Qt::ItemFlag> flgTristate = Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsTristate;
     map<libzerocoin::CoinDenomination, int> mapDenomPosition;
     for (auto denom : libzerocoin::zerocoinDenomList) {
-        CZPSCControlWidgetItem* itemDenom(new CZPSCControlWidgetItem);
+        TreeWidgetItem* itemDenom(new TreeWidgetItem);
         ui->treeWidget->addTopLevelItem(itemDenom);
 
         //keep track of where this is positioned in tree widget
@@ -69,7 +63,6 @@ void zPSCControlDialog::updateList()
 
         itemDenom->setFlags(flgTristate);
         itemDenom->setText(COLUMN_DENOMINATION, QString::number(denom));
-        itemDenom->setData(COLUMN_DENOMINATION, Qt::UserRole, QVariant((qlonglong) denom));
     }
 
     // select all unused coins - including not mature. Update status of coins too.
@@ -83,7 +76,7 @@ void zPSCControlDialog::updateList()
     for (const CMintMeta& mint : setMints) {
         // assign this mint to the correct denomination in the tree view
         libzerocoin::CoinDenomination denom = mint.denom;
-        CZPSCControlWidgetItem *itemMint = new CZPSCControlWidgetItem(ui->treeWidget->topLevelItem(mapDenomPosition.at(denom)));
+        TreeWidgetItem *itemMint = new TreeWidgetItem(ui->treeWidget->topLevelItem(mapDenomPosition.at(denom)));
 
         // if the mint is already selected, then it needs to have the checkbox checked
         std::string strPubCoinHash = mint.hashPubcoin.GetHex();
@@ -94,10 +87,8 @@ void zPSCControlDialog::updateList()
             itemMint->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
 
         itemMint->setText(COLUMN_DENOMINATION, QString::number(mint.denom));
-        itemMint->setData(COLUMN_DENOMINATION, Qt::UserRole, QVariant((qlonglong) denom));
         itemMint->setText(COLUMN_PUBCOIN, QString::fromStdString(strPubCoinHash));
         itemMint->setText(COLUMN_VERSION, QString::number(mint.nVersion));
-        itemMint->setData(COLUMN_VERSION, Qt::UserRole, QVariant((qlonglong) mint.nVersion));
 
         int nConfirmations = (mint.nHeight ? nBestHeight - mint.nHeight : 0);
         if (nConfirmations < 0) {
@@ -106,7 +97,6 @@ void zPSCControlDialog::updateList()
         }
 
         itemMint->setText(COLUMN_CONFIRMATIONS, QString::number(nConfirmations));
-        itemMint->setData(COLUMN_CONFIRMATIONS, Qt::UserRole, QVariant((qlonglong) nConfirmations));
 
         // check for maturity
         bool isMature = false;
