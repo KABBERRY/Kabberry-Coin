@@ -10,7 +10,6 @@
 
 #include "addresstablemodel.h"
 #include "bitcoinunits.h"
-#include "bitcoingui.h" //TreeWidgetItem
 #include "guiutil.h"
 #include "init.h"
 #include "optionsmodel.h"
@@ -33,6 +32,7 @@
 #include <QSettings>
 #include <QString>
 #include <QTreeWidget>
+#include <QTreeWidgetItem>
 
 using namespace std;
 QList<CAmount> CoinControlDialog::payAmounts;
@@ -172,6 +172,15 @@ void CoinControlDialog::setModel(WalletModel* model)
         CoinControlDialog::updateLabels(model, this);
         updateDialogLabels();
     }
+}
+
+// helper function str_pad
+QString CoinControlDialog::strPad(QString s, int nPadLength, QString sPadding)
+{
+    while (s.length() < nPadLength)
+        s = sPadding + s;
+
+    return s;
 }
 
 // ok button
@@ -736,7 +745,7 @@ void CoinControlDialog::updateView()
     model->listCoins(mapCoins);
 
     BOOST_FOREACH (PAIRTYPE(QString, vector<COutput>) coins, mapCoins) {
-        TreeWidgetItem* itemWalletAddress = new TreeWidgetItem();
+        QTreeWidgetItem* itemWalletAddress = new QTreeWidgetItem();
         itemWalletAddress->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
         QString sWalletAddress = coins.first;
         QString sWalletLabel = model->getAddressTableModel()->labelForAddress(sWalletAddress);
@@ -773,11 +782,11 @@ void CoinControlDialog::updateView()
             nSum += out.tx->vout[out.i].nValue;
             nChildren++;
 
-            TreeWidgetItem* itemOutput;
+            QTreeWidgetItem* itemOutput;
             if (treeMode)
-                itemOutput = new TreeWidgetItem(itemWalletAddress);
+                itemOutput = new QTreeWidgetItem(itemWalletAddress);
             else
-                itemOutput = new TreeWidgetItem(ui->treeWidget);
+                itemOutput = new QTreeWidgetItem(ui->treeWidget);
             itemOutput->setFlags(flgCheckbox);
             itemOutput->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
 
@@ -829,20 +838,20 @@ void CoinControlDialog::updateView()
             // amount
             itemOutput->setText(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, out.tx->vout[out.i].nValue));
             itemOutput->setToolTip(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, out.tx->vout[out.i].nValue));
-            itemOutput->setText(COLUMN_AMOUNT_INT64, QString::number(out.tx->vout[out.i].nValue)); // padding so that sorting works correctly
+            itemOutput->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(out.tx->vout[out.i].nValue), 15, " ")); // padding so that sorting works correctly
 
             // date
             itemOutput->setText(COLUMN_DATE, GUIUtil::dateTimeStr(out.tx->GetTxTime()));
             itemOutput->setToolTip(COLUMN_DATE, GUIUtil::dateTimeStr(out.tx->GetTxTime()));
-            itemOutput->setText(COLUMN_DATE_INT64, QString::number(out.tx->GetTxTime()));
+            itemOutput->setText(COLUMN_DATE_INT64, strPad(QString::number(out.tx->GetTxTime()), 20, " "));
 
             // confirmations
-            itemOutput->setText(COLUMN_CONFIRMATIONS, QString::number(out.nDepth));
+            itemOutput->setText(COLUMN_CONFIRMATIONS, strPad(QString::number(out.nDepth), 8, " "));
 
             // priority
             double dPriority = ((double)out.tx->vout[out.i].nValue / (nInputSize + 78)) * (out.nDepth + 1); // 78 = 2 * 34 + 10
             itemOutput->setText(COLUMN_PRIORITY, CoinControlDialog::getPriorityLabel(dPriority, mempoolEstimatePriority));
-            itemOutput->setText(COLUMN_PRIORITY_INT64, QString::number((int64_t)dPriority));
+            itemOutput->setText(COLUMN_PRIORITY_INT64, strPad(QString::number((int64_t)dPriority), 20, " "));
             dPrioritySum += (double)out.tx->vout[out.i].nValue * (out.nDepth + 1);
             nInputSum += nInputSize;
 
@@ -872,9 +881,9 @@ void CoinControlDialog::updateView()
             itemWalletAddress->setText(COLUMN_CHECKBOX, "(" + QString::number(nChildren) + ")");
             itemWalletAddress->setText(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, nSum));
             itemWalletAddress->setToolTip(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, nSum));
-            itemWalletAddress->setText(COLUMN_AMOUNT_INT64, QString::number(nSum));
+            itemWalletAddress->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(nSum), 15, " "));
             itemWalletAddress->setText(COLUMN_PRIORITY, CoinControlDialog::getPriorityLabel(dPrioritySum, mempoolEstimatePriority));
-            itemWalletAddress->setText(COLUMN_PRIORITY_INT64, QString::number((int64_t)dPrioritySum));
+            itemWalletAddress->setText(COLUMN_PRIORITY_INT64, strPad(QString::number((int64_t)dPrioritySum), 20, " "));
         }
     }
 

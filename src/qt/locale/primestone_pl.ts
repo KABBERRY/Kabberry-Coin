@@ -370,7 +370,7 @@
     </message>
     <message>
         <source>&amp;Encrypt Wallet...</source>
-        <translation>&amp;Zakoduj portfel</translation>
+        <translation>&amp;Odkoduj portfel</translation>
     </message>
     <message>
         <source>Encrypt the private keys that belong to your wallet</source>
