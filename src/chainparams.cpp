@@ -133,9 +133,9 @@ public:
         bnProofOfWorkLimit = ~uint256(0) >> 20; // PrimeStone starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 259000;
         nMaxReorganizationDepth = 100;
-        nEnforceBlockUpgradeMajority = 750;
-        nRejectBlockOutdatedMajority = 950;
-        nToCheckBlockUpgradeMajority = 1000;
+        nEnforceBlockUpgradeMajority = 720;
+        nRejectBlockOutdatedMajority = 912;
+        nToCheckBlockUpgradeMajority = 960;
         nMinerThreads = 0;
         nTargetTimespan = 1 * 60; // PrimeStone: 1 day
         nTargetSpacing = 1.5 * 60;  // PrimeStone: 1.5 minute
