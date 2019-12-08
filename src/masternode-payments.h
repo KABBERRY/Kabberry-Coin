@@ -1,5 +1,10 @@
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,7 +14,13 @@
 #include "key.h"
 #include "main.h"
 #include "masternode.h"
+<<<<<<< Updated upstream
 
+=======
+#include <boost/lexical_cast.hpp>
+
+using namespace std;
+>>>>>>> Stashed changes
 
 extern CCriticalSection cs_vecPayments;
 extern CCriticalSection cs_mapMasternodeBlocks;
@@ -28,7 +39,11 @@ void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDa
 bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight);
 std::string GetRequiredPaymentsString(int nBlockHeight);
 bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMinted);
+<<<<<<< Updated upstream
 void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, bool fZPIVStake);
+=======
+void FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, bool fProofOfStake, bool fzPSCStake);
+>>>>>>> Stashed changes
 
 void DumpMasternodePayments();
 
@@ -106,7 +121,11 @@ public:
     {
         LOCK(cs_vecPayments);
 
+<<<<<<< Updated upstream
         for (CMasternodePayee& payee : vecPayments) {
+=======
+        BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
+>>>>>>> Stashed changes
             if (payee.scriptPubKey == payeeIn) {
                 payee.nVotes += nIncrement;
                 return;
@@ -122,7 +141,11 @@ public:
         LOCK(cs_vecPayments);
 
         int nVotes = -1;
+<<<<<<< Updated upstream
         for (CMasternodePayee& p : vecPayments) {
+=======
+        BOOST_FOREACH (CMasternodePayee& p, vecPayments) {
+>>>>>>> Stashed changes
             if (p.nVotes > nVotes) {
                 payee = p.scriptPubKey;
                 nVotes = p.nVotes;
@@ -136,7 +159,11 @@ public:
     {
         LOCK(cs_vecPayments);
 
+<<<<<<< Updated upstream
         for (CMasternodePayee& p : vecPayments) {
+=======
+        BOOST_FOREACH (CMasternodePayee& p, vecPayments) {
+>>>>>>> Stashed changes
             if (p.nVotes >= nVotesReq && p.scriptPubKey == payee) return true;
         }
 
@@ -157,6 +184,7 @@ public:
 };
 
 // for storing the winning payments
+<<<<<<< Updated upstream
 class CMasternodePaymentWinner : public CSignedMessage
 {
 public:
@@ -186,6 +214,44 @@ public:
     const CTxIn GetVin() const override { return vinMasternode; };
 
     bool IsValid(CNode* pnode, std::string& strError);
+=======
+class CMasternodePaymentWinner
+{
+public:
+    CTxIn vinMasternode;
+
+    int nBlockHeight;
+    CScript payee;
+    std::vector<unsigned char> vchSig;
+
+    CMasternodePaymentWinner()
+    {
+        nBlockHeight = 0;
+        vinMasternode = CTxIn();
+        payee = CScript();
+    }
+
+    CMasternodePaymentWinner(CTxIn vinIn)
+    {
+        nBlockHeight = 0;
+        vinMasternode = vinIn;
+        payee = CScript();
+    }
+
+    uint256 GetHash()
+    {
+        CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+        ss << payee;
+        ss << nBlockHeight;
+        ss << vinMasternode.prevout;
+
+        return ss.GetHash();
+    }
+
+    bool Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode);
+    bool IsValid(CNode* pnode, std::string& strError);
+    bool SignatureValid();
+>>>>>>> Stashed changes
     void Relay();
 
     void AddPayee(CScript payeeIn)
@@ -193,6 +259,10 @@ public:
         payee = payeeIn;
     }
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
     ADD_SERIALIZE_METHODS;
 
     template <typename Stream, typename Operation>
@@ -202,21 +272,30 @@ public:
         READWRITE(nBlockHeight);
         READWRITE(payee);
         READWRITE(vchSig);
+<<<<<<< Updated upstream
         try
         {
             READWRITE(nMessVersion);
         } catch (...) {
             nMessVersion = MessageVersion::MESS_VER_STRMESS;
         }
+=======
+>>>>>>> Stashed changes
     }
 
     std::string ToString()
     {
         std::string ret = "";
         ret += vinMasternode.ToString();
+<<<<<<< Updated upstream
         ret += ", " + std::to_string(nBlockHeight);
         ret += ", " + payee.ToString();
         ret += ", " + std::to_string((int)vchSig.size());
+=======
+        ret += ", " + boost::lexical_cast<std::string>(nBlockHeight);
+        ret += ", " + payee.ToString();
+        ret += ", " + boost::lexical_cast<std::string>((int)vchSig.size());
+>>>>>>> Stashed changes
         return ret;
     }
 };
@@ -279,7 +358,11 @@ public:
     int GetMinMasternodePaymentsProto();
     void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
     std::string GetRequiredPaymentsString(int nBlockHeight);
+<<<<<<< Updated upstream
     void FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool fZPIVStake);
+=======
+    void FillBlockPayee(CMutableTransaction& txNew, int64_t nFees, bool fProofOfStake, bool fzPSCStake);
+>>>>>>> Stashed changes
     std::string ToString() const;
     int GetOldestBlock();
     int GetNewestBlock();

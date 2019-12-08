@@ -10,6 +10,7 @@
 #include "script/interpreter.h"
 #include "script/sign.h"
 #include "uint256.h"
+<<<<<<< Updated upstream
 #include "test_pivx.h"
 
 #ifdef ENABLE_WALLET
@@ -25,14 +26,40 @@ BOOST_FIXTURE_TEST_SUITE(multisig_tests, TestingSetup)
 
 CScript
 sign_multisig(CScript scriptPubKey, std::vector<CKey> keys, CTransaction transaction, int whichIn)
+=======
+
+#ifdef ENABLE_WALLET
+#include "wallet_ismine.h"
+#endif
+
+#include <boost/assign/std/vector.hpp>
+#include <boost/foreach.hpp>
+#include <boost/test/unit_test.hpp>
+
+using namespace std;
+using namespace boost::assign;
+
+typedef vector<unsigned char> valtype;
+
+BOOST_AUTO_TEST_SUITE(multisig_tests)
+
+CScript
+sign_multisig(CScript scriptPubKey, vector<CKey> keys, CTransaction transaction, int whichIn)
+>>>>>>> Stashed changes
 {
     uint256 hash = SignatureHash(scriptPubKey, transaction, whichIn, SIGHASH_ALL);
 
     CScript result;
     result << OP_0; // CHECKMULTISIG bug workaround
+<<<<<<< Updated upstream
     for (const CKey &key : keys)
     {
         std::vector<unsigned char> vchSig;
+=======
+    BOOST_FOREACH(const CKey &key, keys)
+    {
+        vector<unsigned char> vchSig;
+>>>>>>> Stashed changes
         BOOST_CHECK(key.Sign(hash, vchSig));
         vchSig.push_back((unsigned char)SIGHASH_ALL);
         result << vchSig;
@@ -74,13 +101,21 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
         txTo[i].vout[0].nValue = 1;
     }
 
+<<<<<<< Updated upstream
     std::vector<CKey> keys;
+=======
+    vector<CKey> keys;
+>>>>>>> Stashed changes
     CScript s;
 
     // Test a AND b:
     keys.clear();
+<<<<<<< Updated upstream
     keys.push_back(key[0]);
     keys.push_back(key[1]);
+=======
+    keys += key[0],key[1]; // magic operator+= from boost.assign
+>>>>>>> Stashed changes
     s = sign_multisig(a_and_b, keys, txTo[0], 0);
     BOOST_CHECK(VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0), &err));
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
@@ -88,14 +123,22 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
     for (int i = 0; i < 4; i++)
     {
         keys.clear();
+<<<<<<< Updated upstream
         keys.push_back(key[i]);
+=======
+        keys += key[i];
+>>>>>>> Stashed changes
         s = sign_multisig(a_and_b, keys, txTo[0], 0);
         BOOST_CHECK_MESSAGE(!VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0), &err), strprintf("a&b 1: %d", i));
         BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_INVALID_STACK_OPERATION, ScriptErrorString(err));
 
         keys.clear();
+<<<<<<< Updated upstream
         keys.push_back(key[1]);
         keys.push_back(key[i]);
+=======
+        keys += key[1],key[i];
+>>>>>>> Stashed changes
         s = sign_multisig(a_and_b, keys, txTo[0], 0);
         BOOST_CHECK_MESSAGE(!VerifyScript(s, a_and_b, flags, MutableTransactionSignatureChecker(&txTo[0], 0), &err), strprintf("a&b 2: %d", i));
         BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_EVAL_FALSE, ScriptErrorString(err));
@@ -105,7 +148,11 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
     for (int i = 0; i < 4; i++)
     {
         keys.clear();
+<<<<<<< Updated upstream
         keys.push_back(key[i]);
+=======
+        keys += key[i];
+>>>>>>> Stashed changes
         s = sign_multisig(a_or_b, keys, txTo[1], 0);
         if (i == 0 || i == 1)
         {
@@ -128,8 +175,12 @@ BOOST_AUTO_TEST_CASE(multisig_verify)
         for (int j = 0; j < 4; j++)
         {
             keys.clear();
+<<<<<<< Updated upstream
             keys.push_back(key[i]);
             keys.push_back(key[j]);
+=======
+            keys += key[i],key[j];
+>>>>>>> Stashed changes
             s = sign_multisig(escrow, keys, txTo[2], 0);
             if (i < j && i < 3 && j < 3)
             {
@@ -204,7 +255,11 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
     partialkeystore.AddKey(key[0]);
 
     {
+<<<<<<< Updated upstream
         std::vector<valtype> solutions;
+=======
+        vector<valtype> solutions;
+>>>>>>> Stashed changes
         txnouttype whichType;
         CScript s;
         s << ToByteVector(key[0].GetPubKey()) << OP_CHECKSIG;
@@ -219,7 +274,11 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
 #endif
     }
     {
+<<<<<<< Updated upstream
         std::vector<valtype> solutions;
+=======
+        vector<valtype> solutions;
+>>>>>>> Stashed changes
         txnouttype whichType;
         CScript s;
         s << OP_DUP << OP_HASH160 << ToByteVector(key[0].GetPubKey().GetID()) << OP_EQUALVERIFY << OP_CHECKSIG;
@@ -234,7 +293,11 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
 #endif
     }
     {
+<<<<<<< Updated upstream
         std::vector<valtype> solutions;
+=======
+        vector<valtype> solutions;
+>>>>>>> Stashed changes
         txnouttype whichType;
         CScript s;
         s << OP_2 << ToByteVector(key[0].GetPubKey()) << ToByteVector(key[1].GetPubKey()) << OP_2 << OP_CHECKMULTISIG;
@@ -249,13 +312,21 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
 #endif
     }
     {
+<<<<<<< Updated upstream
         std::vector<valtype> solutions;
+=======
+        vector<valtype> solutions;
+>>>>>>> Stashed changes
         txnouttype whichType;
         CScript s;
         s << OP_1 << ToByteVector(key[0].GetPubKey()) << ToByteVector(key[1].GetPubKey()) << OP_2 << OP_CHECKMULTISIG;
         BOOST_CHECK(Solver(s, whichType, solutions));
         BOOST_CHECK_EQUAL(solutions.size(), 4U);
+<<<<<<< Updated upstream
         std::vector<CTxDestination> addrs;
+=======
+        vector<CTxDestination> addrs;
+>>>>>>> Stashed changes
         int nRequired;
         BOOST_CHECK(ExtractDestinations(s, whichType, addrs, nRequired));
         BOOST_CHECK(addrs[0] == keyaddr[0]);
@@ -268,7 +339,11 @@ BOOST_AUTO_TEST_CASE(multisig_Solver1)
 #endif
     }
     {
+<<<<<<< Updated upstream
         std::vector<valtype> solutions;
+=======
+        vector<valtype> solutions;
+>>>>>>> Stashed changes
         txnouttype whichType;
         CScript s;
         s << OP_2 << ToByteVector(key[0].GetPubKey()) << ToByteVector(key[1].GetPubKey()) << ToByteVector(key[2].GetPubKey()) << OP_3 << OP_CHECKMULTISIG;

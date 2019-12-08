@@ -1,5 +1,10 @@
 // Copyright (c) 2014-2016 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +17,11 @@
 #include "net.h"
 #include "obfuscation.h"
 #include "sync.h"
+<<<<<<< Updated upstream
 #include "wallet/wallet.h"
+=======
+#include "wallet.h"
+>>>>>>> Stashed changes
 
 #define ACTIVE_MASTERNODE_INITIAL 0 // initial state
 #define ACTIVE_MASTERNODE_SYNC_IN_PROCESS 1
@@ -33,7 +42,11 @@ private:
     /// Create Masternode broadcast, needs to be relayed manually after that
     bool CreateBroadcast(CTxIn vin, CService service, CKey key, CPubKey pubKey, CKey keyMasternode, CPubKey pubKeyMasternode, std::string& errorMessage, CMasternodeBroadcast &mnb);
 
+<<<<<<< Updated upstream
     /// Get 10000 PIV input that can be used for the Masternode
+=======
+    /// Get 10000 PrimeStone input that can be used for the Masternode
+>>>>>>> Stashed changes
     bool GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey, std::string strTxHash, std::string strOutputIndex);
     bool GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
 
@@ -61,9 +74,15 @@ public:
     /// Create Masternode broadcast, needs to be relayed manually after that
     bool CreateBroadcast(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& errorMessage, CMasternodeBroadcast &mnb, bool fOffline = false);
 
+<<<<<<< Updated upstream
     /// Get 10000 PIV input that can be used for the Masternode
     bool GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
     std::vector<COutput> SelectCoinsMasternode();
+=======
+    /// Get 10000 PrimeStone input that can be used for the Masternode
+    bool GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
+    vector<COutput> SelectCoinsMasternode();
+>>>>>>> Stashed changes
 
     /// Enable cold wallet mode (run a Masternode with no funds)
     bool EnableHotColdMasterNode(CTxIn& vin, CService& addr);

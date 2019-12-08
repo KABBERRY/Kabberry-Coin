@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -32,7 +37,10 @@ public:
 
     void setModel(OptionsModel* model);
     void setMapper();
+<<<<<<< Updated upstream
     void setCurrentIndex(int index);
+=======
+>>>>>>> Stashed changes
 
 protected:
     bool eventFilter(QObject* object, QEvent* event);
@@ -48,8 +56,11 @@ private slots:
     void on_okButton_clicked();
     void on_cancelButton_clicked();
 
+<<<<<<< Updated upstream
     void updateHideOrphans(bool fHide);
 
+=======
+>>>>>>> Stashed changes
     void showRestartWarning(bool fPersistent = false);
     void clearStatusLabel();
     void doProxyIpChecks(QValidatedLineEdit* pUiProxyIp, QLineEdit* pUiProxyPort);

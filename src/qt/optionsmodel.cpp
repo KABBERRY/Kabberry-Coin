@@ -1,11 +1,20 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include "optionsmodel.h"
@@ -22,11 +31,20 @@
 
 #ifdef ENABLE_WALLET
 #include "masternodeconfig.h"
+<<<<<<< Updated upstream
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
 #endif
 
 #include <QNetworkProxy>
+=======
+#include "wallet.h"
+#include "walletdb.h"
+#endif
+
+#include <QNetworkProxy>
+#include <QSettings>
+>>>>>>> Stashed changes
 #include <QStringList>
 
 OptionsModel::OptionsModel(QObject* parent) : QAbstractListModel(parent)
@@ -51,21 +69,45 @@ void OptionsModel::Init()
     // These are Qt-only settings:
 
     // Window
+<<<<<<< Updated upstream
     setWindowDefaultOptions(settings);
 
     // Display
+=======
+    if (!settings.contains("fMinimizeToTray"))
+        settings.setValue("fMinimizeToTray", false);
+    fMinimizeToTray = settings.value("fMinimizeToTray").toBool();
+
+    if (!settings.contains("fMinimizeOnClose"))
+        settings.setValue("fMinimizeOnClose", false);
+    fMinimizeOnClose = settings.value("fMinimizeOnClose").toBool();
+
+    // Display
+    if (!settings.contains("nDisplayUnit"))
+        settings.setValue("nDisplayUnit", BitcoinUnits::PSC);
+    nDisplayUnit = settings.value("nDisplayUnit").toInt();
+
+    if (!settings.contains("strThirdPartyTxUrls"))
+        settings.setValue("strThirdPartyTxUrls", "");
+    strThirdPartyTxUrls = settings.value("strThirdPartyTxUrls", "").toString();
+
+>>>>>>> Stashed changes
     if (!settings.contains("fHideZeroBalances"))
         settings.setValue("fHideZeroBalances", true);
     fHideZeroBalances = settings.value("fHideZeroBalances").toBool();
 
+<<<<<<< Updated upstream
     if (!settings.contains("fHideOrphans"))
         settings.setValue("fHideOrphans", true);
     fHideOrphans = settings.value("fHideOrphans").toBool();
 
+=======
+>>>>>>> Stashed changes
     if (!settings.contains("fCoinControlFeatures"))
         settings.setValue("fCoinControlFeatures", false);
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
 
+<<<<<<< Updated upstream
     if (!settings.contains("fShowColdStakingScreen"))
         settings.setValue("fShowColdStakingScreen", false);
     showColdStakingScreen = settings.value("fShowColdStakingScreen", false).toBool();
@@ -78,6 +120,12 @@ void OptionsModel::Init()
         settings.setValue("fEnableAutoConvert", true);
     fEnableAutoConvert = settings.value("fEnableAutoConvert").toBool();
 
+=======
+    // if (!settings.contains("fZeromintEnable"))
+        settings.setValue("fZeromintEnable", false);
+    fEnableZeromint = settings.value("fZeromintEnable").toBool();
+    
+>>>>>>> Stashed changes
     if (!settings.contains("nZeromintPercentage"))
         settings.setValue("nZeromintPercentage", 10);
     nZeromintPercentage = settings.value("nZeromintPercentage").toLongLong();
@@ -86,6 +134,7 @@ void OptionsModel::Init()
         settings.setValue("nPreferredDenom", 0);
     nPreferredDenom = settings.value("nPreferredDenom", "0").toLongLong();
 
+<<<<<<< Updated upstream
     if (!settings.contains("fShowMasternodesTab"))
         settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
 
@@ -110,6 +159,16 @@ void OptionsModel::refreshDataView(){
 }
 
 void OptionsModel::setMainDefaultOptions(QSettings& settings, bool reset){
+=======
+    if (!settings.contains("nAnonymizePrimeStoneAmount"))
+        settings.setValue("nAnonymizePrimeStoneAmount", 1000);
+
+    nAnonymizePrimeStoneAmount = settings.value("nAnonymizePrimeStoneAmount").toLongLong();
+
+    if (!settings.contains("fShowMasternodesTab"))
+        settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
+
+>>>>>>> Stashed changes
     // These are shared with the core or have a command-line parameter
     // and we want command-line parameters to overwrite the GUI settings.
     //
@@ -117,17 +176,28 @@ void OptionsModel::setMainDefaultOptions(QSettings& settings, bool reset){
     //
     // If SoftSetArg() or SoftSetBoolArg() return false we were overridden
     // by command-line and show this in the UI.
+<<<<<<< Updated upstream
     // Main
     if (!settings.contains("nDatabaseCache") || reset)
+=======
+
+    // Main
+    if (!settings.contains("nDatabaseCache"))
+>>>>>>> Stashed changes
         settings.setValue("nDatabaseCache", (qint64)nDefaultDbCache);
     if (!SoftSetArg("-dbcache", settings.value("nDatabaseCache").toString().toStdString()))
         addOverriddenOption("-dbcache");
 
+<<<<<<< Updated upstream
     if (!settings.contains("nThreadsScriptVerif") || reset)
+=======
+    if (!settings.contains("nThreadsScriptVerif"))
+>>>>>>> Stashed changes
         settings.setValue("nThreadsScriptVerif", DEFAULT_SCRIPTCHECK_THREADS);
     if (!SoftSetArg("-par", settings.value("nThreadsScriptVerif").toString().toStdString()))
         addOverriddenOption("-par");
 
+<<<<<<< Updated upstream
     if(reset){
         refreshDataView();
     }
@@ -150,18 +220,43 @@ void OptionsModel::setWalletDefaultOptions(QSettings& settings, bool reset){
 
 void OptionsModel::setNetworkDefaultOptions(QSettings& settings, bool reset){
     if (!settings.contains("fUseUPnP") || reset)
+=======
+// Wallet
+#ifdef ENABLE_WALLET
+    if (!settings.contains("bSpendZeroConfChange"))
+        settings.setValue("bSpendZeroConfChange", false);
+    if (!SoftSetBoolArg("-spendzeroconfchange", settings.value("bSpendZeroConfChange").toBool()))
+        addOverriddenOption("-spendzeroconfchange");
+#endif
+    if (!settings.contains("nStakeSplitThreshold"))
+        settings.setValue("nStakeSplitThreshold", 1);
+
+
+    // Network
+    if (!settings.contains("fUseUPnP"))
+>>>>>>> Stashed changes
         settings.setValue("fUseUPnP", DEFAULT_UPNP);
     if (!SoftSetBoolArg("-upnp", settings.value("fUseUPnP").toBool()))
         addOverriddenOption("-upnp");
 
+<<<<<<< Updated upstream
     if (!settings.contains("fListen") || reset)
+=======
+    if (!settings.contains("fListen"))
+>>>>>>> Stashed changes
         settings.setValue("fListen", DEFAULT_LISTEN);
     if (!SoftSetBoolArg("-listen", settings.value("fListen").toBool()))
         addOverriddenOption("-listen");
 
+<<<<<<< Updated upstream
     if (!settings.contains("fUseProxy") || reset)
         settings.setValue("fUseProxy", false);
     if (!settings.contains("addrProxy") || reset)
+=======
+    if (!settings.contains("fUseProxy"))
+        settings.setValue("fUseProxy", false);
+    if (!settings.contains("addrProxy"))
+>>>>>>> Stashed changes
         settings.setValue("addrProxy", "127.0.0.1:9050");
     // Only try to set -proxy, if user has enabled fUseProxy
     if (settings.value("fUseProxy").toBool() && !SoftSetArg("-proxy", settings.value("addrProxy").toString().toStdString()))
@@ -169,6 +264,7 @@ void OptionsModel::setNetworkDefaultOptions(QSettings& settings, bool reset){
     else if (!settings.value("fUseProxy").toBool() && !GetArg("-proxy", "").empty())
         addOverriddenOption("-proxy");
 
+<<<<<<< Updated upstream
     if(reset){
         refreshDataView();
     }
@@ -199,10 +295,21 @@ void OptionsModel::setDisplayDefaultOptions(QSettings& settings, bool reset){
     if (!settings.contains("fCSSexternal") || reset)
         settings.setValue("fCSSexternal", false);
     if (!settings.contains("language") || reset)
+=======
+    // Display
+    if (!settings.contains("digits"))
+        settings.setValue("digits", "2");
+    if (!settings.contains("theme"))
+        settings.setValue("theme", "");
+    if (!settings.contains("fCSSexternal"))
+        settings.setValue("fCSSexternal", false);
+    if (!settings.contains("language"))
+>>>>>>> Stashed changes
         settings.setValue("language", "");
     if (!SoftSetArg("-lang", settings.value("language").toString().toStdString()))
         addOverriddenOption("-lang");
 
+<<<<<<< Updated upstream
     if (settings.contains("fZeromintEnable") || reset)
         SoftSetBoolArg("-enablezeromint", settings.value("fZeromintEnable").toBool());
     if (settings.contains("fEnableAutoConvert") || reset)
@@ -221,6 +328,18 @@ void OptionsModel::setDisplayDefaultOptions(QSettings& settings, bool reset){
     if(reset){
         refreshDataView();
     }
+=======
+    if (settings.contains("fZeromintEnable"))
+        SoftSetBoolArg("-enablezeromint", settings.value("fZeromintEnable").toBool());
+    if (settings.contains("nZeromintPercentage"))
+        SoftSetArg("-zeromintpercentage", settings.value("nZeromintPercentage").toString().toStdString());
+    if (settings.contains("nPreferredDenom"))
+        SoftSetArg("-preferredDenom", settings.value("nPreferredDenom").toString().toStdString());
+    if (settings.contains("nAnonymizePrimeStoneAmount"))
+        SoftSetArg("-anonymizeprimestoneamount", settings.value("nAnonymizePrimeStoneAmount").toString().toStdString());
+
+    language = settings.value("language").toString();
+>>>>>>> Stashed changes
 }
 
 void OptionsModel::Reset()
@@ -229,7 +348,11 @@ void OptionsModel::Reset()
 
     // Remove all entries from our QSettings object
     settings.clear();
+<<<<<<< Updated upstream
     resetSettings = true; // Needed in pivx.cpp during shotdown to also remove the window positions
+=======
+    resetSettings = true; // Needed in primestone.cpp during shotdown to also remove the window positions
+>>>>>>> Stashed changes
 
     // default setting for OptionsModel::StartAtStartup - disabled
     if (GUIUtil::GetStartOnSystemStartup())
@@ -297,24 +420,37 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("language");
         case CoinControlFeatures:
             return fCoinControlFeatures;
+<<<<<<< Updated upstream
         case ShowColdStakingScreen:
             return showColdStakingScreen;
+=======
+>>>>>>> Stashed changes
         case DatabaseCache:
             return settings.value("nDatabaseCache");
         case ThreadsScriptVerif:
             return settings.value("nThreadsScriptVerif");
         case HideZeroBalances:
             return settings.value("fHideZeroBalances");
+<<<<<<< Updated upstream
         case HideOrphans:
             return settings.value("fHideOrphans");
         case ZeromintEnable:
             return QVariant(fEnableZeromint);
         case ZeromintAddresses:
             return QVariant(fEnableAutoConvert);
+=======
+        case ZeromintEnable:
+            return QVariant(fEnableZeromint);
+>>>>>>> Stashed changes
         case ZeromintPercentage:
             return QVariant(nZeromintPercentage);
         case ZeromintPrefDenom:
             return QVariant(nPreferredDenom);
+<<<<<<< Updated upstream
+=======
+        case AnonymizePrimeStoneAmount:
+            return QVariant(nAnonymizePrimeStoneAmount);
+>>>>>>> Stashed changes
         case Listen:
             return settings.value("fListen");
         default:
@@ -427,10 +563,13 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             settings.setValue("fZeromintEnable", fEnableZeromint);
             emit zeromintEnableChanged(fEnableZeromint);
             break;
+<<<<<<< Updated upstream
         case ZeromintAddresses:
             fEnableAutoConvert = value.toBool();
             settings.setValue("fEnableAutoConvert", fEnableAutoConvert);
             emit zeromintAddressesChanged(fEnableAutoConvert);
+=======
+>>>>>>> Stashed changes
         case ZeromintPercentage:
             nZeromintPercentage = value.toInt();
             settings.setValue("nZeromintPercentage", nZeromintPercentage);
@@ -446,21 +585,32 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             settings.setValue("fHideZeroBalances", fHideZeroBalances);
             emit hideZeroBalancesChanged(fHideZeroBalances);
             break;
+<<<<<<< Updated upstream
         case HideOrphans:
             fHideOrphans = value.toBool();
             settings.setValue("fHideOrphans", fHideOrphans);
             emit hideOrphansChanged(fHideOrphans);
+=======
+
+        case AnonymizePrimeStoneAmount:
+            nAnonymizePrimeStoneAmount = value.toInt();
+            settings.setValue("nAnonymizePrimeStoneAmount", nAnonymizePrimeStoneAmount);
+            emit anonymizePrimeStoneAmountChanged(nAnonymizePrimeStoneAmount);
+>>>>>>> Stashed changes
             break;
         case CoinControlFeatures:
             fCoinControlFeatures = value.toBool();
             settings.setValue("fCoinControlFeatures", fCoinControlFeatures);
             emit coinControlFeaturesChanged(fCoinControlFeatures);
             break;
+<<<<<<< Updated upstream
         case ShowColdStakingScreen:
             this->showColdStakingScreen = value.toBool();
             settings.setValue("fShowColdStakingScreen", this->showColdStakingScreen);
             emit showHideColdStakingScreen(this->showColdStakingScreen);
             break;
+=======
+>>>>>>> Stashed changes
         case DatabaseCache:
             if (settings.value("nDatabaseCache") != value) {
                 settings.setValue("nDatabaseCache", value);

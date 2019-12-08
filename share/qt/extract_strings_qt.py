@@ -10,7 +10,11 @@ import operator
 import os
 import sys
 
+<<<<<<< Updated upstream
 OUT_CPP="qt/pivxstrings.cpp"
+=======
+OUT_CPP="qt/primestonestrings.cpp"
+>>>>>>> Stashed changes
 EMPTY=['""']
 
 def parse_po(text):
@@ -74,10 +78,18 @@ f.write("""
 #define UNUSED
 #endif
 """)
+<<<<<<< Updated upstream
 f.write('static const char UNUSED *pivx_strings[] = {\n')
 messages.sort(key=operator.itemgetter(0))
 for (msgid, msgstr) in messages:
     if msgid != EMPTY:
         f.write('QT_TRANSLATE_NOOP("pivx-core", %s),\n' % ('\n'.join(msgid)))
+=======
+f.write('static const char UNUSED *primestone_strings[] = {\n')
+messages.sort(key=operator.itemgetter(0))
+for (msgid, msgstr) in messages:
+    if msgid != EMPTY:
+        f.write('QT_TRANSLATE_NOOP("primestone-core", %s),\n' % ('\n'.join(msgid)))
+>>>>>>> Stashed changes
 f.write('};\n')
 f.close()

@@ -1,11 +1,19 @@
 // Copyright (c) 2017-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "reverse_iterate.h"
 #include "util.h"
 #include "libzerocoin/Denominations.h"
+<<<<<<< Updated upstream
 #include "zpiv/zerocoin.h"
+=======
+#include "primitives/zerocoin.h"
+>>>>>>> Stashed changes
 #include <list>
 #include <map>
 std::vector<CMintMeta> SelectMintsFromList(const CAmount nValueTarget, CAmount& nSelectedValue,

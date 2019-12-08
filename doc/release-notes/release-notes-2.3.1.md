@@ -1,23 +1,41 @@
+<<<<<<< Updated upstream
 PIVX Core version 2.3.1 is now available from:
 
   <https://github.com/pivx-project/pivx/releases>
+=======
+PrimeStone version 2.3.1 is now available from:
+
+  <https://github.com/primestone-project/primestone/releases>
+>>>>>>> Stashed changes
 
 This is a new minor version release, including various bug fixes and
 performance improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at github:
 
+<<<<<<< Updated upstream
   <https://github.com/pivx-project/pivx/issues>
+=======
+  <https://github.com/primestone-project/primestone/issues>
+>>>>>>> Stashed changes
 
 How to Upgrade
 ==============
 
+<<<<<<< Updated upstream
 If you are running an older version, shut it down. Wait until it has completely shut down (which might take a few minutes for older versions), then run the installer (on Windows) or just copy over /Applications/PIVX-Qt (on Mac) or pivxd/pivx-qt (on Linux).
+=======
+If you are running an older version, shut it down. Wait until it has completely shut down (which might take a few minutes for older versions), then run the installer (on Windows) or just copy over /Applications/PrimeStone-Qt (on Mac) or primestoned/primestone-qt (on Linux).
+>>>>>>> Stashed changes
 
 Compatibility
 ==============
 
+<<<<<<< Updated upstream
 PIVX Core is extensively tested on multiple operating systems using
+=======
+PrimeStone is extensively tested on multiple operating systems using
+>>>>>>> Stashed changes
 the Linux kernel, macOS 10.8+, and Windows Vista and later.
 
 Microsoft ended support for Windows XP on [April 8th, 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support),
@@ -25,7 +43,11 @@ No attempt is made to prevent installing or running the software on Windows XP, 
 can still do so at your own risk but be aware that there are known instabilities and issues.
 Please do not report issues about Windows XP to the issue tracker.
 
+<<<<<<< Updated upstream
 PIVX Core should also work on most other Unix-like systems but is not
+=======
+PrimeStone should also work on most other Unix-like systems but is not
+>>>>>>> Stashed changes
 frequently tested on them.
 
 Notable Changes
@@ -98,8 +120,13 @@ Result: (for other sets):
 }
 
 Examples:
+<<<<<<< Updated upstream
 > pivx-cli startmasternode "alias" true "my_mn"
 > curl --user myusername --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "startmasternode", "params": ["alias" true "my_mn"] }' -H 'content-type: text/plain;' http://127.0.0.1:51473/
+=======
+> primestone-cli startmasternode "alias" true "my_mn"
+> curl --user myusername --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "startmasternode", "params": ["alias" true "my_mn"] }' -H 'content-type: text/plain;' http://127.0.0.1:34126/
+>>>>>>> Stashed changes
 ```
 
 ##### `preparebudget` & `submitbudget` Commands #####
@@ -133,8 +160,13 @@ Result:
 }
 
 Examples:
+<<<<<<< Updated upstream
 > pivx-cli mnbudgetvote "local" "ed2f83cedee59a91406f5f47ec4d60bf5a7f9ee6293913c82976bd2d3a658041" "yes"
 > curl --user myusername --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "mnbudgetvote", "params": ["local" "ed2f83cedee59a91406f5f47ec4d60bf5a7f9ee6293913c82976bd2d3a658041" "yes"] }' -H 'content-type: text/plain;' http://127.0.0.1:51473/
+=======
+> primestone-cli mnbudgetvote "local" "ed2f83cedee59a91406f5f47ec4d60bf5a7f9ee6293913c82976bd2d3a658041" "yes"
+> curl --user myusername --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "mnbudgetvote", "params": ["local" "ed2f83cedee59a91406f5f47ec4d60bf5a7f9ee6293913c82976bd2d3a658041" "yes"] }' -H 'content-type: text/plain;' http://127.0.0.1:34126/
+>>>>>>> Stashed changes
 ```
 
 ##### `getbudgetinfo` Command #####
@@ -159,7 +191,11 @@ Result:
     "BlockEnd": n,                (numeric) Proposal ending block
     "TotalPaymentCount": n,       (numeric) Number of payments
     "RemainingPaymentCount": n,   (numeric) Number of remaining payments
+<<<<<<< Updated upstream
     "PaymentAddress": "xxxx",     (string) PIVX address of payment
+=======
+    "PaymentAddress": "xxxx",     (string) PrimeStone address of payment
+>>>>>>> Stashed changes
     "Ratio": x.xxx,               (numeric) Ratio of yeas vs nays
     "Yeas": n,                    (numeric) Number of yea votes
     "Nays": n,                    (numeric) Number of nay votes
@@ -175,8 +211,13 @@ Result:
 ]
 
 Examples:
+<<<<<<< Updated upstream
 > pivx-cli getbudgetinfo
 > curl --user myusername --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getbudgetinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:51473/
+=======
+> primestone-cli getbudgetinfo
+> curl --user myusername --data-binary '{"jsonrpc": "1.0", "id":"curltest", "method": "getbudgetinfo", "params": [] }' -H 'content-type: text/plain;' http://127.0.0.1:34126/
+>>>>>>> Stashed changes
 ```
 
 #### Masternode network protocol layer reporting ####
@@ -210,4 +251,8 @@ Thanks to everyone who directly contributed to this release:
 - Mrs-X
 - amirabrams
 
+<<<<<<< Updated upstream
 As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/pivx-project-translations/).
+=======
+As well as everyone that helped translating on [Transifex](https://www.transifex.com/projects/p/primestone-project-translations/).
+>>>>>>> Stashed changes

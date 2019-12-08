@@ -1,11 +1,21 @@
 // Copyright (c) 2014 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "main.h"
+<<<<<<< Updated upstream
 #include "util.h"
 #include "test/test_pivx.h"
+=======
+#include "random.h"
+#include "util.h"
+>>>>>>> Stashed changes
 
 #include <vector>
 
@@ -13,7 +23,11 @@
 
 #define SKIPLIST_LENGTH 300000
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(skiplist_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(skiplist_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(skiplist_test)
 {
@@ -35,8 +49,13 @@ BOOST_AUTO_TEST_CASE(skiplist_test)
     }
 
     for (int i=0; i < 1000; i++) {
+<<<<<<< Updated upstream
         int from = InsecureRandRange(SKIPLIST_LENGTH - 1);
         int to = InsecureRandRange(from + 1);
+=======
+        int from = insecure_rand() % (SKIPLIST_LENGTH - 1);
+        int to = insecure_rand() % (from + 1);
+>>>>>>> Stashed changes
 
         BOOST_CHECK(vIndex[SKIPLIST_LENGTH - 1].GetAncestor(from) == &vIndex[from]);
         BOOST_CHECK(vIndex[from].GetAncestor(to) == &vIndex[to]);
@@ -78,7 +97,11 @@ BOOST_AUTO_TEST_CASE(getlocator_test)
 
     // Test 100 random starting points for locators.
     for (int n=0; n<100; n++) {
+<<<<<<< Updated upstream
         int r = InsecureRandRange(150000);
+=======
+        int r = insecure_rand() % 150000;
+>>>>>>> Stashed changes
         CBlockIndex* tip = (r < 100000) ? &vBlocksMain[r] : &vBlocksSide[r - 100000];
         CBlockLocator locator = chain.GetLocator(tip);
 

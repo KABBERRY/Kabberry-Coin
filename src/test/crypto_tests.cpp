@@ -3,7 +3,10 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "crypto/rfc6979_hmac_sha256.h"
+<<<<<<< Updated upstream
 #include "crypto/chacha20.h"
+=======
+>>>>>>> Stashed changes
 #include "crypto/ripemd160.h"
 #include "crypto/sha1.h"
 #include "crypto/sha256.h"
@@ -12,14 +15,21 @@
 #include "crypto/hmac_sha512.h"
 #include "random.h"
 #include "utilstrencodings.h"
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
+=======
+>>>>>>> Stashed changes
 
 #include <vector>
 
 #include <boost/assign/list_of.hpp>
 #include <boost/test/unit_test.hpp>
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(crypto_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(crypto_tests)
+>>>>>>> Stashed changes
 
 template<typename Hasher, typename In, typename Out>
 void TestVector(const Hasher &h, const In &in, const Out &out) {
@@ -36,7 +46,11 @@ void TestVector(const Hasher &h, const In &in, const Out &out) {
         Hasher hasher(h);
         size_t pos = 0;
         while (pos < in.size()) {
+<<<<<<< Updated upstream
             size_t len = InsecureRandRange((in.size() - pos + 1) / 2 + 1);
+=======
+            size_t len = insecure_rand() % ((in.size() - pos + 1) / 2 + 1);
+>>>>>>> Stashed changes
             hasher.Write((unsigned char*)&in[pos], len);
             pos += len;
             if (pos > 0 && pos + 2 * out.size() > in.size() && pos < in.size()) {
@@ -65,6 +79,7 @@ void TestHMACSHA512(const std::string &hexkey, const std::string &hexin, const s
     TestVector(CHMAC_SHA512(&key[0], key.size()), ParseHex(hexin), ParseHex(hexout));
 }
 
+<<<<<<< Updated upstream
 void TestChaCha20(const std::string &hexkey, uint64_t nonce, uint64_t seek, const std::string& hexout)
 {
     std::vector<unsigned char> key = ParseHex(hexkey);
@@ -78,6 +93,8 @@ void TestChaCha20(const std::string &hexkey, uint64_t nonce, uint64_t seek, cons
     BOOST_CHECK(out == outres);
 }
 
+=======
+>>>>>>> Stashed changes
 std::string LongTestString(void) {
     std::string ret;
     for (int i=0; i<200000; i++) {
@@ -297,6 +314,7 @@ BOOST_AUTO_TEST_CASE(rfc6979_hmac_sha256)
             ("7597887cbd76321f32e30440679a22cf7f8d9d2eac390e581fea091ce202ba94"));
 }
 
+<<<<<<< Updated upstream
 
 BOOST_AUTO_TEST_CASE(chacha20_testvector)
 {
@@ -350,4 +368,6 @@ BOOST_AUTO_TEST_CASE(countbits_tests)
     }
 }
 
+=======
+>>>>>>> Stashed changes
 BOOST_AUTO_TEST_SUITE_END()

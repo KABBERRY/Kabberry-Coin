@@ -1,5 +1,10 @@
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +19,13 @@
 #include "net.h"
 #include "sync.h"
 #include "util.h"
+<<<<<<< Updated upstream
 
+=======
+#include <boost/lexical_cast.hpp>
+
+using namespace std;
+>>>>>>> Stashed changes
 
 extern CCriticalSection cs_budget;
 
@@ -40,7 +51,11 @@ static const CAmount PROPOSAL_FEE_TX = (50 * COIN);
 static const CAmount BUDGET_FEE_TX_OLD = (50 * COIN);
 static const CAmount BUDGET_FEE_TX = (5 * COIN);
 static const int64_t BUDGET_VOTE_UPDATE_MIN = 60 * 60;
+<<<<<<< Updated upstream
 static std::map<uint256, int> mapPayment_History;
+=======
+static map<uint256, int> mapPayment_History;
+>>>>>>> Stashed changes
 
 extern std::vector<CBudgetProposalBroadcast> vecImmatureBudgetProposals;
 extern std::vector<CFinalizedBudgetBroadcast> vecImmatureFinalizedBudgets;
@@ -48,6 +63,12 @@ extern std::vector<CFinalizedBudgetBroadcast> vecImmatureFinalizedBudgets;
 extern CBudgetManager budget;
 void DumpBudgets();
 
+<<<<<<< Updated upstream
+=======
+// Define amount of blocks in budget payment cycle
+int GetBudgetPaymentCycleBlocks();
+
+>>>>>>> Stashed changes
 //Check the collateral transaction for the budget proposal/finalized budget
 bool IsBudgetCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash, std::string& strError, int64_t& nTime, int& nConf, bool fBudgetFinalization=false);
 
@@ -55,7 +76,11 @@ bool IsBudgetCollateralValid(uint256 nTxCollateralHash, uint256 nExpectedHash, s
 // CBudgetVote - Allow a masternode node to vote and broadcast throughout the network
 //
 
+<<<<<<< Updated upstream
 class CBudgetVote : public CSignedMessage
+=======
+class CBudgetVote
+>>>>>>> Stashed changes
 {
 public:
     bool fValid;  //if the vote is currently valid / counted
@@ -64,10 +89,19 @@ public:
     uint256 nProposalHash;
     int nVote;
     int64_t nTime;
+<<<<<<< Updated upstream
+=======
+    std::vector<unsigned char> vchSig;
+>>>>>>> Stashed changes
 
     CBudgetVote();
     CBudgetVote(CTxIn vin, uint256 nProposalHash, int nVoteIn);
 
+<<<<<<< Updated upstream
+=======
+    bool Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode);
+    bool SignatureValid(bool fSignatureCheck);
+>>>>>>> Stashed changes
     void Relay();
 
     std::string GetVoteString()
@@ -78,12 +112,24 @@ public:
         return ret;
     }
 
+<<<<<<< Updated upstream
     uint256 GetHash() const;
 
     // override CSignedMessage functions
     uint256 GetSignatureHash() const override { return GetHash(); }
     std::string GetStrMessage() const override;
     const CTxIn GetVin() const override { return vin; };
+=======
+    uint256 GetHash()
+    {
+        CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+        ss << vin;
+        ss << nProposalHash;
+        ss << nVote;
+        ss << nTime;
+        return ss.GetHash();
+    }
+>>>>>>> Stashed changes
 
     ADD_SERIALIZE_METHODS;
 
@@ -95,12 +141,15 @@ public:
         READWRITE(nVote);
         READWRITE(nTime);
         READWRITE(vchSig);
+<<<<<<< Updated upstream
         try
         {
             READWRITE(nMessVersion);
         } catch (...) {
             nMessVersion = MessageVersion::MESS_VER_STRMESS;
         }
+=======
+>>>>>>> Stashed changes
     }
 };
 
@@ -108,7 +157,11 @@ public:
 // CFinalizedBudgetVote - Allow a masternode node to vote and broadcast throughout the network
 //
 
+<<<<<<< Updated upstream
 class CFinalizedBudgetVote : public CSignedMessage
+=======
+class CFinalizedBudgetVote
+>>>>>>> Stashed changes
 {
 public:
     bool fValid;  //if the vote is currently valid / counted
@@ -116,10 +169,15 @@ public:
     CTxIn vin;
     uint256 nBudgetHash;
     int64_t nTime;
+<<<<<<< Updated upstream
+=======
+    std::vector<unsigned char> vchSig;
+>>>>>>> Stashed changes
 
     CFinalizedBudgetVote();
     CFinalizedBudgetVote(CTxIn vinIn, uint256 nBudgetHashIn);
 
+<<<<<<< Updated upstream
     void Relay();
     uint256 GetHash() const;
 
@@ -127,6 +185,20 @@ public:
     uint256 GetSignatureHash() const override { return GetHash(); }
     std::string GetStrMessage() const override;
     const CTxIn GetVin() const override { return vin; };
+=======
+    bool Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode);
+    bool SignatureValid(bool fSignatureCheck);
+    void Relay();
+
+    uint256 GetHash()
+    {
+        CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+        ss << vin;
+        ss << nBudgetHash;
+        ss << nTime;
+        return ss.GetHash();
+    }
+>>>>>>> Stashed changes
 
     ADD_SERIALIZE_METHODS;
 
@@ -137,12 +209,15 @@ public:
         READWRITE(nBudgetHash);
         READWRITE(nTime);
         READWRITE(vchSig);
+<<<<<<< Updated upstream
         try
         {
             READWRITE(nMessVersion);
         } catch (...) {
             nMessVersion = MessageVersion::MESS_VER_STRMESS;
         }
+=======
+>>>>>>> Stashed changes
     }
 };
 
@@ -178,16 +253,26 @@ class CBudgetManager
 {
 private:
     //hold txes until they mature enough to use
+<<<<<<< Updated upstream
     // XX42    std::map<uint256, CTransaction> mapCollateral;
     std::map<uint256, uint256> mapCollateralTxids;
+=======
+    // XX42    map<uint256, CTransaction> mapCollateral;
+    map<uint256, uint256> mapCollateralTxids;
+>>>>>>> Stashed changes
 
 public:
     // critical section to protect the inner data structures
     mutable CCriticalSection cs;
 
     // keep track of the scanning errors I've seen
+<<<<<<< Updated upstream
     std::map<uint256, CBudgetProposal> mapProposals;
     std::map<uint256, CFinalizedBudget> mapFinalizedBudgets;
+=======
+    map<uint256, CBudgetProposal> mapProposals;
+    map<uint256, CFinalizedBudget> mapFinalizedBudgets;
+>>>>>>> Stashed changes
 
     std::map<uint256, CBudgetProposalBroadcast> mapSeenMasternodeBudgetProposals;
     std::map<uint256, CBudgetVote> mapSeenMasternodeBudgetVotes;
@@ -320,7 +405,11 @@ public:
     std::string strBudgetName;
     int nBlockStart;
     std::vector<CTxBudgetPayment> vecBudgetPayments;
+<<<<<<< Updated upstream
     std::map<uint256, CFinalizedBudgetVote> mapVotes;
+=======
+    map<uint256, CFinalizedBudgetVote> mapVotes;
+>>>>>>> Stashed changes
     uint256 nFeeTXHash;
     int64_t nTime;
 
@@ -363,15 +452,25 @@ public:
         return true;
     }
 
+<<<<<<< Updated upstream
     // Verify and vote on finalized budget
     void CheckAndVote();
     //total pivx paid out by this budget
+=======
+    //check to see if we should vote on this
+    void AutoCheck();
+    //total primestone paid out by this budget
+>>>>>>> Stashed changes
     CAmount GetTotalPayout();
     //vote on this finalized budget as a masternode
     void SubmitVote();
 
     //checks the hashes to make sure we know about them
+<<<<<<< Updated upstream
     std::string GetStatus();
+=======
+    string GetStatus();
+>>>>>>> Stashed changes
 
     uint256 GetHash()
     {
@@ -404,6 +503,12 @@ public:
 // FinalizedBudget are cast then sent to peers with this object, which leaves the votes out
 class CFinalizedBudgetBroadcast : public CFinalizedBudget
 {
+<<<<<<< Updated upstream
+=======
+private:
+    std::vector<unsigned char> vchSig;
+
+>>>>>>> Stashed changes
 public:
     CFinalizedBudgetBroadcast();
     CFinalizedBudgetBroadcast(const CFinalizedBudget& other);
@@ -474,7 +579,11 @@ public:
     int64_t nTime;
     uint256 nFeeTXHash;
 
+<<<<<<< Updated upstream
     std::map<uint256, CBudgetVote> mapVotes;
+=======
+    map<uint256, CBudgetVote> mapVotes;
+>>>>>>> Stashed changes
     //cache object
 
     CBudgetProposal();
@@ -488,8 +597,19 @@ public:
 
     bool IsValid(std::string& strError, bool fCheckCollateral = true);
 
+<<<<<<< Updated upstream
     bool IsEstablished();
     bool IsPassing(const CBlockIndex* pindexPrev, int nBlockStartBudget, int nBlockEndBudget, int mnCount);
+=======
+    bool IsEstablished()
+    {
+        // Proposals must be at least a day old to make it into a budget
+        if (Params().NetworkID() == CBaseChainParams::MAIN) return (nTime < GetTime() - (60 * 60 * 24));
+
+        // For testing purposes - 5 minutes
+        return (nTime < GetTime() - (60 * 5));
+    }
+>>>>>>> Stashed changes
 
     std::string GetName() { return strProposalName; }
     std::string GetURL() { return strURL; }
@@ -502,16 +622,26 @@ public:
     int GetBlockCurrentCycle();
     int GetBlockEndCycle();
     double GetRatio();
+<<<<<<< Updated upstream
     int GetYeas() const;
     int GetNays() const;
     int GetAbstains() const;
+=======
+    int GetYeas();
+    int GetNays();
+    int GetAbstains();
+>>>>>>> Stashed changes
     CAmount GetAmount() { return nAmount; }
     void SetAllotted(CAmount nAllotedIn) { nAlloted = nAllotedIn; }
     CAmount GetAllotted() { return nAlloted; }
 
     void CleanAndRemove(bool fSignatureCheck);
 
+<<<<<<< Updated upstream
     uint256 GetHash() const
+=======
+    uint256 GetHash()
+>>>>>>> Stashed changes
     {
         CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
         ss << strProposalName;

@@ -1,12 +1,21 @@
 // Copyright (c) 2012-2013 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "random.h"
 #include "scheduler.h"
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #else
 #define HAVE_WORKING_BOOST_SLEEP_FOR
 #endif
@@ -46,6 +55,11 @@ static void MicroSleep(uint64_t n)
 
 BOOST_AUTO_TEST_CASE(manythreads)
 {
+<<<<<<< Updated upstream
+=======
+    seed_insecure_rand(false);
+
+>>>>>>> Stashed changes
     // Stress test: hundreds of microsecond-scheduled tasks,
     // serviced by 10 threads.
     //
@@ -60,7 +74,11 @@ BOOST_AUTO_TEST_CASE(manythreads)
 
     boost::mutex counterMutex[10];
     int counter[10] = { 0 };
+<<<<<<< Updated upstream
     boost::random::mt19937 rng(42);
+=======
+    boost::random::mt19937 rng(insecure_rand());
+>>>>>>> Stashed changes
     boost::random::uniform_int_distribution<> zeroToNine(0, 9);
     boost::random::uniform_int_distribution<> randomMsec(-11, 1000);
     boost::random::uniform_int_distribution<> randomDelta(-1000, 1000);

@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -28,6 +33,10 @@
 #endif
 
 #include <boost/filesystem/path.hpp>
+<<<<<<< Updated upstream
+=======
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 #include <boost/signals2/signal.hpp>
 
 class CAddrMan;
@@ -50,8 +59,11 @@ static const unsigned int MAX_INV_SZ = 50000;
 static const unsigned int MAX_ADDR_TO_SEND = 1000;
 /** Maximum length of incoming protocol messages (no message over 2 MiB is currently acceptable). */
 static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 2 * 1024 * 1024;
+<<<<<<< Updated upstream
 /** Maximum length of strSubVer in `version` message */
 static const unsigned int MAX_SUBVERSION_LENGTH = 256;
+=======
+>>>>>>> Stashed changes
 /** -listen default */
 static const bool DEFAULT_LISTEN = true;
 /** -upnp default */
@@ -62,10 +74,13 @@ static const bool DEFAULT_UPNP = false;
 #endif
 /** The maximum number of entries in mapAskFor */
 static const size_t MAPASKFOR_MAX_SZ = MAX_INV_SZ;
+<<<<<<< Updated upstream
 /** Disconnected peers are added to setOffsetDisconnectedPeers only if node has less than ENOUGH_CONNECTIONS */
 #define ENOUGH_CONNECTIONS 2
 /** Maximum number of peers added to setOffsetDisconnectedPeers before triggering a warning */
 #define MAX_TIMEOFFSET_DISCONNECTIONS 16
+=======
+>>>>>>> Stashed changes
 
 unsigned int ReceiveFloodSize();
 unsigned int SendBufferSize();
@@ -85,7 +100,10 @@ bool BindListenPort(const CService& bindAddr, std::string& strError, bool fWhite
 void StartNode(boost::thread_group& threadGroup, CScheduler& scheduler);
 bool StopNode();
 void SocketSendData(CNode* pnode);
+<<<<<<< Updated upstream
 void CheckOffsetDisconnectedPeers(const CNetAddr& ip);
+=======
+>>>>>>> Stashed changes
 
 typedef int NodeId;
 
@@ -113,7 +131,11 @@ enum {
 };
 
 bool IsPeerAddrLocalGood(CNode* pnode);
+<<<<<<< Updated upstream
 void AdvertiseLocal(CNode* pnode);
+=======
+void AdvertizeLocal(CNode* pnode);
+>>>>>>> Stashed changes
 void SetLimited(enum Network net, bool fLimited = true);
 bool IsLimited(enum Network net);
 bool IsLimited(const CNetAddr& addr);
@@ -148,9 +170,12 @@ extern CCriticalSection cs_vAddedNodes;
 extern NodeId nLastNodeId;
 extern CCriticalSection cs_nLastNodeId;
 
+<<<<<<< Updated upstream
 /** Subversion as sent to the P2P network in `version` messages */
 extern std::string strSubVersion;
 
+=======
+>>>>>>> Stashed changes
 struct LocalServiceInfo {
     int nScore;
     int nPort;
@@ -415,7 +440,11 @@ public:
     unsigned int GetTotalRecvSize()
     {
         unsigned int total = 0;
+<<<<<<< Updated upstream
         for (const CNetMessage& msg : vRecvMsg)
+=======
+        BOOST_FOREACH (const CNetMessage& msg, vRecvMsg)
+>>>>>>> Stashed changes
             total += msg.vRecv.size() + 24;
         return total;
     }
@@ -427,7 +456,11 @@ public:
     void SetRecvVersion(int nVersionIn)
     {
         nRecvVersion = nVersionIn;
+<<<<<<< Updated upstream
         for (CNetMessage& msg : vRecvMsg)
+=======
+        BOOST_FOREACH (CNetMessage& msg, vRecvMsg)
+>>>>>>> Stashed changes
             msg.SetVersion(nVersionIn);
     }
 
@@ -448,14 +481,22 @@ public:
         setAddrKnown.insert(addr);
     }
 
+<<<<<<< Updated upstream
     void PushAddress(const CAddress& _addr, FastRandomContext &insecure_rand)
+=======
+    void PushAddress(const CAddress& addr)
+>>>>>>> Stashed changes
     {
         // Known checking here is only to save space from duplicates.
         // SendMessages will filter it again for knowns that were added
         // after addresses were pushed.
         if (addr.IsValid() && !setAddrKnown.count(addr)) {
             if (vAddrToSend.size() >= MAX_ADDR_TO_SEND) {
+<<<<<<< Updated upstream
                 vAddrToSend[insecure_rand.randrange(vAddrToSend.size())] = _addr;
+=======
+                vAddrToSend[insecure_rand() % vAddrToSend.size()] = addr;
+>>>>>>> Stashed changes
             } else {
                 vAddrToSend.push_back(addr);
             }
@@ -663,7 +704,11 @@ public:
 
     bool HasFulfilledRequest(std::string strRequest)
     {
+<<<<<<< Updated upstream
         for (std::string& type : vecRequestsFulfilled) {
+=======
+        BOOST_FOREACH (std::string& type, vecRequestsFulfilled) {
+>>>>>>> Stashed changes
             if (type == strRequest) return true;
         }
         return false;

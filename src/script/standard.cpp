@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +16,15 @@
 #include "util.h"
 #include "utilstrencodings.h"
 
+<<<<<<< Updated upstream
 typedef std::vector<unsigned char> valtype;
+=======
+#include <boost/foreach.hpp>
+
+using namespace std;
+
+typedef vector<unsigned char> valtype;
+>>>>>>> Stashed changes
 
 unsigned nMaxDatacarrierBytes = MAX_OP_RETURN_RELAY;
 
@@ -26,7 +39,10 @@ const char* GetTxnOutputType(txnouttype t)
     case TX_PUBKEYHASH: return "pubkeyhash";
     case TX_SCRIPTHASH: return "scripthash";
     case TX_MULTISIG: return "multisig";
+<<<<<<< Updated upstream
     case TX_COLDSTAKE: return "coldstake";
+=======
+>>>>>>> Stashed changes
     case TX_NULL_DATA: return "nulldata";
     case TX_ZEROCOINMINT: return "zerocoinmint";
     }
@@ -36,6 +52,7 @@ const char* GetTxnOutputType(txnouttype t)
 /**
  * Return public keys or hashes from scriptPubKey, for 'standard' transaction types.
  */
+<<<<<<< Updated upstream
 bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::vector<unsigned char> >& vSolutionsRet)
 {
     // Templates
@@ -54,6 +71,22 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
         // Cold Staking: sender provides P2CS scripts, receiver provides signature, staking-flag and pubkey
         mTemplates.insert(std::make_pair(TX_COLDSTAKE, CScript() << OP_DUP << OP_HASH160 << OP_ROT << OP_IF << OP_CHECKCOLDSTAKEVERIFY <<
                 OP_PUBKEYHASH << OP_ELSE << OP_PUBKEYHASH << OP_ENDIF << OP_EQUALVERIFY << OP_CHECKSIG));
+=======
+bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, vector<vector<unsigned char> >& vSolutionsRet)
+{
+    // Templates
+    static multimap<txnouttype, CScript> mTemplates;
+    if (mTemplates.empty())
+    {
+        // Standard tx, sender provides pubkey, receiver adds signature
+        mTemplates.insert(make_pair(TX_PUBKEY, CScript() << OP_PUBKEY << OP_CHECKSIG));
+
+        // Bitcoin address tx, sender provides hash of pubkey, receiver provides signature and pubkey
+        mTemplates.insert(make_pair(TX_PUBKEYHASH, CScript() << OP_DUP << OP_HASH160 << OP_PUBKEYHASH << OP_EQUALVERIFY << OP_CHECKSIG));
+
+        // Sender provides N pubkeys, receivers provides M signatures
+        mTemplates.insert(make_pair(TX_MULTISIG, CScript() << OP_SMALLINTEGER << OP_PUBKEYS << OP_SMALLINTEGER << OP_CHECKMULTISIG));
+>>>>>>> Stashed changes
     }
 
     // Shortcut for pay-to-script-hash, which are more constrained than the other types:
@@ -61,16 +94,27 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
     if (scriptPubKey.IsPayToScriptHash())
     {
         typeRet = TX_SCRIPTHASH;
+<<<<<<< Updated upstream
         std::vector<unsigned char> hashBytes(scriptPubKey.begin()+2, scriptPubKey.begin()+22);
+=======
+        vector<unsigned char> hashBytes(scriptPubKey.begin()+2, scriptPubKey.begin()+22);
+>>>>>>> Stashed changes
         vSolutionsRet.push_back(hashBytes);
         return true;
     }
 
     // Zerocoin
+<<<<<<< Updated upstream
     if (scriptPubKey.IsZerocoinMint()) {
         typeRet = TX_ZEROCOINMINT;
         if(scriptPubKey.size() > 150) return false;
         std::vector<unsigned char> hashBytes(scriptPubKey.begin()+2, scriptPubKey.end());
+=======
+    if (scriptPubKey.IsZerocoinMint()){
+        typeRet = TX_ZEROCOINMINT;
+        if(scriptPubKey.size() > 150) return false;
+        vector<unsigned char> hashBytes(scriptPubKey.begin()+2, scriptPubKey.end());
+>>>>>>> Stashed changes
         vSolutionsRet.push_back(hashBytes);
         return true;
     }
@@ -87,13 +131,21 @@ bool Solver(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<std::v
 
     // Scan templates
     const CScript& script1 = scriptPubKey;
+<<<<<<< Updated upstream
     for (const PAIRTYPE(txnouttype, CScript)& tplate : mTemplates)
+=======
+    BOOST_FOREACH(const PAIRTYPE(txnouttype, CScript)& tplate, mTemplates)
+>>>>>>> Stashed changes
     {
         const CScript& script2 = tplate.second;
         vSolutionsRet.clear();
 
         opcodetype opcode1, opcode2;
+<<<<<<< Updated upstream
         std::vector<unsigned char> vch1, vch2;
+=======
+        vector<unsigned char> vch1, vch2;
+>>>>>>> Stashed changes
 
         // Compare
         CScript::const_iterator pc1 = script1.begin();
@@ -182,8 +234,11 @@ int ScriptSigArgsExpected(txnouttype t, const std::vector<std::vector<unsigned c
         return 1;
     case TX_PUBKEYHASH:
         return 2;
+<<<<<<< Updated upstream
     case TX_COLDSTAKE:
         return 3;
+=======
+>>>>>>> Stashed changes
     case TX_MULTISIG:
         if (vSolutions.size() < 1 || vSolutions[0].size() < 1)
             return -1;
@@ -196,7 +251,11 @@ int ScriptSigArgsExpected(txnouttype t, const std::vector<std::vector<unsigned c
 
 bool IsStandard(const CScript& scriptPubKey, txnouttype& whichType)
 {
+<<<<<<< Updated upstream
     std::vector<valtype> vSolutions;
+=======
+    vector<valtype> vSolutions;
+>>>>>>> Stashed changes
     if (!Solver(scriptPubKey, whichType, vSolutions))
         return false;
 
@@ -216,20 +275,32 @@ bool IsStandard(const CScript& scriptPubKey, txnouttype& whichType)
     return whichType != TX_NONSTANDARD;
 }
 
+<<<<<<< Updated upstream
 bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet, bool fColdStake)
 {
     std::vector<valtype> vSolutions;
+=======
+bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet)
+{
+    vector<valtype> vSolutions;
+>>>>>>> Stashed changes
     txnouttype whichType;
     if (!Solver(scriptPubKey, whichType, vSolutions))
         return false;
 
+<<<<<<< Updated upstream
     if (whichType == TX_PUBKEY) {
+=======
+    if (whichType == TX_PUBKEY)
+    {
+>>>>>>> Stashed changes
         CPubKey pubKey(vSolutions[0]);
         if (!pubKey.IsValid())
             return false;
 
         addressRet = pubKey.GetID();
         return true;
+<<<<<<< Updated upstream
 
     } else if (whichType == TX_PUBKEYHASH) {
         addressRet = CKeyID(uint160(vSolutions[0]));
@@ -241,16 +312,36 @@ bool ExtractDestination(const CScript& scriptPubKey, CTxDestination& addressRet,
     } else if (whichType == TX_COLDSTAKE) {
         addressRet = CKeyID(uint160(vSolutions[!fColdStake]));
         return true;
+=======
+    }
+    else if (whichType == TX_PUBKEYHASH)
+    {
+        addressRet = CKeyID(uint160(vSolutions[0]));
+        return true;
+    }
+    else if (whichType == TX_SCRIPTHASH)
+    {
+        addressRet = CScriptID(uint160(vSolutions[0]));
+        return true;
+>>>>>>> Stashed changes
     }
     // Multisig txns have more than one address...
     return false;
 }
 
+<<<<<<< Updated upstream
 bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, std::vector<CTxDestination>& addressRet, int& nRequiredRet)
 {
     addressRet.clear();
     typeRet = TX_NONSTANDARD;
     std::vector<valtype> vSolutions;
+=======
+bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, vector<CTxDestination>& addressRet, int& nRequiredRet)
+{
+    addressRet.clear();
+    typeRet = TX_NONSTANDARD;
+    vector<valtype> vSolutions;
+>>>>>>> Stashed changes
     if (!Solver(scriptPubKey, typeRet, vSolutions))
         return false;
     if (typeRet == TX_NULL_DATA){
@@ -273,6 +364,7 @@ bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, std::
 
         if (addressRet.empty())
             return false;
+<<<<<<< Updated upstream
 
     } else if (typeRet == TX_COLDSTAKE)
     {
@@ -284,6 +376,10 @@ bool ExtractDestinations(const CScript& scriptPubKey, txnouttype& typeRet, std::
         return true;
 
     } else
+=======
+    }
+    else
+>>>>>>> Stashed changes
     {
         nRequiredRet = 1;
         CTxDestination address;
@@ -331,6 +427,7 @@ CScript GetScriptForDestination(const CTxDestination& dest)
     return script;
 }
 
+<<<<<<< Updated upstream
 CScript GetScriptForStakeDelegation(const CKeyID& stakingKey, const CKeyID& spendingKey)
 {
     CScript script;
@@ -341,12 +438,18 @@ CScript GetScriptForStakeDelegation(const CKeyID& stakingKey, const CKeyID& spen
     return script;
 }
 
+=======
+>>>>>>> Stashed changes
 CScript GetScriptForMultisig(int nRequired, const std::vector<CPubKey>& keys)
 {
     CScript script;
 
     script << CScript::EncodeOP_N(nRequired);
+<<<<<<< Updated upstream
     for (const CPubKey& key : keys)
+=======
+    BOOST_FOREACH(const CPubKey& key, keys)
+>>>>>>> Stashed changes
         script << ToByteVector(key);
     script << CScript::EncodeOP_N(keys.size()) << OP_CHECKMULTISIG;
     return script;

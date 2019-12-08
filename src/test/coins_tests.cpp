@@ -3,10 +3,15 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "coins.h"
+<<<<<<< Updated upstream
 #include "script/standard.h"
 #include "uint256.h"
 #include "utilstrencodings.h"
 #include "test/test_pivx.h"
+=======
+#include "random.h"
+#include "uint256.h"
+>>>>>>> Stashed changes
 
 #include <vector>
 #include <map>
@@ -28,7 +33,11 @@ public:
             return false;
         }
         coins = it->second;
+<<<<<<< Updated upstream
         if (coins.IsPruned() && InsecureRandBool() == 0) {
+=======
+        if (coins.IsPruned() && insecure_rand() % 2 == 0) {
+>>>>>>> Stashed changes
             // Randomly return false in case of an empty entry.
             return false;
         }
@@ -47,7 +56,11 @@ public:
     {
         for (CCoinsMap::iterator it = mapCoins.begin(); it != mapCoins.end(); ) {
             map_[it->first] = it->second.coins;
+<<<<<<< Updated upstream
             if (it->second.coins.IsPruned() && InsecureRandRange(3) == 0) {
+=======
+            if (it->second.coins.IsPruned() && insecure_rand() % 3 == 0) {
+>>>>>>> Stashed changes
                 // Randomly delete empty entries on write.
                 map_.erase(it->first);
             }
@@ -62,7 +75,11 @@ public:
 };
 }
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(coins_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(coins_tests)
+>>>>>>> Stashed changes
 
 static const unsigned int NUM_SIMULATION_ITERATIONS = 40000;
 
@@ -98,25 +115,43 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
     std::vector<uint256> txids;
     txids.resize(NUM_SIMULATION_ITERATIONS / 8);
     for (unsigned int i = 0; i < txids.size(); i++) {
+<<<<<<< Updated upstream
         txids[i] = InsecureRand256();
+=======
+        txids[i] = GetRandHash();
+>>>>>>> Stashed changes
     }
 
     for (unsigned int i = 0; i < NUM_SIMULATION_ITERATIONS; i++) {
         // Do a random modification.
         {
+<<<<<<< Updated upstream
             uint256 txid = txids[InsecureRandRange(txids.size())]; // txid we're going to modify in this iteration.
             CCoins& coins = result[txid];
             CCoinsModifier entry = stack.back()->ModifyCoins(txid);
             BOOST_CHECK(coins == *entry);
             if (InsecureRandRange(5) == 0 || coins.IsPruned()) {
+=======
+            uint256 txid = txids[insecure_rand() % txids.size()]; // txid we're going to modify in this iteration.
+            CCoins& coins = result[txid];
+            CCoinsModifier entry = stack.back()->ModifyCoins(txid);
+            BOOST_CHECK(coins == *entry);
+            if (insecure_rand() % 5 == 0 || coins.IsPruned()) {
+>>>>>>> Stashed changes
                 if (coins.IsPruned()) {
                     added_an_entry = true;
                 } else {
                     updated_an_entry = true;
                 }
+<<<<<<< Updated upstream
                 coins.nVersion = InsecureRand32();
                 coins.vout.resize(1);
                 coins.vout[0].nValue = InsecureRand32();
+=======
+                coins.nVersion = insecure_rand();
+                coins.vout.resize(1);
+                coins.vout[0].nValue = insecure_rand();
+>>>>>>> Stashed changes
                 *entry = coins;
             } else {
                 coins.Clear();
@@ -126,7 +161,11 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
         }
 
         // Once every 1000 iterations and at the end, verify the full cache.
+<<<<<<< Updated upstream
         if (InsecureRandRange(1000) == 1 || i == NUM_SIMULATION_ITERATIONS - 1) {
+=======
+        if (insecure_rand() % 1000 == 1 || i == NUM_SIMULATION_ITERATIONS - 1) {
+>>>>>>> Stashed changes
             for (std::map<uint256, CCoins>::iterator it = result.begin(); it != result.end(); it++) {
                 const CCoins* coins = stack.back()->AccessCoins(it->first);
                 if (coins) {
@@ -139,14 +178,24 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
             }
         }
 
+<<<<<<< Updated upstream
         if (InsecureRandRange(100) == 0) {
             // Every 100 iterations, change the cache stack.
             if (stack.size() > 0 && InsecureRandBool() == 0) {
+=======
+        if (insecure_rand() % 100 == 0) {
+            // Every 100 iterations, change the cache stack.
+            if (stack.size() > 0 && insecure_rand() % 2 == 0) {
+>>>>>>> Stashed changes
                 stack.back()->Flush();
                 delete stack.back();
                 stack.pop_back();
             }
+<<<<<<< Updated upstream
             if (stack.size() == 0 || (stack.size() < 4 && InsecureRandBool())) {
+=======
+            if (stack.size() == 0 || (stack.size() < 4 && insecure_rand() % 2)) {
+>>>>>>> Stashed changes
                 CCoinsView* tip = &base;
                 if (stack.size() > 0) {
                     tip = stack.back();
@@ -177,6 +226,7 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
     BOOST_CHECK(missed_an_entry);
 }
 
+<<<<<<< Updated upstream
 BOOST_AUTO_TEST_CASE(ccoins_serialization)
 {
     // Good example
@@ -246,4 +296,6 @@ BOOST_AUTO_TEST_CASE(ccoins_serialization)
     }
 }
 
+=======
+>>>>>>> Stashed changes
 BOOST_AUTO_TEST_SUITE_END()

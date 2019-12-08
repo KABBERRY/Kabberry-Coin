@@ -1,9 +1,19 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef PIVX_BLOCKSIGNATURE_H
 #define PIVX_BLOCKSIGNATURE_H
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PrimeStone_BLOCKSIGNATURE_H
+#define PrimeStone_BLOCKSIGNATURE_H
+>>>>>>> Stashed changes
 
 #include "key.h"
 #include "primitives/block.h"
@@ -13,4 +23,8 @@ bool SignBlockWithKey(CBlock& block, const CKey& key);
 bool SignBlock(CBlock& block, const CKeyStore& keystore);
 bool CheckBlockSignature(const CBlock& block);
 
+<<<<<<< Updated upstream
 #endif //PIVX_BLOCKSIGNATURE_H
+=======
+#endif //PrimeStone_BLOCKSIGNATURE_H
+>>>>>>> Stashed changes

@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -28,6 +33,7 @@ namespace Ui
 class CoinControlDialog;
 }
 
+<<<<<<< Updated upstream
 class CCoinControlWidgetItem : public QTreeWidgetItem
 {
 public:
@@ -38,6 +44,8 @@ public:
     bool operator<(const QTreeWidgetItem &other) const;
 };
 
+=======
+>>>>>>> Stashed changes
 class CoinControlDialog : public QDialog
 {
     Q_OBJECT
@@ -48,7 +56,10 @@ public:
 
     void setModel(WalletModel* model);
     void updateDialogLabels();
+<<<<<<< Updated upstream
     void updateView();
+=======
+>>>>>>> Stashed changes
 
     // static because also called from sendcoinsdialog
     static void updateLabels(WalletModel*, QDialog*);
@@ -71,19 +82,60 @@ private:
     QAction* lockAction;
     QAction* unlockAction;
 
+<<<<<<< Updated upstream
     void sortView(int, Qt::SortOrder);
+=======
+    QString strPad(QString, int, QString);
+    void sortView(int, Qt::SortOrder);
+    void updateView();
+>>>>>>> Stashed changes
 
     enum {
         COLUMN_CHECKBOX,
         COLUMN_AMOUNT,
         COLUMN_LABEL,
         COLUMN_ADDRESS,
+<<<<<<< Updated upstream
         COLUMN_DATE,
         COLUMN_CONFIRMATIONS,
         COLUMN_TXHASH,
         COLUMN_VOUT_INDEX,
     };
     friend class CCoinControlWidgetItem;
+=======
+        COLUMN_TYPE,
+        COLUMN_DATE,
+        COLUMN_CONFIRMATIONS,
+        COLUMN_PRIORITY,
+        COLUMN_TXHASH,
+        COLUMN_VOUT_INDEX,
+        COLUMN_AMOUNT_INT64,
+        COLUMN_PRIORITY_INT64,
+        COLUMN_DATE_INT64
+    };
+
+    // some columns have a hidden column containing the value used for sorting
+    int getMappedColumn(int column, bool fVisibleColumn = true)
+    {
+        if (fVisibleColumn) {
+            if (column == COLUMN_AMOUNT_INT64)
+                return COLUMN_AMOUNT;
+            else if (column == COLUMN_PRIORITY_INT64)
+                return COLUMN_PRIORITY;
+            else if (column == COLUMN_DATE_INT64)
+                return COLUMN_DATE;
+        } else {
+            if (column == COLUMN_AMOUNT)
+                return COLUMN_AMOUNT_INT64;
+            else if (column == COLUMN_PRIORITY)
+                return COLUMN_PRIORITY_INT64;
+            else if (column == COLUMN_DATE)
+                return COLUMN_DATE_INT64;
+        }
+
+        return column;
+    }
+>>>>>>> Stashed changes
 
 private slots:
     void showMenu(const QPoint&);
@@ -98,12 +150,20 @@ private slots:
     void clipboardFee();
     void clipboardAfterFee();
     void clipboardBytes();
+<<<<<<< Updated upstream
+=======
+    void clipboardPriority();
+>>>>>>> Stashed changes
     void clipboardLowOutput();
     void clipboardChange();
     void radioTreeMode(bool);
     void radioListMode(bool);
     void viewItemChanged(QTreeWidgetItem*, int);
     void headerSectionClicked(int);
+<<<<<<< Updated upstream
+=======
+    void buttonBoxClicked(QAbstractButton*);
+>>>>>>> Stashed changes
     void buttonSelectAllClicked();
     void buttonToggleLockClicked();
     void updateLabelLocked();

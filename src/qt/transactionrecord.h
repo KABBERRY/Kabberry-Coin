@@ -1,6 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2016 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2018 The PIVX developers
+=======
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -77,7 +82,11 @@ public:
         Other,
         Generated,
         StakeMint,
+<<<<<<< Updated upstream
         StakeZPIV,
+=======
+        StakezPSC,
+>>>>>>> Stashed changes
         SendToAddress,
         SendToOther,
         RecvWithAddress,
@@ -87,13 +96,18 @@ public:
         ZerocoinMint,
         ZerocoinSpend,
         RecvFromZerocoinSpend,
+<<<<<<< Updated upstream
         ZerocoinSpend_Change_zPiv,
+=======
+        ZerocoinSpend_Change_zPSC,
+>>>>>>> Stashed changes
         ZerocoinSpend_FromMe,
         RecvWithObfuscation,
         ObfuscationDenominate,
         ObfuscationCollateralPayment,
         ObfuscationMakeCollaterals,
         ObfuscationCreateDenominations,
+<<<<<<< Updated upstream
         Obfuscated,
         StakeDelegated, // Received cold stake (owner)
         StakeHot, // Staked via a delegated P2CS.
@@ -101,11 +115,15 @@ public:
         P2CSDelegationSent, // Spendable P2CS delegated utxo. (coin-owner)
         P2CSUnlockOwner, // Coin-owner spent the delegated utxo
         P2CSUnlockStaker // Staker watching the owner spent the delegated utxo
+=======
+        Obfuscated
+>>>>>>> Stashed changes
     };
 
     /** Number of confirmation recommended for accepting a transaction */
     static const int RecommendedNumConfirmations = 6;
 
+<<<<<<< Updated upstream
     TransactionRecord(unsigned int size) : hash(), time(0), type(Other), address(""), debit(0), credit(0), size(size), idx(0)
     {
     }
@@ -117,11 +135,25 @@ public:
 
     TransactionRecord(uint256 hash, qint64 time, unsigned int size, Type type, const std::string& address, const CAmount& debit, const CAmount& credit) : hash(hash), time(time), type(type), address(address), debit(debit), credit(credit),
                                                                                                                                        size(size), idx(0)
+=======
+    TransactionRecord() : hash(), time(0), type(Other), address(""), debit(0), credit(0), idx(0)
+    {
+    }
+
+    TransactionRecord(uint256 hash, qint64 time) : hash(hash), time(time), type(Other), address(""), debit(0),
+                                                   credit(0), idx(0)
+    {
+    }
+
+    TransactionRecord(uint256 hash, qint64 time, Type type, const std::string& address, const CAmount& debit, const CAmount& credit) : hash(hash), time(time), type(type), address(address), debit(debit), credit(credit),
+                                                                                                                                       idx(0)
+>>>>>>> Stashed changes
     {
     }
 
     /** Decompose CWallet transaction to model transaction records.
      */
+<<<<<<< Updated upstream
     static QList<TransactionRecord> decomposeTransaction(const CWallet* wallet, const CWalletTx& wtx);
 
     /// Helpers
@@ -130,6 +162,11 @@ public:
                                             TransactionRecord& record, bool isContract = false);
     static void loadUnlockColdStake(const CWallet* wallet, const CWalletTx& wtx, TransactionRecord& record);
 
+=======
+    static bool showTransaction(const CWalletTx& wtx);
+    static QList<TransactionRecord> decomposeTransaction(const CWallet* wallet, const CWalletTx& wtx);
+
+>>>>>>> Stashed changes
     /** @name Immutable transaction attributes
       @{*/
     uint256 hash;
@@ -138,7 +175,10 @@ public:
     std::string address;
     CAmount debit;
     CAmount credit;
+<<<<<<< Updated upstream
     unsigned int size;
+=======
+>>>>>>> Stashed changes
     /**@}*/
 
     /** Subtransaction index, for sort key */
@@ -163,6 +203,7 @@ public:
     /** Return whether a status update is needed.
      */
     bool statusUpdateNeeded();
+<<<<<<< Updated upstream
 
     /** Return transaction status
      */
@@ -180,6 +221,8 @@ public:
      */
     bool isNull() const;
 
+=======
+>>>>>>> Stashed changes
 };
 
 #endif // BITCOIN_QT_TRANSACTIONRECORD_H

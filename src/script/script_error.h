@@ -24,7 +24,10 @@ typedef enum ScriptError_t
     /* Failed verify operations */
     SCRIPT_ERR_VERIFY,
     SCRIPT_ERR_EQUALVERIFY,
+<<<<<<< Updated upstream
     SCRIPT_ERR_CHECKCOLDSTAKEVERIFY,
+=======
+>>>>>>> Stashed changes
     SCRIPT_ERR_CHECKMULTISIGVERIFY,
     SCRIPT_ERR_CHECKSIGVERIFY,
     SCRIPT_ERR_NUMEQUALVERIFY,
@@ -36,10 +39,13 @@ typedef enum ScriptError_t
     SCRIPT_ERR_INVALID_ALTSTACK_OPERATION,
     SCRIPT_ERR_UNBALANCED_CONDITIONAL,
 
+<<<<<<< Updated upstream
     /* OP_CHECKLOCKTIMEVERIFY */
     SCRIPT_ERR_NEGATIVE_LOCKTIME,
     SCRIPT_ERR_UNSATISFIED_LOCKTIME,
 
+=======
+>>>>>>> Stashed changes
     /* BIP62 */
     SCRIPT_ERR_SIG_HASHTYPE,
     SCRIPT_ERR_SIG_DER,

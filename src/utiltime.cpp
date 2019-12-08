@@ -1,11 +1,20 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2018 The PIVX developers
+=======
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include "tinyformat.h"
@@ -14,6 +23,10 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/thread.hpp>
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 static int64_t nMockTime = 0; //! For unit testing
 

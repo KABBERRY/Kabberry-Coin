@@ -1,6 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2018 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,7 +15,10 @@
 #include "guiutil.h"
 
 #include "util.h"
+<<<<<<< Updated upstream
 #include "qt/pivx/qtutils.h"
+=======
+>>>>>>> Stashed changes
 
 #include <boost/filesystem.hpp>
 
@@ -95,7 +103,11 @@ void FreespaceChecker::check()
                 replyMessage = tr("Path already exists, and is not a directory.");
             }
         }
+<<<<<<< Updated upstream
     } catch (const fs::filesystem_error& e) {
+=======
+    } catch (fs::filesystem_error& e) {
+>>>>>>> Stashed changes
         /* Parent directory does not exist or is not accessible */
         replyStatus = ST_ERROR;
         replyMessage = tr("Cannot create data directory here.");
@@ -110,6 +122,7 @@ Intro::Intro(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::W
                                 signalled(false)
 {
     ui->setupUi(this);
+<<<<<<< Updated upstream
     this->setStyleSheet(GUIUtil::loadStyleSheet());
 
     setCssProperty(ui->frame, "container-welcome-step2");
@@ -131,6 +144,8 @@ Intro::Intro(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::W
     connect(ui->pushButtonOk, SIGNAL(clicked()), this, SLOT(accept()));
     connect(ui->pushButtonCancel, SIGNAL(clicked()), this, SLOT(close()));
 
+=======
+>>>>>>> Stashed changes
     ui->sizeWarningLabel->setText(ui->sizeWarningLabel->text().arg(BLOCK_CHAIN_SIZE / GB_BYTES));
     startThread();
 }
@@ -155,12 +170,18 @@ void Intro::setDataDirectory(const QString& dataDir)
         ui->dataDirDefault->setChecked(true);
         ui->dataDirectory->setEnabled(false);
         ui->ellipsisButton->setEnabled(false);
+<<<<<<< Updated upstream
         updateDataDirStatus(false);
+=======
+>>>>>>> Stashed changes
     } else {
         ui->dataDirCustom->setChecked(true);
         ui->dataDirectory->setEnabled(true);
         ui->ellipsisButton->setEnabled(true);
+<<<<<<< Updated upstream
         updateDataDirStatus(true);
+=======
+>>>>>>> Stashed changes
     }
 }
 
@@ -182,37 +203,60 @@ bool Intro::pickDataDirectory()
     /* 2) Allow QSettings to override default dir */
     dataDir = settings.value("strDataDir", dataDir).toString();
 
+<<<<<<< Updated upstream
 
     if (!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", false)) {
         // If current default data directory does not exist, let the user choose one
+=======
+    if (!fs::exists(GUIUtil::qstringToBoostPath(dataDir)) || GetBoolArg("-choosedatadir", false)) {
+        /* If current default data directory does not exist, let the user choose one */
+>>>>>>> Stashed changes
         Intro intro;
         intro.setDataDirectory(dataDir);
         intro.setWindowIcon(QIcon(":icons/bitcoin"));
 
         while (true) {
             if (!intro.exec()) {
+<<<<<<< Updated upstream
                 // Cancel clicked
+=======
+                /* Cancel clicked */
+>>>>>>> Stashed changes
                 return false;
             }
             dataDir = intro.getDataDirectory();
             try {
                 TryCreateDirectory(GUIUtil::qstringToBoostPath(dataDir));
                 break;
+<<<<<<< Updated upstream
             } catch (const fs::filesystem_error& e) {
                 QMessageBox::critical(0, tr("PIVX Core"),
                     tr("Error: Specified data directory \"%1\" cannot be created.").arg(dataDir));
                 // fall through, back to choosing screen
+=======
+            } catch (fs::filesystem_error& e) {
+                QMessageBox::critical(0, tr("PrimeStone"),
+                    tr("Error: Specified data directory \"%1\" cannot be created.").arg(dataDir));
+                /* fall through, back to choosing screen */
+>>>>>>> Stashed changes
             }
         }
 
         settings.setValue("strDataDir", dataDir);
     }
+<<<<<<< Updated upstream
 
     /* Only override -datadir if different from the default, to make it possible to
      * override -datadir in the pivx.conf file in the default data directory
      * (to be consistent with pivxd behavior)
      */
 
+=======
+    /* Only override -datadir if different from the default, to make it possible to
+     * override -datadir in the primestone.conf file in the default data directory
+     * (to be consistent with primestoned behavior)
+     */
+>>>>>>> Stashed changes
     if (dataDir != getDefaultDataDirectory())
         SoftSetArg("-datadir", GUIUtil::qstringToBoostPath(dataDir).string()); // use OS locale for path setting
     return true;
@@ -227,7 +271,11 @@ void Intro::setStatus(int status, const QString& message, quint64 bytesAvailable
         break;
     case FreespaceChecker::ST_ERROR:
         ui->errorMessage->setText(tr("Error") + ": " + message);
+<<<<<<< Updated upstream
         ui->errorMessage->setStyleSheet("QLabel { color: #f84444 }");
+=======
+        ui->errorMessage->setStyleSheet("QLabel { color: #800000 }");
+>>>>>>> Stashed changes
         break;
     }
     /* Indicate number of bytes available */
@@ -244,6 +292,7 @@ void Intro::setStatus(int status, const QString& message, quint64 bytesAvailable
         ui->freeSpace->setText(freeString + ".");
     }
     /* Don't allow confirm in ERROR state */
+<<<<<<< Updated upstream
     ui->pushButtonOk->setEnabled(status != FreespaceChecker::ST_ERROR);
 }
 
@@ -254,12 +303,19 @@ void Intro::updateDataDirStatus(bool enabled){
         setCssProperty(ui->dataDirectory, "edit-primary-welcome-disabled", true);
 
     }
+=======
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(status != FreespaceChecker::ST_ERROR);
+>>>>>>> Stashed changes
 }
 
 void Intro::on_dataDirectory_textChanged(const QString& dataDirStr)
 {
     /* Disable OK button until check result comes in */
+<<<<<<< Updated upstream
     ui->pushButtonOk->setEnabled(false);
+=======
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+>>>>>>> Stashed changes
     checkPath(dataDirStr);
 }
 
@@ -273,14 +329,20 @@ void Intro::on_ellipsisButton_clicked()
 void Intro::on_dataDirDefault_clicked()
 {
     setDataDirectory(getDefaultDataDirectory());
+<<<<<<< Updated upstream
     updateDataDirStatus(false);
+=======
+>>>>>>> Stashed changes
 }
 
 void Intro::on_dataDirCustom_clicked()
 {
     ui->dataDirectory->setEnabled(true);
     ui->ellipsisButton->setEnabled(true);
+<<<<<<< Updated upstream
     updateDataDirStatus(true);
+=======
+>>>>>>> Stashed changes
 }
 
 void Intro::startThread()

@@ -1,5 +1,9 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -37,11 +41,14 @@ public:
     };
 
     void setDateRange(const QDateTime& from, const QDateTime& to);
+<<<<<<< Updated upstream
     void clearDateRange() {
         if (dateFrom != MIN_DATE || dateTo == MAX_DATE)
             setDateRange(MIN_DATE, MAX_DATE);
     }
 
+=======
+>>>>>>> Stashed changes
     void setAddressPrefix(const QString& addrPrefix);
     /**
       @note Type filter takes a bit field created with TYPE() or ALL_TYPES
@@ -56,6 +63,7 @@ public:
     /** Set whether to show conflicted transactions. */
     void setShowInactive(bool showInactive);
 
+<<<<<<< Updated upstream
     /** Set whether to hide orphan stakes. */
     void setHideOrphans(bool fHide);
 
@@ -72,6 +80,9 @@ public:
     static bool isOrphan(const int status, const int type);
 
     //QVariant dataFromSourcePos(int sourceRow, int role) const;
+=======
+    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+>>>>>>> Stashed changes
 
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
@@ -85,6 +96,7 @@ private:
     CAmount minAmount;
     int limitRows;
     bool showInactive;
+<<<<<<< Updated upstream
     bool fHideOrphans = true;
     bool fOnlyZc = false;
     bool fOnlyStakes = false;
@@ -93,6 +105,8 @@ private:
     bool isZcTx(int type) const;
     bool isStakeTx(int type) const;
     bool isColdStake(int type) const;
+=======
+>>>>>>> Stashed changes
 };
 
 #endif // BITCOIN_QT_TRANSACTIONFILTERPROXY_H

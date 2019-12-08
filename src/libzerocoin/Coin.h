@@ -9,7 +9,11 @@
  * @copyright  Copyright 2013 Ian Miers, Christina Garman and Matthew Green
  * @license    This project is released under the MIT license.
  **/
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 
 #ifndef COIN_H_
 #define COIN_H_
@@ -22,6 +26,7 @@
 
 namespace libzerocoin
 {
+<<<<<<< Updated upstream
 
     class InvalidSerialException : public std::exception {
     public:
@@ -34,6 +39,11 @@ namespace libzerocoin
     bool IsValidCommitmentToCoinRange(const ZerocoinParams* params, const CBigNum& bnCommitment);
     CBigNum GetAdjustedSerial(const CBigNum& bnSerial);
     CBigNum ExtractSerialFromPubKey(const CPubKey pubkey);
+=======
+    int ExtractVersionFromSerial(const CBigNum& bnSerial);
+    bool IsValidSerial(const ZerocoinParams* params, const CBigNum& bnSerial);
+    CBigNum GetAdjustedSerial(const CBigNum& bnSerial);
+>>>>>>> Stashed changes
     bool GenerateKeyPair(const CBigNum& bnGroupOrder, const uint256& nPrivkey, CKey& key, CBigNum& bnSerial);
 
 /** A Public coin is the part of a coin that
@@ -54,11 +64,19 @@ public:
     PublicCoin(const ZerocoinParams* p);
 
     /**Generates a public coin
+<<<<<<< Updated upstream
      *
      * @param p cryptographic paramters
      * @param coin the value of the commitment.
      * @param denomination The denomination of the coin.
      */
+=======
+	 *
+	 * @param p cryptographic paramters
+	 * @param coin the value of the commitment.
+	 * @param denomination The denomination of the coin. 
+	 */
+>>>>>>> Stashed changes
     PublicCoin(const ZerocoinParams* p, const CBigNum& coin, const CoinDenomination d);
     const CBigNum& getValue() const { return this->value; }
 
@@ -150,6 +168,7 @@ private:
     CPrivKey privkey;
 
     /**
+<<<<<<< Updated upstream
      * @brief Mint a new coin.
      * @param denomination the denomination of the coin to mint
      * @throws ZerocoinException if the process takes too long
@@ -175,6 +194,33 @@ private:
      * to timing attacks. Don't use it if you think someone
      * could be timing your coin minting.
      **/
+=======
+	 * @brief Mint a new coin.
+	 * @param denomination the denomination of the coin to mint
+	 * @throws ZerocoinException if the process takes too long
+	 *
+	 * Generates a new Zerocoin by (a) selecting a random serial
+	 * number, (b) committing to this serial number and repeating until
+	 * the resulting commitment is prime. Stores the
+	 * resulting commitment (coin) and randomness (trapdoor).
+	 **/
+    void mintCoin(const CoinDenomination denomination);
+
+    /**
+	 * @brief Mint a new coin using a faster process.
+	 * @param denomination the denomination of the coin to mint
+	 * @throws ZerocoinException if the process takes too long
+	 *
+	 * Generates a new Zerocoin by (a) selecting a random serial
+	 * number, (b) committing to this serial number and repeating until
+	 * the resulting commitment is prime. Stores the
+	 * resulting commitment (coin) and randomness (trapdoor).
+	 * This routine is substantially faster than the
+	 * mintCoin() routine, but could be more vulnerable
+	 * to timing attacks. Don't use it if you think someone
+	 * could be timing your coin minting.
+	 **/
+>>>>>>> Stashed changes
     void mintCoinFast(const CoinDenomination denomination);
 };
 

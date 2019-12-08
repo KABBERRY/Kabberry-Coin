@@ -5,6 +5,7 @@
 
 #include "random.h"
 
+<<<<<<< Updated upstream
 #include "crypto/sha512.h"
 #include "support/cleanse.h"
 #ifdef WIN32
@@ -18,11 +19,22 @@
 #include <limits>
 #include <chrono>
 #include <thread>
+=======
+#ifdef WIN32
+#include "compat.h" // for Windows API
+#endif
+#include "serialize.h"        // for begin_ptr(vec)
+#include "util.h"             // for LogPrint()
+#include "utilstrencodings.h" // for GetTime()
+
+#include <limits>
+>>>>>>> Stashed changes
 
 #ifndef WIN32
 #include <sys/time.h>
 #endif
 
+<<<<<<< Updated upstream
 #ifdef HAVE_SYS_GETRANDOM
 #include <sys/syscall.h>
 #include <linux/random.h>
@@ -126,6 +138,23 @@ static bool GetHWRand(unsigned char* ent32) {
     }
 #endif
     return false;
+=======
+#include <openssl/crypto.h>
+#include <openssl/err.h>
+#include <openssl/rand.h>
+
+static inline int64_t GetPerformanceCounter()
+{
+    int64_t nCounter = 0;
+#ifdef WIN32
+    QueryPerformanceCounter((LARGE_INTEGER*)&nCounter);
+#else
+    timeval t;
+    gettimeofday(&t, NULL);
+    nCounter = (int64_t)(t.tv_sec * 1000000 + t.tv_usec);
+#endif
+    return nCounter;
+>>>>>>> Stashed changes
 }
 
 void RandAddSeed()
@@ -133,6 +162,7 @@ void RandAddSeed()
     // Seed with CPU performance counter
     int64_t nCounter = GetPerformanceCounter();
     RAND_add(&nCounter, sizeof(nCounter), 1.5);
+<<<<<<< Updated upstream
     memory_cleanse((void*)&nCounter, sizeof(nCounter));
 }
 
@@ -144,27 +174,51 @@ static void RandAddSeedPerfmon()
     // Don't need this on Linux, OpenSSL automatically uses /dev/urandom
     // Seed with the entire set of perfmon data
 
+=======
+    OPENSSL_cleanse((void*)&nCounter, sizeof(nCounter));
+}
+
+void RandAddSeedPerfmon()
+{
+    RandAddSeed();
+
+>>>>>>> Stashed changes
     // This can take up to 2 seconds, so only do it every 10 minutes
     static int64_t nLastPerfmon;
     if (GetTime() < nLastPerfmon + 10 * 60)
         return;
     nLastPerfmon = GetTime();
 
+<<<<<<< Updated upstream
+=======
+#ifdef WIN32
+    // Don't need this on Linux, OpenSSL automatically uses /dev/urandom
+    // Seed with the entire set of perfmon data
+>>>>>>> Stashed changes
     std::vector<unsigned char> vData(250000, 0);
     long ret = 0;
     unsigned long nSize = 0;
     const size_t nMaxSize = 10000000; // Bail out at more than 10MB of performance data
     while (true) {
         nSize = vData.size();
+<<<<<<< Updated upstream
         ret = RegQueryValueExA(HKEY_PERFORMANCE_DATA, "Global", NULL, NULL, vData.data(), &nSize);
+=======
+        ret = RegQueryValueExA(HKEY_PERFORMANCE_DATA, "Global", NULL, NULL, begin_ptr(vData), &nSize);
+>>>>>>> Stashed changes
         if (ret != ERROR_MORE_DATA || vData.size() >= nMaxSize)
             break;
         vData.resize(std::max((vData.size() * 3) / 2, nMaxSize)); // Grow size of buffer exponentially
     }
     RegCloseKey(HKEY_PERFORMANCE_DATA);
     if (ret == ERROR_SUCCESS) {
+<<<<<<< Updated upstream
         RAND_add(vData.data(), nSize, nSize / 100.0);
         memory_cleanse(vData.data(), nSize);
+=======
+        RAND_add(begin_ptr(vData), nSize, nSize / 100.0);
+        OPENSSL_cleanse(begin_ptr(vData), nSize);
+>>>>>>> Stashed changes
         LogPrint("rand", "%s: %lu bytes\n", __func__, nSize);
     } else {
         static bool warned = false; // Warn only once
@@ -176,6 +230,7 @@ static void RandAddSeedPerfmon()
 #endif
 }
 
+<<<<<<< Updated upstream
 #ifndef WIN32
 /** Fallback: get 32 bytes of system entropy from /dev/urandom. The most
  * compatible way to get cryptographic randomness on UNIX-ish platforms.
@@ -350,6 +405,16 @@ void GetStrongRandBytes(unsigned char* out, int num)
     memory_cleanse(buf, 64);
 }
 
+=======
+void GetRandBytes(unsigned char* buf, int num)
+{
+    if (RAND_bytes(buf, num) != 1) {
+        LogPrintf("%s: OpenSSL RAND_bytes() failed with error: %s\n", __func__, ERR_error_string(ERR_get_error(), NULL));
+        assert(false);
+    }
+}
+
+>>>>>>> Stashed changes
 uint64_t GetRand(uint64_t nMax)
 {
     if (nMax == 0)
@@ -377,6 +442,7 @@ uint256 GetRandHash()
     return hash;
 }
 
+<<<<<<< Updated upstream
 void FastRandomContext::RandomSeed()
 {
     uint256 seed = GetRandHash();
@@ -480,4 +546,24 @@ FastRandomContext& FastRandomContext::operator=(FastRandomContext&& from) noexce
 void RandomInit()
 {
     RDRandInit();
+=======
+uint32_t insecure_rand_Rz = 11;
+uint32_t insecure_rand_Rw = 11;
+void seed_insecure_rand(bool fDeterministic)
+{
+    // The seed values have some unlikely fixed points which we avoid.
+    if (fDeterministic) {
+        insecure_rand_Rz = insecure_rand_Rw = 11;
+    } else {
+        uint32_t tmp;
+        do {
+            GetRandBytes((unsigned char*)&tmp, 4);
+        } while (tmp == 0 || tmp == 0x9068ffffU);
+        insecure_rand_Rz = tmp;
+        do {
+            GetRandBytes((unsigned char*)&tmp, 4);
+        } while (tmp == 0 || tmp == 0x464fffffU);
+        insecure_rand_Rw = tmp;
+    }
+>>>>>>> Stashed changes
 }

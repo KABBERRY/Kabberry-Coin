@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -10,11 +11,27 @@
 #include "wallet/wallet.h"
 
 CZPivStake::CZPivStake(const libzerocoin::CoinSpend& spend)
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#include "accumulators.h"
+#include "chain.h"
+#include "primitives/deterministicmint.h"
+#include "main.h"
+#include "stakeinput.h"
+#include "wallet.h"
+
+CzPSCStake::CzPSCStake(const libzerocoin::CoinSpend& spend)
+>>>>>>> Stashed changes
 {
     this->nChecksum = spend.getAccumulatorChecksum();
     this->denom = spend.getDenomination();
     uint256 nSerial = spend.getCoinSerialNumber().getuint256();
     this->hashSerial = Hash(nSerial.begin(), nSerial.end());
+<<<<<<< Updated upstream
     fMint = false;
 }
 
@@ -22,6 +39,15 @@ int CZPivStake::GetChecksumHeightFromMint()
 {
     int nHeightChecksum = chainActive.Height() - Params().Zerocoin_RequiredStakeDepth();
     nHeightChecksum = std::min(nHeightChecksum, Params().Zerocoin_Block_Last_Checkpoint());
+=======
+    this->pindexFrom = nullptr;
+    fMint = false;
+}
+
+int CzPSCStake::GetChecksumHeightFromMint()
+{
+    int nHeightChecksum = chainActive.Height() - Params().Zerocoin_RequiredStakeDepth();
+>>>>>>> Stashed changes
 
     //Need to return the first occurance of this checksum in order for the validation process to identify a specific
     //block height
@@ -30,20 +56,35 @@ int CZPivStake::GetChecksumHeightFromMint()
     return GetChecksumHeight(nChecksum, denom);
 }
 
+<<<<<<< Updated upstream
 int CZPivStake::GetChecksumHeightFromSpend()
+=======
+int CzPSCStake::GetChecksumHeightFromSpend()
+>>>>>>> Stashed changes
 {
     return GetChecksumHeight(nChecksum, denom);
 }
 
+<<<<<<< Updated upstream
 uint32_t CZPivStake::GetChecksum()
+=======
+uint32_t CzPSCStake::GetChecksum()
+>>>>>>> Stashed changes
 {
     return nChecksum;
 }
 
+<<<<<<< Updated upstream
 // The zPIV block index is the first appearance of the accumulator checksum that was used in the spend
 // note that this also means when staking that this checksum should be from a block that is beyond 60 minutes old and
 // 100 blocks deep.
 CBlockIndex* CZPivStake::GetIndexFrom()
+=======
+// The zPSC block index is the first appearance of the accumulator checksum that was used in the spend
+// note that this also means when staking that this checksum should be from a block that is beyond 60 minutes old and
+// 100 blocks deep.
+CBlockIndex* CzPSCStake::GetIndexFrom()
+>>>>>>> Stashed changes
 {
     if (pindexFrom)
         return pindexFrom;
@@ -65,12 +106,17 @@ CBlockIndex* CZPivStake::GetIndexFrom()
     return pindexFrom;
 }
 
+<<<<<<< Updated upstream
 CAmount CZPivStake::GetValue()
+=======
+CAmount CzPSCStake::GetValue()
+>>>>>>> Stashed changes
 {
     return denom * COIN;
 }
 
 //Use the first accumulator checkpoint that occurs 60 minutes after the block being staked from
+<<<<<<< Updated upstream
 // In case of regtest, next accumulator of 60 blocks after the block being staked from
 bool CZPivStake::GetModifier(uint64_t& nStakeModifier)
 {
@@ -89,10 +135,22 @@ bool CZPivStake::GetModifier(uint64_t& nStakeModifier)
     // just return false for now. !TODO: refactor/remove this method
     while (pindex && pindex->nHeight + 1 <= std::min(chainActive.Height(), Params().Zerocoin_Block_Last_Checkpoint()-1)) {
         if (pindex->GetBlockTime() - nTimeBlockFrom > 60 * 60) {
+=======
+bool CzPSCStake::GetModifier(uint64_t& nStakeModifier)
+{
+    CBlockIndex* pindex = GetIndexFrom();
+    if (!pindex)
+        return false;
+
+    int64_t nTimeBlockFrom = pindex->GetBlockTime();
+    while (true) {
+        if (pindex->GetBlockTime() - nTimeBlockFrom > 60*60) {
+>>>>>>> Stashed changes
             nStakeModifier = pindex->nAccumulatorCheckpoint.Get64();
             return true;
         }
 
+<<<<<<< Updated upstream
         pindex = chainActive.Next(pindex);
     }
 
@@ -102,12 +160,28 @@ bool CZPivStake::GetModifier(uint64_t& nStakeModifier)
 CDataStream CZPivStake::GetUniqueness()
 {
     //The unique identifier for a zPIV is a hash of the serial
+=======
+        if (pindex->nHeight + 1 <= chainActive.Height())
+            pindex = chainActive.Next(pindex);
+        else
+            return false;
+    }
+}
+
+CDataStream CzPSCStake::GetUniqueness()
+{
+    //The unique identifier for a zPSC is a hash of the serial
+>>>>>>> Stashed changes
     CDataStream ss(SER_GETHASH, 0);
     ss << hashSerial;
     return ss;
 }
 
+<<<<<<< Updated upstream
 bool CZPivStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+=======
+bool CzPSCStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+>>>>>>> Stashed changes
 {
     CBlockIndex* pindexCheckpoint = GetIndexFrom();
     if (!pindexCheckpoint)
@@ -120,13 +194,21 @@ bool CZPivStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
     if (libzerocoin::ExtractVersionFromSerial(mint.GetSerialNumber()) < 2)
         return error("%s: serial extract is less than v2", __func__);
 
+<<<<<<< Updated upstream
     CZerocoinSpendReceipt receipt;
     if (!pwallet->MintToTxIn(mint, hashTxOut, txIn, receipt, libzerocoin::SpendType::STAKE, pindexCheckpoint))
         return error("%s", receipt.GetStatusMessage());
+=======
+    int nSecurityLevel = 100;
+    CZerocoinSpendReceipt receipt;
+    if (!pwallet->MintToTxIn(mint, nSecurityLevel, hashTxOut, txIn, receipt, libzerocoin::SpendType::STAKE, GetIndexFrom()))
+        return error("%s\n", receipt.GetStatusMessage());
+>>>>>>> Stashed changes
 
     return true;
 }
 
+<<<<<<< Updated upstream
 bool CZPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
 {
     //Create an output returning the zPIV that was staked
@@ -135,17 +217,36 @@ bool CZPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmou
     CDeterministicMint dMint;
     if (!pwallet->CreateZPIVOutPut(denomStaked, outReward, dMint))
         return error("%s: failed to create zPIV output", __func__);
+=======
+bool CzPSCStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+{
+    //Create an output returning the zPSC that was staked
+    CTxOut outReward;
+    libzerocoin::CoinDenomination denomStaked = libzerocoin::AmountToZerocoinDenomination(this->GetValue());
+    CDeterministicMint dMint;
+    if (!pwallet->CreatezPSCOutPut(denomStaked, outReward, dMint))
+        return error("%s: failed to create zPSC output", __func__);
+>>>>>>> Stashed changes
     vout.emplace_back(outReward);
 
     //Add new staked denom to our wallet
     if (!pwallet->DatabaseMint(dMint))
+<<<<<<< Updated upstream
         return error("%s: failed to database the staked zPIV", __func__);
+=======
+        return error("%s: failed to database the staked zPSC", __func__);
+>>>>>>> Stashed changes
 
     for (unsigned int i = 0; i < 3; i++) {
         CTxOut out;
         CDeterministicMint dMintReward;
+<<<<<<< Updated upstream
         if (!pwallet->CreateZPIVOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
             return error("%s: failed to create zPIV output", __func__);
+=======
+        if (!pwallet->CreatezPSCOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
+            return error("%s: failed to create zPSC output", __func__);
+>>>>>>> Stashed changes
         vout.emplace_back(out);
 
         if (!pwallet->DatabaseMint(dMintReward))
@@ -155,11 +256,16 @@ bool CZPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmou
     return true;
 }
 
+<<<<<<< Updated upstream
 bool CZPivStake::GetTxFrom(CTransaction& tx)
+=======
+bool CzPSCStake::GetTxFrom(CTransaction& tx)
+>>>>>>> Stashed changes
 {
     return false;
 }
 
+<<<<<<< Updated upstream
 bool CZPivStake::MarkSpent(CWallet *pwallet, const uint256& txid)
 {
     CzPIVTracker* zpivTracker = pwallet->zpivTracker.get();
@@ -173,29 +279,57 @@ bool CZPivStake::MarkSpent(CWallet *pwallet, const uint256& txid)
 
 //!PIV Stake
 bool CPivStake::SetInput(CTransaction txPrev, unsigned int n)
+=======
+bool CzPSCStake::MarkSpent(CWallet *pwallet, const uint256& txid)
+{
+    CzPSCTracker* zPSCTracker = pwallet->zPSCTracker.get();
+    CMintMeta meta;
+    if (!zPSCTracker->GetMetaFromStakeHash(hashSerial, meta))
+        return error("%s: tracker does not have serialhash", __func__);
+
+    zPSCTracker->SetPubcoinUsed(meta.hashPubcoin, txid);
+    return true;
+}
+
+//!PrimeStone Stake
+bool CPrimeStoneStake::SetInput(CTransaction txPrev, unsigned int n)
+>>>>>>> Stashed changes
 {
     this->txFrom = txPrev;
     this->nPosition = n;
     return true;
 }
 
+<<<<<<< Updated upstream
 bool CPivStake::GetTxFrom(CTransaction& tx)
+=======
+bool CPrimeStoneStake::GetTxFrom(CTransaction& tx)
+>>>>>>> Stashed changes
 {
     tx = txFrom;
     return true;
 }
 
+<<<<<<< Updated upstream
 bool CPivStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+=======
+bool CPrimeStoneStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+>>>>>>> Stashed changes
 {
     txIn = CTxIn(txFrom.GetHash(), nPosition);
     return true;
 }
 
+<<<<<<< Updated upstream
 CAmount CPivStake::GetValue()
+=======
+CAmount CPrimeStoneStake::GetValue()
+>>>>>>> Stashed changes
 {
     return txFrom.vout[nPosition].nValue;
 }
 
+<<<<<<< Updated upstream
 bool CPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
 {
     std::vector<valtype> vSolutions;
@@ -225,10 +359,38 @@ bool CPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmoun
         // keep the same script
         scriptPubKey = scriptPubKeyKernel;
     }
+=======
+bool CPrimeStoneStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+{
+    vector<valtype> vSolutions;
+    txnouttype whichType;
+    CScript scriptPubKeyKernel = txFrom.vout[nPosition].scriptPubKey;
+    if (!Solver(scriptPubKeyKernel, whichType, vSolutions)) {
+        LogPrintf("CreateCoinStake : failed to parse kernel\n");
+        return false;
+    }
+
+    if (whichType != TX_PUBKEY && whichType != TX_PUBKEYHASH)
+        return false; // only support pay to public key and pay to address
+
+    CScript scriptPubKey;
+    if (whichType == TX_PUBKEYHASH) // pay to address type
+    {
+        //convert to pay to public key type
+        CKey key;
+        CKeyID keyID = CKeyID(uint160(vSolutions[0]));
+        if (!pwallet->GetKey(keyID, key))
+            return false;
+
+        scriptPubKey << key.GetPubKey() << OP_CHECKSIG;
+    } else
+        scriptPubKey = scriptPubKeyKernel;
+>>>>>>> Stashed changes
 
     vout.emplace_back(CTxOut(0, scriptPubKey));
 
     // Calculate if we need to split the output
+<<<<<<< Updated upstream
     int nSplit = nTotal / (static_cast<CAmount>(pwallet->nStakeSplitThreshold * COIN));
     if (nSplit > 1) {
         // if nTotal is twice or more of the threshold; create more outputs
@@ -240,10 +402,15 @@ bool CPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmoun
             vout.emplace_back(CTxOut(0, scriptPubKey));
         }
     }
+=======
+    if (nTotal / 2 > (CAmount)(pwallet->nStakeSplitThreshold * COIN))
+        vout.emplace_back(CTxOut(0, scriptPubKey));
+>>>>>>> Stashed changes
 
     return true;
 }
 
+<<<<<<< Updated upstream
 bool CPivStake::GetModifier(uint64_t& nStakeModifier)
 {
     if (this->nStakeModifier == 0) {
@@ -262,16 +429,40 @@ bool CPivStake::GetModifier(uint64_t& nStakeModifier)
 CDataStream CPivStake::GetUniqueness()
 {
     //The unique identifier for a PIV stake is the outpoint
+=======
+bool CPrimeStoneStake::GetModifier(uint64_t& nStakeModifier)
+{
+    int nStakeModifierHeight = 0;
+    int64_t nStakeModifierTime = 0;
+    GetIndexFrom();
+    if (!pindexFrom)
+        return error("%s: failed to get index from", __func__);
+
+    if (!GetKernelStakeModifier(pindexFrom->GetBlockHash(), nStakeModifier, nStakeModifierHeight, nStakeModifierTime, false))
+        return error("CheckStakeKernelHash(): failed to get kernel stake modifier \n");
+
+    return true;
+}
+
+CDataStream CPrimeStoneStake::GetUniqueness()
+{
+    //The unique identifier for a PrimeStone stake is the outpoint
+>>>>>>> Stashed changes
     CDataStream ss(SER_NETWORK, 0);
     ss << nPosition << txFrom.GetHash();
     return ss;
 }
 
 //The block that the UTXO was added to the chain
+<<<<<<< Updated upstream
 CBlockIndex* CPivStake::GetIndexFrom()
 {
     if (pindexFrom)
         return pindexFrom;
+=======
+CBlockIndex* CPrimeStoneStake::GetIndexFrom()
+{
+>>>>>>> Stashed changes
     uint256 hashBlock = 0;
     CTransaction tx;
     if (GetTransaction(txFrom.GetHash(), tx, hashBlock, true)) {
@@ -286,4 +477,8 @@ CBlockIndex* CPivStake::GetIndexFrom()
     }
 
     return pindexFrom;
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

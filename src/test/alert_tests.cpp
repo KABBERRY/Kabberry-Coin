@@ -15,11 +15,18 @@
 #include "util.h"
 #include "utilstrencodings.h"
 
+<<<<<<< Updated upstream
 #include "test/test_bitcoin.h"
 
 #include <fstream>
 
 #include <boost/filesystem/operations.hpp>
+=======
+#include <fstream>
+
+#include <boost/filesystem/operations.hpp>
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 #include <boost/test/unit_test.hpp>
 
 #if 0
@@ -79,7 +86,11 @@
 }
 #endif
 
+<<<<<<< Updated upstream
 struct ReadAlerts : public TestingSetup
+=======
+struct ReadAlerts
+>>>>>>> Stashed changes
 {
     ReadAlerts()
     {
@@ -93,7 +104,11 @@ struct ReadAlerts : public TestingSetup
                 alerts.push_back(alert);
             }
         }
+<<<<<<< Updated upstream
         catch (const std::exception&) { }
+=======
+        catch (std::exception) { }
+>>>>>>> Stashed changes
     }
     ~ReadAlerts() { }
 
@@ -119,7 +134,11 @@ BOOST_AUTO_TEST_CASE(AlertApplies)
 {
     SetMockTime(11);
 
+<<<<<<< Updated upstream
     for (const CAlert& alert : alerts)
+=======
+    BOOST_FOREACH(const CAlert& alert, alerts)
+>>>>>>> Stashed changes
     {
         BOOST_CHECK(alert.CheckSignature());
     }
@@ -164,7 +183,11 @@ BOOST_AUTO_TEST_CASE(AlertNotify)
 
     mapArgs["-alertnotify"] = std::string("echo %s >> ") + temp.string();
 
+<<<<<<< Updated upstream
     for (CAlert alert : alerts)
+=======
+    BOOST_FOREACH(CAlert alert, alerts)
+>>>>>>> Stashed changes
         alert.ProcessAlert(false);
 
     std::vector<std::string> r = read_lines(temp);

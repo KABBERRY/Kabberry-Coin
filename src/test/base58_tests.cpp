@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2014 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,15 +19,24 @@
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
 
+=======
+
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 #include <boost/test/unit_test.hpp>
 
 #include <univalue.h>
 
 extern UniValue read_json(const std::string& jsondata);
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(base58_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(base58_tests)
+>>>>>>> Stashed changes
 
 // Goal: test low-level base58 encoding functionality
 BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
@@ -39,7 +53,11 @@ BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
         std::vector<unsigned char> sourcedata = ParseHex(test[0].get_str());
         std::string base58string = test[1].get_str();
         BOOST_CHECK_MESSAGE(
+<<<<<<< Updated upstream
                     EncodeBase58(sourcedata.data(), sourcedata.data() + sourcedata.size()) == base58string,
+=======
+                    EncodeBase58(begin_ptr(sourcedata), end_ptr(sourcedata)) == base58string,
+>>>>>>> Stashed changes
                     strTest);
     }
 }

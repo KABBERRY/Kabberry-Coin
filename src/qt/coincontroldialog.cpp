@@ -1,6 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,7 +22,12 @@
 #include "coincontrol.h"
 #include "main.h"
 #include "obfuscation.h"
+<<<<<<< Updated upstream
 #include "wallet/wallet.h"
+=======
+#include "wallet.h"
+#include "multisigdialog.h"
+>>>>>>> Stashed changes
 
 #include <boost/assign/list_of.hpp> // for 'map_list_of()'
 
@@ -30,11 +40,18 @@
 #include <QSettings>
 #include <QString>
 #include <QTreeWidget>
+<<<<<<< Updated upstream
 
+=======
+#include <QTreeWidgetItem>
+
+using namespace std;
+>>>>>>> Stashed changes
 QList<CAmount> CoinControlDialog::payAmounts;
 int CoinControlDialog::nSplitBlockDummy;
 CCoinControl* CoinControlDialog::coinControl = new CCoinControl();
 
+<<<<<<< Updated upstream
 
 bool CCoinControlWidgetItem::operator<(const QTreeWidgetItem &other) const {
     int column = treeWidget()->sortColumn();
@@ -44,15 +61,22 @@ bool CCoinControlWidgetItem::operator<(const QTreeWidgetItem &other) const {
 }
 
 
+=======
+>>>>>>> Stashed changes
 CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                         ui(new Ui::CoinControlDialog),
                                                         model(0)
 {
     ui->setupUi(this);
+<<<<<<< Updated upstream
+=======
+    this->fMultisigEnabled = fMultisigEnabled;
+>>>>>>> Stashed changes
 
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
 
+<<<<<<< Updated upstream
     ui->frameContainer->setProperty("cssClass", "container-dialog");
     ui->layoutAmount->setProperty("cssClass", "container-border-purple");
     ui->layoutAfter->setProperty("cssClass", "container-border-purple");
@@ -103,6 +127,8 @@ CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : Q
 
     this->fMultisigEnabled = fMultisigEnabled;
 
+=======
+>>>>>>> Stashed changes
     // context menu actions
     QAction* copyAddressAction = new QAction(tr("Copy address"), this);
     QAction* copyLabelAction = new QAction(tr("Copy label"), this);
@@ -154,6 +180,7 @@ CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : Q
     ui->labelCoinControlFee->addAction(clipboardFeeAction);
     ui->labelCoinControlAfterFee->addAction(clipboardAfterFeeAction);
     ui->labelCoinControlBytes->addAction(clipboardBytesAction);
+<<<<<<< Updated upstream
     ui->labelCoinControlLowOutput->addAction(clipboardLowOutputAction);
     ui->labelCoinControlChange->addAction(clipboardChangeAction);
 
@@ -163,6 +190,12 @@ CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : Q
         ui->pushButtonSelectAll->setText(tr("Select all"));
     }
 
+=======
+    ui->labelCoinControlPriority->addAction(clipboardPriorityAction);
+    ui->labelCoinControlLowOutput->addAction(clipboardLowOutputAction);
+    ui->labelCoinControlChange->addAction(clipboardChangeAction);
+
+>>>>>>> Stashed changes
     // toggle tree/list mode
     connect(ui->radioTreeMode, SIGNAL(toggled(bool)), this, SLOT(radioTreeMode(bool)));
     connect(ui->radioListMode, SIGNAL(toggled(bool)), this, SLOT(radioListMode(bool)));
@@ -170,12 +203,20 @@ CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : Q
     // click on checkbox
     connect(ui->treeWidget, SIGNAL(itemChanged(QTreeWidgetItem*, int)), this, SLOT(viewItemChanged(QTreeWidgetItem*, int)));
 
+<<<<<<< Updated upstream
     // click on header
+=======
+// click on header
+>>>>>>> Stashed changes
     ui->treeWidget->header()->setSectionsClickable(true);
     connect(ui->treeWidget->header(), SIGNAL(sectionClicked(int)), this, SLOT(headerSectionClicked(int)));
 
     // ok button
+<<<<<<< Updated upstream
     connect(ui->pushButtonOk, SIGNAL(clicked()), this, SLOT(accept()));
+=======
+    connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(buttonBoxClicked(QAbstractButton*)));
+>>>>>>> Stashed changes
 
     // (un)select all
     connect(ui->pushButtonSelectAll, SIGNAL(clicked()), this, SLOT(buttonSelectAllClicked()));
@@ -188,6 +229,7 @@ CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : Q
     ui->treeWidget->headerItem()->setText(COLUMN_CHECKBOX, QString());
 
     ui->treeWidget->setColumnWidth(COLUMN_CHECKBOX, 84);
+<<<<<<< Updated upstream
     ui->treeWidget->setColumnWidth(COLUMN_AMOUNT, 120);
     ui->treeWidget->setColumnWidth(COLUMN_LABEL, 170);
     ui->treeWidget->setColumnWidth(COLUMN_ADDRESS, 310);
@@ -210,6 +252,27 @@ CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : Q
         ui->radioListMode->setChecked(true);
         ui->treeWidget->setRootIsDecorated(false);
     }
+=======
+    ui->treeWidget->setColumnWidth(COLUMN_AMOUNT, 100);
+    ui->treeWidget->setColumnWidth(COLUMN_LABEL, 170);
+    ui->treeWidget->setColumnWidth(COLUMN_ADDRESS, 190);
+    ui->treeWidget->setColumnWidth(COLUMN_DATE, 80);
+    ui->treeWidget->setColumnWidth(COLUMN_CONFIRMATIONS, 100);
+    ui->treeWidget->setColumnWidth(COLUMN_PRIORITY, 100);
+    ui->treeWidget->setColumnHidden(COLUMN_TXHASH, true);         // store transacton hash in this column, but dont show it
+    ui->treeWidget->setColumnHidden(COLUMN_VOUT_INDEX, true);     // store vout index in this column, but dont show it
+    ui->treeWidget->setColumnHidden(COLUMN_AMOUNT_INT64, true);   // store amount int64 in this column, but dont show it
+    ui->treeWidget->setColumnHidden(COLUMN_PRIORITY_INT64, true); // store priority int64 in this column, but dont show it
+    ui->treeWidget->setColumnHidden(COLUMN_DATE_INT64, true);     // store date int64 in this column, but dont show it
+
+    // default view is sorted by amount desc
+    sortView(COLUMN_AMOUNT_INT64, Qt::DescendingOrder);
+
+    // restore list mode and sortorder as a convenience feature
+    QSettings settings;
+    if (settings.contains("nCoinControlMode") && !settings.value("nCoinControlMode").toBool())
+        ui->radioTreeMode->click();
+>>>>>>> Stashed changes
     if (settings.contains("nCoinControlSortColumn") && settings.contains("nCoinControlSortOrder"))
         sortView(settings.value("nCoinControlSortColumn").toInt(), ((Qt::SortOrder)settings.value("nCoinControlSortOrder").toInt()));
 }
@@ -236,6 +299,25 @@ void CoinControlDialog::setModel(WalletModel* model)
     }
 }
 
+<<<<<<< Updated upstream
+=======
+// helper function str_pad
+QString CoinControlDialog::strPad(QString s, int nPadLength, QString sPadding)
+{
+    while (s.length() < nPadLength)
+        s = sPadding + s;
+
+    return s;
+}
+
+// ok button
+void CoinControlDialog::buttonBoxClicked(QAbstractButton* button)
+{
+    if (ui->buttonBox->buttonRole(button) == QDialogButtonBox::AcceptRole)
+        done(QDialog::Accepted); // closes the dialog
+}
+
+>>>>>>> Stashed changes
 // (un)select all
 void CoinControlDialog::buttonSelectAllClicked()
 {
@@ -251,12 +333,17 @@ void CoinControlDialog::buttonSelectAllClicked()
         if (ui->treeWidget->topLevelItem(i)->checkState(COLUMN_CHECKBOX) != state)
             ui->treeWidget->topLevelItem(i)->setCheckState(COLUMN_CHECKBOX, state);
     ui->treeWidget->setEnabled(true);
+<<<<<<< Updated upstream
     if (state == Qt::Unchecked) {
         coinControl->UnSelectAll(); // just to be sure
         ui->pushButtonSelectAll->setText(tr("Select all"));
     }else{
         ui->pushButtonSelectAll->setText(tr("Unselect all"));
     }
+=======
+    if (state == Qt::Unchecked)
+        coinControl->UnSelectAll(); // just to be sure
+>>>>>>> Stashed changes
     CoinControlDialog::updateLabels(model, this);
     updateDialogLabels();
 }
@@ -271,6 +358,12 @@ void CoinControlDialog::buttonToggleLockClicked()
         for (int i = 0; i < ui->treeWidget->topLevelItemCount(); i++) {
             item = ui->treeWidget->topLevelItem(i);
 
+<<<<<<< Updated upstream
+=======
+            if (item->text(COLUMN_TYPE) == "MultiSig")
+                continue;
+
+>>>>>>> Stashed changes
             COutPoint outpt(uint256(item->text(COLUMN_TXHASH).toStdString()), item->text(COLUMN_VOUT_INDEX).toUInt());
             if (model->isLockedCoin(uint256(item->text(COLUMN_TXHASH).toStdString()), item->text(COLUMN_VOUT_INDEX).toUInt())) {
                 model->unlockCoin(outpt);
@@ -408,6 +501,15 @@ void CoinControlDialog::clipboardBytes()
     GUIUtil::setClipboard(ui->labelCoinControlBytes->text().replace("~", ""));
 }
 
+<<<<<<< Updated upstream
+=======
+// copy label "Priority" to clipboard
+void CoinControlDialog::clipboardPriority()
+{
+    GUIUtil::setClipboard(ui->labelCoinControlPriority->text());
+}
+
+>>>>>>> Stashed changes
 // copy label "Dust" to clipboard
 void CoinControlDialog::clipboardLowOutput()
 {
@@ -426,7 +528,11 @@ void CoinControlDialog::sortView(int column, Qt::SortOrder order)
     sortColumn = column;
     sortOrder = order;
     ui->treeWidget->sortItems(column, order);
+<<<<<<< Updated upstream
     ui->treeWidget->header()->setSortIndicator(sortColumn, sortOrder);
+=======
+    ui->treeWidget->header()->setSortIndicator(getMappedColumn(sortColumn), sortOrder);
+>>>>>>> Stashed changes
 }
 
 // treeview: clicked on header
@@ -434,8 +540,15 @@ void CoinControlDialog::headerSectionClicked(int logicalIndex)
 {
     if (logicalIndex == COLUMN_CHECKBOX) // click on most left column -> do nothing
     {
+<<<<<<< Updated upstream
         ui->treeWidget->header()->setSortIndicator(sortColumn, sortOrder);
     } else {
+=======
+        ui->treeWidget->header()->setSortIndicator(getMappedColumn(sortColumn), sortOrder);
+    } else {
+        logicalIndex = getMappedColumn(logicalIndex, false);
+
+>>>>>>> Stashed changes
         if (sortColumn == logicalIndex)
             sortOrder = ((sortOrder == Qt::AscendingOrder) ? Qt::DescendingOrder : Qt::AscendingOrder);
         else {
@@ -481,11 +594,18 @@ void CoinControlDialog::viewItemChanged(QTreeWidgetItem* item, int column)
             updateDialogLabels();
         }
     }
+<<<<<<< Updated upstream
 
     // TODO: Remove this temporary qt5 fix after Qt5.3 and Qt5.4 are no longer used.
     //       Fixed in Qt5.5 and above: https://bugreports.qt.io/browse/QTBUG-43473
     else if (column == COLUMN_CHECKBOX && item->childCount() > 0)
     {
+=======
+    // TODO: Remove this temporary qt5 fix after Qt5.3 and Qt5.4 are no longer used.
+    //       Fixed in Qt5.5 and above: https://bugreports.qt.io/browse/QTBUG-43473
+	    else if (column == COLUMN_CHECKBOX && item->childCount() > 0)
+		{
+>>>>>>> Stashed changes
         if (item->checkState(COLUMN_CHECKBOX) == Qt::PartiallyChecked && item->child(0)->checkState(COLUMN_CHECKBOX) == Qt::PartiallyChecked)
             item->setCheckState(COLUMN_CHECKBOX, Qt::Checked);
     }
@@ -522,7 +642,11 @@ QString CoinControlDialog::getPriorityLabel(double dPriority, double mempoolEsti
 // shows count of locked unspent outputs
 void CoinControlDialog::updateLabelLocked()
 {
+<<<<<<< Updated upstream
     std::vector<COutPoint> vOutpts;
+=======
+    vector<COutPoint> vOutpts;
+>>>>>>> Stashed changes
     model->listLockedCoins(vOutpts);
     if (vOutpts.size() > 0) {
         ui->labelLocked->setText(tr("(%1 locked)").arg(vOutpts.size()));
@@ -539,8 +663,13 @@ void CoinControlDialog::updateDialogLabels()
         return;
     }
 
+<<<<<<< Updated upstream
     std::vector<COutPoint> vCoinControl;
     std::vector<COutput> vOutputs;
+=======
+    vector<COutPoint> vCoinControl;
+    vector<COutput> vOutputs;
+>>>>>>> Stashed changes
     coinControl->ListSelected(vCoinControl);
     model->getOutputs(vCoinControl, vOutputs);
 
@@ -562,6 +691,12 @@ void CoinControlDialog::updateDialogLabels()
         // Amount
         nAmount += out.tx->vout[out.i].nValue;
     }
+<<<<<<< Updated upstream
+=======
+    MultisigDialog* multisigDialog = (MultisigDialog*)this->parentWidget();
+
+    multisigDialog->updateCoinControl(nAmount, nQuantity);
+>>>>>>> Stashed changes
 }
 
 void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
@@ -577,7 +712,11 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
         nPayAmount += amount;
 
         if (amount > 0) {
+<<<<<<< Updated upstream
             CTxOut txout(amount, (CScript)std::vector<unsigned char>(24, 0));
+=======
+            CTxOut txout(amount, (CScript)vector<unsigned char>(24, 0));
+>>>>>>> Stashed changes
             txDummy.vout.push_back(txout);
             if (txout.IsDust(::minRelayTxFee))
                 fDust = true;
@@ -597,12 +736,21 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     int nQuantityUncompressed = 0;
     bool fAllowFree = false;
 
+<<<<<<< Updated upstream
     std::vector<COutPoint> vCoinControl;
     std::vector<COutput> vOutputs;
     coinControl->ListSelected(vCoinControl);
     model->getOutputs(vCoinControl, vOutputs);
 
     for (const COutput& out : vOutputs) {
+=======
+    vector<COutPoint> vCoinControl;
+    vector<COutput> vOutputs;
+    coinControl->ListSelected(vCoinControl);
+    model->getOutputs(vCoinControl, vOutputs);
+
+    BOOST_FOREACH (const COutput& out, vOutputs) {
+>>>>>>> Stashed changes
         // unselect already spent, very unlikely scenario, this could happen
         // when selected are spent elsewhere, like rpc or another computer
         uint256 txhash = out.tx->GetHash();
@@ -639,7 +787,11 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     // calculation
     if (nQuantity > 0) {
         // Bytes
+<<<<<<< Updated upstream
         nBytes = nBytesInputs + ((CoinControlDialog::payAmounts.size() > 0 ? CoinControlDialog::payAmounts.size() + std::max(1, CoinControlDialog::nSplitBlockDummy) : 2) * 34) + 10; // always assume +1 output for change here
+=======
+        nBytes = nBytesInputs + ((CoinControlDialog::payAmounts.size() > 0 ? CoinControlDialog::payAmounts.size() + max(1, CoinControlDialog::nSplitBlockDummy) : 2) * 34) + 10; // always assume +1 output for change here
+>>>>>>> Stashed changes
 
         // Priority
         double mempoolEstimatePriority = mempool.estimatePriority(nTxConfirmTarget);
@@ -650,7 +802,11 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
         nPayFee = CWallet::GetMinimumFee(nBytes, nTxConfirmTarget, mempool);
 
         // IX Fee
+<<<<<<< Updated upstream
         if (coinControl->useSwiftTX) nPayFee = std::max(nPayFee, CENT);
+=======
+        if (coinControl->useSwiftTX) nPayFee = max(nPayFee, CENT);
+>>>>>>> Stashed changes
         // Allow free?
         double dPriorityNeeded = mempoolEstimatePriority;
         if (dPriorityNeeded <= 0)
@@ -666,7 +822,11 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
 
             // Never create dust outputs; if we would, just add the dust to the fee.
             if (nChange > 0 && nChange < CENT) {
+<<<<<<< Updated upstream
                 CTxOut txout(nChange, (CScript)std::vector<unsigned char>(24, 0));
+=======
+                CTxOut txout(nChange, (CScript)vector<unsigned char>(24, 0));
+>>>>>>> Stashed changes
                 if (txout.IsDust(::minRelayTxFee)) {
                     nPayFee += nChange;
                     nChange = 0;
@@ -684,7 +844,11 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     }
 
     // actually update labels
+<<<<<<< Updated upstream
     int nDisplayUnit = BitcoinUnits::PIV;
+=======
+    int nDisplayUnit = BitcoinUnits::PSC;
+>>>>>>> Stashed changes
     if (model && model->getOptionsModel())
         nDisplayUnit = model->getOptionsModel()->getDisplayUnit();
 
@@ -693,6 +857,10 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     QLabel* l3 = dialog->findChild<QLabel*>("labelCoinControlFee");
     QLabel* l4 = dialog->findChild<QLabel*>("labelCoinControlAfterFee");
     QLabel* l5 = dialog->findChild<QLabel*>("labelCoinControlBytes");
+<<<<<<< Updated upstream
+=======
+    QLabel* l6 = dialog->findChild<QLabel*>("labelCoinControlPriority");
+>>>>>>> Stashed changes
     QLabel* l7 = dialog->findChild<QLabel*>("labelCoinControlLowOutput");
     QLabel* l8 = dialog->findChild<QLabel*>("labelCoinControlChange");
 
@@ -708,6 +876,10 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     l3->setText(BitcoinUnits::formatWithUnit(nDisplayUnit, nPayFee));   // Fee
     l4->setText(BitcoinUnits::formatWithUnit(nDisplayUnit, nAfterFee)); // After Fee
     l5->setText(((nBytes > 0) ? "~" : "") + QString::number(nBytes));   // Bytes
+<<<<<<< Updated upstream
+=======
+    l6->setText(sPriorityLabel);                                        // Priority
+>>>>>>> Stashed changes
     l7->setText(fDust ? tr("yes") : tr("no"));                          // Dust
     l8->setText(BitcoinUnits::formatWithUnit(nDisplayUnit, nChange));   // Change
     if (nPayFee > 0 && !(payTxFee.GetFeePerK() > 0 && fPayAtLeastCustomFee && nBytes < 1000)) {
@@ -719,6 +891,10 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
 
     // turn labels "red"
     l5->setStyleSheet((nBytes >= MAX_FREE_TRANSACTION_CREATE_SIZE) ? "color:red;" : ""); // Bytes >= 1000
+<<<<<<< Updated upstream
+=======
+    l6->setStyleSheet((dPriority > 0 && !fAllowFree) ? "color:red;" : "");               // Priority < "medium"
+>>>>>>> Stashed changes
     l7->setStyleSheet((fDust) ? "color:red;" : "");                                      // Dust = "yes"
 
     // tool tips
@@ -743,11 +919,19 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     l3->setToolTip(toolTip4);
     l4->setToolTip(toolTip4);
     l5->setToolTip(toolTip1);
+<<<<<<< Updated upstream
+=======
+    l6->setToolTip(toolTip2);
+>>>>>>> Stashed changes
     l7->setToolTip(toolTip3);
     l8->setToolTip(toolTip4);
     dialog->findChild<QLabel*>("labelCoinControlFeeText")->setToolTip(l3->toolTip());
     dialog->findChild<QLabel*>("labelCoinControlAfterFeeText")->setToolTip(l4->toolTip());
     dialog->findChild<QLabel*>("labelCoinControlBytesText")->setToolTip(l5->toolTip());
+<<<<<<< Updated upstream
+=======
+    dialog->findChild<QLabel*>("labelCoinControlPriorityText")->setToolTip(l6->toolTip());
+>>>>>>> Stashed changes
     dialog->findChild<QLabel*>("labelCoinControlLowOutputText")->setToolTip(l7->toolTip());
     dialog->findChild<QLabel*>("labelCoinControlChangeText")->setToolTip(l8->toolTip());
 
@@ -764,6 +948,7 @@ void CoinControlDialog::updateView()
 
     bool treeMode = ui->radioTreeMode->isChecked();
 
+<<<<<<< Updated upstream
     if(treeMode){
         ui->treeWidget->setRootIsDecorated(true);
     }else{
@@ -772,10 +957,16 @@ void CoinControlDialog::updateView()
 
     ui->treeWidget->clear();
     ui->treeWidget->setEnabled(false); // performance, otherwise updateLabels would be called for every checked checkbox
+=======
+    ui->treeWidget->clear();
+    ui->treeWidget->setEnabled(false); // performance, otherwise updateLabels would be called for every checked checkbox
+    ui->treeWidget->setAlternatingRowColors(!treeMode);
+>>>>>>> Stashed changes
     QFlags<Qt::ItemFlag> flgCheckbox = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable;
     QFlags<Qt::ItemFlag> flgTristate = Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsTristate;
 
     int nDisplayUnit = model->getOptionsModel()->getDisplayUnit();
+<<<<<<< Updated upstream
 //    double mempoolEstimatePriority = mempool.estimatePriority(nTxConfirmTarget);
 
     std::map<QString, std::vector<COutput>> mapCoins;
@@ -783,6 +974,15 @@ void CoinControlDialog::updateView()
 
     for (PAIRTYPE(QString, std::vector<COutput>) coins : mapCoins) {
         CCoinControlWidgetItem* itemWalletAddress = new CCoinControlWidgetItem();
+=======
+    double mempoolEstimatePriority = mempool.estimatePriority(nTxConfirmTarget);
+
+    map<QString, vector<COutput>> mapCoins;
+    model->listCoins(mapCoins);
+
+    BOOST_FOREACH (PAIRTYPE(QString, vector<COutput>) coins, mapCoins) {
+        QTreeWidgetItem* itemWalletAddress = new QTreeWidgetItem();
+>>>>>>> Stashed changes
         itemWalletAddress->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
         QString sWalletAddress = coins.first;
         QString sWalletLabel = model->getAddressTableModel()->labelForAddress(sWalletAddress);
@@ -819,16 +1019,28 @@ void CoinControlDialog::updateView()
             nSum += out.tx->vout[out.i].nValue;
             nChildren++;
 
+<<<<<<< Updated upstream
             CCoinControlWidgetItem* itemOutput;
             if (treeMode)
                 itemOutput = new CCoinControlWidgetItem(itemWalletAddress);
             else
                 itemOutput = new CCoinControlWidgetItem(ui->treeWidget);
+=======
+            QTreeWidgetItem* itemOutput;
+            if (treeMode)
+                itemOutput = new QTreeWidgetItem(itemWalletAddress);
+            else
+                itemOutput = new QTreeWidgetItem(ui->treeWidget);
+>>>>>>> Stashed changes
             itemOutput->setFlags(flgCheckbox);
             itemOutput->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
 
             //MultiSig
             if (fMultiSigUTXO) {
+<<<<<<< Updated upstream
+=======
+                itemOutput->setText(COLUMN_TYPE, "MultiSig");
+>>>>>>> Stashed changes
 
                 if (!fMultisigEnabled) {
                     COutPoint outpt(out.tx->GetHash(), out.i);
@@ -836,6 +1048,11 @@ void CoinControlDialog::updateView()
                     itemOutput->setDisabled(true);
                     itemOutput->setIcon(COLUMN_CHECKBOX, QIcon(":/icons/lock_closed"));
                 }
+<<<<<<< Updated upstream
+=======
+            } else {
+                itemOutput->setText(COLUMN_TYPE, "Personal");
+>>>>>>> Stashed changes
             }
 
             // address
@@ -844,11 +1061,19 @@ void CoinControlDialog::updateView()
             if (ExtractDestination(out.tx->vout[out.i].scriptPubKey, outputAddress)) {
                 sAddress = QString::fromStdString(CBitcoinAddress(outputAddress).ToString());
 
+<<<<<<< Updated upstream
                 // if listMode or change => show PIVX address. In tree mode, address is not shown again for direct wallet address outputs
                 if (!treeMode || (!(sAddress == sWalletAddress)))
                     itemOutput->setText(COLUMN_ADDRESS, sAddress);
                 else
                     itemOutput->setToolTip(COLUMN_ADDRESS, sAddress);
+=======
+                // if listMode or change => show PrimeStone address. In tree mode, address is not shown again for direct wallet address outputs
+                if (!treeMode || (!(sAddress == sWalletAddress)))
+                    itemOutput->setText(COLUMN_ADDRESS, sAddress);
+
+                itemOutput->setToolTip(COLUMN_ADDRESS, sAddress);
+>>>>>>> Stashed changes
 
                 CPubKey pubkey;
                 CKeyID* keyid = boost::get<CKeyID>(&outputAddress);
@@ -872,11 +1097,16 @@ void CoinControlDialog::updateView()
             // amount
             itemOutput->setText(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, out.tx->vout[out.i].nValue));
             itemOutput->setToolTip(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, out.tx->vout[out.i].nValue));
+<<<<<<< Updated upstream
             itemOutput->setData(COLUMN_AMOUNT, Qt::UserRole, QVariant((qlonglong) out.tx->vout[out.i].nValue));
+=======
+            itemOutput->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(out.tx->vout[out.i].nValue), 15, " ")); // padding so that sorting works correctly
+>>>>>>> Stashed changes
 
             // date
             itemOutput->setText(COLUMN_DATE, GUIUtil::dateTimeStr(out.tx->GetTxTime()));
             itemOutput->setToolTip(COLUMN_DATE, GUIUtil::dateTimeStr(out.tx->GetTxTime()));
+<<<<<<< Updated upstream
             itemOutput->setData(COLUMN_DATE, Qt::UserRole, QVariant((qlonglong) out.tx->GetTxTime()));
 
             // confirmations
@@ -884,6 +1114,17 @@ void CoinControlDialog::updateView()
             itemOutput->setData(COLUMN_CONFIRMATIONS, Qt::UserRole, QVariant((qlonglong) out.nDepth));
 
             // priority
+=======
+            itemOutput->setText(COLUMN_DATE_INT64, strPad(QString::number(out.tx->GetTxTime()), 20, " "));
+
+            // confirmations
+            itemOutput->setText(COLUMN_CONFIRMATIONS, strPad(QString::number(out.nDepth), 8, " "));
+
+            // priority
+            double dPriority = ((double)out.tx->vout[out.i].nValue / (nInputSize + 78)) * (out.nDepth + 1); // 78 = 2 * 34 + 10
+            itemOutput->setText(COLUMN_PRIORITY, CoinControlDialog::getPriorityLabel(dPriority, mempoolEstimatePriority));
+            itemOutput->setText(COLUMN_PRIORITY_INT64, strPad(QString::number((int64_t)dPriority), 20, " "));
+>>>>>>> Stashed changes
             dPrioritySum += (double)out.tx->vout[out.i].nValue * (out.nDepth + 1);
             nInputSum += nInputSize;
 
@@ -913,7 +1154,13 @@ void CoinControlDialog::updateView()
             itemWalletAddress->setText(COLUMN_CHECKBOX, "(" + QString::number(nChildren) + ")");
             itemWalletAddress->setText(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, nSum));
             itemWalletAddress->setToolTip(COLUMN_AMOUNT, BitcoinUnits::format(nDisplayUnit, nSum));
+<<<<<<< Updated upstream
             itemWalletAddress->setData(COLUMN_AMOUNT, Qt::UserRole, QVariant((qlonglong) nSum));
+=======
+            itemWalletAddress->setText(COLUMN_AMOUNT_INT64, strPad(QString::number(nSum), 15, " "));
+            itemWalletAddress->setText(COLUMN_PRIORITY, CoinControlDialog::getPriorityLabel(dPrioritySum, mempoolEstimatePriority));
+            itemWalletAddress->setText(COLUMN_PRIORITY_INT64, strPad(QString::number((int64_t)dPrioritySum), 20, " "));
+>>>>>>> Stashed changes
         }
     }
 

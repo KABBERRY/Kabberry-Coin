@@ -42,7 +42,11 @@ public:
                 map.erase(rmap.begin()->second);
                 rmap.erase(rmap.begin());
             }
+<<<<<<< Updated upstream
             rmap.insert(std::make_pair(x.second, ret.first));
+=======
+            rmap.insert(make_pair(x.second, ret.first));
+>>>>>>> Stashed changes
         }
         return;
     }
@@ -72,7 +76,11 @@ public:
             if (it->second == itTarget) {
                 rmap.erase(it);
                 itTarget->second = v;
+<<<<<<< Updated upstream
                 rmap.insert(std::make_pair(v, itTarget));
+=======
+                rmap.insert(make_pair(v, itTarget));
+>>>>>>> Stashed changes
                 return;
             }
         // Shouldn't ever get here

@@ -1,23 +1,39 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpc/server.h"
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 #include "base58.h"
 #include "init.h"
 #include "main.h"
 #include "random.h"
 #include "sync.h"
+<<<<<<< Updated upstream
 #include "guiinterface.h"
+=======
+#include "ui_interface.h"
+>>>>>>> Stashed changes
 #include "util.h"
 #include "utilstrencodings.h"
 
 #include <boost/bind.hpp>
 #include <boost/filesystem.hpp>
+<<<<<<< Updated upstream
+=======
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 #include <boost/iostreams/concepts.hpp>
 #include <boost/iostreams/stream.hpp>
 #include <boost/shared_ptr.hpp>
@@ -27,6 +43,11 @@
 
 #include <univalue.h>
 
+<<<<<<< Updated upstream
+=======
+using namespace RPCServer;
+using namespace std;
+>>>>>>> Stashed changes
 
 static bool fRPCRunning = false;
 static bool fRPCInWarmup = true;
@@ -34,7 +55,11 @@ static std::string rpcWarmupStatus("RPC server started");
 static CCriticalSection cs_rpcWarmup;
 
 /* Timer-creating functions */
+<<<<<<< Updated upstream
 static RPCTimerInterface* timerInterface = NULL;
+=======
+static std::vector<RPCTimerInterface*> timerInterfaces;
+>>>>>>> Stashed changes
 /* Map of name to timer.
  * @note Can be changed to std::unique_ptr when C++11 */
 static std::map<std::string, boost::shared_ptr<RPCTimerBase> > deadlineTimers;
@@ -68,17 +93,29 @@ void RPCServer::OnPostCommand(boost::function<void (const CRPCCommand&)> slot)
 }
 
 void RPCTypeCheck(const UniValue& params,
+<<<<<<< Updated upstream
                   const std::list<UniValue::VType>& typesExpected,
                   bool fAllowNull)
 {
     unsigned int i = 0;
     for (UniValue::VType t : typesExpected) {
+=======
+                  const list<UniValue::VType>& typesExpected,
+                  bool fAllowNull)
+{
+    unsigned int i = 0;
+    BOOST_FOREACH(UniValue::VType t, typesExpected) {
+>>>>>>> Stashed changes
         if (params.size() <= i)
             break;
 
         const UniValue& v = params[i];
         if (!((v.type() == t) || (fAllowNull && (v.isNull())))) {
+<<<<<<< Updated upstream
             std::string err = strprintf("Expected type %s, got %s",
+=======
+            string err = strprintf("Expected type %s, got %s",
+>>>>>>> Stashed changes
                                    uvTypeName(t), uvTypeName(v.type()));
             throw JSONRPCError(RPC_TYPE_ERROR, err);
         }
@@ -87,16 +124,27 @@ void RPCTypeCheck(const UniValue& params,
 }
 
 void RPCTypeCheckObj(const UniValue& o,
+<<<<<<< Updated upstream
                   const std::map<std::string, UniValue::VType>& typesExpected,
                   bool fAllowNull)
 {
     for (const PAIRTYPE(std::string, UniValue::VType)& t : typesExpected) {
+=======
+                  const map<string, UniValue::VType>& typesExpected,
+                  bool fAllowNull)
+{
+    BOOST_FOREACH(const PAIRTYPE(string, UniValue::VType)& t, typesExpected) {
+>>>>>>> Stashed changes
         const UniValue& v = find_value(o, t.first);
         if (!fAllowNull && v.isNull())
             throw JSONRPCError(RPC_TYPE_ERROR, strprintf("Missing %s", t.first));
 
         if (!((v.type() == t.second) || (fAllowNull && (v.isNull())))) {
+<<<<<<< Updated upstream
             std::string err = strprintf("Expected type %s for %s, got %s",
+=======
+            string err = strprintf("Expected type %s for %s, got %s",
+>>>>>>> Stashed changes
                                    uvTypeName(t.second), t.first, uvTypeName(v.type()));
             throw JSONRPCError(RPC_TYPE_ERROR, err);
         }
@@ -110,9 +158,12 @@ static inline int64_t roundint64(double d)
 
 CAmount AmountFromValue(const UniValue& value)
 {
+<<<<<<< Updated upstream
     if (!value.isNum())
         throw JSONRPCError(RPC_TYPE_ERROR, "Amount is not a number");
 
+=======
+>>>>>>> Stashed changes
     double dAmount = value.get_real();
     if (dAmount <= 0.0 || dAmount > 21000000.0)
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
@@ -132,19 +183,29 @@ UniValue ValueFromAmount(const CAmount& amount)
             strprintf("%s%d.%08d", sign ? "-" : "", quotient, remainder));
 }
 
+<<<<<<< Updated upstream
 uint256 ParseHashV(const UniValue& v, std::string strName)
 {
     std::string strHex;
+=======
+uint256 ParseHashV(const UniValue& v, string strName)
+{
+    string strHex;
+>>>>>>> Stashed changes
     if (v.isStr())
         strHex = v.get_str();
     if (!IsHex(strHex)) // Note: IsHex("") is false
         throw JSONRPCError(RPC_INVALID_PARAMETER, strName + " must be hexadecimal string (not '" + strHex + "')");
+<<<<<<< Updated upstream
     if (64 != strHex.length())
         throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("%s must be of length %d (not %d)", strName, 64, strHex.length()));
+=======
+>>>>>>> Stashed changes
     uint256 result;
     result.SetHex(strHex);
     return result;
 }
+<<<<<<< Updated upstream
 uint256 ParseHashO(const UniValue& o, std::string strKey)
 {
     return ParseHashV(find_value(o, strKey), strKey);
@@ -152,18 +213,35 @@ uint256 ParseHashO(const UniValue& o, std::string strKey)
 std::vector<unsigned char> ParseHexV(const UniValue& v, std::string strName)
 {
     std::string strHex;
+=======
+uint256 ParseHashO(const UniValue& o, string strKey)
+{
+    return ParseHashV(find_value(o, strKey), strKey);
+}
+vector<unsigned char> ParseHexV(const UniValue& v, string strName)
+{
+    string strHex;
+>>>>>>> Stashed changes
     if (v.isStr())
         strHex = v.get_str();
     if (!IsHex(strHex))
         throw JSONRPCError(RPC_INVALID_PARAMETER, strName + " must be hexadecimal string (not '" + strHex + "')");
     return ParseHex(strHex);
 }
+<<<<<<< Updated upstream
 std::vector<unsigned char> ParseHexO(const UniValue& o, std::string strKey)
+=======
+vector<unsigned char> ParseHexO(const UniValue& o, string strKey)
+>>>>>>> Stashed changes
 {
     return ParseHexV(find_value(o, strKey), strKey);
 }
 
+<<<<<<< Updated upstream
 int ParseInt(const UniValue& o, std::string strKey)
+=======
+int ParseInt(const UniValue& o, string strKey)
+>>>>>>> Stashed changes
 {
     const UniValue& v = find_value(o, strKey);
     if (v.isNum())
@@ -172,7 +250,11 @@ int ParseInt(const UniValue& o, std::string strKey)
     return v.get_int();
 }
 
+<<<<<<< Updated upstream
 bool ParseBool(const UniValue& o, std::string strKey)
+=======
+bool ParseBool(const UniValue& o, string strKey)
+>>>>>>> Stashed changes
 {
     const UniValue& v = find_value(o, strKey);
     if (v.isBool())
@@ -186,6 +268,7 @@ bool ParseBool(const UniValue& o, std::string strKey)
  * Note: This interface may still be subject to change.
  */
 
+<<<<<<< Updated upstream
 std::string CRPCTable::help(std::string strCommand) const
 {
     std::string strRet;
@@ -202,6 +285,24 @@ std::string CRPCTable::help(std::string strCommand) const
         std::string strMethod = pcmd->name;
         // We already filter duplicates, but these deprecated screw up the sort order
         if (strMethod.find("label") != std::string::npos)
+=======
+string CRPCTable::help(string strCommand) const
+{
+    string strRet;
+    string category;
+    set<rpcfn_type> setDone;
+    vector<pair<string, const CRPCCommand*> > vCommands;
+
+    for (map<string, const CRPCCommand*>::const_iterator mi = mapCommands.begin(); mi != mapCommands.end(); ++mi)
+        vCommands.push_back(make_pair(mi->second->category + mi->first, mi->second));
+    sort(vCommands.begin(), vCommands.end());
+
+    BOOST_FOREACH (const PAIRTYPE(string, const CRPCCommand*) & command, vCommands) {
+        const CRPCCommand* pcmd = command.second;
+        string strMethod = pcmd->name;
+        // We already filter duplicates, but these deprecated screw up the sort order
+        if (strMethod.find("label") != string::npos)
+>>>>>>> Stashed changes
             continue;
         if ((strCommand != "" || pcmd->category == "hidden") && strMethod != strCommand)
             continue;
@@ -215,18 +316,30 @@ std::string CRPCTable::help(std::string strCommand) const
             rpcfn_type pfn = pcmd->actor;
             if (setDone.insert(pfn).second)
                 (*pfn)(params, true);
+<<<<<<< Updated upstream
         } catch (const std::exception& e) {
             // Help text is returned in an exception
             std::string strHelp = std::string(e.what());
             if (strCommand == "") {
                 if (strHelp.find('\n') != std::string::npos)
+=======
+        } catch (std::exception& e) {
+            // Help text is returned in an exception
+            string strHelp = string(e.what());
+            if (strCommand == "") {
+                if (strHelp.find('\n') != string::npos)
+>>>>>>> Stashed changes
                     strHelp = strHelp.substr(0, strHelp.find('\n'));
 
                 if (category != pcmd->category) {
                     if (!category.empty())
                         strRet += "\n";
                     category = pcmd->category;
+<<<<<<< Updated upstream
                     std::string firstLetter = category.substr(0, 1);
+=======
+                    string firstLetter = category.substr(0, 1);
+>>>>>>> Stashed changes
                     boost::to_upper(firstLetter);
                     strRet += "== " + firstLetter + category.substr(1) + " ==\n";
                 }
@@ -243,7 +356,11 @@ std::string CRPCTable::help(std::string strCommand) const
 UniValue help(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "help ( \"command\" )\n"
             "\nList all commands, or get help for a specified command.\n"
             "\nArguments:\n"
@@ -251,7 +368,11 @@ UniValue help(const UniValue& params, bool fHelp)
             "\nResult:\n"
             "\"text\"     (string) The help text\n");
 
+<<<<<<< Updated upstream
     std::string strCommand;
+=======
+    string strCommand;
+>>>>>>> Stashed changes
     if (params.size() > 0)
         strCommand = params[0].get_str();
 
@@ -263,6 +384,7 @@ UniValue stop(const UniValue& params, bool fHelp)
 {
     // Accept the deprecated and ignored 'detach' boolean argument
     if (fHelp || params.size() > 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
             "stop\n"
             "\nStop PIVX server.");
@@ -270,6 +392,15 @@ UniValue stop(const UniValue& params, bool fHelp)
     // this reply will get back to the client.
     StartShutdown();
     return "PIVX server stopping";
+=======
+        throw runtime_error(
+            "stop\n"
+            "\nStop PrimeStone server.");
+    // Event loop will exit after current HTTP requests have been handled, so
+    // this reply will get back to the client.
+    StartShutdown();
+    return "PrimeStone server stopping";
+>>>>>>> Stashed changes
 }
 
 
@@ -301,10 +432,13 @@ static const CRPCCommand vRPCCommands[] =
         /* Block chain and UTXO */
         {"blockchain", "findserial", &findserial, true, false, false},
         {"blockchain", "getaccumulatorvalues", &getaccumulatorvalues, true, false, false},
+<<<<<<< Updated upstream
         {"blockchain", "getaccumulatorwitness", &getaccumulatorwitness, true, false, false},
         {"blockchain", "getblockindexstats", &getblockindexstats, true, false, false},
         {"blockchain", "getmintsinblocks", &getmintsinblocks, true, false, false},
         {"blockchain", "getserials", &getserials, true, false, false},
+=======
+>>>>>>> Stashed changes
         {"blockchain", "getblockchaininfo", &getblockchaininfo, true, false, false},
         {"blockchain", "getbestblockhash", &getbestblockhash, true, false, false},
         {"blockchain", "getblockcount", &getblockcount, true, false, false},
@@ -312,7 +446,10 @@ static const CRPCCommand vRPCCommands[] =
         {"blockchain", "getblockhash", &getblockhash, true, false, false},
         {"blockchain", "getblockheader", &getblockheader, false, false, false},
         {"blockchain", "getchaintips", &getchaintips, true, false, false},
+<<<<<<< Updated upstream
         {"blockchain", "getchecksumblock", &getchecksumblock, false, false, false},
+=======
+>>>>>>> Stashed changes
         {"blockchain", "getdifficulty", &getdifficulty, true, false, false},
         {"blockchain", "getfeeinfo", &getfeeinfo, true, false, false},
         {"blockchain", "getmempoolinfo", &getmempoolinfo, true, true, false},
@@ -336,7 +473,10 @@ static const CRPCCommand vRPCCommands[] =
         {"generating", "getgenerate", &getgenerate, true, false, false},
         {"generating", "gethashespersec", &gethashespersec, true, false, false},
         {"generating", "setgenerate", &setgenerate, true, true, false},
+<<<<<<< Updated upstream
         {"generating", "generate", &generate, true, true, false},
+=======
+>>>>>>> Stashed changes
 #endif
 
         /* Raw transactions */
@@ -358,6 +498,7 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "invalidateblock", &invalidateblock, true, true, false},
         {"hidden", "reconsiderblock", &reconsiderblock, true, true, false},
         {"hidden", "setmocktime", &setmocktime, true, false, false},
+<<<<<<< Updated upstream
         { "hidden",             "waitfornewblock",        &waitfornewblock,        true,  true,  false  },
         { "hidden",             "waitforblock",           &waitforblock,           true,  true,  false  },
         { "hidden",             "waitforblockheight",     &waitforblockheight,     true,  true,  false  },
@@ -391,15 +532,52 @@ static const CRPCCommand vRPCCommands[] =
         {"pivx", "mnsync", &mnsync, true, true, false},
         {"pivx", "spork", &spork, true, true, false},
         {"pivx", "getpoolinfo", &getpoolinfo, true, true, false},
+=======
+
+        /* PrimeStone features */
+        {"primestone", "masternode", &masternode, true, true, false},
+        {"primestone", "listmasternodes", &listmasternodes, true, true, false},
+        {"primestone", "getmasternodecount", &getmasternodecount, true, true, false},
+        {"primestone", "masternodeconnect", &masternodeconnect, true, true, false},
+        {"primestone", "createmasternodebroadcast", &createmasternodebroadcast, true, true, false},
+        {"primestone", "decodemasternodebroadcast", &decodemasternodebroadcast, true, true, false},
+        {"primestone", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
+        {"primestone", "masternodecurrent", &masternodecurrent, true, true, false},
+        {"primestone", "masternodedebug", &masternodedebug, true, true, false},
+        {"primestone", "startmasternode", &startmasternode, true, true, false},
+        {"primestone", "createmasternodekey", &createmasternodekey, true, true, false},
+        {"primestone", "getmasternodeoutputs", &getmasternodeoutputs, true, true, false},
+        {"primestone", "listmasternodeconf", &listmasternodeconf, true, true, false},
+        {"primestone", "getmasternodestatus", &getmasternodestatus, true, true, false},
+        {"primestone", "getmasternodewinners", &getmasternodewinners, true, true, false},
+        {"primestone", "getmasternodescores", &getmasternodescores, true, true, false},
+        {"primestone", "mnbudget", &mnbudget, true, true, false},
+        {"primestone", "preparebudget", &preparebudget, true, true, false},
+        {"primestone", "submitbudget", &submitbudget, true, true, false},
+        {"primestone", "mnbudgetvote", &mnbudgetvote, true, true, false},
+        {"primestone", "getbudgetvotes", &getbudgetvotes, true, true, false},
+        {"primestone", "getnextsuperblock", &getnextsuperblock, true, true, false},
+        {"primestone", "getbudgetprojection", &getbudgetprojection, true, true, false},
+        {"primestone", "getbudgetinfo", &getbudgetinfo, true, true, false},
+        {"primestone", "mnbudgetrawvote", &mnbudgetrawvote, true, true, false},
+        {"primestone", "mnfinalbudget", &mnfinalbudget, true, true, false},
+        {"primestone", "checkbudgets", &checkbudgets, true, true, false},
+        {"primestone", "mnsync", &mnsync, true, true, false},
+        {"primestone", "spork", &spork, true, true, false},
+        {"primestone", "getpoolinfo", &getpoolinfo, true, true, false},
+>>>>>>> Stashed changes
 
 #ifdef ENABLE_WALLET
         /* Wallet */
         {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},
         {"wallet", "autocombinerewards", &autocombinerewards, false, false, true},
         {"wallet", "backupwallet", &backupwallet, true, false, true},
+<<<<<<< Updated upstream
         {"wallet", "delegatestake", &delegatestake, false, false, true},
         {"wallet", "enableautomintaddress", &enableautomintaddress, true, false, true},
         {"wallet", "createautomintaddress", &createautomintaddress, true, false, true},
+=======
+>>>>>>> Stashed changes
         {"wallet", "dumpprivkey", &dumpprivkey, true, false, true},
         {"wallet", "dumpwallet", &dumpwallet, true, false, true},
         {"wallet", "bip38encrypt", &bip38encrypt, true, false, true},
@@ -409,17 +587,24 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "getaccount", &getaccount, true, false, true},
         {"wallet", "getaddressesbyaccount", &getaddressesbyaccount, true, false, true},
         {"wallet", "getbalance", &getbalance, false, false, true},
+<<<<<<< Updated upstream
         {"wallet", "getcoldstakingbalance", &getcoldstakingbalance, false, false, true},
         {"wallet", "getdelegatedbalance", &getdelegatedbalance, false, false, true},
         {"wallet", "getnewaddress", &getnewaddress, true, false, true},
         {"wallet", "getnewstakingaddress", &getnewstakingaddress, true, false, true},
+=======
+        {"wallet", "getnewaddress", &getnewaddress, true, false, true},
+>>>>>>> Stashed changes
         {"wallet", "getrawchangeaddress", &getrawchangeaddress, true, false, true},
         {"wallet", "getreceivedbyaccount", &getreceivedbyaccount, false, false, true},
         {"wallet", "getreceivedbyaddress", &getreceivedbyaddress, false, false, true},
         {"wallet", "getstakingstatus", &getstakingstatus, false, false, true},
         {"wallet", "getstakesplitthreshold", &getstakesplitthreshold, false, false, true},
         {"wallet", "gettransaction", &gettransaction, false, false, true},
+<<<<<<< Updated upstream
         {"wallet", "abandontransaction", &abandontransaction, false, false, true},
+=======
+>>>>>>> Stashed changes
         {"wallet", "getunconfirmedbalance", &getunconfirmedbalance, false, false, true},
         {"wallet", "getwalletinfo", &getwalletinfo, false, false, true},
         {"wallet", "importprivkey", &importprivkey, true, false, true},
@@ -427,10 +612,14 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "importaddress", &importaddress, true, false, true},
         {"wallet", "keypoolrefill", &keypoolrefill, true, false, true},
         {"wallet", "listaccounts", &listaccounts, false, false, true},
+<<<<<<< Updated upstream
         {"wallet", "listdelegators", &listdelegators, false, false, true},
         {"wallet", "liststakingaddresses", &liststakingaddresses, false, false, true},
         {"wallet", "listaddressgroupings", &listaddressgroupings, false, false, true},
         {"wallet", "listcoldutxos", &listcoldutxos, false, false, true},
+=======
+        {"wallet", "listaddressgroupings", &listaddressgroupings, false, false, true},
+>>>>>>> Stashed changes
         {"wallet", "listlockunspent", &listlockunspent, false, false, true},
         {"wallet", "listreceivedbyaccount", &listreceivedbyaccount, false, false, true},
         {"wallet", "listreceivedbyaddress", &listreceivedbyaddress, false, false, true},
@@ -440,7 +629,10 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "lockunspent", &lockunspent, true, false, true},
         {"wallet", "move", &movecmd, false, false, true},
         {"wallet", "multisend", &multisend, false, false, true},
+<<<<<<< Updated upstream
         {"wallet", "rawdelegatestake", &rawdelegatestake, false, false, true},
+=======
+>>>>>>> Stashed changes
         {"wallet", "sendfrom", &sendfrom, false, false, true},
         {"wallet", "sendmany", &sendmany, false, false, true},
         {"wallet", "sendtoaddress", &sendtoaddress, false, false, true},
@@ -452,19 +644,26 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "walletlock", &walletlock, true, false, true},
         {"wallet", "walletpassphrasechange", &walletpassphrasechange, true, false, true},
         {"wallet", "walletpassphrase", &walletpassphrase, true, false, true},
+<<<<<<< Updated upstream
         {"wallet", "delegatoradd", &delegatoradd, true, false, true},
         {"wallet", "delegatorremove", &delegatorremove, true, false, true},
 
         {"zerocoin", "createrawzerocoinstake", &createrawzerocoinstake, false, false, true},
         {"zerocoin", "createrawzerocoinpublicspend", &createrawzerocoinpublicspend, false, false, true},
+=======
+
+>>>>>>> Stashed changes
         {"zerocoin", "getzerocoinbalance", &getzerocoinbalance, false, false, true},
         {"zerocoin", "listmintedzerocoins", &listmintedzerocoins, false, false, true},
         {"zerocoin", "listspentzerocoins", &listspentzerocoins, false, false, true},
         {"zerocoin", "listzerocoinamounts", &listzerocoinamounts, false, false, true},
         {"zerocoin", "mintzerocoin", &mintzerocoin, false, false, true},
         {"zerocoin", "spendzerocoin", &spendzerocoin, false, false, true},
+<<<<<<< Updated upstream
         {"zerocoin", "spendrawzerocoin", &spendrawzerocoin, true, false, false},
         {"zerocoin", "spendzerocoinmints", &spendzerocoinmints, false, false, true},
+=======
+>>>>>>> Stashed changes
         {"zerocoin", "resetmintzerocoin", &resetmintzerocoin, false, false, true},
         {"zerocoin", "resetspentzerocoin", &resetspentzerocoin, false, false, true},
         {"zerocoin", "getarchivedzerocoin", &getarchivedzerocoin, false, false, true},
@@ -472,12 +671,20 @@ static const CRPCCommand vRPCCommands[] =
         {"zerocoin", "exportzerocoins", &exportzerocoins, false, false, true},
         {"zerocoin", "reconsiderzerocoins", &reconsiderzerocoins, false, false, true},
         {"zerocoin", "getspentzerocoinamount", &getspentzerocoinamount, false, false, false},
+<<<<<<< Updated upstream
         {"zerocoin", "getzpivseed", &getzpivseed, false, false, true},
         {"zerocoin", "setzpivseed", &setzpivseed, false, false, true},
         {"zerocoin", "generatemintlist", &generatemintlist, false, false, true},
         {"zerocoin", "searchdzpiv", &searchdzpiv, false, false, true},
         {"zerocoin", "dzpivstate", &dzpivstate, false, false, true},
         {"zerocoin", "clearspendcache", &clearspendcache, false, false, true}
+=======
+        {"zerocoin", "getzPSCseed", &getzPSCseed, false, false, true},
+        {"zerocoin", "setzPSCseed", &setzPSCseed, false, false, true},
+        {"zerocoin", "generatemintlist", &generatemintlist, false, false, true},
+        {"zerocoin", "searchdzPSC", &searchdzPSC, false, false, true},
+        {"zerocoin", "dzPSCstate", &dzPSCstate, false, false, true}
+>>>>>>> Stashed changes
 
 #endif // ENABLE_WALLET
 };
@@ -495,7 +702,11 @@ CRPCTable::CRPCTable()
 
 const CRPCCommand *CRPCTable::operator[](const std::string &name) const
 {
+<<<<<<< Updated upstream
     std::map<std::string, const CRPCCommand*>::const_iterator it = mapCommands.find(name);
+=======
+    map<string, const CRPCCommand*>::const_iterator it = mapCommands.find(name);
+>>>>>>> Stashed changes
     if (it == mapCommands.end())
         return NULL;
     return (*it).second;
@@ -592,7 +803,11 @@ static UniValue JSONRPCExecOne(const UniValue& req)
         rpc_result = JSONRPCReplyObj(result, NullUniValue, jreq.id);
     } catch (const UniValue& objError) {
         rpc_result = JSONRPCReplyObj(NullUniValue, objError, jreq.id);
+<<<<<<< Updated upstream
     } catch (const std::exception& e) {
+=======
+    } catch (std::exception& e) {
+>>>>>>> Stashed changes
         rpc_result = JSONRPCReplyObj(NullUniValue,
             JSONRPCError(RPC_PARSE_ERROR, e.what()), jreq.id);
     }
@@ -621,7 +836,11 @@ UniValue CRPCTable::execute(const std::string &strMethod, const UniValue &params
     try {
         // Execute
         return pcmd->actor(params, false);
+<<<<<<< Updated upstream
     } catch (const std::exception& e) {
+=======
+    } catch (std::exception& e) {
+>>>>>>> Stashed changes
         throw JSONRPCError(RPC_MISC_ERROR, e.what());
     }
 
@@ -639,6 +858,7 @@ std::vector<std::string> CRPCTable::listCommands() const
     return commandList;
 }
 
+<<<<<<< Updated upstream
 std::string HelpExampleCli(std::string methodname, std::string args)
 {
     return "> pivx-cli " + methodname + " " + args + "\n";
@@ -666,13 +886,44 @@ void RPCUnsetTimerInterface(RPCTimerInterface *iface)
 {
     if (timerInterface == iface)
         timerInterface = NULL;
+=======
+std::string HelpExampleCli(string methodname, string args)
+{
+    return "> primestone-cli " + methodname + " " + args + "\n";
+}
+
+std::string HelpExampleRpc(string methodname, string args)
+{
+    return "> curl --user myusername --data-binary '{\"jsonrpc\": \"1.0\", \"id\":\"curltest\", "
+           "\"method\": \"" +
+           methodname + "\", \"params\": [" + args + "] }' -H 'content-type: text/plain;' http://127.0.0.1:34126/\n";
+}
+
+void RPCRegisterTimerInterface(RPCTimerInterface *iface)
+{
+    timerInterfaces.push_back(iface);
+}
+
+void RPCUnregisterTimerInterface(RPCTimerInterface *iface)
+{
+    std::vector<RPCTimerInterface*>::iterator i = std::find(timerInterfaces.begin(), timerInterfaces.end(), iface);
+    assert(i != timerInterfaces.end());
+    timerInterfaces.erase(i);
+>>>>>>> Stashed changes
 }
 
 void RPCRunLater(const std::string& name, boost::function<void(void)> func, int64_t nSeconds)
 {
+<<<<<<< Updated upstream
     if (!timerInterface)
         throw JSONRPCError(RPC_INTERNAL_ERROR, "No timer handler registered for RPC");
     deadlineTimers.erase(name);
+=======
+    if (timerInterfaces.empty())
+        throw JSONRPCError(RPC_INTERNAL_ERROR, "No timer handler registered for RPC");
+    deadlineTimers.erase(name);
+    RPCTimerInterface* timerInterface = timerInterfaces[0];
+>>>>>>> Stashed changes
     LogPrint("rpc", "queue run of timer %s in %i seconds (using %s)\n", name, nSeconds, timerInterface->Name());
     deadlineTimers.insert(std::make_pair(name, boost::shared_ptr<RPCTimerBase>(timerInterface->NewTimer(func, nSeconds*1000))));
 }

@@ -1,7 +1,12 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +17,10 @@
 #include "main.h"
 #include "net.h"
 #include "primitives/transaction.h"
+<<<<<<< Updated upstream
 #include "zpiv/deterministicmint.h"
+=======
+>>>>>>> Stashed changes
 #include "rpc/server.h"
 #include "script/script.h"
 #include "script/script_error.h"
@@ -21,9 +29,15 @@
 #include "swifttx.h"
 #include "uint256.h"
 #include "utilmoneystr.h"
+<<<<<<< Updated upstream
 #include "zpivchain.h"
 #ifdef ENABLE_WALLET
 #include "wallet/wallet.h"
+=======
+#include "zPSCchain.h"
+#ifdef ENABLE_WALLET
+#include "wallet.h"
+>>>>>>> Stashed changes
 #endif
 
 #include <stdint.h>
@@ -32,11 +46,21 @@
 
 #include <univalue.h>
 
+<<<<<<< Updated upstream
+=======
+using namespace boost;
+using namespace boost::assign;
+using namespace std;
+>>>>>>> Stashed changes
 
 void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fIncludeHex)
 {
     txnouttype type;
+<<<<<<< Updated upstream
     std::vector<CTxDestination> addresses;
+=======
+    vector<CTxDestination> addresses;
+>>>>>>> Stashed changes
     int nRequired;
 
     out.push_back(Pair("asm", scriptPubKey.ToString()));
@@ -52,13 +76,18 @@ void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fInclud
     out.push_back(Pair("type", GetTxnOutputType(type)));
 
     UniValue a(UniValue::VARR);
+<<<<<<< Updated upstream
     for (const CTxDestination& addr : addresses)
+=======
+    BOOST_FOREACH (const CTxDestination& addr, addresses)
+>>>>>>> Stashed changes
         a.push_back(CBitcoinAddress(addr).ToString());
     out.push_back(Pair("addresses", a));
 }
 
 void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
 {
+<<<<<<< Updated upstream
     // Call into TxToUniv() in bitcoin-common to decode the transaction hex.
     //
     // Blockchain contextual information (confirmations and blocktime) is not
@@ -67,6 +96,42 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
     TxToUniv(tx, uint256(), entry);
 
     if (!hashBlock.IsNull()) {
+=======
+    entry.push_back(Pair("txid", tx.GetHash().GetHex()));
+    entry.push_back(Pair("version", tx.nVersion));
+    entry.push_back(Pair("locktime", (int64_t)tx.nLockTime));
+    UniValue vin(UniValue::VARR);
+    BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+        UniValue in(UniValue::VOBJ);
+        if (tx.IsCoinBase())
+            in.push_back(Pair("coinbase", HexStr(txin.scriptSig.begin(), txin.scriptSig.end())));
+        else {
+            in.push_back(Pair("txid", txin.prevout.hash.GetHex()));
+            in.push_back(Pair("vout", (int64_t)txin.prevout.n));
+            UniValue o(UniValue::VOBJ);
+            o.push_back(Pair("asm", txin.scriptSig.ToString()));
+            o.push_back(Pair("hex", HexStr(txin.scriptSig.begin(), txin.scriptSig.end())));
+            in.push_back(Pair("scriptSig", o));
+        }
+        in.push_back(Pair("sequence", (int64_t)txin.nSequence));
+        vin.push_back(in);
+    }
+    entry.push_back(Pair("vin", vin));
+    UniValue vout(UniValue::VARR);
+    for (unsigned int i = 0; i < tx.vout.size(); i++) {
+        const CTxOut& txout = tx.vout[i];
+        UniValue out(UniValue::VOBJ);
+        out.push_back(Pair("value", ValueFromAmount(txout.nValue)));
+        out.push_back(Pair("n", (int64_t)i));
+        UniValue o(UniValue::VOBJ);
+        ScriptPubKeyToJSON(txout.scriptPubKey, o, true);
+        out.push_back(Pair("scriptPubKey", o));
+        vout.push_back(out);
+    }
+    entry.push_back(Pair("vout", vout));
+
+    if (hashBlock != 0) {
+>>>>>>> Stashed changes
         entry.push_back(Pair("blockhash", hashBlock.GetHex()));
         BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
         if (mi != mapBlockIndex.end() && (*mi).second) {
@@ -75,8 +140,12 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
                 entry.push_back(Pair("confirmations", 1 + chainActive.Height() - pindex->nHeight));
                 entry.push_back(Pair("time", pindex->GetBlockTime()));
                 entry.push_back(Pair("blocktime", pindex->GetBlockTime()));
+<<<<<<< Updated upstream
             }
             else
+=======
+            } else
+>>>>>>> Stashed changes
                 entry.push_back(Pair("confirmations", 0));
         }
     }
@@ -84,6 +153,7 @@ void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry)
 
 UniValue getrawtransaction(const UniValue& params, bool fHelp)
 {
+<<<<<<< Updated upstream
     if (fHelp || params.size() < 1 || params.size() > 3)
         throw std::runtime_error(
             "getrawtransaction \"txid\" ( verbose \"blockhash\" )\n"
@@ -110,6 +180,29 @@ UniValue getrawtransaction(const UniValue& params, bool fHelp)
             "  \"hex\" : \"data\",       (string) The serialized, hex-encoded data for 'txid'\n"
             "  \"txid\" : \"id\",        (string) The transaction id (same as provided)\n"
             "  \"size\" : n,             (numeric) The serialized transaction size\n"
+=======
+    if (fHelp || params.size() < 1 || params.size() > 2)
+        throw runtime_error(
+            "getrawtransaction \"txid\" ( verbose )\n"
+            "\nNOTE: By default this function only works sometimes. This is when the tx is in the mempool\n"
+            "or there is an unspent output in the utxo for this transaction. To make it always work,\n"
+            "you need to maintain a transaction index, using the -txindex command line option.\n"
+            "\nReturn the raw transaction data.\n"
+            "\nIf verbose=0, returns a string that is serialized, hex-encoded data for 'txid'.\n"
+            "If verbose is non-zero, returns an Object with information about 'txid'.\n"
+
+            "\nArguments:\n"
+            "1. \"txid\"      (string, required) The transaction id\n"
+            "2. verbose       (numeric, optional, default=0) If 0, return a string, other return a json object\n"
+
+            "\nResult (if verbose is not set or set to 0):\n"
+            "\"data\"      (string) The serialized, hex-encoded data for 'txid'\n"
+
+            "\nResult (if verbose > 0):\n"
+            "{\n"
+            "  \"hex\" : \"data\",       (string) The serialized, hex-encoded data for 'txid'\n"
+            "  \"txid\" : \"id\",        (string) The transaction id (same as provided)\n"
+>>>>>>> Stashed changes
             "  \"version\" : n,          (numeric) The version\n"
             "  \"locktime\" : ttt,       (numeric) The lock time\n"
             "  \"vin\" : [               (array of json objects)\n"
@@ -134,7 +227,11 @@ UniValue getrawtransaction(const UniValue& params, bool fHelp)
             "         \"reqSigs\" : n,            (numeric) The required sigs\n"
             "         \"type\" : \"pubkeyhash\",  (string) The type, eg 'pubkeyhash'\n"
             "         \"addresses\" : [           (json array of string)\n"
+<<<<<<< Updated upstream
             "           \"pivxaddress\"        (string) pivx address\n"
+=======
+            "           \"primestoneaddress\"        (string) primestone address\n"
+>>>>>>> Stashed changes
             "           ,...\n"
             "         ]\n"
             "       }\n"
@@ -147,6 +244,7 @@ UniValue getrawtransaction(const UniValue& params, bool fHelp)
             "  \"blocktime\" : ttt         (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)\n"
             "}\n"
 
+<<<<<<< Updated upstream
             "\nExamples:\n"
             + HelpExampleCli("getrawtransaction", "\"mytxid\"")
             + HelpExampleCli("getrawtransaction", "\"mytxid\" true")
@@ -200,6 +298,32 @@ UniValue getrawtransaction(const UniValue& params, bool fHelp)
     UniValue result(UniValue::VOBJ);
     if (blockindex) result.push_back(Pair("in_active_chain", in_active_chain));
     TxToJSON(tx, hash_block, result);
+=======
+            "\nExamples:\n" +
+            HelpExampleCli("getrawtransaction", "\"mytxid\"") + HelpExampleCli("getrawtransaction", "\"mytxid\" 1") + HelpExampleRpc("getrawtransaction", "\"mytxid\", 1"));
+
+    LOCK(cs_main);
+
+    uint256 hash = ParseHashV(params[0], "parameter 1");
+
+    bool fVerbose = false;
+    if (params.size() > 1)
+        fVerbose = (params[1].get_int() != 0);
+
+    CTransaction tx;
+    uint256 hashBlock = 0;
+    if (!GetTransaction(hash, tx, hashBlock, true))
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "No information available about transaction");
+
+    string strHex = EncodeHexTx(tx);
+
+    if (!fVerbose)
+        return strHex;
+
+    UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("hex", strHex));
+    TxToJSON(tx, hashBlock, result);
+>>>>>>> Stashed changes
     return result;
 }
 
@@ -207,27 +331,46 @@ UniValue getrawtransaction(const UniValue& params, bool fHelp)
 UniValue listunspent(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 4)
+<<<<<<< Updated upstream
         throw std::runtime_error(
             "listunspent ( minconf maxconf  [\"address\",...] watchonlyconfig )\n"
+=======
+        throw runtime_error(
+            "listunspent ( minconf maxconf  [\"address\",...] )\n"
+>>>>>>> Stashed changes
             "\nReturns array of unspent transaction outputs\n"
             "with between minconf and maxconf (inclusive) confirmations.\n"
             "Optionally filter to only include txouts paid to specified addresses.\n"
             "Results are an array of Objects, each of which has:\n"
+<<<<<<< Updated upstream
             "{txid, vout, scriptPubKey, amount, confirmations, spendable}\n"
+=======
+            "{txid, vout, scriptPubKey, amount, confirmations}\n"
+>>>>>>> Stashed changes
 
             "\nArguments:\n"
             "1. minconf          (numeric, optional, default=1) The minimum confirmations to filter\n"
             "2. maxconf          (numeric, optional, default=9999999) The maximum confirmations to filter\n"
+<<<<<<< Updated upstream
             "3. \"addresses\"    (string) A json array of pivx addresses to filter\n"
             "    [\n"
             "      \"address\"   (string) pivx address\n"
             "      ,...\n"
             "    ]\n"
             "4. watchonlyconfig  (numeric, optional, default=1) 1 = list regular unspent transactions, 2 = list only watchonly transactions,  3 = list all unspent transactions (including watchonly)\n"
+=======
+            "3. \"addresses\"    (string) A json array of primestone addresses to filter\n"
+            "    [\n"
+            "      \"address\"   (string) primestone address\n"
+            "      ,...\n"
+            "    ]\n"
+            "4. watchonlyconfig  (numberic, optional, default=1) 1 = list regular unspent transactions, 2 = list only watchonly transactions,  3 = list all unspent transactions (including watchonly)\n"
+>>>>>>> Stashed changes
 
             "\nResult\n"
             "[                   (array of json object)\n"
             "  {\n"
+<<<<<<< Updated upstream
             "    \"txid\" : \"txid\",        (string) the transaction id\n"
             "    \"vout\" : n,               (numeric) the vout value\n"
             "    \"address\" : \"address\",  (string) the pivx address\n"
@@ -237,6 +380,15 @@ UniValue listunspent(const UniValue& params, bool fHelp)
             "    \"amount\" : x.xxx,         (numeric) the transaction amount in btc\n"
             "    \"confirmations\" : n,      (numeric) The number of confirmations\n"
             "    \"spendable\" : true|false  (boolean) Whether we have the private keys to spend this output\n"
+=======
+            "    \"txid\" : \"txid\",        (string) the transaction id \n"
+            "    \"vout\" : n,               (numeric) the vout value\n"
+            "    \"address\" : \"address\",  (string) the primestone address\n"
+            "    \"account\" : \"account\",  (string) The associated account, or \"\" for the default account\n"
+            "    \"scriptPubKey\" : \"key\", (string) the script key\n"
+            "    \"amount\" : x.xxx,         (numeric) the transaction amount in btc\n"
+            "    \"confirmations\" : n       (numeric) The number of confirmations\n"
+>>>>>>> Stashed changes
             "  }\n"
             "  ,...\n"
             "]\n"
@@ -254,16 +406,26 @@ UniValue listunspent(const UniValue& params, bool fHelp)
     if (params.size() > 1)
         nMaxDepth = params[1].get_int();
 
+<<<<<<< Updated upstream
     std::set<CBitcoinAddress> setAddress;
+=======
+    set<CBitcoinAddress> setAddress;
+>>>>>>> Stashed changes
     if (params.size() > 2) {
         UniValue inputs = params[2].get_array();
         for (unsigned int inx = 0; inx < inputs.size(); inx++) {
             const UniValue& input = inputs[inx];
             CBitcoinAddress address(input.get_str());
             if (!address.IsValid())
+<<<<<<< Updated upstream
                 throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid PIVX address: ") + input.get_str());
             if (setAddress.count(address))
                 throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ") + input.get_str());
+=======
+                throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid PrimeStone address: ") + input.get_str());
+            if (setAddress.count(address))
+                throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ") + input.get_str());
+>>>>>>> Stashed changes
             setAddress.insert(address);
         }
     }
@@ -276,11 +438,19 @@ UniValue listunspent(const UniValue& params, bool fHelp)
     }
 
     UniValue results(UniValue::VARR);
+<<<<<<< Updated upstream
     std::vector<COutput> vecOutputs;
     assert(pwalletMain != NULL);
     LOCK2(cs_main, pwalletMain->cs_wallet);
     pwalletMain->AvailableCoins(vecOutputs, false, NULL, false, ALL_COINS, false, nWatchonlyConfig);
     for (const COutput& out : vecOutputs) {
+=======
+    vector<COutput> vecOutputs;
+    assert(pwalletMain != NULL);
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+    pwalletMain->AvailableCoins(vecOutputs, false, NULL, false, ALL_COINS, false, nWatchonlyConfig);
+    BOOST_FOREACH (const COutput& out, vecOutputs) {
+>>>>>>> Stashed changes
         if (out.nDepth < nMinDepth || out.nDepth > nMaxDepth)
             continue;
 
@@ -326,9 +496,15 @@ UniValue listunspent(const UniValue& params, bool fHelp)
 
 UniValue createrawtransaction(const UniValue& params, bool fHelp)
 {
+<<<<<<< Updated upstream
     if (fHelp || params.size() < 2 || params.size() > 3)
         throw std::runtime_error(
             "createrawtransaction [{\"txid\":\"id\",\"vout\":n},...] {\"address\":amount,...} ( locktime )\n"
+=======
+    if (fHelp || params.size() != 2)
+        throw runtime_error(
+            "createrawtransaction [{\"txid\":\"id\",\"vout\":n},...] {\"address\":amount,...}\n"
+>>>>>>> Stashed changes
             "\nCreate a transaction spending the given inputs and sending to the given addresses.\n"
             "Returns hex-encoded raw transaction.\n"
             "Note that the transaction's inputs are not signed, and\n"
@@ -339,17 +515,27 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             "     [\n"
             "       {\n"
             "         \"txid\":\"id\",  (string, required) The transaction id\n"
+<<<<<<< Updated upstream
             "         \"vout\":n,       (numeric, required) The output number\n"
             "         \"sequence\":n    (numeric, optional) The sequence number\n"
+=======
+            "         \"vout\":n        (numeric, required) The output number\n"
+>>>>>>> Stashed changes
             "       }\n"
             "       ,...\n"
             "     ]\n"
             "2. \"addresses\"           (string, required) a json object with addresses as keys and amounts as values\n"
             "    {\n"
+<<<<<<< Updated upstream
             "      \"address\": x.xxx   (numeric, required) The key is the pivx address, the value is the btc amount\n"
             "      ,...\n"
             "    }\n"
             "3. locktime                (numeric, optional, default=0) Raw locktime. Non-0 value also locktime-activates inputs\n"
+=======
+            "      \"address\": x.xxx   (numeric, required) The key is the primestone address, the value is the btc amount\n"
+            "      ,...\n"
+            "    }\n"
+>>>>>>> Stashed changes
 
             "\nResult:\n"
             "\"transaction\"            (string) hex string of the transaction\n"
@@ -358,15 +544,20 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"{\\\"address\\\":0.01}\"") + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"{\\\"address\\\":0.01}\""));
 
     LOCK(cs_main);
+<<<<<<< Updated upstream
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VOBJ)(UniValue::VNUM));
     if (params[0].isNull() || params[1].isNull())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, arguments 1 and 2 must be non-null");
+=======
+    RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VOBJ));
+>>>>>>> Stashed changes
 
     UniValue inputs = params[0].get_array();
     UniValue sendTo = params[1].get_obj();
 
     CMutableTransaction rawTx;
 
+<<<<<<< Updated upstream
     if (params.size() > 2 && !params[2].isNull()) {
         int64_t nLockTime = params[2].get_int64();
         if (nLockTime < 0 || nLockTime > std::numeric_limits<uint32_t>::max())
@@ -374,6 +565,8 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
         rawTx.nLockTime = nLockTime;
     }
 
+=======
+>>>>>>> Stashed changes
     for (unsigned int idx = 0; idx < inputs.size(); idx++) {
         const UniValue& input = inputs[idx];
         const UniValue& o = input.get_obj();
@@ -387,6 +580,7 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
         if (nOutput < 0)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, vout must be positive");
 
+<<<<<<< Updated upstream
         uint32_t nSequence = (rawTx.nLockTime ? std::numeric_limits<uint32_t>::max() - 1 : std::numeric_limits<uint32_t>::max());
 
         // set the sequence number if passed in the parameters object
@@ -413,6 +607,21 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
 
         if (setAddress.count(address))
             throw JSONRPCError(RPC_INVALID_PARAMETER, std::string("Invalid parameter, duplicated address: ")+name_);
+=======
+        CTxIn in(COutPoint(txid, nOutput));
+        rawTx.vin.push_back(in);
+    }
+
+    set<CBitcoinAddress> setAddress;
+    vector<string> addrList = sendTo.getKeys();
+    BOOST_FOREACH(const string& name_, addrList) {
+        CBitcoinAddress address(name_);
+        if (!address.IsValid())
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid PrimeStone address: ")+name_);
+
+        if (setAddress.count(address))
+            throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+name_);
+>>>>>>> Stashed changes
         setAddress.insert(address);
 
         CScript scriptPubKey = GetScriptForDestination(address.Get());
@@ -428,7 +637,11 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
 UniValue decoderawtransaction(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "decoderawtransaction \"hexstring\"\n"
             "\nReturn a JSON object representing the serialized, hex-encoded transaction.\n"
 
@@ -438,7 +651,10 @@ UniValue decoderawtransaction(const UniValue& params, bool fHelp)
             "\nResult:\n"
             "{\n"
             "  \"txid\" : \"id\",        (string) The transaction id\n"
+<<<<<<< Updated upstream
             "  \"size\" : n,             (numeric) The transaction size\n"
+=======
+>>>>>>> Stashed changes
             "  \"version\" : n,          (numeric) The version\n"
             "  \"locktime\" : ttt,       (numeric) The lock time\n"
             "  \"vin\" : [               (array of json objects)\n"
@@ -463,7 +679,11 @@ UniValue decoderawtransaction(const UniValue& params, bool fHelp)
             "         \"reqSigs\" : n,            (numeric) The required sigs\n"
             "         \"type\" : \"pubkeyhash\",  (string) The type, eg 'pubkeyhash'\n"
             "         \"addresses\" : [           (json array of string)\n"
+<<<<<<< Updated upstream
             "           \"12tvKAXCxZjSmdNbao16dKXC8tRWfcF5oc\"   (string) pivx address\n"
+=======
+            "           \"12tvKAXCxZjSmdNbao16dKXC8tRWfcF5oc\"   (string) primestone address\n"
+>>>>>>> Stashed changes
             "           ,...\n"
             "         ]\n"
             "       }\n"
@@ -492,7 +712,11 @@ UniValue decoderawtransaction(const UniValue& params, bool fHelp)
 UniValue decodescript(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "decodescript \"hex\"\n"
             "\nDecode a hex-encoded script.\n"
 
@@ -506,7 +730,11 @@ UniValue decodescript(const UniValue& params, bool fHelp)
             "  \"type\":\"type\", (string) The output type\n"
             "  \"reqSigs\": n,    (numeric) The required signatures\n"
             "  \"addresses\": [   (json array of string)\n"
+<<<<<<< Updated upstream
             "     \"address\"     (string) pivx address\n"
+=======
+            "     \"address\"     (string) primestone address\n"
+>>>>>>> Stashed changes
             "     ,...\n"
             "  ],\n"
             "  \"p2sh\",\"address\" (string) script address\n"
@@ -521,7 +749,11 @@ UniValue decodescript(const UniValue& params, bool fHelp)
     UniValue r(UniValue::VOBJ);
     CScript script;
     if (params[0].get_str().size() > 0) {
+<<<<<<< Updated upstream
         std::vector<unsigned char> scriptData(ParseHexV(params[0], "argument"));
+=======
+        vector<unsigned char> scriptData(ParseHexV(params[0], "argument"));
+>>>>>>> Stashed changes
         script = CScript(scriptData.begin(), scriptData.end());
     } else {
         // Empty scripts are valid
@@ -547,7 +779,11 @@ static void TxInErrorToJSON(const CTxIn& txin, UniValue& vErrorsRet, const std::
 UniValue signrawtransaction(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 4)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "signrawtransaction \"hexstring\" ( [{\"txid\":\"id\",\"vout\":n,\"scriptPubKey\":\"hex\",\"redeemScript\":\"hex\"},...] [\"privatekey1\",...] sighashtype )\n"
             "\nSign inputs for raw transaction (serialized, hex-encoded).\n"
             "The second optional argument (may be null) is an array of previous transaction outputs that\n"
@@ -609,9 +845,15 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 #endif
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VSTR)(UniValue::VARR)(UniValue::VARR)(UniValue::VSTR), true);
 
+<<<<<<< Updated upstream
     std::vector<unsigned char> txData(ParseHexV(params[0], "argument 1"));
     CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
     std::vector<CMutableTransaction> txVariants;
+=======
+    vector<unsigned char> txData(ParseHexV(params[0], "argument 1"));
+    CDataStream ssData(txData, SER_NETWORK, PROTOCOL_VERSION);
+    vector<CMutableTransaction> txVariants;
+>>>>>>> Stashed changes
     while (!ssData.empty()) {
         try {
             CMutableTransaction tx;
@@ -630,6 +872,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     CMutableTransaction mergedTx(txVariants[0]);
 
     // Fetch previous transactions (inputs):
+<<<<<<< Updated upstream
     std::map<COutPoint, CScript> mapPrevOut;
     if (Params().NetworkID() == CBaseChainParams::REGTEST) {
         for (const CTxIn &txbase : mergedTx.vin)
@@ -642,6 +885,8 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
             }
         }
     }
+=======
+>>>>>>> Stashed changes
     CCoinsView viewDummy;
     CCoinsViewCache view(&viewDummy);
     {
@@ -650,7 +895,11 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
         CCoinsViewMemPool viewMempool(&viewChain, mempool);
         view.SetBackend(viewMempool); // temporarily switch cache backend to db+mempool view
 
+<<<<<<< Updated upstream
         for (const CTxIn& txin : mergedTx.vin) {
+=======
+        BOOST_FOREACH (const CTxIn& txin, mergedTx.vin) {
+>>>>>>> Stashed changes
             const uint256& prevHash = txin.prevout.hash;
             CCoins coins;
             view.AccessCoins(prevHash); // this is certainly allowed to fail
@@ -699,13 +948,21 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
             if (nOut < 0)
                 throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "vout must be positive");
 
+<<<<<<< Updated upstream
             std::vector<unsigned char> pkData(ParseHexO(prevOut, "scriptPubKey"));
+=======
+            vector<unsigned char> pkData(ParseHexO(prevOut, "scriptPubKey"));
+>>>>>>> Stashed changes
             CScript scriptPubKey(pkData.begin(), pkData.end());
 
             {
                 CCoinsModifier coins = view.ModifyCoins(txid);
                 if (coins->IsAvailable(nOut) && coins->vout[nOut].scriptPubKey != scriptPubKey) {
+<<<<<<< Updated upstream
                     std::string err("Previous output scriptPubKey mismatch:\n");
+=======
+                    string err("Previous output scriptPubKey mismatch:\n");
+>>>>>>> Stashed changes
                     err = err + coins->vout[nOut].scriptPubKey.ToString() + "\nvs:\n" +
                           scriptPubKey.ToString();
                     throw JSONRPCError(RPC_DESERIALIZATION_ERROR, err);
@@ -722,7 +979,11 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
                 RPCTypeCheckObj(prevOut, boost::assign::map_list_of("txid", UniValue::VSTR)("vout", UniValue::VNUM)("scriptPubKey", UniValue::VSTR)("redeemScript",UniValue::VSTR));
                 UniValue v = find_value(prevOut, "redeemScript");
                 if (!v.isNull()) {
+<<<<<<< Updated upstream
                     std::vector<unsigned char> rsData(ParseHexV(v, "redeemScript"));
+=======
+                    vector<unsigned char> rsData(ParseHexV(v, "redeemScript"));
+>>>>>>> Stashed changes
                     CScript redeemScript(rsData.begin(), rsData.end());
                     tempKeystore.AddCScript(redeemScript);
                 }
@@ -738,9 +999,15 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 
     int nHashType = SIGHASH_ALL;
     if (params.size() > 3 && !params[3].isNull()) {
+<<<<<<< Updated upstream
         static std::map<std::string, int> mapSigHashValues =
             boost::assign::map_list_of(std::string("ALL"), int(SIGHASH_ALL))(std::string("ALL|ANYONECANPAY"), int(SIGHASH_ALL | SIGHASH_ANYONECANPAY))(std::string("NONE"), int(SIGHASH_NONE))(std::string("NONE|ANYONECANPAY"), int(SIGHASH_NONE | SIGHASH_ANYONECANPAY))(std::string("SINGLE"), int(SIGHASH_SINGLE))(std::string("SINGLE|ANYONECANPAY"), int(SIGHASH_SINGLE | SIGHASH_ANYONECANPAY));
         std::string strHashType = params[3].get_str();
+=======
+        static map<string, int> mapSigHashValues =
+            boost::assign::map_list_of(string("ALL"), int(SIGHASH_ALL))(string("ALL|ANYONECANPAY"), int(SIGHASH_ALL | SIGHASH_ANYONECANPAY))(string("NONE"), int(SIGHASH_NONE))(string("NONE|ANYONECANPAY"), int(SIGHASH_NONE | SIGHASH_ANYONECANPAY))(string("SINGLE"), int(SIGHASH_SINGLE))(string("SINGLE|ANYONECANPAY"), int(SIGHASH_SINGLE | SIGHASH_ANYONECANPAY));
+        string strHashType = params[3].get_str();
+>>>>>>> Stashed changes
         if (mapSigHashValues.count(strHashType))
             nHashType = mapSigHashValues[strHashType];
         else
@@ -756,6 +1023,7 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
     for (unsigned int i = 0; i < mergedTx.vin.size(); i++) {
         CTxIn& txin = mergedTx.vin[i];
         const CCoins* coins = view.AccessCoins(txin.prevout.hash);
+<<<<<<< Updated upstream
         if (Params().NetworkID() == CBaseChainParams::REGTEST) {
             if (mapPrevOut.count(txin.prevout) == 0 && (coins == NULL || !coins->IsAvailable(txin.prevout.n)))
             {
@@ -785,6 +1053,21 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 
         // ... and merge in other signatures:
         for (const CMutableTransaction& txv : txVariants) {
+=======
+        if (coins == NULL || !coins->IsAvailable(txin.prevout.n)) {
+            TxInErrorToJSON(txin, vErrors, "Input not found or already spent");
+            continue;
+        }
+        const CScript& prevPubKey = coins->vout[txin.prevout.n].scriptPubKey;
+
+        txin.scriptSig.clear();
+        // Only sign SIGHASH_SINGLE if there's a corresponding output:
+        if (!fHashSingle || (i < mergedTx.vout.size()))
+            SignSignature(keystore, prevPubKey, mergedTx, i, nHashType);
+
+        // ... and merge in other signatures:
+        BOOST_FOREACH (const CMutableTransaction& txv, txVariants) {
+>>>>>>> Stashed changes
             txin.scriptSig = CombineSignatures(prevPubKey, mergedTx, i, txin.scriptSig, txv.vin[i].scriptSig);
         }
         ScriptError serror = SCRIPT_ERR_OK;
@@ -807,7 +1090,11 @@ UniValue signrawtransaction(const UniValue& params, bool fHelp)
 UniValue sendrawtransaction(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 3)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "sendrawtransaction \"hexstring\" ( allowhighfees )\n"
             "\nSubmits raw transaction (serialized, hex-encoded) to local node and network.\n"
             "\nAlso see createrawtransaction and signrawtransaction calls.\n"
@@ -851,11 +1138,16 @@ UniValue sendrawtransaction(const UniValue& params, bool fHelp)
     if (!fHaveMempool && !fHaveChain) {
         // push to local node and sync with wallets
         if (fSwiftX) {
+<<<<<<< Updated upstream
             mapTxLockReq.insert(std::make_pair(tx.GetHash(), tx));
+=======
+            mapTxLockReq.insert(make_pair(tx.GetHash(), tx));
+>>>>>>> Stashed changes
             CreateNewLock(tx);
             RelayTransactionLockReq(tx, true);
         }
         CValidationState state;
+<<<<<<< Updated upstream
         bool fMissingInputs;
         if (!AcceptToMemoryPool(mempool, state, tx, false, &fMissingInputs, !fOverrideFees)) {
             if (state.IsInvalid()) {
@@ -866,6 +1158,13 @@ UniValue sendrawtransaction(const UniValue& params, bool fHelp)
                 }
                 throw JSONRPCError(RPC_TRANSACTION_ERROR, state.GetRejectReason());
             }
+=======
+        if (!AcceptToMemoryPool(mempool, state, tx, false, NULL, !fOverrideFees)) {
+            if (state.IsInvalid())
+                throw JSONRPCError(RPC_TRANSACTION_REJECTED, strprintf("%i: %s", state.GetRejectCode(), state.GetRejectReason()));
+            else
+                throw JSONRPCError(RPC_TRANSACTION_ERROR, state.GetRejectReason());
+>>>>>>> Stashed changes
         }
     } else if (fHaveChain) {
         throw JSONRPCError(RPC_TRANSACTION_ALREADY_IN_CHAIN, "transaction already in block chain");
@@ -878,7 +1177,11 @@ UniValue sendrawtransaction(const UniValue& params, bool fHelp)
 UniValue getspentzerocoinamount(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getspentzerocoinamount hexstring index\n"
             "\nReturns value of spent zerocoin output designated by transaction hash and input index.\n"
 
@@ -908,13 +1211,18 @@ UniValue getspentzerocoinamount(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter for transaction input");
 
     const CTxIn& input = tx.vin[inputIndex];
+<<<<<<< Updated upstream
     if (!input.IsZerocoinSpend())
+=======
+    if (!input.scriptSig.IsZerocoinSpend())
+>>>>>>> Stashed changes
         return -1;
 
     libzerocoin::CoinSpend spend = TxInToZerocoinSpend(input);
     CAmount nValue = libzerocoin::ZerocoinDenominationToAmount(spend.getDenomination());
     return FormatMoney(nValue);
 }
+<<<<<<< Updated upstream
 
 #ifdef ENABLE_WALLET
 UniValue createrawzerocoinstake(const UniValue& params, bool fHelp)
@@ -1067,3 +1375,5 @@ UniValue createrawzerocoinpublicspend(const UniValue& params, bool fHelp)
 }
 #endif
 
+=======
+>>>>>>> Stashed changes

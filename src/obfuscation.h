@@ -1,5 +1,10 @@
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,6 +20,10 @@
 
 class CTxIn;
 class CObfuscationPool;
+<<<<<<< Updated upstream
+=======
+class CObfuScationSigner;
+>>>>>>> Stashed changes
 class CMasterNodeVote;
 class CBitcoinAddress;
 class CObfuscationQueue;
@@ -49,9 +58,16 @@ static const CAmount OBFUSCATION_COLLATERAL = (10 * COIN);
 static const CAmount OBFUSCATION_POOL_MAX = (99999.99 * COIN);
 
 extern CObfuscationPool obfuScationPool;
+<<<<<<< Updated upstream
 extern std::vector<CObfuscationQueue> vecObfuscationQueue;
 extern std::string strMasterNodePrivKey;
 extern std::map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
+=======
+extern CObfuScationSigner obfuScationSigner;
+extern std::vector<CObfuscationQueue> vecObfuscationQueue;
+extern std::string strMasterNodePrivKey;
+extern map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
+>>>>>>> Stashed changes
 extern CActiveMasternode activeMasternode;
 
 /** Holds an Obfuscation input
@@ -60,6 +76,10 @@ class CTxDSIn : public CTxIn
 {
 public:
     bool fHasSig;   // flag to indicate if signed
+<<<<<<< Updated upstream
+=======
+    int nSentTimes; //times we've sent this anonymously
+>>>>>>> Stashed changes
 
     CTxDSIn(const CTxIn& in)
     {
@@ -67,6 +87,10 @@ public:
         scriptSig = in.scriptSig;
         prevPubKey = in.prevPubKey;
         nSequence = in.nSequence;
+<<<<<<< Updated upstream
+=======
+        nSentTimes = 0;
+>>>>>>> Stashed changes
         fHasSig = false;
     }
 };
@@ -96,6 +120,10 @@ public:
     std::vector<CTxDSOut> vout;
     CAmount amount;
     CTransaction collateral;
+<<<<<<< Updated upstream
+=======
+    CTransaction txSupporting;
+>>>>>>> Stashed changes
     int64_t addedTime; // time in UTC milliseconds
 
     CObfuScationEntry()
@@ -112,10 +140,17 @@ public:
             return false;
         }
 
+<<<<<<< Updated upstream
         for (const CTxIn& in : vinIn)
             sev.push_back(in);
 
         for (const CTxOut& out : voutIn)
+=======
+        BOOST_FOREACH (const CTxIn& in, vinIn)
+            sev.push_back(in);
+
+        BOOST_FOREACH (const CTxOut& out, voutIn)
+>>>>>>> Stashed changes
             vout.push_back(out);
 
         amount = amountIn;
@@ -126,6 +161,27 @@ public:
         return true;
     }
 
+<<<<<<< Updated upstream
+=======
+    bool AddSig(const CTxIn& vin)
+    {
+        BOOST_FOREACH (CTxDSIn& s, sev) {
+            if (s.prevout == vin.prevout && s.nSequence == vin.nSequence) {
+                if (s.fHasSig) {
+                    return false;
+                }
+                s.scriptSig = vin.scriptSig;
+                s.prevPubKey = vin.prevPubKey;
+                s.fHasSig = true;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+>>>>>>> Stashed changes
     bool IsExpired()
     {
         return (GetTime() - addedTime) > OBFUSCATION_QUEUE_TIMEOUT; // 120 seconds
@@ -166,6 +222,30 @@ public:
         READWRITE(vchSig);
     }
 
+<<<<<<< Updated upstream
+=======
+    bool GetAddress(CService& addr)
+    {
+        CMasternode* pmn = mnodeman.Find(vin);
+        if (pmn != NULL) {
+            addr = pmn->addr;
+            return true;
+        }
+        return false;
+    }
+
+    /// Get the protocol version
+    bool GetProtocolVersion(int& protocolVersion)
+    {
+        CMasternode* pmn = mnodeman.Find(vin);
+        if (pmn != NULL) {
+            protocolVersion = pmn->protocolVersion;
+            return true;
+        }
+        return false;
+    }
+
+>>>>>>> Stashed changes
     /** Sign this Obfuscation transaction
      *  \return true if all conditions are met:
      *     1) we have an active Masternode,
@@ -183,6 +263,11 @@ public:
         return (GetTime() - time) > OBFUSCATION_QUEUE_TIMEOUT; // 120 seconds
     }
 
+<<<<<<< Updated upstream
+=======
+    /// Check if we have a valid Masternode address
+    bool CheckSignature();
+>>>>>>> Stashed changes
 };
 
 /** Helper class to store Obfuscation transaction (tx) information.
@@ -192,15 +277,43 @@ class CObfuscationBroadcastTx
 public:
     CTransaction tx;
     CTxIn vin;
+<<<<<<< Updated upstream
     std::vector<unsigned char> vchSig;
     int64_t sigTime;
 };
 
+=======
+    vector<unsigned char> vchSig;
+    int64_t sigTime;
+};
+
+/** Helper object for signing and checking signatures
+ */
+class CObfuScationSigner
+{
+public:
+    /// Is the inputs associated with this public key? (and there is 10000 PrimeStone - checking if valid masternode)
+    bool IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey);
+    /// Set the private/public key values, returns true if successful
+    bool GetKeysFromSecret(std::string strSecret, CKey& keyRet, CPubKey& pubkeyRet);
+    /// Set the private/public key values, returns true if successful
+    bool SetKey(std::string strSecret, std::string& errorMessage, CKey& key, CPubKey& pubkey);
+    /// Sign the message, returns true if successful
+    bool SignMessage(std::string strMessage, std::string& errorMessage, std::vector<unsigned char>& vchSig, CKey key);
+    /// Verify the message, returns true if succcessful
+    bool VerifyMessage(CPubKey pubkey, std::vector<unsigned char>& vchSig, std::string strMessage, std::string& errorMessage);
+};
+
+>>>>>>> Stashed changes
 /** Used to keep track of current status of Obfuscation pool
  */
 class CObfuscationPool
 {
 private:
+<<<<<<< Updated upstream
+=======
+    mutable CCriticalSection cs_obfuscation;
+>>>>>>> Stashed changes
 
     std::vector<CObfuScationEntry> entries; // Masternode/clients entries
     CMutableTransaction finalTransaction;   // the finalized transaction ready for signing
@@ -215,15 +328,27 @@ private:
     std::vector<CTxIn> lockedCoins;
 
     std::string lastMessage;
+<<<<<<< Updated upstream
+=======
+    bool unitTest;
+>>>>>>> Stashed changes
 
     int sessionID;
 
     int sessionUsers;            //N Users have said they'll join
+<<<<<<< Updated upstream
+=======
+    bool sessionFoundMasternode; //If we've found a compatible Masternode
+>>>>>>> Stashed changes
     std::vector<CTransaction> vecSessionCollateral;
 
     int cachedLastSuccess;
 
     int minBlockSpacing; //required blocks between mixes
+<<<<<<< Updated upstream
+=======
+    CMutableTransaction txCollateral;
+>>>>>>> Stashed changes
 
     int64_t lastNewBlock;
 
@@ -261,6 +386,10 @@ public:
 
     CMasternode* pSubmittedToMasternode;
     int sessionDenom;    //Users must submit an denom matching this
+<<<<<<< Updated upstream
+=======
+    int cachedNumBlocks; //used for the overview screen
+>>>>>>> Stashed changes
 
     CObfuscationPool()
     {
@@ -268,17 +397,51 @@ public:
             to behave themselves. If they don't it takes their money. */
 
         cachedLastSuccess = 0;
+<<<<<<< Updated upstream
+=======
+        cachedNumBlocks = std::numeric_limits<int>::max();
+        unitTest = false;
+        txCollateral = CMutableTransaction();
+>>>>>>> Stashed changes
         minBlockSpacing = 0;
         lastNewBlock = 0;
 
         SetNull();
     }
 
+<<<<<<< Updated upstream
+=======
+    /** Process a Obfuscation message using the Obfuscation protocol
+     * \param pfrom
+     * \param strCommand lower case command string; valid values are:
+     *        Command  | Description
+     *        -------- | -----------------
+     *        dsa      | Obfuscation Acceptable
+     *        dsc      | Obfuscation Complete
+     *        dsf      | Obfuscation Final tx
+     *        dsi      | Obfuscation vIn
+     *        dsq      | Obfuscation Queue
+     *        dss      | Obfuscation Signal Final Tx
+     *        dssu     | Obfuscation status update
+     *        dssub    | Obfuscation Subscribe To
+     * \param vRecv
+     */
+    void ProcessMessageObfuscation(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
+
+>>>>>>> Stashed changes
     void InitCollateralAddress()
     {
         SetCollateralAddress(Params().ObfuscationPoolDummyAddress());
     }
 
+<<<<<<< Updated upstream
+=======
+    void SetMinBlockSpacing(int minBlockSpacingIn)
+    {
+        minBlockSpacing = minBlockSpacingIn;
+    }
+
+>>>>>>> Stashed changes
     bool SetCollateralAddress(std::string strAddress);
     void Reset();
     void SetNull();
@@ -295,11 +458,25 @@ public:
         return state;
     }
 
+<<<<<<< Updated upstream
+=======
+    std::string GetStatus();
+
+>>>>>>> Stashed changes
     int GetEntriesCount() const
     {
         return entries.size();
     }
 
+<<<<<<< Updated upstream
+=======
+    /// Get the time the last entry was accepted (time in UTC milliseconds)
+    int GetLastEntryAccepted() const
+    {
+        return lastEntryAccepted;
+    }
+
+>>>>>>> Stashed changes
     /// Get the count of the accepted entries
     int GetCountEntriesAccepted() const
     {
@@ -330,6 +507,25 @@ public:
         return Params().PoolMaxTransactions();
     }
 
+<<<<<<< Updated upstream
+=======
+    /// Do we have enough users to take entries?
+    bool IsSessionReady()
+    {
+        return sessionUsers >= GetMaxPoolTransactions();
+    }
+
+    /// Are these outputs compatible with other client in the pool?
+    bool IsCompatibleWithEntries(std::vector<CTxOut>& vout);
+
+    /// Is this amount compatible with other client in the pool?
+    bool IsCompatibleWithSession(CAmount nAmount, CTransaction txCollateral, int& errorID);
+
+    /// Passively run Obfuscation in the background according to the configuration in settings (only for QT)
+    bool DoAutomaticDenominating(bool fDryRun = false);
+    bool PrepareObfuscationDenominate();
+
+>>>>>>> Stashed changes
     /// Check for process in Obfuscation
     void Check();
     void CheckFinalTransaction();
@@ -339,15 +535,68 @@ public:
     void ChargeRandomFees();
     void CheckTimeout();
     void CheckForCompleteQueue();
+<<<<<<< Updated upstream
     /// Check that all inputs are signed. (Are all inputs signed?)
     bool SignaturesComplete();
     /// Process a new block
     void NewBlock();
+=======
+    /// Check to make sure a signature matches an input in the pool
+    bool SignatureValid(const CScript& newSig, const CTxIn& newVin);
+    /// If the collateral is valid given by a client
+    bool IsCollateralValid(const CTransaction& txCollateral);
+    /// Add a clients entry to the pool
+    bool AddEntry(const std::vector<CTxIn>& newInput, const CAmount& nAmount, const CTransaction& txCollateral, const std::vector<CTxOut>& newOutput, int& errorID);
+    /// Add signature to a vin
+    bool AddScriptSig(const CTxIn& newVin);
+    /// Check that all inputs are signed. (Are all inputs signed?)
+    bool SignaturesComplete();
+    /// As a client, send a transaction to a Masternode to start the denomination process
+    void SendObfuscationDenominate(std::vector<CTxIn>& vin, std::vector<CTxOut>& vout, CAmount amount);
+    /// Get Masternode updates about the progress of Obfuscation
+    bool StatusUpdate(int newState, int newEntriesCount, int newAccepted, int& errorID, int newSessionID = 0);
+
+    /// As a client, check and sign the final transaction
+    bool SignFinalTransaction(CTransaction& finalTransactionNew, CNode* node);
+
+    /// Get the last valid block hash for a given modulus
+    bool GetLastValidBlockHash(uint256& hash, int mod = 1, int nBlockHeight = 0);
+    /// Process a new block
+    void NewBlock();
+    void CompletedTransaction(bool error, int errorID);
+    void ClearLastMessage();
+    /// Used for liquidity providers
+    bool SendRandomPaymentToSelf();
+
+    /// Split up large inputs or make fee sized inputs
+    bool MakeCollateralAmounts();
+    bool CreateDenominated(CAmount nTotalValue);
+
+    /// Get the denominations for a list of outputs (returns a bitshifted integer)
+    int GetDenominations(const std::vector<CTxOut>& vout, bool fSingleRandomDenom = false);
+    int GetDenominations(const std::vector<CTxDSOut>& vout);
+
+    void GetDenominationsToString(int nDenom, std::string& strDenom);
+
+    /// Get the denominations for a specific amount of primestone.
+    int GetDenominationsByAmount(CAmount nAmount, int nDenomTarget = 0); // is not used anymore?
+    int GetDenominationsByAmounts(std::vector<CAmount>& vecAmount);
+
+    std::string GetMessageByID(int messageID);
+>>>>>>> Stashed changes
 
     //
     // Relay Obfuscation Messages
     //
+<<<<<<< Updated upstream
     void RelayFinalTransaction(const int sessionID, const CTransaction& txNew);
+=======
+
+    void RelayFinalTransaction(const int sessionID, const CTransaction& txNew);
+    void RelaySignaturesAnon(std::vector<CTxIn>& vin);
+    void RelayInAnon(std::vector<CTxIn>& vin, std::vector<CTxOut>& vout);
+    void RelayIn(const std::vector<CTxDSIn>& vin, const CAmount& nAmount, const CTransaction& txCollateral, const std::vector<CTxDSOut>& vout);
+>>>>>>> Stashed changes
     void RelayStatus(const int sessionID, const int newState, const int newEntriesCount, const int newAccepted, const int errorID = MSG_NOERR);
     void RelayCompletedTransaction(const int sessionID, const bool error, const int errorID);
 };

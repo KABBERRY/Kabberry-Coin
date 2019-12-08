@@ -1,5 +1,6 @@
 dnl require autoconf 2.60 (AS_ECHO/AS_ECHO_N)
 AC_PREREQ([2.60])
+<<<<<<< Updated upstream
 define(_CLIENT_VERSION_MAJOR, 3)
 define(_CLIENT_VERSION_MINOR, 4)
 define(_CLIENT_VERSION_REVISION, 99)
@@ -17,6 +18,24 @@ BITCOIN_DAEMON_NAME=pivxd
 BITCOIN_GUI_NAME=pivx-qt
 BITCOIN_CLI_NAME=pivx-cli
 BITCOIN_TX_NAME=pivx-tx
+=======
+define(_CLIENT_VERSION_MAJOR, 2)
+define(_CLIENT_VERSION_MINOR, 4)
+define(_CLIENT_VERSION_REVISION, 0)
+define(_CLIENT_VERSION_BUILD, 0)
+define(_CLIENT_VERSION_IS_RELEASE, true)
+define(_COPYRIGHT_YEAR, 2019)
+AC_INIT([PrimeStone],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION],[www.primestone.org],[primestone])
+AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_HEADERS([src/config/primestone-config.h])
+AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_MACRO_DIR([build-aux/m4])
+
+BITCOIN_DAEMON_NAME=primestoned
+BITCOIN_GUI_NAME=primestone-qt
+BITCOIN_CLI_NAME=primestone-cli
+BITCOIN_TX_NAME=primestone-tx
+>>>>>>> Stashed changes
 
 dnl Unless the user specified ARFLAGS, force it to be cr
 AC_ARG_VAR(ARFLAGS, [Flags for the archiver, defaults to <cr> if not set])
@@ -26,9 +45,15 @@ fi
 
 AC_CANONICAL_HOST
 
+<<<<<<< Updated upstream
 AH_TOP([#ifndef PIV_CONFIG_H])
 AH_TOP([#define PIV_CONFIG_H])
 AH_BOTTOM([#endif //PIV_CONFIG_H])
+=======
+AH_TOP([#ifndef PrimeStone_CONFIG_H])
+AH_TOP([#define PrimeStone_CONFIG_H])
+AH_BOTTOM([#endif //PrimeStone_CONFIG_H])
+>>>>>>> Stashed changes
 
 dnl faketime breaks configure and is only needed for make. Disable it here.
 unset FAKETIME
@@ -82,8 +107,13 @@ AC_PATH_TOOL(RANLIB, ranlib)
 AC_PATH_TOOL(STRIP, strip)
 AC_PATH_TOOL(GCOV, gcov)
 AC_PATH_PROG(LCOV, lcov)
+<<<<<<< Updated upstream
 dnl Python 3.5 is specified in .python-version and should be used if available, see doc/dependencies.md
 AC_PATH_PROGS([PYTHON], [python3.5 python3.6 python3.7 python3.8 python3 python])
+=======
+dnl Python 3.x is supported from 3.4 on (see https://github.com/bitcoin/bitcoin/issues/7893)
+AC_PATH_PROGS([PYTHON], [python3.6 python3.5 python3.4 python3 python2.7 python2 python])
+>>>>>>> Stashed changes
 AC_PATH_PROG(GENHTML, genhtml)
 AC_PATH_PROG([GIT], [git])
 AC_PATH_PROG(CCACHE,ccache)
@@ -92,11 +122,14 @@ AC_PATH_PROG(HEXDUMP,hexdump)
 AC_PATH_TOOL(READELF, readelf)
 AC_PATH_TOOL(CPPFILT, c++filt)
 AC_PATH_TOOL(OBJCOPY, objcopy)
+<<<<<<< Updated upstream
 AC_PATH_PROG(DOXYGEN, doxygen)
 if test -z "$DOXYGEN"; then
    AC_MSG_WARN([Doxygen not found])
 fi
 AM_CONDITIONAL([HAVE_DOXYGEN], [test -n "$DOXYGEN"])
+=======
+>>>>>>> Stashed changes
 
 AC_ARG_VAR(PYTHONPATH, Augments the default search path for python module files)
 
@@ -124,6 +157,7 @@ AC_ARG_ENABLE(tests,
     [use_tests=$enableval],
     [use_tests=yes])
 
+<<<<<<< Updated upstream
 AC_ARG_ENABLE(gui-tests,
     AS_HELP_STRING([--disable-gui-tests],[do not compile GUI tests (default is to compile if GUI and tests enabled)]),
     [use_gui_tests=$enableval],
@@ -150,6 +184,29 @@ AC_ARG_ENABLE([hardening],
   [do not attempt to harden the resulting executables (default is to harden when possible)])],
   [use_hardening=$enableval],
   [use_hardening=auto])
+=======
+AC_ARG_WITH([comparison-tool],
+    AS_HELP_STRING([--with-comparison-tool],[path to java comparison tool (requires --enable-tests)]),
+    [use_comparison_tool=$withval],
+    [use_comparison_tool=no])
+
+AC_ARG_ENABLE([comparison-tool-reorg-tests],
+    AS_HELP_STRING([--enable-comparison-tool-reorg-tests],[enable expensive reorg tests in the comparison tool (default no)]),
+    [use_comparison_tool_reorg_tests=$enableval],
+    [use_comparison_tool_reorg_tests=no])
+
+AC_ARG_WITH([qrencode],
+  [AS_HELP_STRING([--with-qrencode],
+  [enable QR code support (default is yes if qt is enabled and libqrencode is found)])],
+  [use_qr=$withval],
+  [use_qr=auto])
+
+AC_ARG_ENABLE([hardening],
+  [AS_HELP_STRING([--disable-hardening],
+  [do not attempt to harden the resulting executables (default is to harden)])],
+  [use_hardening=$enableval],
+  [use_hardening=yes])
+>>>>>>> Stashed changes
 
 AC_ARG_ENABLE([reduce-exports],
   [AS_HELP_STRING([--enable-reduce-exports],
@@ -169,18 +226,22 @@ AC_ARG_ENABLE([lcov],
   [use_lcov=$enableval],
   [use_lcov=no])
 
+<<<<<<< Updated upstream
 AC_ARG_ENABLE([lcov-branch-coverage],
   [AS_HELP_STRING([--enable-lcov-branch-coverage],
   [enable lcov testing branch coverage (default is no)])],
   [use_lcov_branch=yes],
   [use_lcov_branch=no])
 
+=======
+>>>>>>> Stashed changes
 AC_ARG_ENABLE([glibc-back-compat],
   [AS_HELP_STRING([--enable-glibc-back-compat],
   [enable backwards compatibility with glibc])],
   [use_glibc_compat=$enableval],
   [use_glibc_compat=no])
 
+<<<<<<< Updated upstream
 AC_ARG_ENABLE([asm],
   [AS_HELP_STRING([--enable-asm],
   [Enable assembly routines (default is yes)])],
@@ -197,12 +258,23 @@ AC_ARG_WITH([system-univalue],
   [system_univalue=$withval],
   [system_univalue=no]
 )
+=======
+>>>>>>> Stashed changes
 AC_ARG_ENABLE([zmq],
   [AS_HELP_STRING([--disable-zmq],
   [disable ZMQ notifications])],
   [use_zmq=$enableval],
   [use_zmq=yes])
 
+<<<<<<< Updated upstream
+=======
+AC_ARG_WITH([system-univalue],
+  [AS_HELP_STRING([--with-system-univalue],
+  [Build with system UniValue (default is no)])],
+  [system_univalue=$withval],
+  [system_univalue=no])
+
+>>>>>>> Stashed changes
 AC_ARG_WITH([zerocoin-bignum],
   [AS_HELP_STRING([--with-zerocoin-bignum=gmp|openssl|auto],
   [Specify Bignum Implementation. Default is auto])],
@@ -211,12 +283,15 @@ AC_ARG_WITH([zerocoin-bignum],
 
 AC_ARG_WITH([protoc-bindir],[AS_HELP_STRING([--with-protoc-bindir=BIN_DIR],[specify protoc bin path])], [protoc_bin_path=$withval], [])
 
+<<<<<<< Updated upstream
 AC_ARG_ENABLE(man,
     [AS_HELP_STRING([--disable-man],
                     [do not install man pages (default is to install)])],,
     enable_man=yes)
 AM_CONDITIONAL(ENABLE_MAN, test "$enable_man" != no)
 
+=======
+>>>>>>> Stashed changes
 # Enable debug
 AC_ARG_ENABLE([debug],
     [AS_HELP_STRING([--enable-debug],
@@ -224,6 +299,7 @@ AC_ARG_ENABLE([debug],
     [enable_debug=$enableval],
     [enable_debug=no])
 
+<<<<<<< Updated upstream
 # Enable different -fsanitize options
 AC_ARG_WITH([sanitizers],
     [AS_HELP_STRING([--with-sanitizers],
@@ -237,6 +313,8 @@ AC_ARG_ENABLE([gprof],
     [enable_gprof=$enableval],
     [enable_gprof=no])
 
+=======
+>>>>>>> Stashed changes
 # Turn warnings into errors
 AC_ARG_ENABLE([werror],
     [AS_HELP_STRING([--enable-werror],
@@ -248,6 +326,7 @@ AC_LANG_PUSH([C++])
 AX_CHECK_COMPILE_FLAG([-Werror],[CXXFLAG_WERROR="-Werror"],[CXXFLAG_WERROR=""])
 
 if test "x$enable_debug" = xyes; then
+<<<<<<< Updated upstream
   # Clear default -g -O2 flags
   if test "x$CXXFLAGS_overridden" = xno; then
 	CXXFLAGS=""
@@ -289,6 +368,16 @@ if test x$use_sanitizers != x; then
     [[-fsanitize=$use_sanitizers]],
     [[SANITIZER_LDFLAGS=-fsanitize=$use_sanitizers]],
     [AC_MSG_ERROR([linker did not accept requested flags, you are missing required libraries])])
+=======
+    CPPFLAGS="$CPPFLAGS -DDEBUG -DDEBUG_LOCKORDER"
+    if test "x$GCC" = xyes; then
+        CFLAGS="$CFLAGS -g3 -O0"
+    fi
+
+    if test "x$GXX" = xyes; then
+        CXXFLAGS="$CXXFLAGS -g3 -O0"
+    fi
+>>>>>>> Stashed changes
 fi
 
 ERROR_CXXFLAGS=
@@ -301,6 +390,7 @@ if test "x$enable_werror" = "xyes"; then
 fi
 
 if test "x$CXXFLAGS_overridden" = "xno"; then
+<<<<<<< Updated upstream
   AX_CHECK_COMPILE_FLAG([-Wall],[WARN_CXXFLAGS="$WARN_CXXFLAGS -Wall"],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-Wextra],[WARN_CXXFLAGS="$WARN_CXXFLAGS -Wextra"],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-Wformat],[WARN_CXXFLAGS="$WARN_CXXFLAGS -Wformat"],,[[$CXXFLAG_WERROR]])
@@ -309,24 +399,43 @@ if test "x$CXXFLAGS_overridden" = "xno"; then
   AX_CHECK_COMPILE_FLAG([-Wthread-safety-analysis],[WARN_CXXFLAGS="$WARN_CXXFLAGS -Wthread-safety-analysis"],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-Wrange-loop-analysis],[WARN_CXXFLAGS="$WARN_CXXFLAGS -Wrange-loop-analysis"],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-Wredundant-decls],[WARN_CXXFLAGS="$WARN_CXXFLAGS -Wredundant-decls"],,[[$CXXFLAG_WERROR]])
+=======
+  AX_CHECK_COMPILE_FLAG([-Wall],[CXXFLAGS="$CXXFLAGS -Wall"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wextra],[CXXFLAGS="$CXXFLAGS -Wextra"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wformat],[CXXFLAGS="$CXXFLAGS -Wformat"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wvla],[CXXFLAGS="$CXXFLAGS -Wvla"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wformat-security],[CXXFLAGS="$CXXFLAGS -Wformat-security"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wthread-safety-analysis],[CXXFLAGS="$CXXFLAGS -Wthread-safety-analysis"],,[[$CXXFLAG_WERROR]])
+>>>>>>> Stashed changes
 
   ## Some compilers (gcc) ignore unknown -Wno-* options, but warn about all
   ## unknown options if any other warning is produced. Test the -Wfoo case, and
   ## set the -Wno-foo case if it works.
+<<<<<<< Updated upstream
   AX_CHECK_COMPILE_FLAG([-Wunused-parameter],[NOWARN_CXXFLAGS="$NOWARN_CXXFLAGS -Wno-unused-parameter"],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-Wself-assign],[NOWARN_CXXFLAGS="$NOWARN_CXXFLAGS -Wno-self-assign"],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-Wunused-local-typedef],[NOWARN_CXXFLAGS="$NOWARN_CXXFLAGS -Wno-unused-local-typedef"],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-Wdeprecated-register],[NOWARN_CXXFLAGS="$NOWARN_CXXFLAGS -Wno-deprecated-register"],,[[$CXXFLAG_WERROR]])
   AX_CHECK_COMPILE_FLAG([-Wimplicit-fallthrough],[NOWARN_CXXFLAGS="$NOWARN_CXXFLAGS -Wno-implicit-fallthrough"],,[[$CXXFLAG_WERROR]])
+=======
+  AX_CHECK_COMPILE_FLAG([-Wunused-parameter],[CXXFLAGS="$CXXFLAGS -Wno-unused-parameter"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wself-assign],[CXXFLAGS="$CXXFLAGS -Wno-self-assign"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wunused-local-typedef],[CXXFLAGS="$CXXFLAGS -Wno-unused-local-typedef"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wdeprecated-register],[CXXFLAGS="$CXXFLAGS -Wno-deprecated-register"],,[[$CXXFLAG_WERROR]])
+  AX_CHECK_COMPILE_FLAG([-Wimplicit-fallthrough],[CXXFLAGS="$CXXFLAGS -Wno-implicit-fallthrough"],,[[$CXXFLAG_WERROR]])
+>>>>>>> Stashed changes
 fi
 
 # Check for optional instruction set support. Enabling these does _not_ imply that all code will
 # be compiled with them, rather that specific objects/libs may use them after checking for runtime
 # compatibility.
 AX_CHECK_COMPILE_FLAG([-msse4.2],[[SSE42_CXXFLAGS="-msse4.2"]],,[[$CXXFLAG_WERROR]])
+<<<<<<< Updated upstream
 AX_CHECK_COMPILE_FLAG([-msse4.1],[[SSE41_CXXFLAGS="-msse4.1"]],,[[$CXXFLAG_WERROR]])
 AX_CHECK_COMPILE_FLAG([-mavx -mavx2],[[AVX2_CXXFLAGS="-mavx -mavx2"]],,[[$CXXFLAG_WERROR]])
 AX_CHECK_COMPILE_FLAG([-msse4 -msha],[[SHANI_CXXFLAGS="-msse4 -msha"]],,[[$CXXFLAG_WERROR]])
+=======
+>>>>>>> Stashed changes
 
 TEMP_CXXFLAGS="$CXXFLAGS"
 CXXFLAGS="$CXXFLAGS $SSE42_CXXFLAGS"
@@ -350,6 +459,7 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 )
 CXXFLAGS="$TEMP_CXXFLAGS"
 
+<<<<<<< Updated upstream
 TEMP_CXXFLAGS="$CXXFLAGS"
 CXXFLAGS="$CXXFLAGS $SSE41_CXXFLAGS"
 AC_MSG_CHECKING(for SSE4.1 intrinsics)
@@ -397,23 +507,37 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 )
 CXXFLAGS="$TEMP_CXXFLAGS"
 
+=======
+>>>>>>> Stashed changes
 CPPFLAGS="$CPPFLAGS -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS"
 
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
+<<<<<<< Updated upstream
   [build pivx-cli pivx-tx (default=yes)])],
+=======
+  [build primestone-cli primestone-tx (default=yes)])],
+>>>>>>> Stashed changes
   [build_bitcoin_utils=$withval],
   [build_bitcoin_utils=yes])
 
 AC_ARG_WITH([libs],
   [AS_HELP_STRING([--with-libs],
+<<<<<<< Updated upstream
   [build libraries (default=no)])],
+=======
+  [build libraries (default=yes)])],
+>>>>>>> Stashed changes
   [build_bitcoin_libs=$withval],
   [build_bitcoin_libs=no])
 
 AC_ARG_WITH([daemon],
   [AS_HELP_STRING([--with-daemon],
+<<<<<<< Updated upstream
   [build pivxd daemon (default=yes)])],
+=======
+  [build primestoned daemon (default=yes)])],
+>>>>>>> Stashed changes
   [build_bitcoind=$withval],
   [build_bitcoind=yes])
 
@@ -425,6 +549,7 @@ case $host in
      use_pkgconfig=no
 
      TARGET_OS=windows
+<<<<<<< Updated upstream
      AC_CHECK_LIB([mingwthrd],      [main],, AC_MSG_ERROR(libmingwthrd missing))
      AC_CHECK_LIB([kernel32],      [main],, AC_MSG_ERROR(libkernel32 missing))
      AC_CHECK_LIB([user32],      [main],, AC_MSG_ERROR(libuser32 missing))
@@ -444,6 +569,27 @@ case $host in
      AC_CHECK_LIB([shlwapi],      [main],, AC_MSG_ERROR(libshlwapi missing))
      AC_CHECK_LIB([iphlpapi],      [main],, AC_MSG_ERROR(libiphlpapi missing))
      AC_CHECK_LIB([crypt32],      [main],, AC_MSG_ERROR(libcrypt32 missing))
+=======
+     AC_CHECK_LIB([mingwthrd],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([kernel32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([user32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([gdi32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([comdlg32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([winspool],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([winmm],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([shell32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([comctl32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([ole32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([oleaut32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([uuid],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([rpcrt4],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([advapi32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([ws2_32],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([mswsock],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([shlwapi],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([iphlpapi],      [main],, AC_MSG_ERROR(lib missing))
+     AC_CHECK_LIB([crypt32],      [main],, AC_MSG_ERROR(lib missing))
+>>>>>>> Stashed changes
 
      # -static is interpreted by libtool, where it has a different meaning.
      # In libtool-speak, it's -all-static.
@@ -547,23 +693,30 @@ case $host in
      CPPFLAGS="$CPPFLAGS -DMAC_OSX"
      OBJCXXFLAGS="$CXXFLAGS"
      ;;
+<<<<<<< Updated upstream
    *android*)
      dnl make sure android stays above linux for hosts like *linux-android*
      LEVELDB_TARGET_FLAGS="-DOS_ANDROID"
      ;;
+=======
+>>>>>>> Stashed changes
    *linux*)
      TARGET_OS=linux
      LEVELDB_TARGET_FLAGS="-DOS_LINUX"
      ;;
+<<<<<<< Updated upstream
    *kfreebsd*)
      LEVELDB_TARGET_FLAGS="-DOS_KFREEBSD"
      ;;
+=======
+>>>>>>> Stashed changes
    *freebsd*)
      LEVELDB_TARGET_FLAGS="-DOS_FREEBSD"
      ;;
    *openbsd*)
      LEVELDB_TARGET_FLAGS="-DOS_OPENBSD"
      ;;
+<<<<<<< Updated upstream
    *netbsd*)
      LEVELDB_TARGET_FLAGS="-DOS_NETBSD"
      ;;
@@ -578,6 +731,12 @@ case $host in
      ;;
    *)
      AC_MSG_ERROR(Cannot build leveldb for $host. Please file a bug report.)
+=======
+   *)
+     OTHER_OS=`echo ${host_os} | awk '{print toupper($0)}'`
+     AC_MSG_WARN([Guessing LevelDB OS as OS_${OTHER_OS}, please check whether this is correct, if not add an entry to configure.ac.])
+     LEVELDB_TARGET_FLAGS="-DOS_${OTHER_OS}"
+>>>>>>> Stashed changes
      ;;
 esac
 
@@ -591,8 +750,22 @@ if test x$use_pkgconfig = xyes; then
   ])
 fi
 
+<<<<<<< Updated upstream
 if test x$use_extended_functional_tests != xno; then
   AC_SUBST(EXTENDED_FUNCTIONAL_TESTS, --extended)
+=======
+if test x$use_comparison_tool != xno; then
+  AC_SUBST(JAVA_COMPARISON_TOOL, $use_comparison_tool)
+fi
+
+if test x$use_comparison_tool_reorg_tests != xno; then
+  if test x$use_comparison_tool = x; then
+    AC_MSG_ERROR("comparison tool reorg tests but comparison tool was not specified")
+  fi
+  AC_SUBST(COMPARISON_TOOL_REORG_TESTS, 1)
+else
+  AC_SUBST(COMPARISON_TOOL_REORG_TESTS, 0)
+>>>>>>> Stashed changes
 fi
 
 if test x$use_lcov = xyes; then
@@ -617,17 +790,26 @@ if test x$use_lcov = xyes; then
   CXXFLAGS="$CXXFLAGS -Og"
 fi
 
+<<<<<<< Updated upstream
 if test x$use_lcov_branch != xno; then
   AC_SUBST(LCOV_OPTS, "$LCOV_OPTS --rc lcov_branch_coverage=1")
 fi
 
 dnl Check for endianness
 AC_C_BIGENDIAN
+=======
+dnl Require little endian
+AC_C_BIGENDIAN([AC_MSG_ERROR("Big Endian not supported")])
+>>>>>>> Stashed changes
 
 dnl Check for pthread compile/link requirements
 AX_PTHREAD
 
+<<<<<<< Updated upstream
 # The following macro will add the necessary defines to pivx-config.h, but
+=======
+# The following macro will add the necessary defines to primestone-config.h, but
+>>>>>>> Stashed changes
 # they also need to be passed down to any subprojects. Pull the results out of
 # the cache and add them to CPPFLAGS.
 AC_SYS_LARGEFILE
@@ -656,7 +838,11 @@ if test x$use_glibc_compat != xno; then
 
   #glibc absorbed clock_gettime in 2.17. librt (its previous location) is safe to link
   #in anyway for back-compat.
+<<<<<<< Updated upstream
   AC_CHECK_LIB([rt],[clock_gettime],, AC_MSG_ERROR(librt missing))
+=======
+  AC_CHECK_LIB([rt],[clock_gettime],, AC_MSG_ERROR(lib missing))
+>>>>>>> Stashed changes
 
   #__fdelt_chk's params and return type have changed from long unsigned int to long int.
   # See which one is present here.
@@ -677,6 +863,7 @@ else
   AC_SEARCH_LIBS([clock_gettime],[rt])
 fi
 
+<<<<<<< Updated upstream
 if test "x$enable_gprof" = xyes; then
     dnl -pg is incompatible with -pie. Since hardening and profiling together doesn't make sense,
     dnl we simply make them mutually exclusive here. Additionally, hardened toolchains may force
@@ -694,13 +881,18 @@ if test "x$enable_gprof" = xyes; then
         [AC_MSG_ERROR(gprof profiling requested but not available)], [[$GPROF_LDFLAGS]])
 fi
 
+=======
+>>>>>>> Stashed changes
 if test x$TARGET_OS != xwindows; then
   # All windows code is PIC, forcing it on just adds useless compile warnings
   AX_CHECK_COMPILE_FLAG([-fPIC],[PIC_FLAGS="-fPIC"])
 fi
 
 if test x$use_hardening != xno; then
+<<<<<<< Updated upstream
   use_hardening=yes
+=======
+>>>>>>> Stashed changes
   AX_CHECK_COMPILE_FLAG([-Wstack-protector],[HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -Wstack-protector"])
   AX_CHECK_COMPILE_FLAG([-fstack-protector-all],[HARDENED_CXXFLAGS="$HARDENED_CXXFLAGS -fstack-protector-all"])
 
@@ -716,11 +908,23 @@ if test x$use_hardening != xno; then
   AX_CHECK_LINK_FLAG([[-Wl,--high-entropy-va]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,--high-entropy-va"])
   AX_CHECK_LINK_FLAG([[-Wl,-z,relro]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,relro"])
   AX_CHECK_LINK_FLAG([[-Wl,-z,now]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -Wl,-z,now"])
+<<<<<<< Updated upstream
   AX_CHECK_LINK_FLAG([[-fPIE -pie]], [PIE_FLAGS="-fPIE"; HARDENED_LDFLAGS="$HARDENED_LDFLAGS -pie"],, [[$CXXFLAG_WERROR]])
 
   case $host in
     *mingw*)
        AC_CHECK_LIB([ssp],      [main],, AC_MSG_ERROR(libssp missing))
+=======
+
+  if test x$TARGET_OS != xwindows; then
+    AX_CHECK_COMPILE_FLAG([-fPIC],[PIE_FLAGS="-fPIC"])
+    AX_CHECK_LINK_FLAG([[-pic]], [HARDENED_LDFLAGS="$HARDENED_LDFLAGS -pic"])
+  fi
+
+  case $host in
+    *mingw*)
+       AC_CHECK_LIB([ssp],      [main],, AC_MSG_ERROR(lib missing))
+>>>>>>> Stashed changes
     ;;
   esac
 fi
@@ -730,13 +934,20 @@ if test x$TARGET_OS = xdarwin; then
   AX_CHECK_LINK_FLAG([[-Wl,-dead_strip]], [LDFLAGS="$LDFLAGS -Wl,-dead_strip"])
 fi
 
+<<<<<<< Updated upstream
 AC_CHECK_HEADERS([endian.h sys/endian.h byteswap.h stdio.h stdlib.h unistd.h strings.h sys/types.h sys/stat.h sys/select.h sys/prctl.h])
+=======
+AC_CHECK_HEADERS([endian.h stdio.h stdlib.h unistd.h strings.h sys/types.h sys/stat.h sys/select.h sys/prctl.h])
+AC_SEARCH_LIBS([getaddrinfo_a], [anl], [AC_DEFINE(HAVE_GETADDRINFO_A, 1, [Define this symbol if you have getaddrinfo_a])])
+AC_SEARCH_LIBS([inet_pton], [nsl resolv], [AC_DEFINE(HAVE_INET_PTON, 1, [Define this symbol if you have inet_pton])])
+>>>>>>> Stashed changes
 
 AC_CHECK_DECLS([strnlen])
 
 # Check for daemon(3), unrelated to --with-daemon (although used by it)
 AC_CHECK_DECLS([daemon])
 
+<<<<<<< Updated upstream
 AC_CHECK_DECLS([le16toh, le32toh, le64toh, htole16, htole32, htole64, be16toh, be32toh, be64toh, htobe16, htobe32, htobe64],,,
 		[#if HAVE_ENDIAN_H
                  #include <endian.h>
@@ -751,6 +962,13 @@ AC_CHECK_DECLS([bswap_16, bswap_32, bswap_64],,,
 
 AC_CHECK_DECLS([__builtin_clz, __builtin_clzl, __builtin_clzll])
 
+=======
+AC_CHECK_DECLS([le32toh, le64toh, htole32, htole64, be32toh, be64toh, htobe32, htobe64],,,
+		[#if HAVE_ENDIAN_H
+                 #include <endian.h>
+                 #endif])
+
+>>>>>>> Stashed changes
 dnl Check for MSG_NOSIGNAL
 AC_MSG_CHECKING(for MSG_NOSIGNAL)
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/socket.h>]],
@@ -822,6 +1040,7 @@ AC_LINK_IFELSE([AC_LANG_SOURCE([
 )
 LDFLAGS="$TEMP_LDFLAGS"
 
+<<<<<<< Updated upstream
 # Check for different ways of gathering OS randomness
 AC_MSG_CHECKING(for Linux getrandom syscall)
 AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <unistd.h>
@@ -856,6 +1075,8 @@ AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
  [ AC_MSG_RESULT(no)]
 )
 
+=======
+>>>>>>> Stashed changes
 # Check for reduced exports
 if test x$use_reduce_exports = xyes; then
   AX_CHECK_COMPILE_FLAG([-fvisibility=hidden],[RE_CXXFLAGS="-fvisibility=hidden"],
@@ -879,7 +1100,11 @@ dnl Check for libminiupnpc (optional)
 if test x$use_upnp != xno; then
   AC_CHECK_HEADERS(
     [miniupnpc/miniwget.h miniupnpc/miniupnpc.h miniupnpc/upnpcommands.h miniupnpc/upnperrors.h],
+<<<<<<< Updated upstream
     [AC_CHECK_LIB([miniupnpc], [upnpDiscover], [MINIUPNPC_LIBS=-lminiupnpc], [have_miniupnpc=no])],
+=======
+    [AC_CHECK_LIB([miniupnpc], [main],[MINIUPNPC_LIBS=-lminiupnpc], [have_miniupnpc=no])],
+>>>>>>> Stashed changes
     [have_miniupnpc=no]
   )
 fi
@@ -889,7 +1114,11 @@ BITCOIN_QT_INIT
 dnl sets $bitcoin_enable_qt, $bitcoin_enable_qt_test, $bitcoin_enable_qt_dbus
 BITCOIN_QT_CONFIGURE([$use_pkgconfig])
 
+<<<<<<< Updated upstream
 if test x$build_bitcoin_utils$build_bitcoind$bitcoin_enable_qt$use_tests$use_bench = xnonononono; then
+=======
+if test x$build_bitcoin_utils$build_bitcoind$bitcoin_enable_qt$use_tests = xnononono; then
+>>>>>>> Stashed changes
     use_boost=no
 else
     use_boost=yes
@@ -902,9 +1131,12 @@ define(MINIMUM_REQUIRED_BOOST, 1.47.0)
 
 dnl Check for boost libs
 AX_BOOST_BASE([MINIMUM_REQUIRED_BOOST])
+<<<<<<< Updated upstream
 if test x$want_boost = xno; then
     AC_MSG_ERROR([[only libbitcoinconsensus can be built without boost]])
 fi
+=======
+>>>>>>> Stashed changes
 AX_BOOST_SYSTEM
 AX_BOOST_FILESYSTEM
 AX_BOOST_PROGRAM_OPTIONS
@@ -1075,11 +1307,17 @@ if test x$use_pkgconfig = xyes; then
       PKG_CHECK_MODULES([SSL], [libssl],, [AC_MSG_ERROR(openssl  not found.)])
       PKG_CHECK_MODULES([CRYPTO], [libcrypto],,[AC_MSG_ERROR(libcrypto  not found.)])
       BITCOIN_QT_CHECK([PKG_CHECK_MODULES([PROTOBUF], [protobuf], [have_protobuf=yes], [BITCOIN_QT_FAIL(libprotobuf not found)])])
+<<<<<<< Updated upstream
       BITCOIN_QT_CHECK([PKG_CHECK_MODULES([QR], [libqrencode],,[BITCOIN_QT_FAIL(libqrencode not found)])])
       if test x$use_qtcharts != xno; then
         BITCOIN_QT_CHECK([PKG_CHECK_MODULES([CHARTS], [Qt5Charts],[have_qtcharts=yes], [have_qtcharts=no])])
       fi
 
+=======
+      if test x$use_qr != xno; then
+        BITCOIN_QT_CHECK([PKG_CHECK_MODULES([QR], [libqrencode], [have_qrencode=yes], [have_qrencode=no])])
+      fi
+>>>>>>> Stashed changes
       if test x$build_bitcoin_utils$build_bitcoind$bitcoin_enable_qt$use_tests != xnononono; then
         PKG_CHECK_MODULES([EVENT], [libevent],, [AC_MSG_ERROR(libevent not found.)])
         if test x$TARGET_OS != xwindows; then
@@ -1137,6 +1375,7 @@ else
   fi
 
   BITCOIN_QT_CHECK(AC_CHECK_LIB([protobuf] ,[main],[PROTOBUF_LIBS=-lprotobuf], BITCOIN_QT_FAIL(libprotobuf not found)))
+<<<<<<< Updated upstream
 
   BITCOIN_QT_CHECK([AC_CHECK_LIB([qrencode], [main],[QR_LIBS=-lqrencode], BITCOIN_QT_FAIL(libqrencode not found))])
   BITCOIN_QT_CHECK([AC_CHECK_HEADER([qrencode.h],, BITCOIN_QT_FAIL(libqrencode not found))])
@@ -1153,6 +1392,23 @@ need_bundled_univalue=yes
 if test x$build_bitcoin_utils$build_bitcoind$bitcoin_enable_qt$use_tests$use_bench = xnonononono; then
   need_bundled_univalue=no
 else
+=======
+  if test x$use_qr != xno; then
+    BITCOIN_QT_CHECK([AC_CHECK_LIB([qrencode], [main],[QR_LIBS=-lqrencode], [have_qrencode=no])])
+    BITCOIN_QT_CHECK([AC_CHECK_HEADER([qrencode.h],, have_qrencode=no)])
+  fi
+fi
+
+AC_CHECK_LIB([crypto],[RAND_egd],[],[
+  AC_ARG_WITH([unsupported-ssl],
+    [AS_HELP_STRING([--with-unsupported-ssl],[Build with system SSL (default is no; DANGEROUS; NOT SUPPORTED; You should use OpenSSL 1.0)])],
+    [AC_MSG_WARN([Detected unsupported SSL version: This is NOT supported, and may break consensus compatibility! Use '--with-unsupported-ssl' if you don't care])],
+    [AC_MSG_ERROR([Detected unsupported SSL version: This is NOT supported, and may break consensus compatibility! Use '--with-unsupported-ssl' if you don't care])]
+  )
+])
+
+dnl univalue check
+>>>>>>> Stashed changes
 
 if test x$system_univalue != xno ; then
   found_univalue=no
@@ -1161,7 +1417,11 @@ if test x$system_univalue != xno ; then
     m4_ifdef(
       [PKG_CHECK_MODULES],
       [
+<<<<<<< Updated upstream
         PKG_CHECK_MODULES([UNIVALUE],[libunivalue >= 1.0.4],[found_univalue=yes],[true])
+=======
+        PKG_CHECK_MODULES([UNIVALUE],[libunivalue],[found_univalue=yes],[true])
+>>>>>>> Stashed changes
       ]
     )
   else
@@ -1175,7 +1435,10 @@ if test x$system_univalue != xno ; then
 
   if test x$found_univalue = xyes ; then
     system_univalue=yes
+<<<<<<< Updated upstream
     need_bundled_univalue=no
+=======
+>>>>>>> Stashed changes
   elif test x$system_univalue = xyes ; then
     AC_MSG_ERROR([univalue not found])
   else
@@ -1183,6 +1446,7 @@ if test x$system_univalue != xno ; then
   fi
 fi
 
+<<<<<<< Updated upstream
 if test x$need_bundled_univalue = xyes ; then
   UNIVALUE_CFLAGS='-I$(srcdir)/univalue/include'
   UNIVALUE_LIBS='univalue/libunivalue.la'
@@ -1201,6 +1465,31 @@ AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
 AC_MSG_RESULT($build_bitcoind)
 
 AC_MSG_CHECKING([whether to build utils (pivx-cli pivx-tx)])
+=======
+if test x$system_univalue = xno ; then
+  UNIVALUE_CFLAGS='-I$(srcdir)/univalue/include'
+  UNIVALUE_LIBS='univalue/libunivalue.la'
+fi
+AM_CONDITIONAL([EMBEDDED_UNIVALUE],[test x$system_univalue = xno])
+AC_SUBST(UNIVALUE_CFLAGS)
+AC_SUBST(UNIVALUE_LIBS)
+
+CFLAGS_TEMP="$CFLAGS"
+LIBS_TEMP="$LIBS"
+CFLAGS="$CFLAGS $SSL_CFLAGS $CRYPTO_CFLAGS"
+LIBS="$LIBS $SSL_LIBS $CRYPTO_LIBS"
+AC_CHECK_HEADER([openssl/ec.h],, AC_MSG_ERROR(OpenSSL ec header missing),)
+CFLAGS="$CFLAGS_TEMP"
+LIBS="$LIBS_TEMP"
+
+BITCOIN_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
+
+AC_MSG_CHECKING([whether to build primestoned])
+AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
+AC_MSG_RESULT($build_bitcoind)
+
+AC_MSG_CHECKING([whether to build utils (primestone-cli primestone-tx)])
+>>>>>>> Stashed changes
 AM_CONDITIONAL([BUILD_BITCOIN_UTILS], [test x$build_bitcoin_utils = xyes])
 AC_MSG_RESULT($build_bitcoin_utils)
 
@@ -1208,7 +1497,10 @@ AC_MSG_CHECKING([whether to build libraries])
 AM_CONDITIONAL([BUILD_BITCOIN_LIBS], [test x$build_bitcoin_libs = xyes])
 if test x$build_bitcoin_libs = xyes; then
   AC_DEFINE(HAVE_CONSENSUS_LIB, 1, [Define this symbol if the consensus lib has been built])
+<<<<<<< Updated upstream
   AC_CONFIG_FILES([libbitcoinconsensus.pc:libbitcoinconsensus.pc.in])
+=======
+>>>>>>> Stashed changes
 fi
 AC_MSG_RESULT($build_bitcoin_libs)
 
@@ -1234,6 +1526,7 @@ if test "x$use_ccache" = "xyes"; then
 fi
 
 dnl bignum value
+<<<<<<< Updated upstream
 set_bignum=$req_bignum
 case $req_bignum in
 auto)
@@ -1258,6 +1551,29 @@ openssl)
   AC_MSG_ERROR([invalid bignum implementation selection])
   ;;
 esac
+=======
+if test x"$req_bignum" = x"auto"; then
+  GMP_CHECK
+  if test x"$has_gmp" = x"yes"; then
+    set_bignum=gmp
+  fi
+else
+  set_bignum=$req_bignum
+  case $set_bignum in
+  gmp)
+    GMP_CHECK
+    if test x"$has_gmp" != x"yes"; then
+      AC_MSG_ERROR([gmp bignum explicitly requested but libgmp not available])
+    fi
+    ;;
+  openssl)
+    ;;
+  *)
+    AC_MSG_ERROR([invalid bignum implementation selection])
+    ;;
+  esac
+fi
+>>>>>>> Stashed changes
 
 dnl enable wallet
 AC_MSG_CHECKING([if wallet should be enabled])
@@ -1297,8 +1613,13 @@ else
 fi
 
 dnl these are only used when qt is enabled
+<<<<<<< Updated upstream
 BUILD_TEST_QT=""
 if test x$bitcoin_enable_qt != xno; then
+=======
+if test x$bitcoin_enable_qt != xno; then
+  BUILD_QT=qt
+>>>>>>> Stashed changes
   dnl enable dbus support
   AC_MSG_CHECKING([whether to build GUI with support for D-Bus])
   if test x$bitcoin_enable_qt_dbus != xno; then
@@ -1306,6 +1627,7 @@ if test x$bitcoin_enable_qt != xno; then
   fi
   AC_MSG_RESULT($bitcoin_enable_qt_dbus)
 
+<<<<<<< Updated upstream
   dnl enable qtcharts support
   AC_MSG_CHECKING([whether to build GUI with support for qtcharts])
   if test x$have_qtcharts = xno; then
@@ -1319,6 +1641,20 @@ if test x$bitcoin_enable_qt != xno; then
       AC_MSG_RESULT(yes)
       AC_DEFINE([USE_QTCHARTS],[1],[Define if QTCHARTS support should be compiled in])
       use_qtcharts=yes
+=======
+  dnl enable qr support
+  AC_MSG_CHECKING([whether to build GUI with support for QR codes])
+  if test x$have_qrencode = xno; then
+    if test x$use_qr = xyes; then
+     AC_MSG_ERROR("QR support requested but cannot be built. use --without-qrencode")
+    fi
+    AC_MSG_RESULT(no)
+  else
+    if test x$use_qr != xno; then
+      AC_MSG_RESULT(yes)
+      AC_DEFINE([USE_QRCODE],[1],[Define if QR support should be compiled in])
+      use_qr=yes
+>>>>>>> Stashed changes
     else
       AC_MSG_RESULT(no)
     fi
@@ -1328,10 +1664,17 @@ if test x$bitcoin_enable_qt != xno; then
     AC_MSG_WARN("xgettext is required to update qt translations")
   fi
 
+<<<<<<< Updated upstream
   AC_MSG_CHECKING([whether to build test_pivx-qt])
   if test x$use_gui_tests$bitcoin_enable_qt_test = xyesyes; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="yes"
+=======
+  AC_MSG_CHECKING([whether to build test_primestone-qt])
+  if test x$use_tests$bitcoin_enable_qt_test = xyesyes; then
+    AC_MSG_RESULT([yes])
+    BUILD_TEST_QT="test"
+>>>>>>> Stashed changes
   else
     AC_MSG_RESULT([no])
   fi
@@ -1352,6 +1695,7 @@ openssl)
   ;;
 esac
 
+<<<<<<< Updated upstream
 AM_CONDITIONAL([USE_NUM_GMP], [test "x$set_bignum" = "xgmp"])
 AM_CONDITIONAL([USE_NUM_OPENSSL], [test "x$set_bignum" = "xopenssl"])
 
@@ -1362,6 +1706,14 @@ if test x$use_tests = xyes; then
 else
   AC_MSG_RESULT([no])
   BUILD_TEST=""
+=======
+AC_MSG_CHECKING([whether to build test_primestone])
+if test x$use_tests = xyes; then
+  AC_MSG_RESULT([yes])
+  BUILD_TEST="test"
+else
+  AC_MSG_RESULT([no])
+>>>>>>> Stashed changes
 fi
 
 AC_MSG_CHECKING([whether to reduce exports])
@@ -1371,14 +1723,20 @@ else
   AC_MSG_RESULT([no])
 fi
 
+<<<<<<< Updated upstream
 if test x$build_bitcoin_utils$build_bitcoin_libs$build_bitcoind$bitcoin_enable_qt$use_bench$use_tests = xnononononono; then
   AC_MSG_ERROR([No targets! Please specify at least one of: --with-utils --with-libs --with-daemon --with-gui --enable-bench or --enable-tests])
+=======
+if test x$build_bitcoin_utils$build_bitcoin_libs$build_bitcoind$bitcoin_enable_qt$use_tests = xnonononono; then
+  AC_MSG_ERROR([No targets! Please specify at least one of: --with-utils --with-libs --with-daemon --with-gui or --enable-tests])
+>>>>>>> Stashed changes
 fi
 
 AM_CONDITIONAL([TARGET_DARWIN], [test x$TARGET_OS = xdarwin])
 AM_CONDITIONAL([BUILD_DARWIN], [test x$BUILD_OS = xdarwin])
 AM_CONDITIONAL([TARGET_WINDOWS], [test x$TARGET_OS = xwindows])
 AM_CONDITIONAL([ENABLE_WALLET],[test x$enable_wallet = xyes])
+<<<<<<< Updated upstream
 AM_CONDITIONAL([ENABLE_TESTS],[test x$BUILD_TEST = xyes])
 AM_CONDITIONAL([ENABLE_QT],[test x$bitcoin_enable_qt = xyes])
 AM_CONDITIONAL([ENABLE_QT_TESTS],[test x$BUILD_TEST_QT = xyes])
@@ -1392,6 +1750,18 @@ AM_CONDITIONAL([ENABLE_SSE41],[test x$enable_sse41 = xyes])
 AM_CONDITIONAL([ENABLE_AVX2],[test x$enable_avx2 = xyes])
 AM_CONDITIONAL([ENABLE_SHANI],[test x$enable_shani = xyes])
 AM_CONDITIONAL([USE_ASM],[test x$use_asm = xyes])
+=======
+AM_CONDITIONAL([ENABLE_TESTS],[test x$use_tests = xyes])
+AM_CONDITIONAL([ENABLE_QT],[test x$bitcoin_enable_qt = xyes])
+AM_CONDITIONAL([HAVE_QT5], [test x$bitcoin_qt_got_major_vers = x5])
+AM_CONDITIONAL([ENABLE_QT_TESTS],[test x$use_tests$bitcoin_enable_qt_test = xyesyes])
+AM_CONDITIONAL([USE_QRCODE], [test x$use_qr = xyes])
+AM_CONDITIONAL([USE_LCOV],[test x$use_lcov = xyes])
+AM_CONDITIONAL([GLIBC_BACK_COMPAT],[test x$use_glibc_compat = xyes])
+AM_CONDITIONAL([HARDEN],[test x$use_hardening = xyes])
+AM_CONDITIONAL([USE_LIBSECP256K1],[test x$use_libsecp256k1 = xyes])
+AM_CONDITIONAL([ENABLE_HWCRC32],[test x$enable_hwcrc32 = xyes])
+>>>>>>> Stashed changes
 
 AC_DEFINE(CLIENT_VERSION_MAJOR, _CLIENT_VERSION_MAJOR, [Major version])
 AC_DEFINE(CLIENT_VERSION_MINOR, _CLIENT_VERSION_MINOR, [Minor version])
@@ -1411,6 +1781,7 @@ AC_SUBST(BITCOIN_CLI_NAME)
 AC_SUBST(BITCOIN_TX_NAME)
 
 AC_SUBST(RELDFLAGS)
+<<<<<<< Updated upstream
 AC_SUBST(DEBUG_CPPFLAGS)
 AC_SUBST(WARN_CXXFLAGS)
 AC_SUBST(NOWARN_CXXFLAGS)
@@ -1419,11 +1790,16 @@ AC_SUBST(COMPAT_LDFLAGS)
 AC_SUBST(ERROR_CXXFLAGS)
 AC_SUBST(GPROF_CXXFLAGS)
 AC_SUBST(GPROF_LDFLAGS)
+=======
+AC_SUBST(COMPAT_LDFLAGS)
+AC_SUBST(ERROR_CXXFLAGS)
+>>>>>>> Stashed changes
 AC_SUBST(HARDENED_CXXFLAGS)
 AC_SUBST(HARDENED_CPPFLAGS)
 AC_SUBST(HARDENED_LDFLAGS)
 AC_SUBST(PIC_FLAGS)
 AC_SUBST(PIE_FLAGS)
+<<<<<<< Updated upstream
 AC_SUBST(SANITIZER_CXXFLAGS)
 AC_SUBST(SANITIZER_LDFLAGS)
 AC_SUBST(SSE42_CXXFLAGS)
@@ -1436,6 +1812,18 @@ AC_SUBST(USE_QTCHARTS)
 AC_SUBST(BOOST_LIBS)
 AC_SUBST(TESTDEFS)
 AC_SUBST(LEVELDB_TARGET_FLAGS)
+=======
+AC_SUBST(SSE42_CXXFLAGS)
+AC_SUBST(LIBTOOL_APP_LDFLAGS)
+AC_SUBST(USE_UPNP)
+AC_SUBST(USE_QRCODE)
+AC_SUBST(BOOST_LIBS)
+AC_SUBST(TESTDEFS)
+AC_SUBST(LEVELDB_TARGET_FLAGS)
+AC_SUBST(BUILD_TEST)
+AC_SUBST(BUILD_QT)
+AC_SUBST(BUILD_TEST_QT)
+>>>>>>> Stashed changes
 AC_SUBST(MINIUPNPC_CPPFLAGS)
 AC_SUBST(MINIUPNPC_LIBS)
 AC_SUBST(CRYPTO_LIBS)
@@ -1447,6 +1835,7 @@ AC_SUBST(PROTOBUF_LIBS)
 AC_SUBST(QR_LIBS)
 AC_SUBST(USE_NUM_GMP)
 AC_SUBST(USE_NUM_OPENSSL)
+<<<<<<< Updated upstream
 AC_CONFIG_FILES([Makefile src/Makefile doc/man/Makefile share/setup.nsi share/qt/Info.plist test/config.ini])
 AC_CONFIG_FILES([contrib/devtools/split-debug.sh],[chmod +x contrib/devtools/split-debug.sh])
 AM_COND_IF([HAVE_DOXYGEN], [AC_CONFIG_FILES([doc/Doxyfile])])
@@ -1454,6 +1843,13 @@ AC_CONFIG_LINKS([contrib/filter-lcov.py:contrib/filter-lcov.py])
 AC_CONFIG_LINKS([test/functional/test_runner.py:test/functional/test_runner.py])
 AC_CONFIG_LINKS([test/util/bitcoin-util-test.py:test/util/bitcoin-util-test.py])
 AC_CONFIG_LINKS([test/util/rpcauth-test.py:test/util/rpcauth-test.py])
+=======
+AC_CONFIG_FILES([Makefile src/Makefile share/setup.nsi share/qt/Info.plist src/test/buildenv.py])
+AC_CONFIG_FILES([qa/pull-tester/run-bitcoind-for-test.sh],[chmod +x qa/pull-tester/run-bitcoind-for-test.sh])
+AC_CONFIG_FILES([qa/pull-tester/tests-config.sh],[chmod +x qa/pull-tester/tests-config.sh])
+AC_CONFIG_FILES([contrib/devtools/split-debug.sh],[chmod +x contrib/devtools/split-debug.sh])
+AC_CONFIG_FILES([doc/Doxyfile])
+>>>>>>> Stashed changes
 
 dnl boost's m4 checks do something really nasty: they export these vars. As a
 dnl result, they leak into secp256k1's configure and crazy things happen.
@@ -1478,11 +1874,19 @@ PKGCONFIG_LIBDIR_TEMP="$PKG_CONFIG_LIBDIR"
 unset PKG_CONFIG_LIBDIR
 PKG_CONFIG_LIBDIR="$PKGCONFIG_LIBDIR_TEMP"
 
+<<<<<<< Updated upstream
 if test x$need_bundled_univalue = xyes; then
   AC_CONFIG_SUBDIRS([src/univalue])
 fi
 
 ac_configure_args="${ac_configure_args} --disable-shared --with-pic --with-bignum=no --enable-module-recovery --disable-jni"
+=======
+if test x$system_univalue = xno; then
+  AC_CONFIG_SUBDIRS([src/univalue])
+fi
+
+ac_configure_args="${ac_configure_args} --disable-shared --with-pic --enable-module-recovery"
+>>>>>>> Stashed changes
 AC_CONFIG_SUBDIRS([src/secp256k1])
 
 AC_OUTPUT
@@ -1511,17 +1915,27 @@ echo "Options used to compile and link:"
 echo "  with wallet   = $enable_wallet"
 echo "  with gui / qt = $bitcoin_enable_qt"
 if test x$bitcoin_enable_qt != xno; then
+<<<<<<< Updated upstream
     echo "    with qtcharts     = $use_qtcharts"
+=======
+    echo "    with qr     = $use_qr"
+>>>>>>> Stashed changes
 fi
 echo "  with zmq      = $use_zmq"
 echo "  with bignum   = $set_bignum"
 echo "  with test     = $use_tests"
+<<<<<<< Updated upstream
 echo "  with bench    = $use_bench"
 echo "  with upnp     = $use_upnp"
 echo "  use asm       = $use_asm"
 echo "  sanitizers    = $use_sanitizers"
 echo "  debug enabled = $enable_debug"
 echo "  gprof enabled = $enable_gprof"
+=======
+dnl echo "  with bench    = $use_bench"
+echo "  with upnp     = $use_upnp"
+echo "  debug enabled = $enable_debug"
+>>>>>>> Stashed changes
 echo "  werror        = $enable_werror"
 echo
 echo "  target os     = $TARGET_OS"
@@ -1529,6 +1943,7 @@ echo "  build os      = $BUILD_OS"
 echo
 echo "  CC            = $CC"
 echo "  CFLAGS        = $CFLAGS"
+<<<<<<< Updated upstream
 echo "  CPPFLAGS      = $DEBUG_CPPFLAGS $HARDENED_CPPFLAGS $CPPFLAGS"
 echo "  CXX           = $CXX"
 echo "  CXXFLAGS      = $DEBUG_CXXFLAGS $HARDENED_CXXFLAGS $WARN_CXXFLAGS $NOWARN_CXXFLAGS $ERROR_CXXFLAGS $GPROF_CXXFLAGS $CXXFLAGS"
@@ -1541,3 +1956,11 @@ echo "  SVG_CFLAGS    = $QT_SVG_INCLUDES "
 echo "  CHARTS_LIBS   = $CHARTS_LIBS "
 echo "  CHARTS_CFLAGS = $CHARTS_CFLAGS "
 echo
+=======
+echo "  CPPFLAGS      = $CPPFLAGS"
+echo "  CXX           = $CXX"
+echo "  CXXFLAGS      = $CXXFLAGS"
+echo "  LDFLAGS       = $LDFLAGS"
+echo "  ARFLAGS       = $ARFLAGS"
+echo
+>>>>>>> Stashed changes

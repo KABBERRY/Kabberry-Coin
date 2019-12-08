@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,6 +23,10 @@ inline std::string ValueString(const std::vector<unsigned char>& vch)
 }
 } // anon namespace
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 const char* GetOpName(opcodetype opcode)
 {
@@ -138,6 +147,7 @@ const char* GetOpName(opcodetype opcode)
     case OP_CHECKMULTISIG          : return "OP_CHECKMULTISIG";
     case OP_CHECKMULTISIGVERIFY    : return "OP_CHECKMULTISIGVERIFY";
 
+<<<<<<< Updated upstream
     // expansion
     case OP_NOP1                   : return "OP_NOP1";                  // OP_NOP1
     case OP_CHECKLOCKTIMEVERIFY    : return "OP_CHECKLOCKTIMEVERIFY";   // OP_NOP2
@@ -149,14 +159,30 @@ const char* GetOpName(opcodetype opcode)
     case OP_NOP8                   : return "OP_NOP8";                  // OP_NOP8
     case OP_NOP9                   : return "OP_NOP9";                  // OP_NOP9
     case OP_NOP10                  : return "OP_NOP10";                 // OP_NOP10
+=======
+    // expanson
+    case OP_NOP1                   : return "OP_NOP1";
+    case OP_NOP2                   : return "OP_NOP2";
+    case OP_NOP3                   : return "OP_NOP3";
+    case OP_NOP4                   : return "OP_NOP4";
+    case OP_NOP5                   : return "OP_NOP5";
+    case OP_NOP6                   : return "OP_NOP6";
+    case OP_NOP7                   : return "OP_NOP7";
+    case OP_NOP8                   : return "OP_NOP8";
+    case OP_NOP9                   : return "OP_NOP9";
+    case OP_NOP10                  : return "OP_NOP10";
+>>>>>>> Stashed changes
 
     // zerocoin
     case OP_ZEROCOINMINT           : return "OP_ZEROCOINMINT";
     case OP_ZEROCOINSPEND          : return "OP_ZEROCOINSPEND";
+<<<<<<< Updated upstream
     case OP_ZEROCOINPUBLICSPEND    : return "OP_ZEROCOINPUBLICSPEND";
 
     // cold staking
     case OP_CHECKCOLDSTAKEVERIFY   : return "OP_CHECKCOLDSTAKEVERIFY";
+=======
+>>>>>>> Stashed changes
 
     case OP_INVALIDOPCODE          : return "OP_INVALIDOPCODE";
 
@@ -203,7 +229,11 @@ unsigned int CScript::GetSigOpCount(const CScript& scriptSig) const
     // get the last item that the scriptSig
     // pushes onto the stack:
     const_iterator pc = scriptSig.begin();
+<<<<<<< Updated upstream
     std::vector<unsigned char> data;
+=======
+    vector<unsigned char> data;
+>>>>>>> Stashed changes
     while (pc < scriptSig.end())
     {
         opcodetype opcode;
@@ -251,6 +281,7 @@ bool CScript::IsPayToScriptHash() const
             this->at(22) == OP_EQUAL);
 }
 
+<<<<<<< Updated upstream
 bool CScript::IsPayToColdStaking() const
 {
     // Extra-fast test for pay-to-cold-staking CScripts:
@@ -271,16 +302,30 @@ bool CScript::StartsWithOpcode(const opcodetype opcode) const
 bool CScript::IsZerocoinMint() const
 {
     return StartsWithOpcode(OP_ZEROCOINMINT);
+=======
+bool CScript::IsZerocoinMint() const
+{
+    //fast test for Zerocoin Mint CScripts
+    return (this->size() > 0 &&
+        this->at(0) == OP_ZEROCOINMINT);
+>>>>>>> Stashed changes
 }
 
 bool CScript::IsZerocoinSpend() const
 {
+<<<<<<< Updated upstream
     return StartsWithOpcode(OP_ZEROCOINSPEND);
 }
 
 bool CScript::IsZerocoinPublicSpend() const
 {
     return StartsWithOpcode(OP_ZEROCOINPUBLICSPEND);
+=======
+    if (this->empty())
+        return false;
+
+    return (this->at(0) == OP_ZEROCOINSPEND);
+>>>>>>> Stashed changes
 }
 
 bool CScript::IsPushOnly(const_iterator pc) const

@@ -1,17 +1,29 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "addresstablemodel.h"
+<<<<<<< Updated upstream
 #include "addressbook.h"
+=======
+>>>>>>> Stashed changes
 
 #include "guiutil.h"
 #include "walletmodel.h"
 
 #include "base58.h"
+<<<<<<< Updated upstream
 #include "wallet/wallet.h"
+=======
+#include "wallet.h"
+>>>>>>> Stashed changes
 #include "askpassphrasedialog.h"
 
 #include <QDebug>
@@ -20,18 +32,24 @@
 const QString AddressTableModel::Send = "S";
 const QString AddressTableModel::Receive = "R";
 const QString AddressTableModel::Zerocoin = "X";
+<<<<<<< Updated upstream
 const QString AddressTableModel::Delegators = "D";
 const QString AddressTableModel::ColdStaking = "C";
 const QString AddressTableModel::ColdStakingSend = "Csend";
+=======
+>>>>>>> Stashed changes
 
 struct AddressTableEntry {
     enum Type {
         Sending,
         Receiving,
         Zerocoin,
+<<<<<<< Updated upstream
         Delegators,
         ColdStaking,
         ColdStakingSend,
+=======
+>>>>>>> Stashed changes
         Hidden /* QSortFilterProxyModel will filter these out */
     };
 
@@ -39,11 +57,18 @@ struct AddressTableEntry {
     QString label;
     QString address;
     QString pubcoin;
+<<<<<<< Updated upstream
     uint creationTime;
 
     AddressTableEntry() {}
     AddressTableEntry(Type type, const QString &pubcoin):    type(type), pubcoin(pubcoin) {}
     AddressTableEntry(Type type, const QString& label, const QString& address, const uint _creationTime) : type(type), label(label), address(address), creationTime(_creationTime) {}
+=======
+
+    AddressTableEntry() {}
+    AddressTableEntry(Type type, const QString &pubcoin):    type(type), pubcoin(pubcoin) {}
+    AddressTableEntry(Type type, const QString& label, const QString& address) : type(type), label(label), address(address) {}
+>>>>>>> Stashed changes
 };
 
 struct AddressTableEntryLessThan {
@@ -66,6 +91,7 @@ static AddressTableEntry::Type translateTransactionType(const QString& strPurpos
 {
     AddressTableEntry::Type addressType = AddressTableEntry::Hidden;
     // "refund" addresses aren't shown, and change addresses aren't in mapAddressBook at all.
+<<<<<<< Updated upstream
     if (strPurpose ==  QString::fromStdString(AddressBook::AddressBookPurpose::SEND))
         addressType = AddressTableEntry::Sending;
     else if (strPurpose ==  QString::fromStdString(AddressBook::AddressBookPurpose::RECEIVE))
@@ -77,6 +103,12 @@ static AddressTableEntry::Type translateTransactionType(const QString& strPurpos
         addressType = AddressTableEntry::ColdStaking;
     else if (strPurpose == QString::fromStdString(AddressBook::AddressBookPurpose::COLD_STAKING_SEND))
         addressType = AddressTableEntry::ColdStakingSend;
+=======
+    if (strPurpose == "send")
+        addressType = AddressTableEntry::Sending;
+    else if (strPurpose == "receive")
+        addressType = AddressTableEntry::Receiving;
+>>>>>>> Stashed changes
     else if (strPurpose == "unknown" || strPurpose == "") // if purpose not set, guess
         addressType = (isMine ? AddressTableEntry::Receiving : AddressTableEntry::Sending);
     return addressType;
@@ -88,10 +120,13 @@ class AddressTablePriv
 public:
     CWallet* wallet;
     QList<AddressTableEntry> cachedAddressTable;
+<<<<<<< Updated upstream
     int sendNum = 0;
     int recvNum = 0;
     int dellNum = 0;
     int coldSendNum = 0;
+=======
+>>>>>>> Stashed changes
     AddressTableModel* parent;
 
     AddressTablePriv(CWallet* wallet, AddressTableModel* parent) : wallet(wallet), parent(parent) {}
@@ -101,6 +136,7 @@ public:
         cachedAddressTable.clear();
         {
             LOCK(wallet->cs_wallet);
+<<<<<<< Updated upstream
             for (const PAIRTYPE(CTxDestination, AddressBook::CAddressBookData) & item : wallet->mapAddressBook) {
 
                 const CChainParams::Base58Type addrType =
@@ -108,10 +144,15 @@ public:
                         CChainParams::STAKING_ADDRESS : CChainParams::PUBKEY_ADDRESS;
                 const CBitcoinAddress address = CBitcoinAddress(item.first, addrType);
 
+=======
+            BOOST_FOREACH (const PAIRTYPE(CTxDestination, CAddressBookData) & item, wallet->mapAddressBook) {
+                const CBitcoinAddress& address = item.first;
+>>>>>>> Stashed changes
                 bool fMine = IsMine(*wallet, address.Get());
                 AddressTableEntry::Type addressType = translateTransactionType(
                     QString::fromStdString(item.second.purpose), fMine);
                 const std::string& strName = item.second.name;
+<<<<<<< Updated upstream
 
                 uint creationTime = 0;
                 if(item.second.isReceivePurpose())
@@ -125,6 +166,11 @@ public:
                                           creationTime
                         )
                 );
+=======
+                cachedAddressTable.append(AddressTableEntry(addressType,
+                    QString::fromStdString(strName),
+                    QString::fromStdString(address.ToString())));
+>>>>>>> Stashed changes
             }
         }
         // qLowerBound() and qUpperBound() require our cachedAddressTable list to be sorted in asc order
@@ -133,6 +179,7 @@ public:
         qSort(cachedAddressTable.begin(), cachedAddressTable.end(), AddressTableEntryLessThan());
     }
 
+<<<<<<< Updated upstream
     void updatePurposeCachedCounted(std::string purpose, bool add) {
         int *var = nullptr;
         if (purpose == AddressBook::AddressBookPurpose::RECEIVE) {
@@ -151,6 +198,8 @@ public:
         }
     }
 
+=======
+>>>>>>> Stashed changes
     void updateEntry(const QString& address, const QString& label, bool isMine, const QString& purpose, int status)
     {
         // Find address / label in model
@@ -164,11 +213,16 @@ public:
         AddressTableEntry::Type newEntryType = translateTransactionType(purpose, isMine);
 
         switch (status) {
+<<<<<<< Updated upstream
         case CT_NEW: {
+=======
+        case CT_NEW:
+>>>>>>> Stashed changes
             if (inModel) {
                 qWarning() << "AddressTablePriv::updateEntry : Warning: Got CT_NEW, but entry is already in model";
                 break;
             }
+<<<<<<< Updated upstream
             uint creationTime = 0;
 
             std::string stdPurpose = purpose.toStdString();
@@ -183,6 +237,13 @@ public:
             break;
         }
         case CT_UPDATED: {
+=======
+            parent->beginInsertRows(QModelIndex(), lowerIndex, lowerIndex);
+            cachedAddressTable.insert(lowerIndex, AddressTableEntry(newEntryType, label, address));
+            parent->endInsertRows();
+            break;
+        case CT_UPDATED:
+>>>>>>> Stashed changes
             if (!inModel) {
                 qWarning() << "AddressTablePriv::updateEntry : Warning: Got CT_UPDATED, but entry is not in model";
                 break;
@@ -191,8 +252,12 @@ public:
             lower->label = label;
             parent->emitDataChanged(lowerIndex);
             break;
+<<<<<<< Updated upstream
         }
         case CT_DELETED: {
+=======
+        case CT_DELETED:
+>>>>>>> Stashed changes
             if (!inModel) {
                 qWarning() << "AddressTablePriv::updateEntry : Warning: Got CT_DELETED, but entry is not in model";
                 break;
@@ -200,12 +265,19 @@ public:
             parent->beginRemoveRows(QModelIndex(), lowerIndex, upperIndex - 1);
             cachedAddressTable.erase(lower, upper);
             parent->endRemoveRows();
+<<<<<<< Updated upstream
             updatePurposeCachedCounted(purpose.toStdString(), false);
             break;
             }
         }
     }
 
+=======
+            break;
+        }
+    }
+    
+>>>>>>> Stashed changes
     void updateEntry(const QString &pubCoin, const QString &isUsed, int status)
     {
         // Find address / label in model
@@ -216,7 +288,11 @@ public:
         int lowerIndex = (lower - cachedAddressTable.begin());
         bool inModel = (lower != upper);
         AddressTableEntry::Type newEntryType = AddressTableEntry::Zerocoin;
+<<<<<<< Updated upstream
 
+=======
+        
+>>>>>>> Stashed changes
         switch(status)
         {
             case CT_NEW:
@@ -225,7 +301,11 @@ public:
                     qWarning() << "AddressTablePriv_ZC::updateEntry : Warning: Got CT_NEW, but entry is already in model";
                 }
                 parent->beginInsertRows(QModelIndex(), lowerIndex, lowerIndex);
+<<<<<<< Updated upstream
                 cachedAddressTable.insert(lowerIndex, AddressTableEntry(newEntryType, isUsed, pubCoin, 0));
+=======
+                cachedAddressTable.insert(lowerIndex, AddressTableEntry(newEntryType, isUsed, pubCoin));
+>>>>>>> Stashed changes
                 parent->endInsertRows();
                 break;
             case CT_UPDATED:
@@ -239,7 +319,11 @@ public:
                 parent->emitDataChanged(lowerIndex);
                 break;
         }
+<<<<<<< Updated upstream
 
+=======
+        
+>>>>>>> Stashed changes
     }
 
 
@@ -248,6 +332,7 @@ public:
         return cachedAddressTable.size();
     }
 
+<<<<<<< Updated upstream
     int sizeSend(){
         return sendNum;
     }
@@ -264,6 +349,8 @@ public:
         return coldSendNum;
     }
 
+=======
+>>>>>>> Stashed changes
     AddressTableEntry* index(int idx)
     {
         if (idx >= 0 && idx < cachedAddressTable.size()) {
@@ -276,7 +363,11 @@ public:
 
 AddressTableModel::AddressTableModel(CWallet* wallet, WalletModel* parent) : QAbstractTableModel(parent), walletModel(parent), wallet(wallet), priv(0)
 {
+<<<<<<< Updated upstream
     columns << tr("Label") << tr("Address") << tr("Date");
+=======
+    columns << tr("Label") << tr("Address");
+>>>>>>> Stashed changes
     priv = new AddressTablePriv(wallet, this);
     priv->refreshAddressTable();
 }
@@ -298,6 +389,7 @@ int AddressTableModel::columnCount(const QModelIndex& parent) const
     return columns.length();
 }
 
+<<<<<<< Updated upstream
 int AddressTableModel::sizeSend() const{
     return priv->sizeSend();
 }
@@ -313,6 +405,8 @@ int AddressTableModel::sizeColdSend() const {
     return priv->SizeColdSend();
 }
 
+=======
+>>>>>>> Stashed changes
 QVariant AddressTableModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid())
@@ -330,8 +424,11 @@ QVariant AddressTableModel::data(const QModelIndex& index, int role) const
             }
         case Address:
             return rec->address;
+<<<<<<< Updated upstream
         case Date:
             return rec->creationTime;
+=======
+>>>>>>> Stashed changes
         }
     } else if (role == Qt::FontRole) {
         QFont font;
@@ -341,6 +438,7 @@ QVariant AddressTableModel::data(const QModelIndex& index, int role) const
         return font;
     } else if (role == TypeRole) {
         switch (rec->type) {
+<<<<<<< Updated upstream
             case AddressTableEntry::Sending:
                 return Send;
             case AddressTableEntry::Receiving:
@@ -353,6 +451,14 @@ QVariant AddressTableModel::data(const QModelIndex& index, int role) const
                 return ColdStakingSend;
             default:
                 break;
+=======
+        case AddressTableEntry::Sending:
+            return Send;
+        case AddressTableEntry::Receiving:
+            return Receive;
+        default:
+            break;
+>>>>>>> Stashed changes
         }
     }
     return QVariant();
@@ -450,7 +556,11 @@ void AddressTableModel::updateEntry(const QString& address,
     const QString& purpose,
     int status)
 {
+<<<<<<< Updated upstream
     // Update address book model from Pivx core
+=======
+    // Update address book model from PrimeStone
+>>>>>>> Stashed changes
     priv->updateEntry(address, label, isMine, purpose, status);
 }
 
@@ -516,22 +626,35 @@ bool AddressTableModel::removeRows(int row, int count, const QModelIndex& parent
 {
     Q_UNUSED(parent);
     AddressTableEntry* rec = priv->index(row);
+<<<<<<< Updated upstream
     if (count != 1 || !rec || rec->type == AddressTableEntry::Receiving || rec->type == AddressTableEntry::ColdStaking) {
+=======
+    if (count != 1 || !rec || rec->type == AddressTableEntry::Receiving) {
+>>>>>>> Stashed changes
         // Can only remove one row at a time, and cannot remove rows not in model.
         // Also refuse to remove receiving addresses.
         return false;
     }
+<<<<<<< Updated upstream
     const CChainParams::Base58Type addrType = (rec->type == AddressTableEntry::ColdStakingSend) ? CChainParams::STAKING_ADDRESS : CChainParams::PUBKEY_ADDRESS;
     {
         LOCK(wallet->cs_wallet);
         return wallet->DelAddressBook(CBitcoinAddress(rec->address.toStdString()).Get(), addrType);
     }
+=======
+    {
+        LOCK(wallet->cs_wallet);
+        wallet->DelAddressBook(CBitcoinAddress(rec->address.toStdString()).Get());
+    }
+    return true;
+>>>>>>> Stashed changes
 }
 
 /* Look up label for address in address book, if not found return empty string.
  */
 QString AddressTableModel::labelForAddress(const QString& address) const
 {
+<<<<<<< Updated upstream
     // TODO: Check why do we have empty addresses..
     if (!address.isEmpty()) {
         {
@@ -541,11 +664,20 @@ QString AddressTableModel::labelForAddress(const QString& address) const
             if (mi != wallet->mapAddressBook.end()) {
                 return QString::fromStdString(mi->second.name);
             }
+=======
+    {
+        LOCK(wallet->cs_wallet);
+        CBitcoinAddress address_parsed(address.toStdString());
+        std::map<CTxDestination, CAddressBookData>::iterator mi = wallet->mapAddressBook.find(address_parsed.Get());
+        if (mi != wallet->mapAddressBook.end()) {
+            return QString::fromStdString(mi->second.name);
+>>>>>>> Stashed changes
         }
     }
     return QString();
 }
 
+<<<<<<< Updated upstream
 /* Look up purpose for address in address book
  */
 std::string AddressTableModel::purposeForAddress(const std::string& address) const
@@ -553,6 +685,8 @@ std::string AddressTableModel::purposeForAddress(const std::string& address) con
     return wallet->purposeForAddress(CBitcoinAddress(address).Get());
 }
 
+=======
+>>>>>>> Stashed changes
 int AddressTableModel::lookupAddress(const QString& address) const
 {
     QModelIndexList lst = match(index(0, Address, QModelIndex()),
@@ -564,6 +698,7 @@ int AddressTableModel::lookupAddress(const QString& address) const
     }
 }
 
+<<<<<<< Updated upstream
 /**
  * Return last created unused address --> TODO: complete "unused" and "last".. basically everything..
  * @return
@@ -590,12 +725,17 @@ QString AddressTableModel::getAddressToShow() const{
     return addressStr;
 }
 
+=======
+>>>>>>> Stashed changes
 void AddressTableModel::emitDataChanged(int idx)
 {
     emit dataChanged(index(idx, 0, QModelIndex()), index(idx, columns.length() - 1, QModelIndex()));
 }
+<<<<<<< Updated upstream
 
 void AddressTableModel::notifyChange(const QModelIndex &_index) {
     int idx = _index.row();
     emitDataChanged(idx);
 }
+=======
+>>>>>>> Stashed changes

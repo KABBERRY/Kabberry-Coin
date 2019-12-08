@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2014 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,18 +12,31 @@
 
 #include "clientversion.h"
 #include "primitives/transaction.h"
+<<<<<<< Updated upstream
 #include "sync.h"
 #include "utilstrencodings.h"
 #include "utilmoneystr.h"
 #include "test/test_pivx.h"
+=======
+#include "random.h"
+#include "sync.h"
+#include "utilstrencodings.h"
+#include "utilmoneystr.h"
+>>>>>>> Stashed changes
 
 #include <stdint.h>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
+<<<<<<< Updated upstream
 
 BOOST_FIXTURE_TEST_SUITE(util_tests, BasicTestingSetup)
+=======
+using namespace std;
+
+BOOST_AUTO_TEST_SUITE(util_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(util_criticalsection)
 {
@@ -243,7 +261,11 @@ BOOST_AUTO_TEST_CASE(util_seed_insecure_rand)
     int i;
     int count=0;
 
+<<<<<<< Updated upstream
     SeedInsecureRand(true);
+=======
+    seed_insecure_rand(true);
+>>>>>>> Stashed changes
 
     for (int mod=2;mod<11;mod++)
     {
@@ -259,7 +281,11 @@ BOOST_AUTO_TEST_CASE(util_seed_insecure_rand)
         {
             uint32_t rval;
             do{
+<<<<<<< Updated upstream
                 rval=InsecureRand32()&mask;
+=======
+                rval=insecure_rand()&mask;
+>>>>>>> Stashed changes
             }while(rval>=(uint32_t)mod);
             count += rval==0;
         }

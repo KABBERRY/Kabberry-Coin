@@ -4,10 +4,16 @@
 
 DIST_SUBDIRS = secp256k1 univalue
 
+<<<<<<< Updated upstream
 AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS) $(GPROF_LDFLAGS) $(SANITIZER_LDFLAGS)
 AM_CXXFLAGS = $(DEBUG_CXXFLAGS) $(HARDENED_CXXFLAGS) $(WARN_CXXFLAGS) $(NOWARN_CXXFLAGS) $(ERROR_CXXFLAGS) $(GPROF_CXXFLAGS) $(SANITIZER_CXXFLAGS)
 AM_CPPFLAGS = $(DEBUG_CPPFLAGS) $(HARDENED_CPPFLAGS)
 AM_LIBTOOLFLAGS = --preserve-dup-deps
+=======
+AM_LDFLAGS = $(PTHREAD_CFLAGS) $(LIBTOOL_LDFLAGS) $(HARDENED_LDFLAGS)
+AM_CXXFLAGS = $(HARDENED_CXXFLAGS) $(ERROR_CXXFLAGS)
+AM_CPPFLAGS = $(HARDENED_CPPFLAGS)
+>>>>>>> Stashed changes
 EXTRA_LIBRARIES =
 
 if EMBEDDED_UNIVALUE
@@ -19,7 +25,12 @@ else
 LIBUNIVALUE = $(UNIVALUE_LIBS)
 endif
 
+<<<<<<< Updated upstream
 BITCOIN_INCLUDES=-I$(builddir) $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
+=======
+BITCOIN_CONFIG_INCLUDES=-I$(builddir)/config
+BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
+>>>>>>> Stashed changes
 
 BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
 BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
@@ -43,7 +54,11 @@ if ENABLE_WALLET
 LIBBITCOIN_WALLET=libbitcoin_wallet.a
 endif
 
+<<<<<<< Updated upstream
 $(LIBSECP256K1): $(wildcard secp256k1/src/*.h) $(wildcard secp256k1/src/*.c) $(wildcard secp256k1/include/*)
+=======
+$(LIBSECP256K1): $(wildcard secp256k1/src/*) $(wildcard secp256k1/include/*)
+>>>>>>> Stashed changes
 	$(AM_V_at)$(MAKE) $(AM_MAKEFLAGS) -C $(@D) $(@F)
 
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
@@ -63,6 +78,7 @@ lib_LTLIBRARIES = $(LIBBITCOINCONSENSUS)
 bin_PROGRAMS =
 noinst_PROGRAMS =
 TESTS =
+<<<<<<< Updated upstream
 BENCHMARKS =
 
 if BUILD_BITCOIND
@@ -77,6 +93,25 @@ endif
 # pivx core #
 BITCOIN_CORE_H = \
   activemasternode.h \
+=======
+
+if BUILD_BITCOIND
+  bin_PROGRAMS += primestoned
+endif
+
+if BUILD_BITCOIN_UTILS
+  bin_PROGRAMS += primestone-cli primestone-tx
+endif
+
+.PHONY: FORCE
+# PrimeStone #
+BITCOIN_CORE_H = \
+  activemasternode.h \
+  accumulators.h \
+  accumulatorcheckpoints.h \
+  accumulatorcheckpoints.json.h \
+  accumulatormap.h \
+>>>>>>> Stashed changes
   addrman.h \
   alert.h \
   allocators.h \
@@ -95,6 +130,7 @@ BITCOIN_CORE_H = \
   coincontrol.h \
   coins.h \
   compat.h \
+<<<<<<< Updated upstream
   compat/byteswap.h \
   compat/endian.h \
   compat/sanity.h \
@@ -110,6 +146,20 @@ BITCOIN_CORE_H = \
   obfuscation.h \
   obfuscation-relay.h \
   wallet/db.h \
+=======
+  compat/sanity.h \
+  compressor.h \
+  primitives/block.h \
+  primitives/deterministicmint.h \
+  primitives/transaction.h \
+  primitives/zerocoin.h \
+  core_io.h \
+  crypter.h \
+  denomination_functions.h \
+  obfuscation.h \
+  obfuscation-relay.h \
+  db.h \
+>>>>>>> Stashed changes
   hash.h \
   httprpc.h \
   httpserver.h \
@@ -131,8 +181,13 @@ BITCOIN_CORE_H = \
   masternodeman.h \
   masternodeconfig.h \
   merkleblock.h \
+<<<<<<< Updated upstream
   messagesigner.h \
   miner.h \
+=======
+  miner.h \
+  mintpool.h \
+>>>>>>> Stashed changes
   mruset.h \
   netbase.h \
   net.h \
@@ -156,10 +211,15 @@ BITCOIN_CORE_H = \
   serialize.h \
   spork.h \
   sporkdb.h \
+<<<<<<< Updated upstream
   sporkid.h \
   stakeinput.h \
   streams.h \
   support/cleanse.h \
+=======
+  stakeinput.h \
+  streams.h \
+>>>>>>> Stashed changes
   sync.h \
   threadsafety.h \
   timedata.h \
@@ -167,7 +227,11 @@ BITCOIN_CORE_H = \
   torcontrol.h \
   txdb.h \
   txmempool.h \
+<<<<<<< Updated upstream
   guiinterface.h \
+=======
+  ui_interface.h \
+>>>>>>> Stashed changes
   uint256.h \
   undo.h \
   util.h \
@@ -176,6 +240,7 @@ BITCOIN_CORE_H = \
   utiltime.h \
   validationinterface.h \
   version.h \
+<<<<<<< Updated upstream
   wallet/wallet.h \
   wallet/wallet_ismine.h \
   wallet/walletdb.h \
@@ -194,6 +259,14 @@ BITCOIN_CORE_H = \
   genwit.h \
   concurrentqueue.h \
   lightzpivthread.h \
+=======
+  wallet.h \
+  wallet_ismine.h \
+  walletdb.h \
+  zPSCchain.h \
+  zPSCtracker.h \
+  zPSCwallet.h \
+>>>>>>> Stashed changes
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -205,7 +278,11 @@ obj/build.h: FORCE
 	  "$(abs_top_srcdir)"
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
+<<<<<<< Updated upstream
 # server: shared between pivxd and pivx-qt
+=======
+# server: shared between primestoned and primestone-qt
+>>>>>>> Stashed changes
 libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
@@ -241,7 +318,11 @@ libbitcoin_server_a_SOURCES = \
   txdb.cpp \
   txmempool.cpp \
   validationinterface.cpp \
+<<<<<<< Updated upstream
   zpivchain.cpp \
+=======
+  zPSCchain.cpp \
+>>>>>>> Stashed changes
   $(BITCOIN_CORE_H)
 
 if ENABLE_ZMQ
@@ -253,7 +334,11 @@ libbitcoin_zmq_a_SOURCES = \
   zmq/zmqpublishnotifier.cpp
 endif
 
+<<<<<<< Updated upstream
 # wallet: shared between pivxd and pivx-qt, but only linked
+=======
+# wallet: shared between primestoned and primestone-qt, but only linked
+>>>>>>> Stashed changes
 # when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -263,8 +348,12 @@ libbitcoin_wallet_a_SOURCES = \
   denomination_functions.cpp \
   obfuscation.cpp \
   obfuscation-relay.cpp \
+<<<<<<< Updated upstream
   wallet/db.cpp \
   addressbook.cpp \
+=======
+  db.cpp \
+>>>>>>> Stashed changes
   crypter.cpp \
   swifttx.cpp \
   masternode.cpp \
@@ -273,6 +362,7 @@ libbitcoin_wallet_a_SOURCES = \
   masternode-sync.cpp \
   masternodeconfig.cpp \
   masternodeman.cpp \
+<<<<<<< Updated upstream
   messagesigner.cpp \
   wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
@@ -296,12 +386,34 @@ libbitcoin_wallet_a_SOURCES = \
 # crypto primitives library
 crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(PIC_FLAGS)
 crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIC_FLAGS)
+=======
+  mintpool.cpp \
+  rpcdump.cpp \
+  primitives/deterministicmint.cpp \
+  primitives/zerocoin.cpp \
+  rpcwallet.cpp \
+  kernel.cpp \
+  wallet.cpp \
+  wallet_ismine.cpp \
+  walletdb.cpp \
+  zPSCwallet.cpp \
+  zPSCtracker.cpp \
+  stakeinput.cpp \
+  $(BITCOIN_CORE_H)
+
+# crypto primitives library
+crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS)
+crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+>>>>>>> Stashed changes
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/sha1.cpp \
   crypto/sha256.cpp \
   crypto/sha512.cpp \
+<<<<<<< Updated upstream
   crypto/chacha20.h \
   crypto/chacha20.cpp \
+=======
+>>>>>>> Stashed changes
   crypto/hmac_sha256.cpp \
   crypto/rfc6979_hmac_sha256.cpp \
   crypto/hmac_sha512.cpp \
@@ -339,7 +451,10 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/AccumulatorProofOfKnowledge.h \
   libzerocoin/bignum.h \
   libzerocoin/Coin.h \
+<<<<<<< Updated upstream
   libzerocoin/CoinRandomnessSchnorrSignature.h \
+=======
+>>>>>>> Stashed changes
   libzerocoin/CoinSpend.h \
   libzerocoin/Commitment.h \
   libzerocoin/Denominations.h \
@@ -348,6 +463,7 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/SerialNumberSignatureOfKnowledge.h \
   libzerocoin/SpendType.h \
   libzerocoin/ZerocoinDefines.h \
+<<<<<<< Updated upstream
   libzerocoin/bignum.cpp \
   libzerocoin/Accumulator.cpp \
   libzerocoin/AccumulatorProofOfKnowledge.cpp \
@@ -373,6 +489,25 @@ libbitcoin_common_a_SOURCES = \
   zpiv/accumulators.cpp \
   zpiv/accumulatorcheckpoints.cpp \
   zpiv/accumulatormap.cpp \
+=======
+  libzerocoin/Accumulator.cpp \
+  libzerocoin/AccumulatorProofOfKnowledge.cpp \
+  libzerocoin/Coin.cpp \
+  libzerocoin/Denominations.cpp \
+  libzerocoin/CoinSpend.cpp \
+  libzerocoin/Commitment.cpp \
+  libzerocoin/ParamGeneration.cpp \
+  libzerocoin/Params.cpp \
+  libzerocoin/SerialNumberSignatureOfKnowledge.cpp
+
+# common: shared between primestoned, and primestone-qt and non-server tools
+libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libbitcoin_common_a_SOURCES = \
+  accumulators.cpp \
+  accumulatorcheckpoints.cpp \
+  accumulatormap.cpp \
+>>>>>>> Stashed changes
   allocators.cpp \
   amount.cpp \
   base58.cpp \
@@ -380,11 +515,18 @@ libbitcoin_common_a_SOURCES = \
   chainparams.cpp \
   coins.cpp \
   compressor.cpp \
+<<<<<<< Updated upstream
   consensus/merkle.cpp \
   primitives/block.cpp \
   zpiv/deterministicmint.cpp \
   primitives/transaction.cpp \
   zpiv/zerocoin.cpp \
+=======
+  primitives/block.cpp \
+  primitives/deterministicmint.cpp \
+  primitives/transaction.cpp \
+  primitives/zerocoin.cpp \
+>>>>>>> Stashed changes
   core_read.cpp \
   core_write.cpp \
   hash.cpp \
@@ -411,6 +553,7 @@ libbitcoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_util_a_SOURCES = \
   allocators.cpp \
+<<<<<<< Updated upstream
   chainparamsbase.cpp \
   clientversion.cpp \
   compat/glibc_sanity.cpp \
@@ -424,6 +567,20 @@ libbitcoin_util_a_SOURCES = \
   util.cpp \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
+=======
+  compat/strnlen.cpp \
+  compat/glibc_sanity.cpp \
+  compat/glibcxx_sanity.cpp \
+  chainparamsbase.cpp \
+  clientversion.cpp \
+  random.cpp \
+  rpc/protocol.cpp \
+  sync.cpp \
+  uint256.cpp \
+  util.cpp \
+  utilstrencodings.cpp \
+  utilmoneystr.cpp \
+>>>>>>> Stashed changes
   utiltime.cpp \
   $(BITCOIN_CORE_H)
 
@@ -432,7 +589,11 @@ libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 AM_LDFLAGS += $(COMPAT_LDFLAGS)
 endif
 
+<<<<<<< Updated upstream
 # cli: shared between pivx-cli and pivx-qt
+=======
+# cli: shared between primestone-cli and primestone-qt
+>>>>>>> Stashed changes
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
@@ -442,6 +603,7 @@ libbitcoin_cli_a_SOURCES = \
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
+<<<<<<< Updated upstream
 # pivxd binary #
 pivxd_SOURCES = pivxd.cpp
 pivxd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
@@ -454,10 +616,27 @@ endif
 pivxd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_WALLET) \
+=======
+# primestoned binary #
+primestoned_SOURCES = primestoned.cpp
+primestoned_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+primestoned_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+primestoned_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+
+if TARGET_WINDOWS
+primestoned_SOURCES += primestoned-res.rc
+endif
+primestoned_LDADD = \
+  $(LIBBITCOIN_SERVER) \
+>>>>>>> Stashed changes
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_ZEROCOIN) \
   $(LIBBITCOIN_UTIL) \
+<<<<<<< Updated upstream
+=======
+  $(LIBBITCOIN_WALLET) \
+>>>>>>> Stashed changes
   $(LIBBITCOIN_ZMQ) \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBLEVELDB) \
@@ -465,6 +644,7 @@ pivxd_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
+<<<<<<< Updated upstream
 pivxd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
 # pivx-cli binary #
@@ -478,11 +658,27 @@ pivx_cli_SOURCES += pivx-cli-res.rc
 endif
 
 pivx_cli_LDADD = \
+=======
+primestoned_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+
+# primestone-cli binary #
+primestone_cli_SOURCES = primestone-cli.cpp
+primestone_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+primestone_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+primestone_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+
+if TARGET_WINDOWS
+primestone_cli_SOURCES += primestone-cli-res.rc
+endif
+
+primestone_cli_LDADD = \
+>>>>>>> Stashed changes
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
+<<<<<<< Updated upstream
 pivx_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
@@ -497,6 +693,22 @@ pivx_tx_SOURCES += pivx-tx-res.rc
 endif
 
 pivx_tx_LDADD = \
+=======
+primestone_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+#
+
+# primestone-tx binary #
+primestone_tx_SOURCES = primestone-tx.cpp
+primestone_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+primestone_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+primestone_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+
+if TARGET_WINDOWS
+primestone_tx_SOURCES += primestone-tx-res.rc
+endif
+
+primestone_tx_LDADD = \
+>>>>>>> Stashed changes
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_ZEROCOIN) \
@@ -504,7 +716,11 @@ pivx_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
+<<<<<<< Updated upstream
 pivx_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+=======
+primestone_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+>>>>>>> Stashed changes
 #
 
 # bitcoinconsensus library #
@@ -532,6 +748,7 @@ if GLIBC_BACK_COMPAT
 endif
 
 libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
+<<<<<<< Updated upstream
 libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1)
 libbitcoinconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
 libbitcoinconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -572,12 +789,40 @@ clean-local:
 	-rm -f leveldb/*/*.gcda leveldb/*/*.gcno leveldb/helpers/memenv/*.gcda leveldb/helpers/memenv/*.gcno
 	-rm -f config.h
 	-rm -rf test/__pycache__
+=======
+libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(BOOST_LIBS)
+libbitcoinconsensus_la_CPPFLAGS = -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
+libbitcoinconsensus_la_LIBADD += secp256k1/libsecp256k1.la
+endif
+
+CLEANFILES = $(EXTRA_LIBRARIES)
+CLEANFILES += leveldb/libleveldb.a leveldb/libmemenv.a
+CLEANFILES += *.gcda *.gcno
+CLEANFILES += compat/*.gcda compat/*.gcno
+CLEANFILES += crypto/*.gcda crypto/*.gcno
+CLEANFILES += primitives/*.gcda primitives/*.gcno
+CLEANFILES += script/*.gcda script/*.gcno
+CLEANFILES += univalue/*.gcda univalue/*.gcno
+CLEANFILES += zmq/*.gcda zmq/*.gcno
+CLEANFILES += obj/build.h
+
+
+EXTRA_DIST = leveldb
+
+clean-local:
+	-$(MAKE) -C leveldb clean
+	-$(MAKE) -C secp256k1 clean
+	-$(MAKE) -C univalue clean
+	rm -f leveldb/*/*.gcno leveldb/helpers/memenv/*.gcno
+	-rm -f config.h
+>>>>>>> Stashed changes
 
 .rc.o:
 	@test -f $(WINDRES)
 	## FIXME: How to get the appropriate modulename_CPPFLAGS in here?
 	$(AM_V_GEN) $(WINDRES) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) -DWINDRES_PREPROC -i $< -o $@
 
+<<<<<<< Updated upstream
 check-symbols: $(bin_PROGRAMS)
 if GLIBC_BACK_COMPAT
 	@echo "Checking glibc back compat..."
@@ -589,6 +834,8 @@ if HARDEN
 	@echo "Checking binary security..."
 	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(PYTHON) $(top_srcdir)/contrib/devtools/security-check.py < $(bin_PROGRAMS)
 endif
+=======
+>>>>>>> Stashed changes
 
 %.pb.cc %.pb.h: %.proto
 	@test -f $(PROTOC)

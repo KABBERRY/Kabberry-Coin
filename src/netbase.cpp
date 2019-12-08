@@ -1,11 +1,20 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifdef HAVE_CONFIG_H
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include "netbase.h"
@@ -17,8 +26,11 @@
 #include "util.h"
 #include "utilstrencodings.h"
 
+<<<<<<< Updated upstream
 #include <atomic>
 
+=======
+>>>>>>> Stashed changes
 #ifdef HAVE_GETADDRINFO_A
 #include <netdb.h>
 #endif
@@ -38,6 +50,10 @@
 #define MSG_NOSIGNAL 0
 #endif
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 // Settings
 static proxyType proxyInfo[NET_MAX];
@@ -297,7 +313,11 @@ struct ProxyCredentials
 };
 
 /** Connect using SOCKS5 (as described in RFC1928) */
+<<<<<<< Updated upstream
 bool static Socks5(std::string strDest, int port, const ProxyCredentials *auth, SOCKET& hSocket)
+=======
+bool static Socks5(string strDest, int port, const ProxyCredentials *auth, SOCKET& hSocket)
+>>>>>>> Stashed changes
 {
     LogPrintf("SOCKS5 connecting %s\n", strDest);
     if (strDest.size() > 255) {
@@ -315,7 +335,11 @@ bool static Socks5(std::string strDest, int port, const ProxyCredentials *auth, 
         vSocks5Init.push_back(0x01); // # METHODS
         vSocks5Init.push_back(0x00); // X'00' NO AUTHENTICATION REQUIRED
     }
+<<<<<<< Updated upstream
     ssize_t ret = send(hSocket, (const char*)vSocks5Init.data(), vSocks5Init.size(), MSG_NOSIGNAL);
+=======
+    ssize_t ret = send(hSocket, (const char*)begin_ptr(vSocks5Init), vSocks5Init.size(), MSG_NOSIGNAL);
+>>>>>>> Stashed changes
     if (ret != (ssize_t)vSocks5Init.size()) {
         CloseSocket(hSocket);
         return error("Error sending to proxy");
@@ -339,7 +363,11 @@ bool static Socks5(std::string strDest, int port, const ProxyCredentials *auth, 
         vAuth.insert(vAuth.end(), auth->username.begin(), auth->username.end());
         vAuth.push_back(auth->password.size());
         vAuth.insert(vAuth.end(), auth->password.begin(), auth->password.end());
+<<<<<<< Updated upstream
         ret = send(hSocket, (const char*)vAuth.data(), vAuth.size(), MSG_NOSIGNAL);
+=======
+        ret = send(hSocket, (const char*)begin_ptr(vAuth), vAuth.size(), MSG_NOSIGNAL);
+>>>>>>> Stashed changes
         if (ret != (ssize_t)vAuth.size()) {
             CloseSocket(hSocket);
             return error("Error sending authentication to proxy");
@@ -369,7 +397,11 @@ bool static Socks5(std::string strDest, int port, const ProxyCredentials *auth, 
     vSocks5.insert(vSocks5.end(), strDest.begin(), strDest.end());
     vSocks5.push_back((port >> 8) & 0xFF);
     vSocks5.push_back((port >> 0) & 0xFF);
+<<<<<<< Updated upstream
     ret = send(hSocket, (const char*)vSocks5.data(), vSocks5.size(), MSG_NOSIGNAL);
+=======
+    ret = send(hSocket, (const char*)begin_ptr(vSocks5), vSocks5.size(), MSG_NOSIGNAL);
+>>>>>>> Stashed changes
     if (ret != (ssize_t)vSocks5.size()) {
         CloseSocket(hSocket);
         return error("Error sending to proxy");
@@ -587,8 +619,13 @@ static bool ConnectThroughProxy(const proxyType &proxy, const std::string strDes
     // do socks negotiation
     if (proxy.randomize_credentials) {
         ProxyCredentials random_auth;
+<<<<<<< Updated upstream
         static std::atomic_int counter;
         random_auth.username = random_auth.password = strprintf("%i", counter++);
+=======
+        random_auth.username = strprintf("%i", insecure_rand());
+        random_auth.password = strprintf("%i", insecure_rand());
+>>>>>>> Stashed changes
         if (!Socks5(strDest, (unsigned short)port, &random_auth, hSocket))
             return false;
     } else {
@@ -614,13 +651,21 @@ bool ConnectSocket(const CService &addrDest, SOCKET& hSocketRet, int nTimeout, b
 
 bool ConnectSocketByName(CService& addr, SOCKET& hSocketRet, const char* pszDest, int portDefault, int nTimeout, bool* outProxyConnectionFailed)
 {
+<<<<<<< Updated upstream
     std::string strDest;
+=======
+    string strDest;
+>>>>>>> Stashed changes
     int port = portDefault;
 
     if (outProxyConnectionFailed)
         *outProxyConnectionFailed = false;
 
+<<<<<<< Updated upstream
     SplitHostPort(std::string(pszDest), port, strDest);
+=======
+    SplitHostPort(string(pszDest), port, strDest);
+>>>>>>> Stashed changes
 
     proxyType nameProxy;
     GetNameProxy(nameProxy);

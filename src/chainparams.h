@@ -1,7 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -26,7 +31,11 @@ struct CDNSSeedData {
 
 /**
  * CChainParams defines various tweakable parameters of a given instance of the
+<<<<<<< Updated upstream
  * PIVX system. There are three: the main network on which people trade goods
+=======
+ * PrimeStone system. There are three: the main network on which people trade goods
+>>>>>>> Stashed changes
  * and services, the public test network which gets reset from time to time and
  * a regression test mode which is intended for private networks only. It has
  * minimal difficulty to ensure that blocks can be found instantly.
@@ -41,7 +50,10 @@ public:
         EXT_PUBLIC_KEY, // BIP32
         EXT_SECRET_KEY, // BIP32
         EXT_COIN_TYPE,  // BIP44
+<<<<<<< Updated upstream
         STAKING_ADDRESS,
+=======
+>>>>>>> Stashed changes
 
         MAX_BASE58_TYPES
     };
@@ -51,7 +63,10 @@ public:
     const std::vector<unsigned char>& AlertKey() const { return vAlertPubKey; }
     int GetDefaultPort() const { return nDefaultPort; }
     const uint256& ProofOfWorkLimit() const { return bnProofOfWorkLimit; }
+<<<<<<< Updated upstream
     const uint256& ProofOfStakeLimit(const bool fV2) const { return fV2 ? bnProofOfStakeLimit_V2 : bnProofOfStakeLimit; }
+=======
+>>>>>>> Stashed changes
     int SubsidyHalvingInterval() const { return nSubsidyHalvingInterval; }
     /** Used to check majorities for block version upgrade */
     int EnforceBlockUpgradeMajority() const { return nEnforceBlockUpgradeMajority; }
@@ -74,6 +89,7 @@ public:
     bool SkipProofOfWorkCheck() const { return fSkipProofOfWorkCheck; }
     /** Make standard checks */
     bool RequireStandard() const { return fRequireStandard; }
+<<<<<<< Updated upstream
     int64_t TargetSpacing() const { return nTargetSpacing; }
     int64_t TargetTimespan(const bool fV2 = true) const { return fV2 ? nTargetTimespan_V2 : nTargetTimespan; }
 
@@ -93,6 +109,14 @@ public:
     bool IsValidBlockTimeStamp(const int64_t nTime, const int nHeight) const;
 
     CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
+=======
+    int64_t TargetTimespan() const { return nTargetTimespan; }
+    int64_t TargetSpacing() const { return nTargetSpacing; }
+    int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
+    int COINBASE_MATURITY() const { return nMaturity; }
+    CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
+    CAmount MasternodeCollateral() const { return nMNCollateral; }
+>>>>>>> Stashed changes
     /** The masternode count that we will allow the see-saw reward payments to be off by */
     int MasternodeCountDrift() const { return nMasternodeCountDrift; }
     /** Make miner stop after a block is found. In RPC, don't return until nGenProcLimit blocks are generated */
@@ -106,6 +130,7 @@ public:
     const std::vector<CAddress>& FixedSeeds() const { return vFixedSeeds; }
     virtual const Checkpoints::CCheckpointData& Checkpoints() const = 0;
     int PoolMaxTransactions() const { return nPoolMaxTransactions; }
+<<<<<<< Updated upstream
     /** Return the number of blocks in a budget cycle */
     int GetBudgetCycleBlocks() const { return nBudgetCycleBlocks; }
     int64_t GetProposalEstablishmentTime() const { return nProposalEstablishmentTime; }
@@ -115,6 +140,13 @@ public:
     /** Spork key and Masternode Handling **/
     std::string SporkPubKey() const { return strSporkPubKey; }
     std::string SporkPubKeyOld() const { return strSporkPubKeyOld; }
+=======
+    std::string DevPubKey() const { return strDevpubkey; }
+
+    /** Spork key and Masternode Handling **/
+    std::string SporkKey() const { return strSporkKey; }
+    std::string SporkKeyOld() const { return strSporkKeyOld; }
+>>>>>>> Stashed changes
     int64_t NewSporkStart() const { return nEnforceNewSporkKey; }
     int64_t RejectOldSporkKey() const { return nRejectOldSporkKey; }
     std::string ObfuscationPoolDummyAddress() const { return strObfuscationPoolDummyAddress; }
@@ -127,7 +159,10 @@ public:
     std::string Zerocoin_Modulus() const { return zerocoinModulus; }
     libzerocoin::ZerocoinParams* Zerocoin_Params(bool useModulusV1) const;
     int Zerocoin_MaxSpendsPerTransaction() const { return nMaxZerocoinSpendsPerTransaction; }
+<<<<<<< Updated upstream
     int Zerocoin_MaxPublicSpendsPerTransaction() const { return nMaxZerocoinPublicSpendsPerTransaction; }
+=======
+>>>>>>> Stashed changes
     CAmount Zerocoin_MintFee() const { return nMinZerocoinMintFee; }
     int Zerocoin_MintRequiredConfirmations() const { return nMintRequiredConfirmations; }
     int Zerocoin_RequiredAccumulation() const { return nRequiredAccumulation; }
@@ -138,8 +173,11 @@ public:
     /** Height or Time Based Activations **/
     int ModifierUpgradeBlock() const { return nModifierUpdateBlock; }
     int LAST_POW_BLOCK() const { return nLastPOWBlock; }
+<<<<<<< Updated upstream
     int PivxBadBlockTime() const { return nPivxBadBlockTime; }
     int PivxBadBlocknBits() const { return nPivxBadBlocknBits; }
+=======
+>>>>>>> Stashed changes
     int Zerocoin_StartHeight() const { return nZerocoinStartHeight; }
     int Zerocoin_Block_EnforceSerialRange() const { return nBlockEnforceSerialRange; }
     int Zerocoin_Block_RecalculateAccumulators() const { return nBlockRecalculateAccumulators; }
@@ -148,6 +186,7 @@ public:
     int Zerocoin_StartTime() const { return nZerocoinStartTime; }
     int Block_Enforce_Invalid() const { return nBlockEnforceInvalidUTXO; }
     int Zerocoin_Block_V2_Start() const { return nBlockZerocoinV2; }
+<<<<<<< Updated upstream
     bool IsStakeModifierV2(const int nHeight) const { return nHeight >= nBlockStakeModifierlV2; }
     int NewSigsActive(const int nHeight) const { return nHeight >= nBlockEnforceNewMessageSignatures; }
     int BIP65ActivationHeight() const { return nBIP65ActivationHeight; }
@@ -163,6 +202,10 @@ public:
     int Zerocoin_Block_Public_Spend_Enabled() const { return nPublicZCSpends; }
     int Zerocoin_Block_Last_Checkpoint() const { return nBlockLastAccumulatorCheckpoint; }
 
+=======
+    CAmount InvalidAmountFiltered() const { return nInvalidAmountFiltered; };
+
+>>>>>>> Stashed changes
 protected:
     CChainParams() {}
 
@@ -172,13 +215,17 @@ protected:
     std::vector<unsigned char> vAlertPubKey;
     int nDefaultPort;
     uint256 bnProofOfWorkLimit;
+<<<<<<< Updated upstream
     uint256 bnProofOfStakeLimit;
     uint256 bnProofOfStakeLimit_V2;
+=======
+>>>>>>> Stashed changes
     int nMaxReorganizationDepth;
     int nSubsidyHalvingInterval;
     int nEnforceBlockUpgradeMajority;
     int nRejectBlockOutdatedMajority;
     int nToCheckBlockUpgradeMajority;
+<<<<<<< Updated upstream
     int64_t nTargetSpacing;
     int64_t nTargetTimespan;
     int64_t nTargetTimespan_V2;
@@ -194,6 +241,15 @@ protected:
     int nTimeSlotLength;
 
     int nModifierUpdateBlock;
+=======
+    int64_t nTargetTimespan;
+    int64_t nTargetSpacing;
+    int nLastPOWBlock;
+    int nMasternodeCountDrift;
+    int nMaturity;
+    int nModifierUpdateBlock;
+    CAmount nMNCollateral;
+>>>>>>> Stashed changes
     CAmount nMaxMoneyOut;
     int nMinerThreads;
     std::vector<CDNSSeedData> vSeeds;
@@ -211,16 +267,25 @@ protected:
     bool fTestnetToBeDeprecatedFieldRPC;
     bool fHeadersFirstSyncingActive;
     int nPoolMaxTransactions;
+<<<<<<< Updated upstream
     int nBudgetCycleBlocks;
     std::string strSporkPubKey;
     std::string strSporkPubKeyOld;
+=======
+    std::string strDevpubkey;
+    std::string strSporkKey;
+    std::string strSporkKeyOld;
+>>>>>>> Stashed changes
     int64_t nEnforceNewSporkKey;
     int64_t nRejectOldSporkKey;
     std::string strObfuscationPoolDummyAddress;
     int64_t nStartMasternodePayments;
     std::string zerocoinModulus;
     int nMaxZerocoinSpendsPerTransaction;
+<<<<<<< Updated upstream
     int nMaxZerocoinPublicSpendsPerTransaction;
+=======
+>>>>>>> Stashed changes
     CAmount nMinZerocoinMintFee;
     CAmount nInvalidAmountFiltered;
     int nMintRequiredConfirmations;
@@ -231,8 +296,11 @@ protected:
     int nZerocoinStartHeight;
     int nZerocoinStartTime;
     int nZerocoinRequiredStakeDepth;
+<<<<<<< Updated upstream
     int64_t nProposalEstablishmentTime;
     int nBIP65ActivationHeight;
+=======
+>>>>>>> Stashed changes
 
     int nBlockEnforceSerialRange;
     int nBlockRecalculateAccumulators;
@@ -240,6 +308,7 @@ protected:
     int nBlockLastGoodCheckpoint;
     int nBlockEnforceInvalidUTXO;
     int nBlockZerocoinV2;
+<<<<<<< Updated upstream
     int nBlockDoubleAccumulated;
     int nPublicZCSpends;
     int nBlockStakeModifierlV2;
@@ -253,6 +322,8 @@ protected:
     // fake serial attack
     int nFakeSerialBlockheightEnd = 0;
     CAmount nSupplyBeforeFakeSerial = 0;
+=======
+>>>>>>> Stashed changes
 };
 
 /**

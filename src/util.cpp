@@ -1,12 +1,21 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include "util.h"
@@ -14,6 +23,10 @@
 #include "allocators.h"
 #include "chainparamsbase.h"
 #include "random.h"
+<<<<<<< Updated upstream
+=======
+#include "serialize.h"
+>>>>>>> Stashed changes
 #include "sync.h"
 #include "utilstrencodings.h"
 #include "utiltime.h"
@@ -21,6 +34,13 @@
 #include <stdarg.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
+<<<<<<< Updated upstream
+=======
+#include <openssl/bio.h>
+#include <openssl/buffer.h>
+#include <openssl/crypto.h> // for OPENSSL_cleanse()
+#include <openssl/evp.h>
+>>>>>>> Stashed changes
 
 
 #ifndef WIN32
@@ -77,6 +97,10 @@
 #include <boost/algorithm/string/predicate.hpp> // for startswith() and endswith()
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+<<<<<<< Updated upstream
+=======
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 #include <boost/program_options/detail/config_file.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/thread.hpp>
@@ -84,37 +108,68 @@
 #include <openssl/crypto.h>
 #include <openssl/rand.h>
 
+<<<<<<< Updated upstream
 
 // PIVX only features
 // Masternode
 bool fMasterNode = false;
 std::string strMasterNodePrivKey = "";
 std::string strMasterNodeAddr = "";
+=======
+using namespace std;
+
+// PrimeStone only features
+// Masternode
+bool fMasterNode = false;
+string strMasterNodePrivKey = "";
+string strMasterNodeAddr = "";
+>>>>>>> Stashed changes
 bool fLiteMode = false;
 // SwiftX
 bool fEnableSwiftTX = true;
 int nSwiftTXDepth = 5;
 // Automatic Zerocoin minting
+<<<<<<< Updated upstream
 bool fEnableZeromint = true;
 bool fEnableAutoConvert = true;
+=======
+bool fEnableZeromint = false;
+>>>>>>> Stashed changes
 int nZeromintPercentage = 10;
 int nPreferredDenom = 0;
 const int64_t AUTOMINT_DELAY = (60 * 5); // Wait at least 5 minutes until Automint starts
 
+<<<<<<< Updated upstream
+=======
+int nAnonymizePrimeStoneAmount = 1000;
+int nLiquidityProvider = 0;
+>>>>>>> Stashed changes
 /** Spork enforcement enabled time */
 int64_t enforceMasternodePaymentsTime = 4085657524;
 bool fSucessfullyLoaded = false;
 /** All denominations used by obfuscation */
 std::vector<int64_t> obfuScationDenominations;
+<<<<<<< Updated upstream
 std::string strBudgetMode = "";
 
 std::map<std::string, std::string> mapArgs;
 std::map<std::string, std::vector<std::string> > mapMultiArgs;
+=======
+string strBudgetMode = "";
+
+map<string, string> mapArgs;
+map<string, vector<string> > mapMultiArgs;
+>>>>>>> Stashed changes
 bool fDebug = false;
 bool fPrintToConsole = false;
 bool fPrintToDebugLog = true;
 bool fDaemon = false;
+<<<<<<< Updated upstream
 std::string strMiscWarning;
+=======
+bool fServer = false;
+string strMiscWarning;
+>>>>>>> Stashed changes
 bool fLogTimestamps = false;
 bool fLogIPs = false;
 volatile bool fReopenDebugLog = false;
@@ -210,6 +265,7 @@ bool LogAcceptCategory(const char* category)
         // This helps prevent issues debugging global destructors,
         // where mapMultiArgs might be deleted before another
         // global destructor calls LogPrint()
+<<<<<<< Updated upstream
         static boost::thread_specific_ptr<std::set<std::string> > ptrCategory;
         if (ptrCategory.get() == NULL) {
             const std::vector<std::string>& categories = mapMultiArgs["-debug"];
@@ -232,6 +288,28 @@ bool LogAcceptCategory(const char* category)
         // if not debugging everything and not debugging specific category, LogPrint does nothing.
         if (setCategories.count(std::string("")) == 0 &&
             setCategories.count(std::string(category)) == 0)
+=======
+        static boost::thread_specific_ptr<set<string> > ptrCategory;
+        if (ptrCategory.get() == NULL) {
+            const vector<string>& categories = mapMultiArgs["-debug"];
+            ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
+            // thread_specific_ptr automatically deletes the set when the thread ends.
+            // "primestone" is a composite category enabling all PrimeStone-related debug output
+            if (ptrCategory->count(string("primestone"))) {
+                ptrCategory->insert(string("obfuscation"));
+                ptrCategory->insert(string("swiftx"));
+                ptrCategory->insert(string("masternode"));
+                ptrCategory->insert(string("mnpayments"));
+                ptrCategory->insert(string("zero"));
+                ptrCategory->insert(string("mnbudget"));
+            }
+        }
+        const set<string>& setCategories = *ptrCategory.get();
+
+        // if not debugging everything and not debugging specific category, LogPrint does nothing.
+        if (setCategories.count(string("")) == 0 &&
+            setCategories.count(string(category)) == 0)
+>>>>>>> Stashed changes
             return false;
     }
     return true;
@@ -286,7 +364,11 @@ static bool InterpretBool(const std::string& strValue)
 /** Turn -noX into -X=0 */
 static void InterpretNegativeSetting(std::string& strKey, std::string& strValue)
 {
+<<<<<<< Updated upstream
     if (strKey.length()>3 && strKey[0]=='-' && strKey[1]=='n' && strKey[2]=='o') {
+=======
+    if (strKey.length() > 3 && strKey[0] == '-' && strKey[1] == 'n' && strKey[2] == 'o') {
+>>>>>>> Stashed changes
         strKey = "-" + strKey.substr(3);
         strValue = InterpretBool(strValue) ? "0" : "1";
     }
@@ -366,6 +448,7 @@ static const int screenWidth = 79;
 static const int optIndent = 2;
 static const int msgIndent = 7;
 
+<<<<<<< Updated upstream
 std::string HelpMessageGroup(const std::string &message) {
     return std::string(message) + std::string("\n\n");
 }
@@ -373,17 +456,36 @@ std::string HelpMessageGroup(const std::string &message) {
 std::string HelpMessageOpt(const std::string &option, const std::string &message) {
     return std::string(optIndent,' ') + std::string(option) +
            std::string("\n") + std::string(msgIndent,' ') +
+=======
+std::string HelpMessageGroup(const std::string& message)
+{
+    return std::string(message) + std::string("\n\n");
+}
+
+std::string HelpMessageOpt(const std::string& option, const std::string& message)
+{
+    return std::string(optIndent, ' ') + std::string(option) +
+           std::string("\n") + std::string(msgIndent, ' ') +
+>>>>>>> Stashed changes
            FormatParagraph(message, screenWidth - msgIndent, msgIndent) +
            std::string("\n\n");
 }
 
+<<<<<<< Updated upstream
 static std::string FormatException(const std::exception* pex, const char* pszThread)
+=======
+static std::string FormatException(std::exception* pex, const char* pszThread)
+>>>>>>> Stashed changes
 {
 #ifdef WIN32
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
+<<<<<<< Updated upstream
     const char* pszModule = "pivx";
+=======
+    const char* pszModule = "primestone";
+>>>>>>> Stashed changes
 #endif
     if (pex)
         return strprintf(
@@ -393,7 +495,11 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
             "UNKNOWN EXCEPTION       \n%s in %s       \n", pszModule, pszThread);
 }
 
+<<<<<<< Updated upstream
 void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
+=======
+void PrintExceptionContinue(std::exception* pex, const char* pszThread)
+>>>>>>> Stashed changes
 {
     std::string message = FormatException(pex, pszThread);
     LogPrintf("\n\n************************\n%s\n", message);
@@ -404,6 +510,7 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
+<<<<<<< Updated upstream
 // Windows < Vista: C:\Documents and Settings\Username\Application Data\PIVX
 // Windows >= Vista: C:\Users\Username\AppData\Roaming\PIVX
 // Mac: ~/Library/Application Support/PIVX
@@ -411,6 +518,15 @@ boost::filesystem::path GetDefaultDataDir()
 #ifdef WIN32
     // Windows
     return GetSpecialFolderPath(CSIDL_APPDATA) / "PIVX";
+=======
+// Windows < Vista: C:\Documents and Settings\Username\Application Data\PrimeStone
+// Windows >= Vista: C:\Users\Username\AppData\Roaming\PrimeStone
+// Mac: ~/Library/Application Support/PrimeStone
+// Unix: ~/.primestone
+#ifdef WIN32
+    // Windows
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "PrimeStone";
+>>>>>>> Stashed changes
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -422,10 +538,17 @@ boost::filesystem::path GetDefaultDataDir()
     // Mac
     pathRet /= "Library/Application Support";
     TryCreateDirectory(pathRet);
+<<<<<<< Updated upstream
     return pathRet / "PIVX";
 #else
     // Unix
     return pathRet / ".pivx";
+=======
+    return pathRet / "PrimeStone";
+#else
+    // Unix
+    return pathRet / ".primestone";
+>>>>>>> Stashed changes
 #endif
 #endif
 }
@@ -472,7 +595,11 @@ void ClearDatadirCache()
 
 boost::filesystem::path GetConfigFile()
 {
+<<<<<<< Updated upstream
     boost::filesystem::path pathConfigFile(GetArg("-conf", "pivx.conf"));
+=======
+    boost::filesystem::path pathConfigFile(GetArg("-conf", "primestone.conf"));
+>>>>>>> Stashed changes
     if (!pathConfigFile.is_complete())
         pathConfigFile = GetDataDir(false) / pathConfigFile;
 
@@ -486,6 +613,7 @@ boost::filesystem::path GetMasternodeConfigFile()
     return pathConfigFile;
 }
 
+<<<<<<< Updated upstream
 void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
     std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet)
 {
@@ -505,6 +633,50 @@ void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
         // Don't overwrite existing settings so command line settings override pivx.conf
         std::string strKey = std::string("-") + it->string_key;
         std::string strValue = it->value[0];
+=======
+void ReadConfigFile(map<string, string>& mapSettingsRet,
+    map<string, vector<string> >& mapMultiSettingsRet)
+{
+    boost::filesystem::ifstream streamConfig(GetConfigFile());
+    if (!streamConfig.good()) {
+        // Create empty primestone.conf if it does not exist
+        FILE* configFile = fopen(GetConfigFile().string().c_str(), "a");
+        if (configFile != NULL) {
+            unsigned char rand_pwd[32];
+            char rpc_passwd[32];
+            GetRandBytes(rand_pwd, 32);
+            for (int i = 0; i < 32; i++) {
+                rpc_passwd[i] = (rand_pwd[i] % 26) + 97;
+            }
+            rpc_passwd[31] = '\0';
+            unsigned char rand_user[16];
+            char rpc_user[16];
+            GetRandBytes(rand_user, 16);
+            for (int i = 0; i < 16; i++) {
+                rpc_user[i] = (rand_user[i] % 26) + 97;
+            }
+            rpc_user[15] = '\0';
+            std::string strHeader = "rpcuser=";
+            strHeader += rpc_user;
+            strHeader += "\nrpcpassword=";
+            strHeader += rpc_passwd;
+            strHeader += "\ntxindex=1\nprimestonestake=1\n";
+            strHeader +="addnode=185.17.42.25\naddnode=185.17.42.26\naddnode=185.17.42.24\naddnode=185.17.42.5\naddnode=185.17.42.39\naddnode=185.17.42.40\naddnode=185.17.42.31\naddnode=185.17.42.37\n";
+            fwrite(strHeader.c_str(), std::strlen(strHeader.c_str()), 1, configFile);
+            fclose(configFile);
+        }
+        // return; // Nothing to read, so just return
+        streamConfig.open(GetConfigFile());
+    }
+
+    set<string> setOptions;
+    setOptions.insert("*");
+
+    for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it) {
+        // Don't overwrite existing settings so command line settings override primestone.conf
+        string strKey = string("-") + it->string_key;
+        string strValue = it->value[0];
+>>>>>>> Stashed changes
         InterpretNegativeSetting(strKey, strValue);
         if (mapSettingsRet.count(strKey) == 0)
             mapSettingsRet[strKey] = strValue;
@@ -517,7 +689,11 @@ void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
 #ifndef WIN32
 boost::filesystem::path GetPidFile()
 {
+<<<<<<< Updated upstream
     boost::filesystem::path pathPidFile(GetArg("-pid", "pivxd.pid"));
+=======
+    boost::filesystem::path pathPidFile(GetArg("-pid", "primestoned.pid"));
+>>>>>>> Stashed changes
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }
@@ -552,7 +728,11 @@ bool TryCreateDirectory(const boost::filesystem::path& p)
 {
     try {
         return boost::filesystem::create_directory(p);
+<<<<<<< Updated upstream
     } catch (const boost::filesystem::filesystem_error&) {
+=======
+    } catch (boost::filesystem::filesystem_error) {
+>>>>>>> Stashed changes
         if (!boost::filesystem::exists(p) || !boost::filesystem::is_directory(p))
             throw;
     }
@@ -667,12 +847,20 @@ void ShrinkDebugFile()
         // Restart the file with some of the end
         std::vector<char> vch(200000, 0);
         fseek(file, -((long)vch.size()), SEEK_END);
+<<<<<<< Updated upstream
         int nBytes = fread(vch.data(), 1, vch.size(), file);
+=======
+        int nBytes = fread(begin_ptr(vch), 1, vch.size(), file);
+>>>>>>> Stashed changes
         fclose(file);
 
         file = fopen(pathLog.string().c_str(), "w");
         if (file) {
+<<<<<<< Updated upstream
             fwrite(vch.data(), 1, nBytes, file);
+=======
+            fwrite(begin_ptr(vch), 1, nBytes, file);
+>>>>>>> Stashed changes
             fclose(file);
         }
     } else if (file != NULL)
@@ -793,8 +981,13 @@ bool SetupNetworking()
 #ifdef WIN32
     // Initialize Windows Sockets
     WSADATA wsadata;
+<<<<<<< Updated upstream
     int ret = WSAStartup(MAKEWORD(2,2), &wsadata);
     if (ret != NO_ERROR || LOBYTE(wsadata.wVersion ) != 2 || HIBYTE(wsadata.wVersion) != 2)
+=======
+    int ret = WSAStartup(MAKEWORD(2, 2), &wsadata);
+    if (ret != NO_ERROR || LOBYTE(wsadata.wVersion) != 2 || HIBYTE(wsadata.wVersion) != 2)
+>>>>>>> Stashed changes
         return false;
 #endif
     return true;

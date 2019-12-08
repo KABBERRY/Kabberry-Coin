@@ -1,14 +1,23 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "libzerocoin/Denominations.h"
+<<<<<<< Updated upstream
 #include "libzerocoin/Coin.h"
 #include "libzerocoin/CoinRandomnessSchnorrSignature.h"
+=======
+>>>>>>> Stashed changes
 #include "amount.h"
 #include "chainparams.h"
 #include "coincontrol.h"
 #include "main.h"
+<<<<<<< Updated upstream
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
 #include "txdb.h"
@@ -20,18 +29,38 @@
 
 
 BOOST_FIXTURE_TEST_SUITE(zerocoin_transactions_tests, TestingSetup)
+=======
+#include "wallet.h"
+#include "walletdb.h"
+#include "txdb.h"
+#include <boost/test/unit_test.hpp>
+#include <iostream>
+
+using namespace libzerocoin;
+
+
+BOOST_AUTO_TEST_SUITE(zerocoin_transactions_tests)
+>>>>>>> Stashed changes
 
 static CWallet cWallet("unlocked.dat");
 
 BOOST_AUTO_TEST_CASE(zerocoin_spend_test)
 {
     SelectParams(CBaseChainParams::MAIN);
+<<<<<<< Updated upstream
     libzerocoin::ZerocoinParams *ZCParams = Params().Zerocoin_Params(false);
+=======
+    ZerocoinParams *ZCParams = Params().Zerocoin_Params(false);
+>>>>>>> Stashed changes
     (void)ZCParams;
 
     bool fFirstRun;
     cWallet.LoadWallet(fFirstRun);
+<<<<<<< Updated upstream
     cWallet.zpivTracker = std::unique_ptr<CzPIVTracker>(new CzPIVTracker(cWallet.strWalletFile));
+=======
+    cWallet.zPSCTracker = unique_ptr<CzPSCTracker>(new CzPSCTracker(cWallet.strWalletFile));
+>>>>>>> Stashed changes
     CMutableTransaction tx;
     CWalletTx* wtx = new CWalletTx(&cWallet, tx);
     bool fMintChange=true;
@@ -39,6 +68,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test)
     std::vector<CZerocoinSpend> vSpends;
     std::vector<CZerocoinMint> vMints;
     CAmount nAmount = COIN;
+<<<<<<< Updated upstream
 
     CZerocoinSpendReceipt receipt;
     std::list<std::pair<CBitcoinAddress*, CAmount>> outputs;
@@ -49,10 +79,23 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test)
     nAmount = 1;
     CZerocoinSpendReceipt receipt2;
     cWallet.SpendZerocoin(nAmount, *wtx, receipt2, vMints, fMintChange, fMinimizeChange, outputs);
+=======
+    int nSecurityLevel = 100;
+
+    CZerocoinSpendReceipt receipt;
+    cWallet.SpendZerocoin(nAmount, nSecurityLevel, *wtx, receipt, vMints, fMintChange, fMinimizeChange);
+
+    BOOST_CHECK_MESSAGE(receipt.GetStatus() == zPSC_TRX_FUNDS_PROBLEMS, "Failed Invalid Amount Check");
+
+    nAmount = 1;
+    CZerocoinSpendReceipt receipt2;
+    cWallet.SpendZerocoin(nAmount, nSecurityLevel, *wtx, receipt2, vMints, fMintChange, fMinimizeChange);
+>>>>>>> Stashed changes
 
     // if using "wallet.dat", instead of "unlocked.dat" need this
     /// BOOST_CHECK_MESSAGE(vString == "Error: Wallet locked, unable to create transaction!"," Locked Wallet Check Failed");
 
+<<<<<<< Updated upstream
     BOOST_CHECK_MESSAGE(receipt2.GetStatus() == ZPIV_TRX_FUNDS_PROBLEMS, strprintf("Failed Invalid Amount Check: %s", receipt.GetStatusMessage()));
 
 }
@@ -285,6 +328,9 @@ BOOST_AUTO_TEST_CASE(zerocoin_public_spend_test)
     in3.nSequence = 500;
     PublicCoinSpend publicSpend3b(ZCParams_v1);
     BOOST_CHECK_MESSAGE(!ZPIVModule::validateInput(in3, out_v1, tx3, publicSpend3b), "Different denomination for mint v1 and spendVersion 4");
+=======
+    BOOST_CHECK_MESSAGE(receipt2.GetStatus() == zPSC_TRX_FUNDS_PROBLEMS, "Failed Invalid Amount Check");
+>>>>>>> Stashed changes
 
 }
 

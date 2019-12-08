@@ -1,4 +1,5 @@
 #!/bin/sh
+<<<<<<< Updated upstream
 # Copyright (c) 2012-2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -6,6 +7,10 @@
 export LC_ALL=C
 if [ $# -gt 1 ]; then
     cd "$2" || exit 1
+=======
+if [ $# -gt 1 ]; then
+    cd "$2"
+>>>>>>> Stashed changes
 fi
 if [ $# -gt 0 ]; then
     FILE="$1"
@@ -18,6 +23,7 @@ else
     exit 1
 fi
 
+<<<<<<< Updated upstream
 git_check_in_repo() {
     ! { git status --porcelain -uall --ignored "$@" 2>/dev/null || echo '??'; } | grep -q '?'
 }
@@ -26,18 +32,32 @@ DESC=""
 SUFFIX=""
 LAST_COMMIT_DATE=""
 if [ "${BITCOIN_GENBUILD_NO_GIT}" != "1" -a -e "$(which git 2>/dev/null)" -a "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ] && git_check_in_repo share/genbuild.sh; then
+=======
+DESC=""
+SUFFIX=""
+LAST_COMMIT_DATE=""
+if [ -e "$(which git 2>/dev/null)" -a "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
+>>>>>>> Stashed changes
     # clean 'dirty' status of touched files that haven't been modified
     git diff >/dev/null 2>/dev/null 
 
     # if latest commit is tagged and not dirty, then override using the tag name
     RAWDESC=$(git describe --abbrev=0 2>/dev/null)
+<<<<<<< Updated upstream
     if [ "$(git rev-parse HEAD)" = "$(git rev-list -1 $RAWDESC 2>/dev/null)" ]; then
+=======
+    if [ "$(git rev-parse HEAD)" = "$(git rev-list -1 $RAWDESC)" ]; then
+>>>>>>> Stashed changes
         git diff-index --quiet HEAD -- && DESC=$RAWDESC
     fi
 
     # otherwise generate suffix from git, i.e. string like "59887e8-dirty"
     SUFFIX=$(git rev-parse --short HEAD)
+<<<<<<< Updated upstream
     git diff-index --quiet HEAD -- || SUFFIX="$SUFFIX-dirty"
+=======
+    git diff-index --quiet HEAD -- || SUFFIX="$SUFFIX-"
+>>>>>>> Stashed changes
 
     # get a string like "2012-04-10 16:27:19 +0200"
     LAST_COMMIT_DATE="$(git log -n 1 --format="%ci")"

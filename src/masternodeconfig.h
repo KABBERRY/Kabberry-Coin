@@ -1,5 +1,10 @@
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2018 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -52,7 +57,11 @@ public:
             return outputIndex;
         }
 
+<<<<<<< Updated upstream
         bool castOutputIndex(int& n) const;
+=======
+        bool castOutputIndex(int& n);
+>>>>>>> Stashed changes
 
         void setOutputIndex(const std::string& outputIndex)
         {
@@ -97,8 +106,12 @@ public:
 
     void clear();
     bool read(std::string& strErr);
+<<<<<<< Updated upstream
     CMasternodeConfig::CMasternodeEntry* add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
     void remove(std::string alias);
+=======
+    void add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
+>>>>>>> Stashed changes
 
     std::vector<CMasternodeEntry>& getEntries()
     {

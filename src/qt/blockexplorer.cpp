@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018 The PSC developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +17,11 @@
 #include "net.h"
 #include "txdb.h"
 #include "ui_blockexplorer.h"
+<<<<<<< Updated upstream
 #include "guiinterface.h"
+=======
+#include "ui_interface.h"
+>>>>>>> Stashed changes
 #include "util.h"
 #include "utilstrencodings.h"
 #include <QDateTime>
@@ -48,7 +57,11 @@ static std::string ValueToString(CAmount nValue, bool AllowNegative = false)
     if (nValue < 0 && !AllowNegative)
         return "<span>" + _("unknown") + "</span>";
 
+<<<<<<< Updated upstream
     QString Str = BitcoinUnits::formatWithUnit(BitcoinUnits::PIV, nValue);
+=======
+    QString Str = BitcoinUnits::formatWithUnit(BitcoinUnits::PSC, nValue);
+>>>>>>> Stashed changes
     if (AllowNegative && nValue > 0)
         Str = '+' + Str;
     return std::string("<span>") + Str.toUtf8().data() + "</span>";
@@ -405,7 +418,11 @@ std::string AddressToString(const CBitcoinAddress& Address)
     {
         std::vector<CDiskTxPos> Txs;
         paddressmap->GetTxs(Txs, AddressScript.GetID());
+<<<<<<< Updated upstream
         for (const CDiskTxPos& pos : Txs)
+=======
+        BOOST_FOREACH (const CDiskTxPos& pos, Txs)
+>>>>>>> Stashed changes
         {
             CTransaction tx;
             CBlock block;
@@ -477,8 +494,13 @@ void BlockExplorer::showEvent(QShowEvent*)
         updateNavButtons();
 
         if (!GetBoolArg("-txindex", true)) {
+<<<<<<< Updated upstream
             QString Warning = tr("Not all transactions will be shown. To view all transactions you need to set txindex=1 in the configuration file (pivx.conf).");
             QMessageBox::warning(this, "PIVX Core Blockchain Explorer", Warning, QMessageBox::Ok);
+=======
+            QString Warning = tr("Not all transactions will be shown. To view all transactions you need to set txindex=1 in the configuration file (PSC.conf).");
+            QMessageBox::warning(this, "PSC Core Blockchain Explorer", Warning, QMessageBox::Ok);
+>>>>>>> Stashed changes
         }
     }
 }
@@ -554,7 +576,11 @@ void BlockExplorer::setBlock(CBlockIndex* pBlock)
 
 void BlockExplorer::setContent(const std::string& Content)
 {
+<<<<<<< Updated upstream
     QString CSS = "body {font-size:12px; color:#f8f6f6; bgcolor:#5B4C7C;}\n a, span { font-family: monospace; }\n span.addr {color:#5B4C7C; font-weight: bold;}\n table tr td {padding: 3px; border: 1px solid black; background-color: #5B4C7C;}\n td.d0 {font-weight: bold; color:#f8f6f6;}\n h2, h3 { white-space:nowrap; color:#5B4C7C;}\n a { color:#88f6f6; text-decoration:none; }\n a.nav {color:#5B4C7C;}\n";
+=======
+    QString CSS = "body {font-size:12px; color:#000000; bgcolor:#eeeff3;}\n a, span { font-family: monospace; }\n span.addr {color:#0a4392; font-weight: bold;}\n table tr td {padding: 3px; border: 1px solid black; background-color: #e7e7e7;}\n td.d0 {font-weight: bold; color:#000000;}\n h2, h3 { white-space:nowrap; color:#0a4392;}\n a { color:#0a4392; text-decoration:none; }\n a.nav {color:#0a4392;}\n";
+>>>>>>> Stashed changes
     QString FullContent = "<html><head><style type=\"text/css\">" + CSS + "</style></head>" + "<body>" + Content.c_str() + "</body></html>";
     // printf(FullContent.toUtf8());
 

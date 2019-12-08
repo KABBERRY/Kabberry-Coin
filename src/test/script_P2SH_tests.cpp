@@ -8,16 +8,26 @@
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/sign.h"
+<<<<<<< Updated upstream
 #include "test_pivx.h"
 
 #ifdef ENABLE_WALLET
 #include "wallet/wallet_ismine.h"
+=======
+
+#ifdef ENABLE_WALLET
+#include "wallet_ismine.h"
+>>>>>>> Stashed changes
 #endif
 
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 // Helpers:
 static std::vector<unsigned char>
@@ -46,7 +56,12 @@ Verify(const CScript& scriptSig, const CScript& scriptPubKey, bool fStrict, Scri
     return VerifyScript(scriptSig, scriptPubKey, fStrict ? SCRIPT_VERIFY_P2SH : SCRIPT_VERIFY_NONE, MutableTransactionSignatureChecker(&txTo, 0), &err);
 }
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(script_P2SH_tests, TestingSetup)
+=======
+
+BOOST_AUTO_TEST_SUITE(script_P2SH_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(sign)
 {
@@ -79,7 +94,11 @@ BOOST_AUTO_TEST_CASE(sign)
     }
 
     CMutableTransaction txFrom;  // Funding transaction:
+<<<<<<< Updated upstream
     std::string reason;
+=======
+    string reason;
+>>>>>>> Stashed changes
     txFrom.vout.resize(8);
     for (int i = 0; i < 4; i++)
     {
@@ -177,7 +196,11 @@ BOOST_AUTO_TEST_CASE(set)
     }
 
     CMutableTransaction txFrom;  // Funding transaction:
+<<<<<<< Updated upstream
     std::string reason;
+=======
+    string reason;
+>>>>>>> Stashed changes
     txFrom.vout.resize(4);
     for (int i = 0; i < 4; i++)
     {
@@ -264,7 +287,11 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     CCoinsViewCache coins(&coinsDummy);
     CBasicKeyStore keystore;
     CKey key[6];
+<<<<<<< Updated upstream
     std::vector<CPubKey> keys;
+=======
+    vector<CPubKey> keys;
+>>>>>>> Stashed changes
     for (int i = 0; i < 6; i++)
     {
         key[i].MakeNewKey(true);
@@ -336,8 +363,13 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     // SignSignature doesn't know how to sign these. We're
     // not testing validating signatures, so just create
     // dummy signatures that DO include the correct P2SH scripts:
+<<<<<<< Updated upstream
     txTo.vin[3].scriptSig << OP_11 << OP_11 << static_cast<std::vector<unsigned char> >(oneAndTwo);
     txTo.vin[4].scriptSig << static_cast<std::vector<unsigned char> >(fifteenSigops);
+=======
+    txTo.vin[3].scriptSig << OP_11 << OP_11 << static_cast<vector<unsigned char> >(oneAndTwo);
+    txTo.vin[4].scriptSig << static_cast<vector<unsigned char> >(fifteenSigops);
+>>>>>>> Stashed changes
 
     BOOST_CHECK(::AreInputsStandard(txTo, coins));
     // 22 P2SH sigops for all inputs (1 for vin[0], 6 for vin[3], 15 for vin[4]
@@ -359,7 +391,11 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txToNonStd1.vin.resize(1);
     txToNonStd1.vin[0].prevout.n = 5;
     txToNonStd1.vin[0].prevout.hash = txFrom.GetHash();
+<<<<<<< Updated upstream
     txToNonStd1.vin[0].scriptSig << static_cast<std::vector<unsigned char> >(sixteenSigops);
+=======
+    txToNonStd1.vin[0].scriptSig << static_cast<vector<unsigned char> >(sixteenSigops);
+>>>>>>> Stashed changes
 
     BOOST_CHECK(!::AreInputsStandard(txToNonStd1, coins));
     BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd1, coins), 16U);
@@ -371,7 +407,11 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txToNonStd2.vin.resize(1);
     txToNonStd2.vin[0].prevout.n = 6;
     txToNonStd2.vin[0].prevout.hash = txFrom.GetHash();
+<<<<<<< Updated upstream
     txToNonStd2.vin[0].scriptSig << static_cast<std::vector<unsigned char> >(twentySigops);
+=======
+    txToNonStd2.vin[0].scriptSig << static_cast<vector<unsigned char> >(twentySigops);
+>>>>>>> Stashed changes
 
     BOOST_CHECK(!::AreInputsStandard(txToNonStd2, coins));
     BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd2, coins), 20U);

@@ -70,7 +70,11 @@ static int secp256k1_wnaf_const(int *wnaf, secp256k1_scalar s, int w, int size) 
      * this, and having the caller compensate after doing the multiplication.
      *
      * In fact, we _do_ want to negate numbers to minimize their bit-lengths (and in
+<<<<<<< Updated upstream
      * particular, to ensure that the outputs from the endomorphism-split fit into
+=======
+     * particular, to ensure that the outputs from the enprimestonerphism-split fit into
+>>>>>>> Stashed changes
      * 128 bits). If we negate, the parity of our number flips, inverting which of
      * {1, 2} we want to add to the scalar when ensuring that it's odd. Further
      * complicating things, -1 interacts badly with `secp256k1_scalar_cadd_bit` and
@@ -123,7 +127,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
     secp256k1_fe Z;
 
     int skew_1;
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
     secp256k1_ge pre_a_lam[ECMULT_TABLE_SIZE(WINDOW_A)];
     int wnaf_lam[1 + WNAF_SIZE(WINDOW_A - 1)];
     int skew_lam;
@@ -136,7 +144,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
 
     /* build wnaf representation for q. */
     int rsize = size;
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
     if (size > 128) {
         rsize = 128;
         /* split q into q_1 and q_lam (where q = q_1 + q_lam*lambda, and q_1 and q_lam are ~128 bit) */
@@ -147,7 +159,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
 #endif
     {
         skew_1   = secp256k1_wnaf_const(wnaf_1, sc, WINDOW_A - 1, size);
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
         skew_lam = 0;
 #endif
     }
@@ -163,7 +179,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
     for (i = 0; i < ECMULT_TABLE_SIZE(WINDOW_A); i++) {
         secp256k1_fe_normalize_weak(&pre_a[i].y);
     }
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
     if (size > 128) {
         for (i = 0; i < ECMULT_TABLE_SIZE(WINDOW_A); i++) {
             secp256k1_ge_mul_lambda(&pre_a_lam[i], &pre_a[i]);
@@ -178,7 +198,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
     VERIFY_CHECK(i != 0);
     ECMULT_CONST_TABLE_GET_GE(&tmpa, pre_a, i, WINDOW_A);
     secp256k1_gej_set_ge(r, &tmpa);
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
     if (size > 128) {
         i = wnaf_lam[WNAF_SIZE_BITS(rsize, WINDOW_A - 1)];
         VERIFY_CHECK(i != 0);
@@ -198,7 +222,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
         ECMULT_CONST_TABLE_GET_GE(&tmpa, pre_a, n, WINDOW_A);
         VERIFY_CHECK(n != 0);
         secp256k1_gej_add_ge(r, r, &tmpa);
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
         if (size > 128) {
             n = wnaf_lam[i];
             ECMULT_CONST_TABLE_GET_GE(&tmpa, pre_a_lam, n, WINDOW_A);
@@ -214,7 +242,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
         /* Correct for wNAF skew */
         secp256k1_ge correction = *a;
         secp256k1_ge_storage correction_1_stor;
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
         secp256k1_ge_storage correction_lam_stor;
 #endif
         secp256k1_ge_storage a2_stor;
@@ -223,7 +255,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
         secp256k1_gej_double_var(&tmpj, &tmpj, NULL);
         secp256k1_ge_set_gej(&correction, &tmpj);
         secp256k1_ge_to_storage(&correction_1_stor, a);
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
         if (size > 128) {
             secp256k1_ge_to_storage(&correction_lam_stor, a);
         }
@@ -232,7 +268,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
 
         /* For odd numbers this is 2a (so replace it), for even ones a (so no-op) */
         secp256k1_ge_storage_cmov(&correction_1_stor, &a2_stor, skew_1 == 2);
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
         if (size > 128) {
             secp256k1_ge_storage_cmov(&correction_lam_stor, &a2_stor, skew_lam == 2);
         }
@@ -243,7 +283,11 @@ static void secp256k1_ecmult_const(secp256k1_gej *r, const secp256k1_ge *a, cons
         secp256k1_ge_neg(&correction, &correction);
         secp256k1_gej_add_ge(r, r, &correction);
 
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
         if (size > 128) {
             secp256k1_ge_from_storage(&correction, &correction_lam_stor);
             secp256k1_ge_neg(&correction, &correction);

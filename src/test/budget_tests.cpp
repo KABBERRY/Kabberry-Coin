@@ -1,15 +1,26 @@
 // Copyright (c) 2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "masternode-budget.h"
 #include "tinyformat.h"
 #include "utilmoneystr.h"
+<<<<<<< Updated upstream
 #include "test_pivx.h"
 
 #include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_SUITE(budget_tests, TestingSetup)
+=======
+
+#include <boost/test/unit_test.hpp>
+
+BOOST_AUTO_TEST_SUITE(budget_tests)
+>>>>>>> Stashed changes
 
 void CheckBudgetValue(int nHeight, std::string strNetwork, CAmount nExpectedValue)
 {

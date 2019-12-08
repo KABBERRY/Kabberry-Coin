@@ -1,9 +1,18 @@
 // Copyright (c) 2018 The PIVX developers
+<<<<<<< Updated upstream
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef PIVX_ZPIVCHAIN_H
 #define PIVX_ZPIVCHAIN_H
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PrimeStone_zPSCCHAIN_H
+#define PrimeStone_zPSCCHAIN_H
+>>>>>>> Stashed changes
 
 #include "libzerocoin/Coin.h"
 #include "libzerocoin/Denominations.h"
@@ -39,4 +48,8 @@ bool TxOutToPublicCoin(const CTxOut& txout, libzerocoin::PublicCoin& pubCoin, CV
 std::list<libzerocoin::CoinDenomination> ZerocoinSpendListFromBlock(const CBlock& block, bool fFilterInvalid);
 
 
+<<<<<<< Updated upstream
 #endif //PIVX_ZPIVCHAIN_H
+=======
+#endif //PrimeStone_zPSCCHAIN_H
+>>>>>>> Stashed changes

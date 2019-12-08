@@ -1,10 +1,20 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2009-2017 The Bitcoin Core developers
 // Copyright (c) 2016-2018 The PIVX developers
+=======
+// Copyright (c) 2009-2014 The Bitcoin Core developers
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include <cstddef>

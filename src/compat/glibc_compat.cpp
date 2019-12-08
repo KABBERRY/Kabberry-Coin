@@ -1,10 +1,20 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2009-2017 The Bitcoin Core developers
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include <cstddef>
@@ -30,36 +40,60 @@ extern "C" FDELT_TYPE __fdelt_warn(FDELT_TYPE a)
 }
 extern "C" FDELT_TYPE __fdelt_chk(FDELT_TYPE) __attribute__((weak, alias("__fdelt_warn")));
 
+<<<<<<< Updated upstream
 #if defined(__i386__) || defined(__arm__)
 
 extern "C" int64_t __udivmoddi4(uint64_t u, uint64_t v, uint64_t* rp);
 
 extern "C" int64_t __wrap___divmoddi4(int64_t u, int64_t v, int64_t* rp)
+=======
+ #if defined(__i386__) || defined(__arm__)
+
+ extern "C" int64_t __udivmoddi4(uint64_t u, uint64_t v, uint64_t* rp);
+
+ extern "C" int64_t __wrap___divmoddi4(int64_t u, int64_t v, int64_t* rp)
+>>>>>>> Stashed changes
 {
     int32_t c1 = 0, c2 = 0;
     int64_t uu = u, vv = v;
     int64_t w;
     int64_t r;
 
+<<<<<<< Updated upstream
     if (uu < 0) {
+=======
+     if (uu < 0) {
+>>>>>>> Stashed changes
         c1 = ~c1, c2 = ~c2, uu = -uu;
     }
     if (vv < 0) {
         c1 = ~c1, vv = -vv;
     }
 
+<<<<<<< Updated upstream
     w = __udivmoddi4(uu, vv, (uint64_t*)&r);
+=======
+     w = __udivmoddi4(uu, vv, (uint64_t*)&r);
+>>>>>>> Stashed changes
     if (c1)
         w = -w;
     if (c2)
         r = -r;
 
+<<<<<<< Updated upstream
     *rp = r;
+=======
+     *rp = r;
+>>>>>>> Stashed changes
     return w;
 }
 #endif
 
+<<<<<<< Updated upstream
 extern "C" float log2f_old(float x);
+=======
+ extern "C" float log2f_old(float x);
+>>>>>>> Stashed changes
 #ifdef __i386__
 __asm(".symver log2f_old,log2f@GLIBC_2.1");
 #elif defined(__amd64__)
@@ -68,10 +102,17 @@ __asm(".symver log2f_old,log2f@GLIBC_2.2.5");
 __asm(".symver log2f_old,log2f@GLIBC_2.4");
 #elif defined(__aarch64__)
 __asm(".symver log2f_old,log2f@GLIBC_2.17");
+<<<<<<< Updated upstream
 #elif defined(__riscv)
 __asm(".symver log2f_old,log2f@GLIBC_2.27");
+=======
+>>>>>>> Stashed changes
 #endif
 extern "C" float __wrap_log2f(float x)
 {
     return log2f_old(x);
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes

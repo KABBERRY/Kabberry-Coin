@@ -1,5 +1,9 @@
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,7 +13,10 @@
 #include "base58.h"
 #include "key.h"
 #include "main.h"
+<<<<<<< Updated upstream
 #include "messagesigner.h"
+=======
+>>>>>>> Stashed changes
 #include "net.h"
 #include "sync.h"
 #include "timedata.h"
@@ -23,11 +30,19 @@
 #define MASTERNODE_REMOVAL_SECONDS (130 * 60)
 #define MASTERNODE_CHECK_SECONDS 5
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 class CMasternode;
 class CMasternodeBroadcast;
 class CMasternodePing;
+<<<<<<< Updated upstream
 extern std::map<int64_t, uint256> mapCacheBlockHashes;
+=======
+extern map<int64_t, uint256> mapCacheBlockHashes;
+>>>>>>> Stashed changes
 
 bool GetBlockHash(uint256& hash, int nBlockHeight);
 
@@ -36,12 +51,21 @@ bool GetBlockHash(uint256& hash, int nBlockHeight);
 // The Masternode Ping Class : Contains a different serialize method for sending pings from masternodes throughout the network
 //
 
+<<<<<<< Updated upstream
 class CMasternodePing : public CSignedMessage
+=======
+class CMasternodePing
+>>>>>>> Stashed changes
 {
 public:
     CTxIn vin;
     uint256 blockHash;
     int64_t sigTime; //mnb message times
+<<<<<<< Updated upstream
+=======
+    std::vector<unsigned char> vchSig;
+    //removed stop
+>>>>>>> Stashed changes
 
     CMasternodePing();
     CMasternodePing(CTxIn& newVin);
@@ -55,6 +79,7 @@ public:
         READWRITE(blockHash);
         READWRITE(sigTime);
         READWRITE(vchSig);
+<<<<<<< Updated upstream
         try
         {
             READWRITE(nMessVersion);
@@ -77,6 +102,25 @@ public:
     {
         CSignedMessage::swap(first, second);
 
+=======
+    }
+
+    bool CheckAndUpdate(int& nDos, bool fRequireEnabled = true, bool fCheckSigTimeOnly = false);
+    bool Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode);
+    bool VerifySignature(CPubKey& pubKeyMasternode, int &nDos);
+    void Relay();
+
+    uint256 GetHash()
+    {
+        CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+        ss << vin;
+        ss << sigTime;
+        return ss.GetHash();
+    }
+
+    void swap(CMasternodePing& first, CMasternodePing& second) // nothrow
+    {
+>>>>>>> Stashed changes
         // enable ADL (not necessary in our case, but good practice)
         using std::swap;
 
@@ -85,6 +129,10 @@ public:
         swap(first.vin, second.vin);
         swap(first.blockHash, second.blockHash);
         swap(first.sigTime, second.sigTime);
+<<<<<<< Updated upstream
+=======
+        swap(first.vchSig, second.vchSig);
+>>>>>>> Stashed changes
     }
 
     CMasternodePing& operator=(CMasternodePing from)
@@ -103,10 +151,17 @@ public:
 };
 
 //
+<<<<<<< Updated upstream
 // The Masternode Class. For managing the Obfuscation process. It contains the input of the 10000 PIV, signature to prove
 // it's the one who own that ip address and code for calculating the payment election.
 //
 class CMasternode : public CSignedMessage
+=======
+// The Masternode Class. For managing the Obfuscation process. It contains the input of the 10000 PrimeStone, signature to prove
+// it's the one who own that ip address and code for calculating the payment election.
+//
+class CMasternode
+>>>>>>> Stashed changes
 {
 private:
     // critical section to protect the inner data structures
@@ -123,8 +178,12 @@ public:
         MASTERNODE_WATCHDOG_EXPIRED,
         MASTERNODE_POSE_BAN,
         MASTERNODE_VIN_SPENT,
+<<<<<<< Updated upstream
         MASTERNODE_POS_ERROR,
         MASTERNODE_MISSING
+=======
+        MASTERNODE_POS_ERROR
+>>>>>>> Stashed changes
     };
 
     CTxIn vin;
@@ -133,6 +192,10 @@ public:
     CPubKey pubKeyMasternode;
     CPubKey pubKeyCollateralAddress1;
     CPubKey pubKeyMasternode1;
+<<<<<<< Updated upstream
+=======
+    std::vector<unsigned char> sig;
+>>>>>>> Stashed changes
     int activeState;
     int64_t sigTime; //mnb message time
     int cacheInputAge;
@@ -151,6 +214,7 @@ public:
 
     CMasternode();
     CMasternode(const CMasternode& other);
+<<<<<<< Updated upstream
 
     // override CSignedMessage functions
     uint256 GetSignatureHash() const override;
@@ -162,6 +226,13 @@ public:
     {
         CSignedMessage::swap(first, second);
 
+=======
+    CMasternode(const CMasternodeBroadcast& mnb);
+
+
+    void swap(CMasternode& first, CMasternode& second) // nothrow
+    {
+>>>>>>> Stashed changes
         // enable ADL (not necessary in our case, but good practice)
         using std::swap;
 
@@ -171,6 +242,10 @@ public:
         swap(first.addr, second.addr);
         swap(first.pubKeyCollateralAddress, second.pubKeyCollateralAddress);
         swap(first.pubKeyMasternode, second.pubKeyMasternode);
+<<<<<<< Updated upstream
+=======
+        swap(first.sig, second.sig);
+>>>>>>> Stashed changes
         swap(first.activeState, second.activeState);
         swap(first.sigTime, second.sigTime);
         swap(first.lastPing, second.lastPing);
@@ -211,7 +286,11 @@ public:
         READWRITE(addr);
         READWRITE(pubKeyCollateralAddress);
         READWRITE(pubKeyMasternode);
+<<<<<<< Updated upstream
         READWRITE(vchSig);
+=======
+        READWRITE(sig);
+>>>>>>> Stashed changes
         READWRITE(sigTime);
         READWRITE(protocolVersion);
         READWRITE(activeState);
@@ -284,16 +363,22 @@ public:
         if (activeState == CMasternode::MASTERNODE_VIN_SPENT) strStatus = "VIN_SPENT";
         if (activeState == CMasternode::MASTERNODE_REMOVE) strStatus = "REMOVE";
         if (activeState == CMasternode::MASTERNODE_POS_ERROR) strStatus = "POS_ERROR";
+<<<<<<< Updated upstream
         if (activeState == CMasternode::MASTERNODE_MISSING) strStatus = "MISSING";
+=======
+>>>>>>> Stashed changes
 
         return strStatus;
     }
 
     int64_t GetLastPaid();
     bool IsValidNetAddr();
+<<<<<<< Updated upstream
 
     /// Is the input associated with collateral public key? (and there is 10000 PIV - checking if valid masternode)
     bool IsInputAssociatedWithPubkey() const;
+=======
+>>>>>>> Stashed changes
 };
 
 
@@ -310,6 +395,7 @@ public:
 
     bool CheckAndUpdate(int& nDoS);
     bool CheckInputsAndAdd(int& nDos);
+<<<<<<< Updated upstream
 
     uint256 GetHash() const;
 
@@ -319,6 +405,13 @@ public:
     bool Sign(const CKey& key, const CPubKey& pubKey, const bool fNewSigs);
     bool Sign(const std::string strSignKey, const bool fNewSigs);
     bool CheckSignature() const;
+=======
+    bool Sign(CKey& keyCollateralAddress);
+    bool VerifySignature();
+    void Relay();
+    std::string GetOldStrMessage();
+    std::string GetNewStrMessage();
+>>>>>>> Stashed changes
 
     ADD_SERIALIZE_METHODS;
 
@@ -329,6 +422,7 @@ public:
         READWRITE(addr);
         READWRITE(pubKeyCollateralAddress);
         READWRITE(pubKeyMasternode);
+<<<<<<< Updated upstream
         READWRITE(vchSig);
         READWRITE(sigTime);
         READWRITE(protocolVersion);
@@ -336,6 +430,21 @@ public:
         READWRITE(nMessVersion);    // abuse nLastDsq (which will be removed) for old serialization
         if (ser_action.ForRead())
             nLastDsq = 0;
+=======
+        READWRITE(sig);
+        READWRITE(sigTime);
+        READWRITE(protocolVersion);
+        READWRITE(lastPing);
+        READWRITE(nLastDsq);
+    }
+
+    uint256 GetHash()
+    {
+        CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+        ss << sigTime;
+        ss << pubKeyCollateralAddress;
+        return ss.GetHash();
+>>>>>>> Stashed changes
     }
 
     /// Create Masternode broadcast, needs to be relayed manually after that

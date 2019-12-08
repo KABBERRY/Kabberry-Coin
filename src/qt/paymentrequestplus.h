@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,8 +18,11 @@
 
 #include "base58.h"
 
+<<<<<<< Updated upstream
 #include <openssl/x509.h>
 
+=======
+>>>>>>> Stashed changes
 #include <QByteArray>
 #include <QList>
 #include <QString>

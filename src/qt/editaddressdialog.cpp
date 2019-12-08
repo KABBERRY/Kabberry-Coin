@@ -1,6 +1,10 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -103,7 +107,11 @@ void EditAddressDialog::accept()
             break;
         case AddressTableModel::INVALID_ADDRESS:
             QMessageBox::warning(this, windowTitle(),
+<<<<<<< Updated upstream
                 tr("The entered address \"%1\" is not a valid PIVX address.").arg(ui->addressEdit->text()),
+=======
+                tr("The entered address \"%1\" is not a valid PrimeStone address.").arg(ui->addressEdit->text()),
+>>>>>>> Stashed changes
                 QMessageBox::Ok, QMessageBox::Ok);
             break;
         case AddressTableModel::DUPLICATE_ADDRESS:

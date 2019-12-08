@@ -1,5 +1,9 @@
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -39,9 +43,12 @@ public:
     int64_t lastFailure;
     int nCountFailures;
 
+<<<<<<< Updated upstream
     std::atomic<int64_t> lastProcess;
     std::atomic<bool> fBlockchainSynced;
 
+=======
+>>>>>>> Stashed changes
     // sum of all counts
     int sumMasternodeList;
     int sumMasternodeWinner;
@@ -74,10 +81,15 @@ public:
     void Reset();
     void Process();
     bool IsSynced();
+<<<<<<< Updated upstream
     bool NotCompleted();
     bool IsSporkListSynced();
     bool IsMasternodeListSynced();
     bool IsBlockchainSynced();
+=======
+    bool IsBlockchainSynced();
+    bool IsMasternodeListSynced() { return RequestedMasternodeAssets > MASTERNODE_SYNC_LIST; }
+>>>>>>> Stashed changes
     void ClearFulfilledRequest();
 };
 

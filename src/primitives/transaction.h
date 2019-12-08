@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,7 +13,10 @@
 #define BITCOIN_PRIMITIVES_TRANSACTION_H
 
 #include "amount.h"
+<<<<<<< Updated upstream
 #include "libzerocoin/CoinSpend.h"
+=======
+>>>>>>> Stashed changes
 #include "script/script.h"
 #include "serialize.h"
 #include "uint256.h"
@@ -79,7 +87,10 @@ public:
 
     explicit CTxIn(COutPoint prevoutIn, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<unsigned int>::max());
     CTxIn(uint256 hashPrevTx, uint32_t nOut, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<uint32_t>::max());
+<<<<<<< Updated upstream
     CTxIn(const libzerocoin::CoinSpend& spend, libzerocoin::CoinDenomination denom);
+=======
+>>>>>>> Stashed changes
 
     ADD_SERIALIZE_METHODS;
 
@@ -95,9 +106,12 @@ public:
         return (nSequence == std::numeric_limits<uint32_t>::max());
     }
 
+<<<<<<< Updated upstream
     bool IsZerocoinSpend() const;
     bool IsZerocoinPublicSpend() const;
 
+=======
+>>>>>>> Stashed changes
     friend bool operator==(const CTxIn& a, const CTxIn& b)
     {
         return (a.prevout   == b.prevout &&
@@ -176,8 +190,15 @@ public:
         return (nValue < 3*minRelayTxFee.GetFee(nSize));
     }
 
+<<<<<<< Updated upstream
     bool IsZerocoinMint() const;
     CAmount GetZerocoinMinted() const;
+=======
+    bool IsZerocoinMint() const
+    {
+        return !scriptPubKey.empty() && scriptPubKey.IsZerocoinMint();
+    }
+>>>>>>> Stashed changes
 
     friend bool operator==(const CTxOut& a, const CTxOut& b)
     {
@@ -260,6 +281,7 @@ public:
     // Compute modified tx size for priority calculation (optionally given tx size)
     unsigned int CalculateModifiedSize(unsigned int nTxSize=0) const;
 
+<<<<<<< Updated upstream
     bool HasZerocoinSpendInputs() const;
     bool HasZerocoinPublicSpendInputs() const;
 
@@ -268,6 +290,25 @@ public:
     bool ContainsZerocoins() const
     {
         return HasZerocoinSpendInputs() || HasZerocoinPublicSpendInputs() || HasZerocoinMintOutputs();
+=======
+    bool IsZerocoinSpend() const
+    {
+        return (vin.size() > 0 && vin[0].prevout.hash == 0 && vin[0].scriptSig[0] == OP_ZEROCOINSPEND);
+    }
+
+    bool IsZerocoinMint() const
+    {
+        for(const CTxOut& txout : vout) {
+            if (txout.scriptPubKey.IsZerocoinMint())
+                return true;
+        }
+        return false;
+    }
+
+    bool ContainsZerocoins() const
+    {
+        return IsZerocoinSpend() || IsZerocoinMint();
+>>>>>>> Stashed changes
     }
 
     CAmount GetZerocoinMinted() const;
@@ -283,8 +324,11 @@ public:
     }
 
     bool IsCoinStake() const;
+<<<<<<< Updated upstream
     bool CheckColdStake(const CScript& script) const;
     bool HasP2CSOutputs() const;
+=======
+>>>>>>> Stashed changes
 
     friend bool operator==(const CTransaction& a, const CTransaction& b)
     {
@@ -296,9 +340,15 @@ public:
         return a.hash != b.hash;
     }
 
+<<<<<<< Updated upstream
     unsigned int GetTotalSize() const;
 
     std::string ToString() const;
+=======
+    std::string ToString() const;
+
+    bool GetCoinAge(uint64_t& nCoinAge) const;  // ppcoin: get transaction coin age
+>>>>>>> Stashed changes
 };
 
 /** A mutable version of CTransaction. */
@@ -329,6 +379,20 @@ struct CMutableTransaction
     uint256 GetHash() const;
 
     std::string ToString() const;
+<<<<<<< Updated upstream
+=======
+
+    friend bool operator==(const CMutableTransaction& a, const CMutableTransaction& b)
+    {
+        return a.GetHash() == b.GetHash();
+    }
+
+    friend bool operator!=(const CMutableTransaction& a, const CMutableTransaction& b)
+    {
+        return !(a == b);
+    }
+
+>>>>>>> Stashed changes
 };
 
 #endif // BITCOIN_PRIMITIVES_TRANSACTION_H

@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,13 +14,20 @@
 #include "amount.h"
 
 #include <QAbstractListModel>
+<<<<<<< Updated upstream
 #include <QSettings>
+=======
+>>>>>>> Stashed changes
 
 QT_BEGIN_NAMESPACE
 class QNetworkProxy;
 QT_END_NAMESPACE
 
+<<<<<<< Updated upstream
 /** Interface from Qt to configuration data structure for PIVX client.
+=======
+/** Interface from Qt to configuration data structure for Bitcoin client.
+>>>>>>> Stashed changes
    To Qt, the options are presented as a list with the different options
    laid out vertically.
    This can be changed to a tree once the settings become sufficiently
@@ -46,6 +58,7 @@ public:
         DatabaseCache,       // int
         SpendZeroConfChange, // bool
         ZeromintEnable,      // bool
+<<<<<<< Updated upstream
         ZeromintAddresses,   // bool
         ZeromintPercentage,  // int
         ZeromintPrefDenom,   // int
@@ -56,6 +69,15 @@ public:
         Listen,              // bool
         StakeSplitThreshold, // int
         ShowColdStakingScreen, // bool
+=======
+        ZeromintPercentage,  // int
+        ZeromintPrefDenom,   // int
+        HideZeroBalances,    // bool
+        AnonymizePrimeStoneAmount, //int
+        ShowMasternodesTab,  // bool
+        Listen,              // bool
+        StakeSplitThreshold, // int
+>>>>>>> Stashed changes
         OptionIDRowCount,
     };
 
@@ -65,7 +87,10 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+<<<<<<< Updated upstream
     void refreshDataView();
+=======
+>>>>>>> Stashed changes
     /** Updates current unit in memory, settings and emits displayUnitChanged(newUnit) signal */
     void setDisplayUnit(const QVariant& value);
     /* Update StakeSplitThreshold's value in wallet */
@@ -85,6 +110,7 @@ public:
     bool isRestartRequired();
     bool resetSettings;
 
+<<<<<<< Updated upstream
     bool isColdStakingScreenEnabled() { return showColdStakingScreen; }
     bool invertColdStakingScreenStatus() {
         setData(
@@ -102,6 +128,8 @@ public:
     void setWindowDefaultOptions(QSettings& settings, bool reset = false);
     void setDisplayDefaultOptions(QSettings& settings, bool reset = false);
 
+=======
+>>>>>>> Stashed changes
 private:
     /* Qt-only settings */
     bool fMinimizeToTray;
@@ -110,9 +138,13 @@ private:
     int nDisplayUnit;
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
+<<<<<<< Updated upstream
     bool showColdStakingScreen;
     bool fHideZeroBalances;
     bool fHideOrphans;
+=======
+    bool fHideZeroBalances;
+>>>>>>> Stashed changes
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
 
@@ -122,6 +154,7 @@ private:
 signals:
     void displayUnitChanged(int unit);
     void zeromintEnableChanged(bool);
+<<<<<<< Updated upstream
     void zeromintAddressesChanged(bool);
     void zeromintPercentageChanged(int);
     void preferredDenomChanged(int);
@@ -130,6 +163,13 @@ signals:
     void showHideColdStakingScreen(bool);
     void hideZeroBalancesChanged(bool);
     void hideOrphansChanged(bool);
+=======
+    void zeromintPercentageChanged(int);
+    void preferredDenomChanged(int);
+    void anonymizePrimeStoneAmountChanged(int);
+    void coinControlFeaturesChanged(bool);
+    void hideZeroBalancesChanged(bool);
+>>>>>>> Stashed changes
 };
 
 #endif // BITCOIN_QT_OPTIONSMODEL_H

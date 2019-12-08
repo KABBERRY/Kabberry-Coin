@@ -1,6 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2017 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,9 +13,16 @@
 
 #include "threadsafety.h"
 
+<<<<<<< Updated upstream
 #include <condition_variable>
 #include <thread>
 #include <mutex>
+=======
+#include <boost/thread/condition_variable.hpp>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/mutex.hpp>
+#include <boost/thread/recursive_mutex.hpp>
+>>>>>>> Stashed changes
 
 
 /////////////////////////////////////////////////
@@ -22,6 +33,7 @@
 
 /*
 CCriticalSection mutex;
+<<<<<<< Updated upstream
     std::recursive_mutex mutex;
 
 LOCK(mutex);
@@ -33,6 +45,19 @@ LOCK2(mutex1, mutex2);
 
 TRY_LOCK(mutex, name);
     std::unique_lock<std::recursive_mutex> name(mutex, std::try_to_lock_t);
+=======
+    boost::recursive_mutex mutex;
+
+LOCK(mutex);
+    boost::unique_lock<boost::recursive_mutex> criticalblock(mutex);
+
+LOCK2(mutex1, mutex2);
+    boost::unique_lock<boost::recursive_mutex> criticalblock1(mutex1);
+    boost::unique_lock<boost::recursive_mutex> criticalblock2(mutex2);
+
+TRY_LOCK(mutex, name);
+    boost::unique_lock<boost::recursive_mutex> name(mutex, boost::try_to_lock_t);
+>>>>>>> Stashed changes
 
 ENTER_CRITICAL_SECTION(mutex); // no RAII
     mutex.lock();
@@ -86,10 +111,17 @@ void static inline DeleteLock(void* cs) {}
 #define AssertLockHeld(cs) AssertLockHeldInternal(#cs, __FILE__, __LINE__, &cs)
 
 /**
+<<<<<<< Updated upstream
  * Wrapped mutex: supports recursive locking, but no waiting
  * TODO: We should move away from using the recursive lock by default.
  */
 class CCriticalSection : public AnnotatedMixin<std::recursive_mutex>
+=======
+ * Wrapped boost mutex: supports recursive locking, but no waiting
+ * TODO: We should move away from using the recursive lock by default.
+ */
+class CCriticalSection : public AnnotatedMixin<boost::recursive_mutex>
+>>>>>>> Stashed changes
 {
 public:
     ~CCriticalSection() {
@@ -97,6 +129,7 @@ public:
     }
 };
 
+<<<<<<< Updated upstream
 /** Wrapped mutex: supports waiting but not recursive locking */
 typedef AnnotatedMixin<std::mutex> CWaitableCriticalSection;
 
@@ -105,16 +138,32 @@ typedef std::condition_variable CConditionVariable;
 
 /** Just a typedef for std::unique_lock, can be wrapped later if desired */
 typedef std::unique_lock<std::mutex> WaitableLock;
+=======
+/** Wrapped boost mutex: supports waiting but not recursive locking */
+typedef AnnotatedMixin<boost::mutex> CWaitableCriticalSection;
+
+/** Just a typedef for boost::condition_variable, can be wrapped later if desired */
+typedef boost::condition_variable CConditionVariable;
+>>>>>>> Stashed changes
 
 #ifdef DEBUG_LOCKCONTENTION
 void PrintLockContention(const char* pszName, const char* pszFile, int nLine);
 #endif
 
+<<<<<<< Updated upstream
 /** Wrapper around std::unique_lock<CCriticalSection> */
 class SCOPED_LOCKABLE CCriticalBlock
 {
 private:
     std::unique_lock<CCriticalSection> lock;
+=======
+/** Wrapper around boost::unique_lock<CCriticalSection> */
+template <typename Mutex>
+class SCOPED_LOCKABLE CMutexLock
+{
+private:
+    boost::unique_lock<Mutex> lock;
+>>>>>>> Stashed changes
 
     void Enter(const char* pszName, const char* pszFile, int nLine)
     {
@@ -139,7 +188,11 @@ private:
     }
 
 public:
+<<<<<<< Updated upstream
     CCriticalBlock(CCriticalSection& mutexIn, const char* pszName, const char* pszFile, int nLine, bool fTry = false) EXCLUSIVE_LOCK_FUNCTION(mutexIn) : lock(mutexIn, std::defer_lock)
+=======
+    CMutexLock(Mutex& mutexIn, const char* pszName, const char* pszFile, int nLine, bool fTry = false) EXCLUSIVE_LOCK_FUNCTION(mutexIn) : lock(mutexIn, boost::defer_lock)
+>>>>>>> Stashed changes
     {
         if (fTry)
             TryEnter(pszName, pszFile, nLine);
@@ -147,18 +200,30 @@ public:
             Enter(pszName, pszFile, nLine);
     }
 
+<<<<<<< Updated upstream
     CCriticalBlock(CCriticalSection* pmutexIn, const char* pszName, const char* pszFile, int nLine, bool fTry = false) EXCLUSIVE_LOCK_FUNCTION(pmutexIn)
     {
         if (!pmutexIn) return;
 
         lock = std::unique_lock<CCriticalSection>(*pmutexIn, std::defer_lock);
+=======
+    CMutexLock(Mutex* pmutexIn, const char* pszName, const char* pszFile, int nLine, bool fTry = false) EXCLUSIVE_LOCK_FUNCTION(pmutexIn)
+    {
+        if (!pmutexIn) return;
+
+        lock = boost::unique_lock<Mutex>(*pmutexIn, boost::defer_lock);
+>>>>>>> Stashed changes
         if (fTry)
             TryEnter(pszName, pszFile, nLine);
         else
             Enter(pszName, pszFile, nLine);
     }
 
+<<<<<<< Updated upstream
     ~CCriticalBlock() UNLOCK_FUNCTION()
+=======
+    ~CMutexLock() UNLOCK_FUNCTION()
+>>>>>>> Stashed changes
     {
         if (lock.owns_lock())
             LeaveCritical();
@@ -170,6 +235,11 @@ public:
     }
 };
 
+<<<<<<< Updated upstream
+=======
+typedef CMutexLock<CCriticalSection> CCriticalBlock;
+
+>>>>>>> Stashed changes
 #define PASTE(x, y) x ## y
 #define PASTE2(x, y) PASTE(x, y)
 
@@ -192,6 +262,7 @@ public:
 class CSemaphore
 {
 private:
+<<<<<<< Updated upstream
     std::condition_variable condition;
     std::mutex mutex;
     int value;
@@ -203,12 +274,31 @@ public:
     {
         std::unique_lock<std::mutex> lock(mutex);
         condition.wait(lock, [&]() { return value >= 1; });
+=======
+    boost::condition_variable condition;
+    boost::mutex mutex;
+    int value;
+
+public:
+    CSemaphore(int init) : value(init) {}
+
+    void wait()
+    {
+        boost::unique_lock<boost::mutex> lock(mutex);
+        while (value < 1) {
+            condition.wait(lock);
+        }
+>>>>>>> Stashed changes
         value--;
     }
 
     bool try_wait()
     {
+<<<<<<< Updated upstream
         std::lock_guard<std::mutex> lock(mutex);
+=======
+        boost::unique_lock<boost::mutex> lock(mutex);
+>>>>>>> Stashed changes
         if (value < 1)
             return false;
         value--;
@@ -218,7 +308,11 @@ public:
     void post()
     {
         {
+<<<<<<< Updated upstream
             std::lock_guard<std::mutex> lock(mutex);
+=======
+            boost::unique_lock<boost::mutex> lock(mutex);
+>>>>>>> Stashed changes
             value++;
         }
         condition.notify_one();
@@ -261,12 +355,22 @@ public:
         grant.Release();
         grant.sem = sem;
         grant.fHaveGrant = fHaveGrant;
+<<<<<<< Updated upstream
         fHaveGrant = false;
     }
 
     CSemaphoreGrant() : sem(nullptr), fHaveGrant(false) {}
 
     explicit CSemaphoreGrant(CSemaphore& sema, bool fTry = false) : sem(&sema), fHaveGrant(false)
+=======
+        sem = NULL;
+        fHaveGrant = false;
+    }
+
+    CSemaphoreGrant() : sem(NULL), fHaveGrant(false) {}
+
+    CSemaphoreGrant(CSemaphore& sema, bool fTry = false) : sem(&sema), fHaveGrant(false)
+>>>>>>> Stashed changes
     {
         if (fTry)
             TryAcquire();
@@ -279,7 +383,11 @@ public:
         Release();
     }
 
+<<<<<<< Updated upstream
     operator bool() const
+=======
+    operator bool()
+>>>>>>> Stashed changes
     {
         return fHaveGrant;
     }

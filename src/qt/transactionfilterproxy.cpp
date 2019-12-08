@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,12 +26,20 @@ TransactionFilterProxy::TransactionFilterProxy(QObject* parent) : QSortFilterPro
                                                                   dateFrom(MIN_DATE),
                                                                   dateTo(MAX_DATE),
                                                                   addrPrefix(),
+<<<<<<< Updated upstream
                                                                   typeFilter(ALL_TYPES),
                                                                   watchOnlyFilter(WatchOnlyFilter_All),
                                                                   minAmount(0),
                                                                   limitRows(-1),
                                                                   showInactive(true),
                                                                   fHideOrphans(true)
+=======
+                                                                  typeFilter(COMMON_TYPES),
+                                                                  watchOnlyFilter(WatchOnlyFilter_All),
+                                                                  minAmount(0),
+                                                                  limitRows(-1),
+                                                                  showInactive(true)
+>>>>>>> Stashed changes
 {
 }
 
@@ -44,8 +57,11 @@ bool TransactionFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex& 
 
     if (!showInactive && status == TransactionStatus::Conflicted)
         return false;
+<<<<<<< Updated upstream
     if (fHideOrphans && isOrphan(status, type))
         return false;
+=======
+>>>>>>> Stashed changes
     if (!(TYPE(type) & typeFilter))
         return false;
     if (involvesWatchAddress && watchOnlyFilter == WatchOnlyFilter_No)
@@ -54,6 +70,7 @@ bool TransactionFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex& 
         return false;
     if (datetime < dateFrom || datetime > dateTo)
         return false;
+<<<<<<< Updated upstream
     if (!addrPrefix.isEmpty()) {
         if (!address.contains(addrPrefix, Qt::CaseInsensitive) && !label.contains(addrPrefix, Qt::CaseInsensitive))
             return false;
@@ -67,6 +84,11 @@ bool TransactionFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex& 
         return false;
 
     if (fOnlyColdStaking && !isColdStake(type))
+=======
+    if (!address.contains(addrPrefix, Qt::CaseInsensitive) && !label.contains(addrPrefix, Qt::CaseInsensitive))
+        return false;
+    if (amount < minAmount)
+>>>>>>> Stashed changes
         return false;
 
     return true;
@@ -74,8 +96,11 @@ bool TransactionFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex& 
 
 void TransactionFilterProxy::setDateRange(const QDateTime& from, const QDateTime& to)
 {
+<<<<<<< Updated upstream
     if (from == this->dateFrom && to == this->dateTo)
         return; // No need to set the range.
+=======
+>>>>>>> Stashed changes
     this->dateFrom = from;
     this->dateTo = to;
     invalidateFilter();
@@ -116,6 +141,7 @@ void TransactionFilterProxy::setShowInactive(bool showInactive)
     invalidateFilter();
 }
 
+<<<<<<< Updated upstream
 void TransactionFilterProxy::setHideOrphans(bool fHide)
 {
     this->fHideOrphans = fHide;
@@ -140,6 +166,8 @@ void TransactionFilterProxy::setOnlyColdStakes(bool fOnlyColdStakes)
     invalidateFilter();
 }
 
+=======
+>>>>>>> Stashed changes
 int TransactionFilterProxy::rowCount(const QModelIndex& parent) const
 {
     if (limitRows != -1) {
@@ -148,6 +176,7 @@ int TransactionFilterProxy::rowCount(const QModelIndex& parent) const
         return QSortFilterProxyModel::rowCount(parent);
     }
 }
+<<<<<<< Updated upstream
 
 bool TransactionFilterProxy::isOrphan(const int status, const int type)
 {
@@ -174,3 +203,5 @@ bool TransactionFilterProxy::isColdStake(int type) const {
     return index.data(index, role);
 }
  */
+=======
+>>>>>>> Stashed changes

@@ -1,6 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,6 +15,7 @@
 #include "obfuscation.h"
 #include "swifttx.h"
 #include "timedata.h"
+<<<<<<< Updated upstream
 #include "wallet/wallet.h"
 #include "zpivchain.h"
 #include "main.h"
@@ -17,6 +23,26 @@
 #include <iostream>
 #include <stdint.h>
 
+=======
+#include "wallet.h"
+#include "zPSCchain.h"
+
+#include <stdint.h>
+
+/* Return positive answer if transaction should be shown in list.
+ */
+bool TransactionRecord::showTransaction(const CWalletTx& wtx)
+{
+    if (wtx.IsCoinBase()) {
+        // Ensures we show generated coins / mined transactions at depth 1
+        if (!wtx.IsInMainChain()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+>>>>>>> Stashed changes
 /*
  * Decompose CWallet transaction to model transaction records.
  */
@@ -31,12 +57,19 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
     std::map<std::string, std::string> mapValue = wtx.mapValue;
     bool fZSpendFromMe = false;
 
+<<<<<<< Updated upstream
     if (wtx.HasZerocoinSpendInputs()) {
         libzerocoin::CoinSpend zcspend = wtx.HasZerocoinPublicSpendInputs() ? ZPIVModule::parseCoinSpend(wtx.vin[0]) : TxInToZerocoinSpend(wtx.vin[0]);
+=======
+    if (wtx.IsZerocoinSpend()) {
+        // a zerocoin spend that was created by this wallet
+        libzerocoin::CoinSpend zcspend = TxInToZerocoinSpend(wtx.vin[0]);
+>>>>>>> Stashed changes
         fZSpendFromMe = wallet->IsMyZerocoinSpend(zcspend.getCoinSerialNumber());
     }
 
     if (wtx.IsCoinStake()) {
+<<<<<<< Updated upstream
         TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
 
         CTxDestination address;
@@ -47,6 +80,17 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             //zPIV stake reward
             sub.involvesWatchAddress = false;
             sub.type = TransactionRecord::StakeZPIV;
+=======
+        TransactionRecord sub(hash, nTime);
+        CTxDestination address;
+        if (!wtx.IsZerocoinSpend() && !ExtractDestination(wtx.vout[1].scriptPubKey, address))
+            return parts;
+
+        if (wtx.IsZerocoinSpend() && (fZSpendFromMe || wallet->zPSCTracker->HasMintTx(hash))) {
+            //zPSC stake reward
+            sub.involvesWatchAddress = false;
+            sub.type = TransactionRecord::StakezPSC;
+>>>>>>> Stashed changes
             sub.address = mapValue["zerocoinmint"];
             sub.credit = 0;
             for (const CTxOut& out : wtx.vout) {
@@ -55,6 +99,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             }
             sub.debit -= wtx.vin[0].nSequence * COIN;
         } else if (isminetype mine = wallet->IsMine(wtx.vout[1])) {
+<<<<<<< Updated upstream
 
             // Check for cold stakes.
             if (wtx.HasP2CSOutputs()) {
@@ -70,6 +115,13 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                 sub.address = CBitcoinAddress(address).ToString();
                 sub.credit = nNet;
             }
+=======
+            // PrimeStone stake reward
+            sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
+            sub.type = TransactionRecord::StakeMint;
+            sub.address = CBitcoinAddress(address).ToString();
+            sub.credit = nNet;
+>>>>>>> Stashed changes
         } else {
             //Masternode reward
             CTxDestination destMN;
@@ -84,7 +136,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         }
 
         parts.append(sub);
+<<<<<<< Updated upstream
     } else if (wtx.HasZerocoinSpendInputs()) {
+=======
+    } else if (wtx.IsZerocoinSpend()) {
+>>>>>>> Stashed changes
         //zerocoin spend outputs
         bool fFeeAssigned = false;
         for (const CTxOut& txout : wtx.vout) {
@@ -95,9 +151,15 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                     continue;
 
                 isminetype mine = wallet->IsMine(txout);
+<<<<<<< Updated upstream
                 TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                 sub.type = TransactionRecord::ZerocoinSpend_Change_zPiv;
+=======
+                TransactionRecord sub(hash, nTime);
+                sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
+                sub.type = TransactionRecord::ZerocoinSpend_Change_zPSC;
+>>>>>>> Stashed changes
                 sub.address = mapValue["zerocoinmint"];
                 if (!fFeeAssigned) {
                     sub.debit -= (wtx.GetZerocoinSpent() - wtx.GetValueOut());
@@ -108,7 +170,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                 continue;
             }
 
+<<<<<<< Updated upstream
             std::string strAddress = "";
+=======
+            string strAddress = "";
+>>>>>>> Stashed changes
             CTxDestination address;
             if (ExtractDestination(txout.scriptPubKey, address))
                 strAddress = CBitcoinAddress(address).ToString();
@@ -116,7 +182,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             // a zerocoinspend that was sent to an address held by this wallet
             isminetype mine = wallet->IsMine(txout);
             if (mine) {
+<<<<<<< Updated upstream
                 TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
+=======
+                TransactionRecord sub(hash, nTime);
+>>>>>>> Stashed changes
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                 if (fZSpendFromMe) {
                     sub.type = TransactionRecord::ZerocoinSpend_FromMe;
@@ -137,7 +207,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                 continue;
 
             // zerocoin spend that was sent to someone else
+<<<<<<< Updated upstream
             TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
+=======
+            TransactionRecord sub(hash, nTime);
+>>>>>>> Stashed changes
             sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
             sub.debit = -txout.nValue;
             sub.type = TransactionRecord::ZerocoinSpend;
@@ -147,6 +221,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             sub.idx = parts.size();
             parts.append(sub);
         }
+<<<<<<< Updated upstream
     } else if (wtx.HasP2CSOutputs()) {
         // Delegate tx.
         TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
@@ -161,20 +236,33 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         loadUnlockColdStake(wallet, wtx, sub);
         parts.append(sub);
         return parts;
+=======
+>>>>>>> Stashed changes
     } else if (nNet > 0 || wtx.IsCoinBase()) {
         //
         // Credit
         //
+<<<<<<< Updated upstream
         for (const CTxOut& txout : wtx.vout) {
             isminetype mine = wallet->IsMine(txout);
             if (mine) {
                 TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
+=======
+        BOOST_FOREACH (const CTxOut& txout, wtx.vout) {
+            isminetype mine = wallet->IsMine(txout);
+            if (mine) {
+                TransactionRecord sub(hash, nTime);
+>>>>>>> Stashed changes
                 CTxDestination address;
                 sub.idx = parts.size(); // sequence number
                 sub.credit = txout.nValue;
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                 if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address)) {
+<<<<<<< Updated upstream
                     // Received by PIVX Address
+=======
+                    // Received by PrimeStone Address
+>>>>>>> Stashed changes
                     sub.type = TransactionRecord::RecvWithAddress;
                     sub.address = CBitcoinAddress(address).ToString();
                 } else {
@@ -195,7 +283,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         int nFromMe = 0;
         bool involvesWatchAddress = false;
         isminetype fAllFromMe = ISMINE_SPENDABLE;
+<<<<<<< Updated upstream
         for (const CTxIn& txin : wtx.vin) {
+=======
+        BOOST_FOREACH (const CTxIn& txin, wtx.vin) {
+>>>>>>> Stashed changes
             if (wallet->IsMine(txin)) {
                 fAllFromMeDenom = fAllFromMeDenom && wallet->IsDenominated(txin);
                 nFromMe++;
@@ -208,7 +300,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         isminetype fAllToMe = ISMINE_SPENDABLE;
         bool fAllToMeDenom = true;
         int nToMe = 0;
+<<<<<<< Updated upstream
         for (const CTxOut& txout : wtx.vout) {
+=======
+        BOOST_FOREACH (const CTxOut& txout, wtx.vout) {
+>>>>>>> Stashed changes
             if (wallet->IsMine(txout)) {
                 fAllToMeDenom = fAllToMeDenom && wallet->IsDenominatedAmount(txout.nValue);
                 nToMe++;
@@ -219,14 +315,22 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         }
 
         if (fAllFromMeDenom && fAllToMeDenom && nFromMe * nToMe) {
+<<<<<<< Updated upstream
             parts.append(TransactionRecord(hash, nTime, wtx.GetTotalSize(), TransactionRecord::ObfuscationDenominate, "", -nDebit, nCredit));
+=======
+            parts.append(TransactionRecord(hash, nTime, TransactionRecord::ObfuscationDenominate, "", -nDebit, nCredit));
+>>>>>>> Stashed changes
             parts.last().involvesWatchAddress = false; // maybe pass to TransactionRecord as constructor argument
         } else if (fAllFromMe && fAllToMe) {
             // Payment to self
             // TODO: this section still not accurate but covers most cases,
             // might need some additional work however
 
+<<<<<<< Updated upstream
             TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
+=======
+            TransactionRecord sub(hash, nTime);
+>>>>>>> Stashed changes
             // Payment to self by default
             sub.type = TransactionRecord::SendToSelf;
             sub.address = "";
@@ -235,7 +339,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                 sub.type = TransactionRecord::Obfuscated;
                 CTxDestination address;
                 if (ExtractDestination(wtx.vout[0].scriptPubKey, address)) {
+<<<<<<< Updated upstream
                     // Sent to PIVX Address
+=======
+                    // Sent to PrimeStone Address
+>>>>>>> Stashed changes
                     sub.address = CBitcoinAddress(address).ToString();
                 } else {
                     // Sent to IP, or other non-address transaction like OP_EVAL
@@ -250,12 +358,15 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                     if (wallet->IsDenominatedAmount(txout.nValue)) sub.type = TransactionRecord::ObfuscationCreateDenominations;
                     if (nDebit - wtx.GetValueOut() == OBFUSCATION_COLLATERAL) sub.type = TransactionRecord::ObfuscationCollateralPayment;
                 }
+<<<<<<< Updated upstream
 
                 // Label for payment to self
                 CTxDestination address;
                 if (ExtractDestination(wtx.vout[0].scriptPubKey, address)) {
                     sub.address = CBitcoinAddress(address).ToString();
                 }
+=======
+>>>>>>> Stashed changes
             }
 
             CAmount nChange = wtx.GetChange();
@@ -264,7 +375,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             sub.credit = nCredit - nChange;
             parts.append(sub);
             parts.last().involvesWatchAddress = involvesWatchAddress; // maybe pass to TransactionRecord as constructor argument
+<<<<<<< Updated upstream
         } else if (fAllFromMe || wtx.HasZerocoinMintOutputs()) {
+=======
+        } else if (fAllFromMe || wtx.IsZerocoinMint()) {
+>>>>>>> Stashed changes
             //
             // Debit
             //
@@ -272,7 +387,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
 
             for (unsigned int nOut = 0; nOut < wtx.vout.size(); nOut++) {
                 const CTxOut& txout = wtx.vout[nOut];
+<<<<<<< Updated upstream
                 TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
+=======
+                TransactionRecord sub(hash, nTime);
+>>>>>>> Stashed changes
                 sub.idx = parts.size();
                 sub.involvesWatchAddress = involvesWatchAddress;
 
@@ -286,9 +405,15 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                 if (ExtractDestination(txout.scriptPubKey, address)) {
                     //This is most likely only going to happen when resyncing deterministic wallet without the knowledge of the
                     //private keys that the change was sent to. Do not display a "sent to" here.
+<<<<<<< Updated upstream
                     if (wtx.HasZerocoinMintOutputs())
                         continue;
                     // Sent to PIVX Address
+=======
+                    if (wtx.IsZerocoinMint())
+                        continue;
+                    // Sent to PrimeStone Address
+>>>>>>> Stashed changes
                     sub.type = TransactionRecord::SendToAddress;
                     sub.address = CBitcoinAddress(address).ToString();
                 } else if (txout.IsZerocoinMint()){
@@ -319,7 +444,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             //
             // Mixed debit transaction, can't break down payees
             //
+<<<<<<< Updated upstream
             parts.append(TransactionRecord(hash, nTime, wtx.GetTotalSize(), TransactionRecord::Other, "", nNet, 0));
+=======
+            parts.append(TransactionRecord(hash, nTime, TransactionRecord::Other, "", nNet, 0));
+>>>>>>> Stashed changes
             parts.last().involvesWatchAddress = involvesWatchAddress;
         }
     }
@@ -327,6 +456,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
     return parts;
 }
 
+<<<<<<< Updated upstream
 void TransactionRecord::loadUnlockColdStake(const CWallet* wallet, const CWalletTx& wtx, TransactionRecord& record)
 {
     record.involvesWatchAddress = false;
@@ -426,6 +556,16 @@ bool IsZPIVType(TransactionRecord::Type type)
         case TransactionRecord::ZerocoinSpend:
         case TransactionRecord::RecvFromZerocoinSpend:
         case TransactionRecord::ZerocoinSpend_Change_zPiv:
+=======
+bool IszPSCType(TransactionRecord::Type type)
+{
+    switch (type) {
+        case TransactionRecord::StakezPSC:
+        case TransactionRecord::ZerocoinMint:
+        case TransactionRecord::ZerocoinSpend:
+        case TransactionRecord::RecvFromZerocoinSpend:
+        case TransactionRecord::ZerocoinSpend_Change_zPSC:
+>>>>>>> Stashed changes
         case TransactionRecord::ZerocoinSpend_FromMe:
             return true;
         default:
@@ -451,9 +591,13 @@ void TransactionRecord::updateStatus(const CWalletTx& wtx)
         wtx.nTimeReceived,
         idx);
     //status.countsForBalance = wtx.IsTrusted() && !(wtx.GetBlocksToMaturity() > 0);
+<<<<<<< Updated upstream
     bool fConflicted;
     status.depth = wtx.GetDepthAndMempool(fConflicted);
     const bool isOffline = (GetAdjustedTime() - wtx.nTimeReceived > 2 * 60 && wtx.GetRequestCount() == 0);
+=======
+    status.depth = wtx.GetDepthInMainChain();
+>>>>>>> Stashed changes
 
     //Determine the depth of the block
     int nBlocksToMaturity = wtx.GetBlocksToMaturity();
@@ -472,14 +616,22 @@ void TransactionRecord::updateStatus(const CWalletTx& wtx)
         }
     }
     // For generated transactions, determine maturity
+<<<<<<< Updated upstream
     else if (type == TransactionRecord::Generated || type == TransactionRecord::StakeMint || type == TransactionRecord::StakeZPIV || type == TransactionRecord::MNReward) {
+=======
+    else if (type == TransactionRecord::Generated || type == TransactionRecord::StakeMint || type == TransactionRecord::StakezPSC || type == TransactionRecord::MNReward) {
+>>>>>>> Stashed changes
         if (nBlocksToMaturity > 0) {
             status.status = TransactionStatus::Immature;
             status.matures_in = nBlocksToMaturity;
 
             if (pindex && chainActive.Contains(pindex)) {
                 // Check if the block was requested by anyone
+<<<<<<< Updated upstream
                 if (isOffline)
+=======
+                if (GetAdjustedTime() - wtx.nTimeReceived > 2 * 60 && wtx.GetRequestCount() == 0)
+>>>>>>> Stashed changes
                     status.status = TransactionStatus::MaturesWarning;
             } else {
                 status.status = TransactionStatus::NotAccepted;
@@ -489,9 +641,15 @@ void TransactionRecord::updateStatus(const CWalletTx& wtx)
             status.matures_in = 0;
         }
     } else {
+<<<<<<< Updated upstream
         if (status.depth < 0 || fConflicted) {
             status.status = TransactionStatus::Conflicted;
         } else if (isOffline) {
+=======
+        if (status.depth < 0) {
+            status.status = TransactionStatus::Conflicted;
+        } else if (GetAdjustedTime() - wtx.nTimeReceived > 2 * 60 && wtx.GetRequestCount() == 0) {
+>>>>>>> Stashed changes
             status.status = TransactionStatus::Offline;
         } else if (status.depth == 0) {
             status.status = TransactionStatus::Unconfirmed;
@@ -518,6 +676,7 @@ int TransactionRecord::getOutputIndex() const
 {
     return idx;
 }
+<<<<<<< Updated upstream
 
 bool TransactionRecord::isCoinStake() const
 {
@@ -560,3 +719,5 @@ std::string TransactionRecord::statusToString(){
             return "No status";
     }
 }
+=======
+>>>>>>> Stashed changes

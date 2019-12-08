@@ -1,9 +1,19 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2018 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef PIVX_INVALID_OUTPOINTS_JSON_H
 #define PIVX_INVALID_OUTPOINTS_JSON_H
+=======
+// Copyright (c) 2018 The PrimeStoneX developers
+// Copyright (c) 2018 The PrimeStone developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PrimeStone_INVALID_OUTPOINTS_JSON_H
+#define PrimeStone_INVALID_OUTPOINTS_JSON_H
+>>>>>>> Stashed changes
 #include <string>
 
 std::string LoadInvalidOutPoints()
@@ -6793,4 +6803,8 @@ std::string LoadInvalidOutPoints()
     return str;
 }
 
+<<<<<<< Updated upstream
 #endif //PIVX_INVALID_OUTPOINTS_JSON_H
+=======
+#endif //PrimeStone_INVALID_OUTPOINTS_JSON_H
+>>>>>>> Stashed changes

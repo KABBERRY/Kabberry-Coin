@@ -1,5 +1,9 @@
 // Copyright (c) 2011-2013 The Bitcoin Core developers
 // Copyright (c) 2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 

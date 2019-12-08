@@ -9,7 +9,11 @@
  * @copyright  Copyright 2013 Ian Miers, Christina Garman and Matthew Green
  * @license    This project is released under the MIT license.
  **/
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PrimeStone developers
+>>>>>>> Stashed changes
 
 #ifndef COMMITMENT_H_
 #define COMMITMENT_H_
@@ -60,7 +64,10 @@ private:
  */
 class CommitmentProofOfKnowledge {
 public:
+<<<<<<< Updated upstream
     CommitmentProofOfKnowledge(){};
+=======
+>>>>>>> Stashed changes
 	CommitmentProofOfKnowledge(const IntegerGroupParams* ap, const IntegerGroupParams* bp);
 	/** Generates a proof that two commitments, a and b, open to the same value.
 	 *

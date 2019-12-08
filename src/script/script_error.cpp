@@ -17,8 +17,11 @@ const char* ScriptErrorString(const ScriptError serror)
             return "Script failed an OP_VERIFY operation";
         case SCRIPT_ERR_EQUALVERIFY:
             return "Script failed an OP_EQUALVERIFY operation";
+<<<<<<< Updated upstream
         case SCRIPT_ERR_CHECKCOLDSTAKEVERIFY:
             return "Script failed an OP_CHECKCOLDSTAKEVERIFY operation";
+=======
+>>>>>>> Stashed changes
         case SCRIPT_ERR_CHECKMULTISIGVERIFY:
             return "Script failed an OP_CHECKMULTISIGVERIFY operation";
         case SCRIPT_ERR_CHECKSIGVERIFY:
@@ -49,10 +52,13 @@ const char* ScriptErrorString(const ScriptError serror)
             return "OP_RETURN was encountered";
         case SCRIPT_ERR_UNBALANCED_CONDITIONAL:
             return "Invalid OP_IF construction";
+<<<<<<< Updated upstream
         case SCRIPT_ERR_NEGATIVE_LOCKTIME:
             return "Negative locktime";
         case SCRIPT_ERR_UNSATISFIED_LOCKTIME:
             return "Locktime requirement not satisfied";
+=======
+>>>>>>> Stashed changes
         case SCRIPT_ERR_SIG_HASHTYPE:
             return "Signature hash type missing or not understood";
         case SCRIPT_ERR_SIG_DER:

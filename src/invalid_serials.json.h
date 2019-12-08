@@ -1,11 +1,21 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2018 The PIVX developers
+=======
+// Copyright (c) 2018 The PrimeStoneX developers
+// Copyright (c) 2018 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
 
+<<<<<<< Updated upstream
 #ifndef PIVX_INVALID_SERIALS_JSON_H
 #define PIVX_INVALID_SERIALS_JSON_H
+=======
+#ifndef PrimeStone_INVALID_SERIALS_JSON_H
+#define PrimeStone_INVALID_SERIALS_JSON_H
+>>>>>>> Stashed changes
 
 #include <string>
 
@@ -1189,4 +1199,8 @@ std::string LoadInvalidSerials()
     return str;
 }
 
+<<<<<<< Updated upstream
 #endif //PIVX_INVALID_SERIALS_JSON_H
+=======
+#endif //PrimeStone_INVALID_SERIALS_JSON_H
+>>>>>>> Stashed changes

@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,6 +16,10 @@
 #include "random.h"
 
 #include <openssl/aes.h>
+<<<<<<< Updated upstream
+=======
+#include <openssl/sha.h>
+>>>>>>> Stashed changes
 #include <secp256k1.h>
 #include <string>
 
@@ -81,7 +90,11 @@ bool ComputePasspoint(uint256 passfactor, CPubKey& passpoint)
 void ComputeSeedBPass(CPubKey passpoint, std::string strAddressHash, std::string strOwnerSalt, uint512& seedBPass)
 {
     // Derive decryption key for seedb using scrypt with passpoint, addresshash, and ownerentropy
+<<<<<<< Updated upstream
     std::string salt = ReverseEndianString(strAddressHash + strOwnerSalt);
+=======
+    string salt = ReverseEndianString(strAddressHash + strOwnerSalt);
+>>>>>>> Stashed changes
     uint256 s2(salt);
     scrypt_hash(BEGIN(passpoint), HexStr(passpoint).size() / 2, BEGIN(s2), salt.size() / 2, BEGIN(seedBPass), 1024, 1, 1, 64);
 }
@@ -104,7 +117,11 @@ std::string AddressToBip38Hash(std::string address)
 
 std::string BIP38_Encrypt(std::string strAddress, std::string strPassphrase, uint256 privKey, bool fCompressed)
 {
+<<<<<<< Updated upstream
     std::string strAddressHash = AddressToBip38Hash(strAddress);
+=======
+    string strAddressHash = AddressToBip38Hash(strAddress);
+>>>>>>> Stashed changes
 
     uint512 hashed;
     uint64_t salt = uint256(ReverseEndianString(strAddressHash)).Get64();
@@ -131,7 +148,11 @@ std::string BIP38_Encrypt(std::string strAddress, std::string strPassphrase, uin
     uint512 encrypted2;
     AES_encrypt(block2.begin(), encrypted2.begin(), &key);
 
+<<<<<<< Updated upstream
     std::string strPrefix = "0142";
+=======
+    string strPrefix = "0142";
+>>>>>>> Stashed changes
     strPrefix += (fCompressed ? "E0" : "C0");
 
     uint512 encryptedKey(ReverseEndianString(strPrefix + strAddressHash));
@@ -272,7 +293,11 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
     CKey k;
     k.Set(privKey.begin(), privKey.end(), fCompressed);
     CPubKey pubkey = k.GetPubKey();
+<<<<<<< Updated upstream
     std::string address = CBitcoinAddress(pubkey.GetID()).ToString();
+=======
+    string address = CBitcoinAddress(pubkey.GetID()).ToString();
+>>>>>>> Stashed changes
 
     return strAddressHash == AddressToBip38Hash(address);
 }

@@ -1,4 +1,11 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2019 The PIVX developers
+=======
+// Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,15 +14,21 @@
 
 #include "guiutil.h"
 #include "walletmodel.h"
+<<<<<<< Updated upstream
 #include "qt/pivx/qtutils.h"
 
 #include <QUrl>
 #include <QFile>
+=======
+
+#include <QUrl>
+>>>>>>> Stashed changes
 
 OpenURIDialog::OpenURIDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                 ui(new Ui::OpenURIDialog)
 {
     ui->setupUi(this);
+<<<<<<< Updated upstream
     this->setStyleSheet(parent->styleSheet());
     ui->uriEdit->setPlaceholderText("pivx:");
 
@@ -36,6 +49,9 @@ OpenURIDialog::OpenURIDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
 void OpenURIDialog::showEvent(QShowEvent *event)
 {
     ui->uriEdit->setFocus();
+=======
+    ui->uriEdit->setPlaceholderText("primestone:");
+>>>>>>> Stashed changes
 }
 
 OpenURIDialog::~OpenURIDialog()
@@ -55,7 +71,11 @@ void OpenURIDialog::accept()
         /* Only accept value URIs */
         QDialog::accept();
     } else {
+<<<<<<< Updated upstream
         setCssEditLineDialog(ui->uriEdit, false, true);
+=======
+        ui->uriEdit->setValid(false);
+>>>>>>> Stashed changes
     }
 }
 
@@ -64,6 +84,7 @@ void OpenURIDialog::on_selectFileButton_clicked()
     QString filename = GUIUtil::getOpenFileName(this, tr("Select payment request file to open"), "", "", NULL);
     if (filename.isEmpty())
         return;
+<<<<<<< Updated upstream
 
     QFile file(filename);
     if(!file.exists()) {
@@ -92,3 +113,8 @@ void OpenURIDialog::inform(const QString& str) {
     snackBar->resize(this->width(), snackBar->height());
     openDialog(snackBar, this);
 }
+=======
+    QUrl fileUri = QUrl::fromLocalFile(filename);
+    ui->uriEdit->setText("primestone:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
+}
+>>>>>>> Stashed changes

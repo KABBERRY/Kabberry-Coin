@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,12 +15,21 @@
 #include "checkpoints.h"
 
 #include "uint256.h"
+<<<<<<< Updated upstream
 #include "test_pivx.h"
 
 #include <boost/test/unit_test.hpp>
 
 
 BOOST_FIXTURE_TEST_SUITE(Checkpoints_tests, BasicTestingSetup)
+=======
+
+#include <boost/test/unit_test.hpp>
+
+using namespace std;
+
+BOOST_AUTO_TEST_SUITE(Checkpoints_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(sanity)
 {

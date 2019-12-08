@@ -4,7 +4,10 @@
 
 #include "compressor.h"
 #include "util.h"
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
+=======
+>>>>>>> Stashed changes
 
 #include <stdint.h>
 
@@ -22,7 +25,11 @@
 // amounts 50 .. 21000000
 #define NUM_MULTIPLES_50BTC 420000
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(compress_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(compress_tests)
+>>>>>>> Stashed changes
 
 bool static TestEncode(uint64_t in) {
     return in == CTxOutCompressor::DecompressAmount(CTxOutCompressor::CompressAmount(in));

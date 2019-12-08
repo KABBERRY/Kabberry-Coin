@@ -4,9 +4,12 @@
 
 ACLOCAL_AMFLAGS = -I build-aux/m4
 SUBDIRS = src
+<<<<<<< Updated upstream
 if ENABLE_MAN
 SUBDIRS += doc/man
 endif
+=======
+>>>>>>> Stashed changes
 .PHONY: deploy FORCE
 
 export PYTHONPATH
@@ -24,7 +27,11 @@ BITCOIN_WIN_INSTALLER=$(PACKAGE)-$(PACKAGE_VERSION)-win$(WINDOWS_BITS)-setup$(EX
 empty :=
 space := $(empty) $(empty)
 
+<<<<<<< Updated upstream
 OSX_APP=PIVX-Qt.app
+=======
+OSX_APP=PrimeStone-Qt.app
+>>>>>>> Stashed changes
 OSX_VOLNAME = $(subst $(space),-,$(PACKAGE_NAME))
 OSX_DMG = $(OSX_VOLNAME).dmg
 OSX_BACKGROUND_SVG=background.svg
@@ -38,6 +45,7 @@ OSX_PLIST=$(top_builddir)/share/qt/Info.plist #not installed
 OSX_QT_TRANSLATIONS = da,de,es,hu,ru,uk,zh_CN,zh_TW
 
 DIST_DOCS = $(wildcard doc/*.md) $(wildcard doc/release-notes/*.md)
+<<<<<<< Updated upstream
 DIST_CONTRIB = $(top_srcdir)/contrib/pivx-cli.bash-completion \
 	       $(top_srcdir)/contrib/pivx-tx.bash-completion \
 	       $(top_srcdir)/contrib/pivxd.bash-completion \
@@ -52,20 +60,28 @@ BIN_CHECKS=$(top_srcdir)/contrib/devtools/symbol-check.py \
            $(top_srcdir)/contrib/devtools/security-check.py
 
 WINDOWS_PACKAGING = $(top_srcdir)/share/pixmaps/pivx.ico \
+=======
+
+WINDOWS_PACKAGING = $(top_srcdir)/share/pixmaps/bitcoin.ico \
+>>>>>>> Stashed changes
   $(top_srcdir)/share/pixmaps/nsis-header.bmp \
   $(top_srcdir)/share/pixmaps/nsis-wizard.bmp \
   $(top_srcdir)/doc/README_windows.txt
 
+<<<<<<< Updated upstream
 LINUX_PACKAGING = $(top_srcdir)/share/pixmaps/pivx16.xpm \
   $(top_srcdir)/share/pixmaps/pivx32.xpm \
   $(top_srcdir)/share/pixmaps/pivx128.png
 
+=======
+>>>>>>> Stashed changes
 OSX_PACKAGING = $(OSX_DEPLOY_SCRIPT) $(OSX_FANCY_PLIST) $(OSX_INSTALLER_ICONS) \
   $(top_srcdir)/contrib/macdeploy/$(OSX_BACKGROUND_SVG) \
   $(OSX_DSSTORE_GEN) \
   $(top_srcdir)/contrib/macdeploy/detached-sig-apply.sh \
   $(top_srcdir)/contrib/macdeploy/detached-sig-create.sh
 
+<<<<<<< Updated upstream
 COVERAGE_INFO = baseline.info \
   test_pivx_filtered.info total_coverage.info \
   baseline_filtered.info functional_test.info functional_test_filtered.info \
@@ -74,6 +90,26 @@ COVERAGE_INFO = baseline.info \
 dist-hook:
 	-$(GIT) archive --format=tar HEAD -- src/clientversion.cpp | $(AMTAR) -C $(top_distdir) -xf -
 
+=======
+COVERAGE_INFO = baseline_filtered_combined.info baseline.info block_test.info \
+  leveldb_baseline.info test_primestone_filtered.info total_coverage.info \
+  baseline_filtered.info block_test_filtered.info \
+  leveldb_baseline_filtered.info test_primestone_coverage.info test_primestone.info
+
+dist-hook:
+	-$(MAKE) -C $(top_distdir)/src/leveldb clean
+	-$(MAKE) -C $(top_distdir)/src/secp256k1 distclean
+	-$(GIT) archive --format=tar HEAD -- src/clientversion.cpp | $(AMTAR) -C $(top_distdir) -xf -
+
+distcheck-hook:
+	$(MKDIR_P) $(top_distdir)/_build/src/leveldb
+	cp -rf $(top_srcdir)/src/leveldb/* $(top_distdir)/_build/src/leveldb/
+	-$(MAKE) -C $(top_distdir)/_build/src/leveldb clean
+
+distcleancheck:
+	@:
+
+>>>>>>> Stashed changes
 $(BITCOIN_WIN_INSTALLER): all-recursive
 	$(MKDIR_P) $(top_builddir)/release
 	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM) $(BITCOIND_BIN) $(top_builddir)/release
@@ -99,9 +135,15 @@ $(OSX_APP)/Contents/Resources/bitcoin.icns: $(OSX_INSTALLER_ICONS)
 	$(MKDIR_P) $(@D)
 	$(INSTALL_DATA) $< $@
 
+<<<<<<< Updated upstream
 $(OSX_APP)/Contents/MacOS/PIVX-Qt: all-recursive
 	$(MKDIR_P) $(@D)
 	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM)  $(BITCOIN_QT_BIN) $@
+=======
+$(OSX_APP)/Contents/MacOS/PrimeStone-Qt: $(BITCOIN_QT_BIN)
+	$(MKDIR_P) $(@D)
+	STRIPPROG="$(STRIP)" $(INSTALL_STRIP_PROGRAM)  $< $@
+>>>>>>> Stashed changes
 
 $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings:
 	$(MKDIR_P) $(@D)
@@ -109,7 +151,11 @@ $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings:
 
 OSX_APP_BUILT=$(OSX_APP)/Contents/PkgInfo $(OSX_APP)/Contents/Resources/empty.lproj \
   $(OSX_APP)/Contents/Resources/bitcoin.icns $(OSX_APP)/Contents/Info.plist \
+<<<<<<< Updated upstream
   $(OSX_APP)/Contents/MacOS/PIVX-Qt $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings
+=======
+  $(OSX_APP)/Contents/MacOS/PrimeStone-Qt $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings
+>>>>>>> Stashed changes
 
 osx_volname:
 	echo $(OSX_VOLNAME) >$@
@@ -134,7 +180,11 @@ $(APP_DIST_DIR)/Applications:
 	@rm -f $@
 	@cd $(@D); $(LN_S) /Applications $(@F)
 
+<<<<<<< Updated upstream
 $(APP_DIST_EXTRAS): $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/PIVX-Qt
+=======
+$(APP_DIST_EXTRAS): $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/PrimeStone-Qt
+>>>>>>> Stashed changes
 
 $(OSX_DMG): $(APP_DIST_EXTRAS)
 	$(GENISOIMAGE) -no-cache-inodes -D -l -probe -V "$(OSX_VOLNAME)" -no-pad -r -dir-mode 0755 -apple -o $@ dist
@@ -149,7 +199,11 @@ $(APP_DIST_DIR)/.background/$(OSX_BACKGROUND_IMAGE): $(OSX_BACKGROUND_IMAGE_DPIF
 $(APP_DIST_DIR)/.DS_Store: $(OSX_DSSTORE_GEN)
 	$(PYTHON) $< "$@" "$(OSX_VOLNAME)"
 
+<<<<<<< Updated upstream
 $(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/PIVX-Qt: $(OSX_APP_BUILT) $(OSX_PACKAGING)
+=======
+$(APP_DIST_DIR)/$(OSX_APP)/Contents/MacOS/PrimeStone-Qt: $(OSX_APP_BUILT) $(OSX_PACKAGING)
+>>>>>>> Stashed changes
 	INSTALLNAMETOOL=$(INSTALLNAMETOOL)  OTOOL=$(OTOOL) STRIP=$(STRIP) $(PYTHON) $(OSX_DEPLOY_SCRIPT) $(OSX_APP) -translations-dir=$(QT_TRANSLATION_DIR) -add-qt-tr $(OSX_QT_TRANSLATIONS) -verbose 2
 
 deploydir: $(APP_DIST_EXTRAS)
@@ -173,12 +227,16 @@ $(BITCOIN_CLI_BIN): FORCE
 	$(MAKE) -C src $(@F)
 
 if USE_LCOV
+<<<<<<< Updated upstream
 LCOV_FILTER_PATTERN=-p "/usr/include/" -p "/usr/lib/" -p "src/leveldb/" -p "src/univalue" -p "src/secp256k1"
+=======
+>>>>>>> Stashed changes
 
 baseline.info:
 	$(LCOV) -c -i -d $(abs_builddir)/src -o $@
 
 baseline_filtered.info: baseline.info
+<<<<<<< Updated upstream
 	$(abs_builddir)/contrib/filter-lcov.py $(LCOV_FILTER_PATTERN) $< $@
 	$(LCOV) -a $@ $(LCOV_OPTS) -o $@
 
@@ -215,11 +273,59 @@ total.coverage/.dirstamp: total_coverage.info
 	@touch $@
 
 cov: test_pivx.coverage/.dirstamp total.coverage/.dirstamp
+=======
+	$(LCOV) -r $< "/usr/include/*" -o $@
+
+leveldb_baseline.info: baseline_filtered.info
+	$(LCOV) -c -i -d $(abs_builddir)/src/leveldb -b $(abs_builddir)/src/leveldb -o $@
+
+leveldb_baseline_filtered.info: leveldb_baseline.info
+	$(LCOV) -r $< "/usr/include/*" -o $@
+
+baseline_filtered_combined.info: leveldb_baseline_filtered.info baseline_filtered.info
+	$(LCOV) -a leveldb_baseline_filtered.info -a baseline_filtered.info -o $@
+
+test_primestone.info: baseline_filtered_combined.info
+	$(MAKE) -C src/ check
+	$(LCOV) -c -d $(abs_builddir)/src -t test_primestone -o $@
+	$(LCOV) -z -d $(abs_builddir)/src
+	$(LCOV) -z -d $(abs_builddir)/src/leveldb
+
+test_primestone_filtered.info: test_primestone.info
+	$(LCOV) -r $< "/usr/include/*" -o $@
+
+block_test.info: test_primestone_filtered.info
+	$(MKDIR_P) qa/tmp
+	-@TIMEOUT=15 qa/pull-tester/run-bitcoind-for-test.sh $(JAVA) -jar $(JAVA_COMPARISON_TOOL) qa/tmp/compTool 0
+	$(LCOV) -c -d $(abs_builddir)/src --t BitcoinJBlockTest -o $@
+	$(LCOV) -z -d $(abs_builddir)/src
+	$(LCOV) -z -d $(abs_builddir)/src/leveldb
+
+block_test_filtered.info: block_test.info
+	$(LCOV) -r $< "/usr/include/*" -o $@
+
+test_primestone_coverage.info: baseline_filtered_combined.info test_primestone_filtered.info
+	$(LCOV) -a baseline_filtered.info -a leveldb_baseline_filtered.info -a test_primestone_filtered.info -o $@
+
+total_coverage.info:  baseline_filtered_combined.info test_primestone_filtered.info block_test_filtered.info
+	$(LCOV) -a baseline_filtered.info -a leveldb_baseline_filtered.info -a test_primestone_filtered.info -a block_test_filtered.info -o $@ | $(GREP) "\%" | $(AWK) '{ print substr($$3,2,50) "/" $$5 }' > coverage_percent.txt
+
+test_primestone.coverage/.dirstamp:  test_primestone_coverage.info
+	$(GENHTML) -s $< -o $(@D)
+	@touch $@
+
+total.coverage/.dirstamp: total_coverage.info
+	$(GENHTML) -s $< -o $(@D)
+	@touch $@
+
+cov: test_primestone.coverage/.dirstamp total.coverage/.dirstamp
+>>>>>>> Stashed changes
 
 endif
 
 dist_noinst_SCRIPTS = autogen.sh
 
+<<<<<<< Updated upstream
 EXTRA_DIST = $(DIST_SHARE) $(DIST_CONTRIB) $(DIST_DOCS) $(WINDOWS_PACKAGING) $(LINUX_PACKAGING) $(OSX_PACKAGING) $(BIN_CHECKS)
 
 EXTRA_DIST += \
@@ -246,11 +352,15 @@ EXTRA_DIST += \
     test/util/data/txcreatesign.hex \
     test/util/data/txcreatesign.json \
     test/util/rpcauth-test.py
+=======
+EXTRA_DIST = $(top_srcdir)/share/genbuild.sh qa/pull-tester/rpc-tests.sh qa/pull-tester/run-bitcoin-cli qa/rpc-tests $(DIST_DOCS) $(WINDOWS_PACKAGING) $(OSX_PACKAGING)
+>>>>>>> Stashed changes
 
 CLEANFILES = $(OSX_DMG) $(BITCOIN_WIN_INSTALLER)
 
 .INTERMEDIATE: $(COVERAGE_INFO)
 
+<<<<<<< Updated upstream
 DISTCHECK_CONFIGURE_FLAGS = --enable-man
 
 doc/doxygen/.stamp: doc/Doxyfile FORCE
@@ -272,3 +382,7 @@ clean-local: clean-docs
 	rm -rf coverage_percent.txt test_pivx.coverage/ total.coverage/ test/tmp/ cache/ $(OSX_APP)
 	rm -rf test/functional/__pycache__ test/functional/test_framework/__pycache__ test/cache share/rpcauth/__pycache__
 
+=======
+clean-local:
+	rm -rf test_primestone.coverage/ total.coverage/ $(OSX_APP)
+>>>>>>> Stashed changes

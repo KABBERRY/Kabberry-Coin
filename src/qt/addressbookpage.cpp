@@ -1,18 +1,31 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2018 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include "addressbookpage.h"
 #include "ui_addressbookpage.h"
 
 #include "addresstablemodel.h"
+<<<<<<< Updated upstream
 #include "qt/pivx/pivxgui.h"
+=======
+#include "bitcoingui.h"
+>>>>>>> Stashed changes
 #include "csvmodelwriter.h"
 #include "editaddressdialog.h"
 #include "guiutil.h"
@@ -66,11 +79,19 @@ AddressBookPage::AddressBookPage(Mode mode, Tabs tab, QWidget* parent) : QDialog
     }
     switch (tab) {
     case SendingTab:
+<<<<<<< Updated upstream
         ui->labelExplanation->setText(tr("These are your PIVX addresses for sending payments. Always check the amount and the receiving address before sending coins."));
         ui->deleteAddress->setVisible(true);
         break;
     case ReceivingTab:
         ui->labelExplanation->setText(tr("These are your PIVX addresses for receiving payments. It is recommended to use a new receiving address for each transaction."));
+=======
+        ui->labelExplanation->setText(tr("These are your PrimeStone addresses for sending payments. Always check the amount and the receiving address before sending coins."));
+        ui->deleteAddress->setVisible(true);
+        break;
+    case ReceivingTab:
+        ui->labelExplanation->setText(tr("These are your PrimeStone addresses for receiving payments. It is recommended to use a new receiving address for each transaction."));
+>>>>>>> Stashed changes
         ui->deleteAddress->setVisible(false);
         break;
     }
@@ -132,7 +153,11 @@ void AddressBookPage::setModel(AddressTableModel* model)
     ui->tableView->setModel(proxyModel);
     ui->tableView->sortByColumn(0, Qt::AscendingOrder);
 
+<<<<<<< Updated upstream
     // Set column widths
+=======
+// Set column widths
+>>>>>>> Stashed changes
     ui->tableView->horizontalHeader()->setSectionResizeMode(AddressTableModel::Label, QHeaderView::Stretch);
     ui->tableView->horizontalHeader()->setSectionResizeMode(AddressTableModel::Address, QHeaderView::ResizeToContents);
 

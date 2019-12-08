@@ -1,5 +1,9 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,7 +11,10 @@
 #define BITCOIN_QT_GUIUTIL_H
 
 #include "amount.h"
+<<<<<<< Updated upstream
 #include "askpassphrasedialog.h"
+=======
+>>>>>>> Stashed changes
 
 #include <QEvent>
 #include <QHeaderView>
@@ -32,12 +39,17 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
+<<<<<<< Updated upstream
 /** Utility functions used by the PIVX Qt UI.
+=======
+/** Utility functions used by the PrimeStone Qt UI.
+>>>>>>> Stashed changes
  */
 namespace GUIUtil
 {
 // Create human-readable string from date
 QString dateTimeStr(const QDateTime& datetime);
+<<<<<<< Updated upstream
 QString dateTimeStrWithSeconds(const QDateTime& date);
 QString dateTimeStr(qint64 nTime);
 
@@ -53,11 +65,22 @@ QString formatBalance(CAmount amount, int nDisplayUnit = 0, bool isZpiv = false)
 // Request wallet unlock
 bool requestUnlock(WalletModel* walletModel, AskPassphraseDialog::Context context, bool relock);
 
+=======
+QString dateTimeStr(qint64 nTime);
+
+// Render PrimeStone addresses in monospace font
+QFont bitcoinAddressFont();
+
+>>>>>>> Stashed changes
 // Set up widgets for address and amounts
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent);
 void setupAmountWidget(QLineEdit* widget, QWidget* parent);
 
+<<<<<<< Updated upstream
 // Parse "pivx:" URI into recipient object, return true on successful parsing
+=======
+// Parse "primestone:" URI into recipient object, return true on successful parsing
+>>>>>>> Stashed changes
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out);
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out);
 QString formatBitcoinURI(const SendCoinsRecipient& info);
@@ -121,6 +144,7 @@ Qt::ConnectionType blockingGUIThreadConnection();
 bool isObscured(QWidget* w);
 
 // Open debug.log
+<<<<<<< Updated upstream
 bool openDebugLogfile();
 
 // Open pivx.conf
@@ -131,6 +155,18 @@ bool openMNConfigfile();
 
 // Browse backup folder
 bool showBackups();
+=======
+void openDebugLogfile();
+
+// Open primestone.conf
+void openConfigfile();
+
+// Open masternode.conf
+void openMNConfigfile();
+
+// Browse backup folder
+void showBackups();
+>>>>>>> Stashed changes
 
 // Replace invalid default fonts with known good ones
 void SubstituteFonts(const QString& language);
@@ -255,4 +291,8 @@ QString formatTimeOffset(int64_t nTimeOffset);
 
 } // namespace GUIUtil
 
+<<<<<<< Updated upstream
 #endif // BITCOIN_QT_GUIUTIL_H
+=======
+#endif // BITCOIN_QT_GUIUTIL_H
+>>>>>>> Stashed changes

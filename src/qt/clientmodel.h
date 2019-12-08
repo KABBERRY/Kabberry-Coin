@@ -1,6 +1,10 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -38,7 +42,11 @@ enum NumConnections {
     CONNECTIONS_ALL = (CONNECTIONS_IN | CONNECTIONS_OUT),
 };
 
+<<<<<<< Updated upstream
 /** Model for PIVX network client. */
+=======
+/** Model for PrimeStone network client. */
+>>>>>>> Stashed changes
 class ClientModel : public QObject
 {
     Q_OBJECT
@@ -64,7 +72,11 @@ public:
     QDateTime getLastBlockDate() const;
 
     QString getLastBlockHash() const;
+<<<<<<< Updated upstream
 
+=======
+	
+>>>>>>> Stashed changes
     //! Return true if core is doing initial block download
     bool inInitialBlockDownload() const;
     //! Return true if core is importing blocks

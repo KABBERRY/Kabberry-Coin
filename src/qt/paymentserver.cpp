@@ -1,6 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,12 +17,24 @@
 
 #include "base58.h"
 #include "chainparams.h"
+<<<<<<< Updated upstream
 #include "guiinterface.h"
 #include "util.h"
 #include "wallet/wallet.h"
 
 #include <cstdlib>
 
+=======
+#include "ui_interface.h"
+#include "util.h"
+#include "wallet.h"
+
+#include <cstdlib>
+
+#include <openssl/x509.h>
+#include <openssl/x509_vfy.h>
+
+>>>>>>> Stashed changes
 #include <QApplication>
 #include <QByteArray>
 #include <QDataStream>
@@ -40,16 +57,30 @@
 #include <QTextDocument>
 #include <QUrlQuery>
 
+<<<<<<< Updated upstream
 
 const int BITCOIN_IPC_CONNECT_TIMEOUT = 1000; // milliseconds
 const QString BITCOIN_IPC_PREFIX("pivx:");
+=======
+using namespace boost;
+using namespace std;
+
+const int BITCOIN_IPC_CONNECT_TIMEOUT = 1000; // milliseconds
+const QString BITCOIN_IPC_PREFIX("primestone:");
+>>>>>>> Stashed changes
 // BIP70 payment protocol messages
 const char* BIP70_MESSAGE_PAYMENTACK = "PaymentACK";
 const char* BIP70_MESSAGE_PAYMENTREQUEST = "PaymentRequest";
 // BIP71 payment protocol media types
+<<<<<<< Updated upstream
 const char* BIP71_MIMETYPE_PAYMENT = "application/pivx-payment";
 const char* BIP71_MIMETYPE_PAYMENTACK = "application/pivx-paymentack";
 const char* BIP71_MIMETYPE_PAYMENTREQUEST = "application/pivx-paymentrequest";
+=======
+const char* BIP71_MIMETYPE_PAYMENT = "application/primestone-payment";
+const char* BIP71_MIMETYPE_PAYMENTACK = "application/primestone-paymentack";
+const char* BIP71_MIMETYPE_PAYMENTREQUEST = "application/primestone-paymentrequest";
+>>>>>>> Stashed changes
 // BIP70 max payment request size in bytes (DoS protection)
 const qint64 BIP70_MAX_PAYMENTREQUEST_SIZE = 50000;
 
@@ -76,7 +107,11 @@ namespace // Anon namespace
 //
 static QString ipcServerName()
 {
+<<<<<<< Updated upstream
     QString name("PIVXQt");
+=======
+    QString name("PrimeStoneQt");
+>>>>>>> Stashed changes
 
     // Append a simple hash of the datadir
     // Note that GetDataDir(true) returns a different path
@@ -136,7 +171,10 @@ void PaymentServer::LoadRootCAs(X509_STORE* _store)
             ReportInvalidCertificate(cert);
             continue;
         }
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
         // Blacklisted certificate
         if (cert.isBlacklisted()) {
             ReportInvalidCertificate(cert);
@@ -183,11 +221,19 @@ void PaymentServer::ipcParseCommandLine(int argc, char* argv[])
         if (arg.startsWith("-"))
             continue;
 
+<<<<<<< Updated upstream
         // If the pivx: URI contains a payment request, we are not able to detect the
         // network as that would require fetching and parsing the payment request.
         // That means clicking such an URI which contains a testnet payment request
         // will start a mainnet instance and throw a "wrong network" error.
         if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // pivx: URI
+=======
+        // If the primestone: URI contains a payment request, we are not able to detect the
+        // network as that would require fetching and parsing the payment request.
+        // That means clicking such an URI which contains a testnet payment request
+        // will start a mainnet instance and throw a "wrong network" error.
+        if (arg.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // primestone: URI
+>>>>>>> Stashed changes
         {
             savedPaymentRequests.append(arg);
 
@@ -269,7 +315,11 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) : QObject(p
     GOOGLE_PROTOBUF_VERIFY_VERSION;
 
     // Install global event filter to catch QFileOpenEvents
+<<<<<<< Updated upstream
     // on Mac: sent when you click pivx: links
+=======
+    // on Mac: sent when you click primestone: links
+>>>>>>> Stashed changes
     // other OSes: helpful when dealing with payment request files (in the future)
     if (parent)
         parent->installEventFilter(this);
@@ -285,7 +335,11 @@ PaymentServer::PaymentServer(QObject* parent, bool startLocalServer) : QObject(p
         if (!uriServer->listen(name)) {
             // constructor is called early in init, so don't use "emit message()" here
             QMessageBox::critical(0, tr("Payment request error"),
+<<<<<<< Updated upstream
                 tr("Cannot start pivx: click-to-pay handler"));
+=======
+                tr("Cannot start primestone: click-to-pay handler"));
+>>>>>>> Stashed changes
         } else {
             connect(uriServer, SIGNAL(newConnection()), this, SLOT(handleURIConnection()));
             connect(this, SIGNAL(receivedPaymentACK(QString)), this, SLOT(handlePaymentACK(QString)));
@@ -299,12 +353,20 @@ PaymentServer::~PaymentServer()
 }
 
 //
+<<<<<<< Updated upstream
 // OSX-specific way of handling pivx: URIs and
+=======
+// OSX-specific way of handling primestone: URIs and
+>>>>>>> Stashed changes
 // PaymentRequest mime types
 //
 bool PaymentServer::eventFilter(QObject* object, QEvent* event)
 {
+<<<<<<< Updated upstream
     // clicking on pivx: URIs creates FileOpen events on the Mac
+=======
+    // clicking on primestone: URIs creates FileOpen events on the Mac
+>>>>>>> Stashed changes
     if (event->type() == QEvent::FileOpen) {
         QFileOpenEvent* fileEvent = static_cast<QFileOpenEvent*>(event);
         if (!fileEvent->file().isEmpty())
@@ -325,7 +387,11 @@ void PaymentServer::initNetManager()
     if (netManager != NULL)
         delete netManager;
 
+<<<<<<< Updated upstream
     // netManager is used to fetch paymentrequests given in pivx: URIs
+=======
+    // netManager is used to fetch paymentrequests given in primestone: URIs
+>>>>>>> Stashed changes
     netManager = new QNetworkAccessManager(this);
 
     QNetworkProxy proxy;
@@ -362,7 +428,11 @@ void PaymentServer::handleURIOrFile(const QString& s)
         return;
     }
 
+<<<<<<< Updated upstream
     if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // pivx: URI
+=======
+    if (s.startsWith(BITCOIN_IPC_PREFIX, Qt::CaseInsensitive)) // primestone: URI
+>>>>>>> Stashed changes
     {
         QUrlQuery uri((QUrl(s)));
         if (uri.hasQueryItem("r")) // payment request URI
@@ -395,7 +465,11 @@ void PaymentServer::handleURIOrFile(const QString& s)
                     emit receivedPaymentRequest(recipient);
             } else
                 emit message(tr("URI handling"),
+<<<<<<< Updated upstream
                     tr("URI cannot be parsed! This can be caused by an invalid PIVX address or malformed URI parameters."),
+=======
+                    tr("URI cannot be parsed! This can be caused by an invalid PrimeStone address or malformed URI parameters."),
+>>>>>>> Stashed changes
                     CClientUIInterface::ICON_WARNING);
 
             return;
@@ -510,7 +584,11 @@ bool PaymentServer::processPaymentRequest(PaymentRequestPlus& request, SendCoins
             // Append destination address
             addresses.append(QString::fromStdString(CBitcoinAddress(dest).ToString()));
         } else if (!recipient.authenticatedMerchant.isEmpty()) {
+<<<<<<< Updated upstream
             // Insecure payments to custom pivx addresses are not supported
+=======
+            // Insecure payments to custom primestone addresses are not supported
+>>>>>>> Stashed changes
             // (there is no good way to tell the user where they are paying in a way
             // they'd have a chance of understanding).
             emit message(tr("Payment request rejected"),
@@ -572,7 +650,11 @@ void PaymentServer::fetchPaymentACK(CWallet* wallet, SendCoinsRecipient recipien
     // Create a new refund address, or re-use:
     QString account = tr("Refund from %1").arg(recipient.authenticatedMerchant);
     std::string strAccount = account.toStdString();
+<<<<<<< Updated upstream
     std::set<CTxDestination> refundAddresses = wallet->GetAccountAddresses(strAccount);
+=======
+    set<CTxDestination> refundAddresses = wallet->GetAccountAddresses(strAccount);
+>>>>>>> Stashed changes
     if (!refundAddresses.empty()) {
         CScript s = GetScriptForDestination(*refundAddresses.begin());
         payments::Output* refund_to = payment.add_refund_to();

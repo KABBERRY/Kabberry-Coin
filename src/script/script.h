@@ -1,7 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2019 The PIVX developers
+=======
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -22,6 +27,7 @@ typedef std::vector<unsigned char> valtype;
 
 static const unsigned int MAX_SCRIPT_ELEMENT_SIZE = 520; // bytes
 
+<<<<<<< Updated upstream
 // Maximum script length in bytes
 static const int MAX_SCRIPT_SIZE = 10000;
 
@@ -29,6 +35,8 @@ static const int MAX_SCRIPT_SIZE = 10000;
 // otherwise as UNIX timestamp.
 static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
 
+=======
+>>>>>>> Stashed changes
 template <typename T>
 std::vector<unsigned char> ToByteVector(const T& in)
 {
@@ -161,7 +169,10 @@ enum opcodetype
     // expansion
     OP_NOP1 = 0xb0,
     OP_NOP2 = 0xb1,
+<<<<<<< Updated upstream
     OP_CHECKLOCKTIMEVERIFY = OP_NOP2,
+=======
+>>>>>>> Stashed changes
     OP_NOP3 = 0xb2,
     OP_NOP4 = 0xb3,
     OP_NOP5 = 0xb4,
@@ -174,10 +185,13 @@ enum opcodetype
     // zerocoin
     OP_ZEROCOINMINT = 0xc1,
     OP_ZEROCOINSPEND = 0xc2,
+<<<<<<< Updated upstream
     OP_ZEROCOINPUBLICSPEND = 0xc3,
 
     // cold staking
     OP_CHECKCOLDSTAKEVERIFY = 0xd1,
+=======
+>>>>>>> Stashed changes
 
     // template matching params
     OP_SMALLINTEGER = 0xfa,
@@ -213,10 +227,14 @@ public:
         m_value = n;
     }
 
+<<<<<<< Updated upstream
     static const size_t nDefaultMaxNumSize = 4;
 
     explicit CScriptNum(const std::vector<unsigned char>& vch, bool fRequireMinimal,
             const size_t nMaxNumSize = nDefaultMaxNumSize)
+=======
+    explicit CScriptNum(const std::vector<unsigned char>& vch, bool fRequireMinimal)
+>>>>>>> Stashed changes
     {
         if (vch.size() > nMaxNumSize) {
             throw scriptnum_error("script number overflow");
@@ -339,6 +357,11 @@ public:
         return result;
     }
 
+<<<<<<< Updated upstream
+=======
+    static const size_t nMaxNumSize = 4;
+
+>>>>>>> Stashed changes
 private:
     static int64_t set_vch(const std::vector<unsigned char>& vch)
     {
@@ -605,11 +628,16 @@ public:
 
     bool IsNormalPaymentScript() const;
     bool IsPayToScriptHash() const;
+<<<<<<< Updated upstream
     bool IsPayToColdStaking() const;
     bool StartsWithOpcode(const opcodetype opcode) const;
     bool IsZerocoinMint() const;
     bool IsZerocoinSpend() const;
     bool IsZerocoinPublicSpend() const;
+=======
+    bool IsZerocoinMint() const;
+    bool IsZerocoinSpend() const;
+>>>>>>> Stashed changes
 
     /** Called by IsStandardTx and P2SH/BIP62 VerifyScript (which makes it consensus-critical). */
     bool IsPushOnly(const_iterator pc) const;
@@ -622,7 +650,11 @@ public:
      */
     bool IsUnspendable() const
     {
+<<<<<<< Updated upstream
         return (size() > 0 && *begin() == OP_RETURN) || (size() > MAX_SCRIPT_SIZE);
+=======
+        return (size() > 0 && *begin() == OP_RETURN);
+>>>>>>> Stashed changes
     }
 
     std::string ToString() const;

@@ -89,8 +89,13 @@ int secp256k1_nonce_function_smallint(unsigned char *nonce32, const unsigned cha
     return 1;
 }
 
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
 void test_exhaustive_endomorphism(const secp256k1_ge *group, int order) {
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+void test_exhaustive_enprimestonerphism(const secp256k1_ge *group, int order) {
+>>>>>>> Stashed changes
     int i;
     for (i = 0; i < order; i++) {
         secp256k1_ge res;
@@ -491,8 +496,13 @@ int main(void) {
     }
 
     /* Run the tests */
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
     test_exhaustive_endomorphism(group, EXHAUSTIVE_TEST_ORDER);
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+    test_exhaustive_enprimestonerphism(group, EXHAUSTIVE_TEST_ORDER);
+>>>>>>> Stashed changes
 #endif
     test_exhaustive_addition(group, groupj, EXHAUSTIVE_TEST_ORDER);
     test_exhaustive_ecmult(ctx, group, groupj, EXHAUSTIVE_TEST_ORDER);

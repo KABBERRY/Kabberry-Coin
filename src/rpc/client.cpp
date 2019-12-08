@@ -1,14 +1,24 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpc/client.h"
+<<<<<<< Updated upstream
 
 #include "rpc/protocol.h"
 #include "guiinterface.h"
+=======
+#include "rpc/protocol.h"
+#include "ui_interface.h"
+>>>>>>> Stashed changes
 #include "util.h"
 
 #include <set>
@@ -17,6 +27,10 @@
 #include <boost/algorithm/string/case_conv.hpp> // for to_lower()
 #include <univalue.h>
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 class CRPCConvertParam
 {
@@ -32,6 +46,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getaddednodeinfo", 0},
         {"setgenerate", 0},
         {"setgenerate", 1},
+<<<<<<< Updated upstream
         {"generate", 0},
         {"getnetworkhashps", 0},
         {"getnetworkhashps", 1},
@@ -42,12 +57,19 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"rawdelegatestake", 1},
         {"rawdelegatestake", 3},
         {"rawdelegatestake", 4},
+=======
+        {"getnetworkhashps", 0},
+        {"getnetworkhashps", 1},
+>>>>>>> Stashed changes
         {"sendtoaddress", 1},
         {"sendtoaddressix", 1},
         {"settxfee", 0},
         {"getreceivedbyaddress", 1},
         {"getreceivedbyaccount", 1},
+<<<<<<< Updated upstream
         {"listcoldutxos", 0},
+=======
+>>>>>>> Stashed changes
         {"listreceivedbyaddress", 0},
         {"listreceivedbyaddress", 1},
         {"listreceivedbyaddress", 2},
@@ -57,12 +79,15 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getbalance", 1},
         {"getbalance", 2},
         {"getblockhash", 0},
+<<<<<<< Updated upstream
         { "waitforblockheight", 0 },
         { "waitforblockheight", 1 },
         { "waitforblock", 1 },
         { "waitforblock", 2 },
         { "waitfornewblock", 0 },
         { "waitfornewblock", 1 },
+=======
+>>>>>>> Stashed changes
         {"move", 2},
         {"move", 3},
         {"sendfrom", 2},
@@ -70,8 +95,11 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"listtransactions", 1},
         {"listtransactions", 2},
         {"listtransactions", 3},
+<<<<<<< Updated upstream
         {"listtransactions", 4},
         {"listtransactions", 5},
+=======
+>>>>>>> Stashed changes
         {"listaccounts", 0},
         {"listaccounts", 1},
         {"walletpassphrase", 1},
@@ -95,7 +123,10 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getrawtransaction", 1},
         {"createrawtransaction", 0},
         {"createrawtransaction", 1},
+<<<<<<< Updated upstream
         {"createrawtransaction", 2},
+=======
+>>>>>>> Stashed changes
         {"signrawtransaction", 1},
         {"signrawtransaction", 2},
         {"sendrawtransaction", 1},
@@ -117,6 +148,13 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"setban", 2},
         {"setban", 3},
         {"spork", 1},
+<<<<<<< Updated upstream
+=======
+        {"mnbudget", 3},
+        {"mnbudget", 4},
+        {"mnbudget", 6},
+        {"mnbudget", 8},
+>>>>>>> Stashed changes
         {"preparebudget", 2},
         {"preparebudget", 3},
         {"preparebudget", 5},
@@ -135,7 +173,10 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"autocombinerewards", 1},
         {"getzerocoinbalance", 0},
         {"listmintedzerocoins", 0},
+<<<<<<< Updated upstream
         {"listmintedzerocoins", 1},
+=======
+>>>>>>> Stashed changes
         {"listspentzerocoins", 0},
         {"listzerocoinamounts", 0},
         {"mintzerocoin", 0},
@@ -143,8 +184,12 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"spendzerocoin", 0},
         {"spendzerocoin", 1},
         {"spendzerocoin", 2},
+<<<<<<< Updated upstream
         {"spendrawzerocoin", 2},
         {"spendzerocoinmints", 0},
+=======
+        {"spendzerocoin", 3},
+>>>>>>> Stashed changes
         {"importzerocoins", 0},
         {"exportzerocoins", 0},
         {"exportzerocoins", 1},
@@ -152,6 +197,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getspentzerocoinamount", 1},
         {"generatemintlist", 0},
         {"generatemintlist", 1},
+<<<<<<< Updated upstream
         {"searchdzpiv", 0},
         {"searchdzpiv", 1},
         {"searchdzpiv", 2},
@@ -171,6 +217,13 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getfeeinfo", 0},
         {"getchecksumblock", 1},
         {"getchecksumblock", 2},
+=======
+        {"searchdzPSC", 0},
+        {"searchdzPSC", 1},
+        {"searchdzPSC", 2},
+        {"getaccumulatorvalues", 0},
+        {"getfeeinfo", 0}
+>>>>>>> Stashed changes
     };
 
 class CRPCConvertTable
@@ -208,7 +261,11 @@ UniValue ParseNonRFCJSONValue(const std::string& strVal)
     UniValue jVal;
     if (!jVal.read(std::string("[")+strVal+std::string("]")) ||
         !jVal.isArray() || jVal.size()!=1)
+<<<<<<< Updated upstream
         throw std::runtime_error(std::string("Error parsing JSON:")+strVal);
+=======
+        throw runtime_error(string("Error parsing JSON:")+strVal);
+>>>>>>> Stashed changes
     return jVal[0];
 }
 

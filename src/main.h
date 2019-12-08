@@ -1,10 +1,15 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2011-2013 The PPCoin developers
 // Copyright (c) 2013-2014 The NovaCoin Developers
 // Copyright (c) 2014-2018 The BlackCoin Developers
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +17,11 @@
 #define BITCOIN_MAIN_H
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include "amount.h"
@@ -23,8 +32,12 @@
 #include "pow.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
+<<<<<<< Updated upstream
 #include "zpiv/zerocoin.h"
 #include "zpiv/zpivmodule.h"
+=======
+#include "primitives/zerocoin.h"
+>>>>>>> Stashed changes
 #include "script/script.h"
 #include "script/sigcache.h"
 #include "script/standard.h"
@@ -44,7 +57,10 @@
 #include <vector>
 
 #include "libzerocoin/CoinSpend.h"
+<<<<<<< Updated upstream
 #include "lightzpivthread.h"
+=======
+>>>>>>> Stashed changes
 
 #include <boost/unordered_map.hpp>
 
@@ -87,6 +103,13 @@ static const unsigned int MAX_BLOCKFILE_SIZE = 0x8000000; // 128 MiB
 static const unsigned int BLOCKFILE_CHUNK_SIZE = 0x1000000; // 16 MiB
 /** The pre-allocation chunk size for rev?????.dat files (since 0.8) */
 static const unsigned int UNDOFILE_CHUNK_SIZE = 0x100000; // 1 MiB
+<<<<<<< Updated upstream
+=======
+/** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
+static const int COINBASE_MATURITY = 100;
+/** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
+static const unsigned int LOCKTIME_THRESHOLD = 500000000; // Tue Nov  5 00:53:20 1985 UTC
+>>>>>>> Stashed changes
 /** Maximum number of script-checking threads allowed */
 static const int MAX_SCRIPTCHECK_THREADS = 16;
 /** -par default (number of script-checking threads, 0 = auto) */
@@ -110,6 +133,7 @@ static const unsigned int MAX_REJECT_MESSAGE_LENGTH = 111;
 
 /** Enable bloom filter */
  static const bool DEFAULT_PEERBLOOMFILTERS = true;
+<<<<<<< Updated upstream
 static const bool DEFAULT_PEERBLOOMFILTERS_ZC = false;
 
 /** If the tip is older than this (in seconds), the node is considered to be in initial block download. */
@@ -119,6 +143,13 @@ static const int64_t DEFAULT_MAX_TIP_AGE = 24 * 60 * 60;
 static const bool DEFAULT_BLOCK_SPAM_FILTER = true;
 /** Default for -blockspamfiltermaxsize, maximum size of the list of indexes in the block spam filter */
 static const unsigned int DEFAULT_BLOCK_SPAM_FILTER_MAX_SIZE = 100;
+=======
+ 
+/** Default for -blockspamfilter, use header spam filter */
+static const bool DEFAULT_BLOCK_SPAM_FILTER = true;
+/** Default for -blockspamfiltermaxsize, maximum size of the list of indexes in the block spam filter */
+static const unsigned int DEFAULT_BLOCK_SPAM_FILTER_MAX_SIZE = COINBASE_MATURITY;
+>>>>>>> Stashed changes
 /** Default for -blockspamfiltermaxavg, maximum average size of an index occurrence in the block spam filter */
 static const unsigned int DEFAULT_BLOCK_SPAM_FILTER_MAX_AVG = 10;
 
@@ -132,12 +163,15 @@ static const unsigned char REJECT_DUST = 0x41;
 static const unsigned char REJECT_INSUFFICIENTFEE = 0x42;
 static const unsigned char REJECT_CHECKPOINT = 0x43;
 
+<<<<<<< Updated upstream
 /** zPIV precomputing variables
  * Set the number of included blocks to precompute per cycle. */
 static const int DEFAULT_PRECOMPUTE_LENGTH = 1000;
 static const int MIN_PRECOMPUTE_LENGTH = 500;
 static const int MAX_PRECOMPUTE_LENGTH = 2000;
 
+=======
+>>>>>>> Stashed changes
 struct BlockHasher {
     size_t operator()(const uint256& hash) const { return hash.GetLow64(); }
 };
@@ -162,27 +196,42 @@ extern bool fCheckBlockIndex;
 extern unsigned int nCoinCacheSize;
 extern CFeeRate minRelayTxFee;
 extern bool fAlerts;
+<<<<<<< Updated upstream
 extern int64_t nMaxTipAge;
 extern bool fVerifyingBlocks;
 extern bool fClearSpendCache;
+=======
+extern bool fVerifyingBlocks;
+>>>>>>> Stashed changes
 
 extern bool fLargeWorkForkFound;
 extern bool fLargeWorkInvalidChainFound;
 
+<<<<<<< Updated upstream
+=======
+extern unsigned int nStakeMinAge;
+>>>>>>> Stashed changes
 extern int64_t nLastCoinStakeSearchInterval;
 extern int64_t nLastCoinStakeSearchTime;
 extern int64_t nReserveBalance;
 
 extern std::map<uint256, int64_t> mapRejectedBlocks;
 extern std::map<unsigned int, unsigned int> mapHashedBlocks;
+<<<<<<< Updated upstream
+=======
+extern std::set<std::pair<COutPoint, unsigned int> > setStakeSeen;
+>>>>>>> Stashed changes
 extern std::map<uint256, int64_t> mapZerocoinspends; //txid, time received
 
 /** Best header we've seen so far (used for getheaders queries' starting points). */
 extern CBlockIndex* pindexBestHeader;
 
+<<<<<<< Updated upstream
 /**  */
 extern CLightWorker lightWorker;
 
+=======
+>>>>>>> Stashed changes
 /** Minimum disk space required - used in CheckDiskSpace() */
 static const uint64_t nMinDiskSpace = 52428800;
 
@@ -238,18 +287,30 @@ bool IsInitialBlockDownload();
 /** Format a string that describes several potential problems detected by the core */
 std::string GetWarnings(std::string strFor);
 /** Retrieve a transaction (from memory pool, or from disk, if possible) */
+<<<<<<< Updated upstream
 bool GetTransaction(const uint256& hash, CTransaction& tx, uint256& hashBlock, bool fAllowSlow = false, CBlockIndex* blockIndex = nullptr);
 /** Retrieve an output (from memory pool, or from disk, if possible) */
 bool GetOutput(const uint256& hash, unsigned int index, CValidationState& state, CTxOut& out);
+=======
+bool GetTransaction(const uint256& hash, CTransaction& tx, uint256& hashBlock, bool fAllowSlow = false);
+>>>>>>> Stashed changes
 /** Find the best known block, and make it the tip of the block chain */
 
 // ***TODO***
 double ConvertBitsToDouble(unsigned int nBits);
+<<<<<<< Updated upstream
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount, bool isZPIVStake);
+=======
+int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount, bool iszPSCStake);
+>>>>>>> Stashed changes
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock, bool fProofOfStake);
 
 bool ActivateBestChain(CValidationState& state, CBlock* pblock = NULL, bool fAlreadyChecked = false);
 CAmount GetBlockValue(int nHeight);
+<<<<<<< Updated upstream
+=======
+int64_t GetDevFundPayment(int nHeight, int64_t blockValue);
+>>>>>>> Stashed changes
 
 /** Create a new block index entry for a given block hash */
 CBlockIndex* InsertBlockIndex(uint256 hash);
@@ -269,6 +330,11 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransaction& tx, bool fLimitFree, bool* pfMissingInputs, bool fRejectInsaneFee = false, bool isDSTX = false);
 
 int GetInputAge(CTxIn& vin);
+<<<<<<< Updated upstream
+=======
+int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
+bool GetCoinAge(const CTransaction& tx, unsigned int nTxTime, uint64_t& nCoinAge);
+>>>>>>> Stashed changes
 int GetIXConfirmations(uint256 nTXHash);
 
 struct CNodeStateStats {
@@ -357,6 +423,7 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
 void UpdateCoins(const CTransaction& tx, CValidationState& state, CCoinsViewCache& inputs, CTxUndo& txundo, int nHeight);
 
 /** Context-independent validity checks */
+<<<<<<< Updated upstream
 bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fRejectBadUTXO, CValidationState& state, bool fFakeSerialAttack = false, bool fColdStakingActive=false);
 bool CheckZerocoinMint(const uint256& txHash, const CTxOut& txout, CValidationState& state, bool fCheckOnly = false);
 bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidationState& state, bool fFakeSerialAttack = false);
@@ -379,6 +446,22 @@ bool isBlockBetweenFakeSerialAttackRange(int nHeight);
 bool CheckPublicCoinSpendEnforced(int blockHeight, bool isPublicSpend);
 int CurrentPublicCoinSpendVersion();
 bool CheckPublicCoinSpendVersion(int version);
+=======
+bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fRejectBadUTXO, CValidationState& state);
+bool CheckZerocoinMint(const uint256& txHash, const CTxOut& txout, CValidationState& state, bool fCheckOnly = false);
+bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidationState& state);
+bool ContextualCheckZerocoinSpend(const CTransaction& tx, const libzerocoin::CoinSpend& spend, CBlockIndex* pindex, const uint256& hashBlock);
+bool ContextualCheckZerocoinSpendNoSerialCheck(const CTransaction& tx, const libzerocoin::CoinSpend& spend, CBlockIndex* pindex, const uint256& hashBlock);
+bool IsTransactionInChain(const uint256& txId, int& nHeightTx, CTransaction& tx);
+bool IsTransactionInChain(const uint256& txId, int& nHeightTx);
+bool IsBlockHashInChain(const uint256& hashBlock);
+bool ValidOutPoint(const COutPoint out, int nHeight);
+void RecalculatezPSCSpent();
+void RecalculatezPSCMinted();
+bool RecalculatePrimeStoneSupply(int nHeightStart);
+bool ReindexAccumulators(list<uint256>& listMissingCheckpoints, string& strError);
+
+>>>>>>> Stashed changes
 
 /**
  * Check if transaction will be final in the next block to be created.
@@ -465,8 +548,12 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex);
 bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex, CCoinsViewCache& coins, bool* pfClean = NULL);
 
 /** Reprocess a number of blocks to try and get on the correct chain again **/
+<<<<<<< Updated upstream
 bool DisconnectBlocks(int nBlocks);
 void ReprocessBlocks(int nBlocks);
+=======
+bool DisconnectBlocksAndReprocess(int blocks);
+>>>>>>> Stashed changes
 
 /** Apply the effects of this block (with given index) on the UTXO set represented by coins */
 bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pindex, CCoinsViewCache& coins, bool fJustCheck, bool fAlreadyChecked = false);

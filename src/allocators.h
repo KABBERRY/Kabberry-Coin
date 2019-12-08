@@ -6,8 +6,11 @@
 #ifndef BITCOIN_ALLOCATORS_H
 #define BITCOIN_ALLOCATORS_H
 
+<<<<<<< Updated upstream
 #include "support/cleanse.h"
 
+=======
+>>>>>>> Stashed changes
 #include <map>
 #include <string.h>
 #include <string>
@@ -16,6 +19,11 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/once.hpp>
 
+<<<<<<< Updated upstream
+=======
+#include <openssl/crypto.h> // for OPENSSL_cleanse()
+
+>>>>>>> Stashed changes
 /**
  * Thread-safe class to keep track of locked (ie, non-swappable) memory pages.
  *
@@ -173,7 +181,11 @@ void LockObject(const T& t)
 template <typename T>
 void UnlockObject(const T& t)
 {
+<<<<<<< Updated upstream
     memory_cleanse((void*)(&t), sizeof(T));
+=======
+    OPENSSL_cleanse((void*)(&t), sizeof(T));
+>>>>>>> Stashed changes
     LockedPageManager::Instance().UnlockRange((void*)(&t), sizeof(T));
 }
 
@@ -216,7 +228,11 @@ struct secure_allocator : public std::allocator<T> {
     void deallocate(T* p, std::size_t n)
     {
         if (p != NULL) {
+<<<<<<< Updated upstream
             memory_cleanse(p, sizeof(T) * n);
+=======
+            OPENSSL_cleanse(p, sizeof(T) * n);
+>>>>>>> Stashed changes
             LockedPageManager::Instance().UnlockRange(p, sizeof(T) * n);
         }
         std::allocator<T>::deallocate(p, n);
@@ -253,7 +269,11 @@ struct zero_after_free_allocator : public std::allocator<T> {
     void deallocate(T* p, std::size_t n)
     {
         if (p != NULL)
+<<<<<<< Updated upstream
             memory_cleanse(p, sizeof(T) * n);
+=======
+            OPENSSL_cleanse(p, sizeof(T) * n);
+>>>>>>> Stashed changes
         std::allocator<T>::deallocate(p, n);
     }
 };

@@ -1,6 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2016-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,7 +13,11 @@
 
 #include "leveldbwrapper.h"
 #include "main.h"
+<<<<<<< Updated upstream
 #include "zpiv/zerocoin.h"
+=======
+#include "primitives/zerocoin.h"
+>>>>>>> Stashed changes
 
 #include <map>
 #include <string>
@@ -54,9 +62,16 @@ private:
 
 public:
     bool WriteBlockIndex(const CDiskBlockIndex& blockindex);
+<<<<<<< Updated upstream
     bool WriteBatchSync(const std::vector<std::pair<int, const CBlockFileInfo*> >& fileInfo, int nLastFile, const std::vector<const CBlockIndex*>& blockinfo);
     bool ReadBlockFileInfo(int nFile, CBlockFileInfo& fileinfo);
     bool ReadLastBlockFile(int& nFile);
+=======
+    bool ReadBlockFileInfo(int nFile, CBlockFileInfo& fileinfo);
+    bool WriteBlockFileInfo(int nFile, const CBlockFileInfo& fileinfo);
+    bool ReadLastBlockFile(int& nFile);
+    bool WriteLastBlockFile(int nFile);
+>>>>>>> Stashed changes
     bool WriteReindexing(bool fReindex);
     bool ReadReindexing(bool& fReindex);
     bool ReadTxIndex(const uint256& txid, CDiskTxPos& pos);
@@ -79,11 +94,19 @@ private:
     void operator=(const CZerocoinDB&);
 
 public:
+<<<<<<< Updated upstream
     /** Write zPIV mints to the zerocoinDB in a batch */
     bool WriteCoinMintBatch(const std::vector<std::pair<libzerocoin::PublicCoin, uint256> >& mintInfo);
     bool ReadCoinMint(const CBigNum& bnPubcoin, uint256& txHash);
     bool ReadCoinMint(const uint256& hashPubcoin, uint256& hashTx);
     /** Write zPIV spends to the zerocoinDB in a batch */
+=======
+    /** Write zPSC mints to the zerocoinDB in a batch */
+    bool WriteCoinMintBatch(const std::vector<std::pair<libzerocoin::PublicCoin, uint256> >& mintInfo);
+    bool ReadCoinMint(const CBigNum& bnPubcoin, uint256& txHash);
+    bool ReadCoinMint(const uint256& hashPubcoin, uint256& hashTx);
+    /** Write zPSC spends to the zerocoinDB in a batch */
+>>>>>>> Stashed changes
     bool WriteCoinSpendBatch(const std::vector<std::pair<libzerocoin::CoinSpend, uint256> >& spendInfo);
     bool ReadCoinSpend(const CBigNum& bnSerial, uint256& txHash);
     bool ReadCoinSpend(const uint256& hashSerial, uint256 &txHash);

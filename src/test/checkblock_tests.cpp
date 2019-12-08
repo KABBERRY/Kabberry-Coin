@@ -11,7 +11,10 @@
 #include "clientversion.h"
 #include "main.h"
 #include "utiltime.h"
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
+=======
+>>>>>>> Stashed changes
 
 #include <cstdio>
 
@@ -20,7 +23,11 @@
 #include <boost/test/unit_test.hpp>
 
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(CheckBlock_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(CheckBlock_tests)
+>>>>>>> Stashed changes
 
 bool read_block(const std::string& filename, CBlock& block)
 {

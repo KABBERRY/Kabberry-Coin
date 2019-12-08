@@ -243,7 +243,11 @@ static void secp256k1_scalar_inverse_var(secp256k1_scalar *r, const secp256k1_sc
 #endif
 }
 
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
 #if defined(EXHAUSTIVE_TEST_ORDER)
 /**
  * Find k1 and k2 given k, such that k1 + k2 * lambda == k mod n; unlike in the
@@ -257,7 +261,11 @@ static void secp256k1_scalar_split_lambda(secp256k1_scalar *r1, secp256k1_scalar
 }
 #else
 /**
+<<<<<<< Updated upstream
  * The Secp256k1 curve has an endomorphism, where lambda * (x, y) = (beta * x, y), where
+=======
+ * The Secp256k1 curve has an enprimestonerphism, where lambda * (x, y) = (beta * x, y), where
+>>>>>>> Stashed changes
  * lambda is {0x53,0x63,0xad,0x4c,0xc0,0x5c,0x30,0xe0,0xa5,0x26,0x1c,0x02,0x88,0x12,0x64,0x5a,
  *            0x12,0x2e,0x22,0xea,0x20,0x81,0x66,0x78,0xdf,0x02,0x96,0x7c,0x1b,0x23,0xbd,0x72}
  *
@@ -276,7 +284,11 @@ static void secp256k1_scalar_split_lambda(secp256k1_scalar *r1, secp256k1_scalar
  * compute k1 as k - k2 * lambda, avoiding the need for constants a1 and a2.
  *
  * g1, g2 are precomputed constants used to replace division with a rounded multiplication
+<<<<<<< Updated upstream
  * when decomposing the scalar for an endomorphism-based point multiplication.
+=======
+ * when decomposing the scalar for an enprimestonerphism-based point multiplication.
+>>>>>>> Stashed changes
  *
  * The possibility of using precomputed estimates is mentioned in "Guide to Elliptic Curve
  * Cryptography" (Hankerson, Menezes, Vanstone) in section 3.5.

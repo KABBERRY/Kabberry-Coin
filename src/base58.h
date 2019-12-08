@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -101,7 +106,11 @@ public:
     bool operator>(const CBase58Data& b58) const { return CompareTo(b58) > 0; }
 };
 
+<<<<<<< Updated upstream
 /** base58-encoded PIVX addresses.
+=======
+/** base58-encoded PrimeStone addresses.
+>>>>>>> Stashed changes
  * Public-key-hash-addresses have version 0 (or 111 testnet).
  * The data vector contains RIPEMD160(SHA256(pubkey)), where pubkey is the serialized public key.
  * Script-hash-addresses have version 5 (or 196 testnet).
@@ -110,20 +119,31 @@ public:
 class CBitcoinAddress : public CBase58Data
 {
 public:
+<<<<<<< Updated upstream
     bool Set(const CKeyID& id, const CChainParams::Base58Type addrType = CChainParams::PUBKEY_ADDRESS);
     bool Set(const CScriptID& id);
     bool Set(const CTxDestination& dest, const CChainParams::Base58Type addrType = CChainParams::PUBKEY_ADDRESS);
+=======
+    bool Set(const CKeyID& id);
+    bool Set(const CScriptID& id);
+    bool Set(const CTxDestination& dest);
+>>>>>>> Stashed changes
     bool IsValid() const;
     bool IsValid(const CChainParams& params) const;
 
     CBitcoinAddress() {}
+<<<<<<< Updated upstream
     CBitcoinAddress(const CTxDestination& dest, const CChainParams::Base58Type addrType = CChainParams::PUBKEY_ADDRESS) { Set(dest, addrType); }
+=======
+    CBitcoinAddress(const CTxDestination& dest) { Set(dest); }
+>>>>>>> Stashed changes
     CBitcoinAddress(const std::string& strAddress) { SetString(strAddress); }
     CBitcoinAddress(const char* pszAddress) { SetString(pszAddress); }
 
     CTxDestination Get() const;
     bool GetKeyID(CKeyID& keyID) const;
     bool IsScript() const;
+<<<<<<< Updated upstream
     bool IsStakingAddress() const;
 
 
@@ -135,6 +155,8 @@ public:
     static const CBitcoinAddress newInstance(const CTxDestination& dest) {
         return CBitcoinAddress(dest, CChainParams::PUBKEY_ADDRESS);
     }
+=======
+>>>>>>> Stashed changes
 };
 
 /**

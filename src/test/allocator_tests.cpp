@@ -5,11 +5,18 @@
 #include "util.h"
 
 #include "allocators.h"
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
 
 #include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_SUITE(allocator_tests, BasicTestingSetup)
+=======
+
+#include <boost/test/unit_test.hpp>
+
+BOOST_AUTO_TEST_SUITE(allocator_tests)
+>>>>>>> Stashed changes
 
 // Dummy memory page locker for platform independent tests
 static const void *last_lock_addr, *last_unlock_addr;

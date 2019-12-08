@@ -16,12 +16,19 @@
 #include "serialize.h"
 #include "util.h"
 
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
 
+=======
+>>>>>>> Stashed changes
 #include <stdint.h>
 
 #include <boost/assign/list_of.hpp> // for 'map_list_of()'
 #include <boost/date_time/posix_time/posix_time_types.hpp>
+<<<<<<< Updated upstream
+=======
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 #include <boost/test/unit_test.hpp>
 
 // Tests this internal-to-main.cpp method:
@@ -42,7 +49,11 @@ CService ip(uint32_t i)
     return CService(CNetAddr(s), Params().GetDefaultPort());
 }
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(DoS_tests, TestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(DoS_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(DoS_banning)
 {
@@ -107,10 +118,17 @@ BOOST_AUTO_TEST_CASE(DoS_bantime)
     BOOST_CHECK(!CNode::IsBanned(addr));
 }
 
+<<<<<<< Updated upstream
 CTransaction RandomOrphan()
 {
     std::map<uint256, COrphanTx>::iterator it;
     it = mapOrphanTransactions.lower_bound(InsecureRand256());
+=======
+CTransaction RanPrimeStonerphan()
+{
+    std::map<uint256, COrphanTx>::iterator it;
+    it = mapOrphanTransactions.lower_bound(GetRandHash());
+>>>>>>> Stashed changes
     if (it == mapOrphanTransactions.end())
         it = mapOrphanTransactions.begin();
     return it->second.tx;
@@ -129,7 +147,11 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
         CMutableTransaction tx;
         tx.vin.resize(1);
         tx.vin[0].prevout.n = 0;
+<<<<<<< Updated upstream
         tx.vin[0].prevout.hash = InsecureRand256();
+=======
+        tx.vin[0].prevout.hash = GetRandHash();
+>>>>>>> Stashed changes
         tx.vin[0].scriptSig << OP_1;
         tx.vout.resize(1);
         tx.vout[0].nValue = 1*CENT;
@@ -141,7 +163,11 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
     // ... and 50 that depend on other orphans:
     for (int i = 0; i < 50; i++)
     {
+<<<<<<< Updated upstream
         CTransaction txPrev = RandomOrphan();
+=======
+        CTransaction txPrev = RanPrimeStonerphan();
+>>>>>>> Stashed changes
 
         CMutableTransaction tx;
         tx.vin.resize(1);
@@ -158,7 +184,11 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
     // This really-big orphan should be ignored:
     for (int i = 0; i < 10; i++)
     {
+<<<<<<< Updated upstream
         CTransaction txPrev = RandomOrphan();
+=======
+        CTransaction txPrev = RanPrimeStonerphan();
+>>>>>>> Stashed changes
 
         CMutableTransaction tx;
         tx.vout.resize(1);

@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2012 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -26,6 +30,11 @@
 #define SWIFTTX_SIGNATURES_REQUIRED 6
 #define SWIFTTX_SIGNATURES_TOTAL 10
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+using namespace boost;
+>>>>>>> Stashed changes
 
 class CConsensusVote;
 class CTransaction;
@@ -33,10 +42,17 @@ class CTransactionLock;
 
 static const int MIN_SWIFTTX_PROTO_VERSION = 70103;
 
+<<<<<<< Updated upstream
 extern std::map<uint256, CTransaction> mapTxLockReq;
 extern std::map<uint256, CTransaction> mapTxLockReqRejected;
 extern std::map<uint256, CConsensusVote> mapTxLockVote;
 extern std::map<uint256, CTransactionLock> mapTxLocks;
+=======
+extern map<uint256, CTransaction> mapTxLockReq;
+extern map<uint256, CTransaction> mapTxLockReqRejected;
+extern map<uint256, CConsensusVote> mapTxLockVote;
+extern map<uint256, CTransactionLock> mapTxLocks;
+>>>>>>> Stashed changes
 extern std::map<COutPoint, uint256> mapLockedInputs;
 extern int nCompleteTXLocks;
 
@@ -64,12 +80,17 @@ int GetTransactionLockSignatures(uint256 txHash);
 
 int64_t GetAverageVoteTime();
 
+<<<<<<< Updated upstream
 class CConsensusVote : public CSignedMessage
+=======
+class CConsensusVote
+>>>>>>> Stashed changes
 {
 public:
     CTxIn vinMasternode;
     uint256 txHash;
     int nBlockHeight;
+<<<<<<< Updated upstream
 
     CConsensusVote() :
         CSignedMessage(),
@@ -84,6 +105,14 @@ public:
     uint256 GetSignatureHash() const override;
     std::string GetStrMessage() const override;
     const CTxIn GetVin() const override { return vinMasternode; };
+=======
+    std::vector<unsigned char> vchMasterNodeSignature;
+
+    uint256 GetHash() const;
+
+    bool SignatureValid();
+    bool Sign();
+>>>>>>> Stashed changes
 
     ADD_SERIALIZE_METHODS;
 
@@ -92,6 +121,7 @@ public:
     {
         READWRITE(txHash);
         READWRITE(vinMasternode);
+<<<<<<< Updated upstream
         READWRITE(vchSig);
         READWRITE(nBlockHeight);
         try
@@ -100,6 +130,10 @@ public:
         } catch (...) {
             nMessVersion = MessageVersion::MESS_VER_STRMESS;
         }
+=======
+        READWRITE(vchMasterNodeSignature);
+        READWRITE(nBlockHeight);
+>>>>>>> Stashed changes
     }
 };
 

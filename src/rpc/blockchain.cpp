@@ -1,20 +1,29 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "base58.h"
 #include "checkpoints.h"
 #include "clientversion.h"
+<<<<<<< Updated upstream
 #include "kernel.h"
+=======
+>>>>>>> Stashed changes
 #include "main.h"
 #include "rpc/server.h"
 #include "sync.h"
 #include "txdb.h"
 #include "util.h"
 #include "utilmoneystr.h"
+<<<<<<< Updated upstream
 #include "zpiv/accumulatormap.h"
 #include "zpiv/accumulators.h"
 #include "wallet/wallet.h"
@@ -38,6 +47,15 @@ struct CUpdatedBlock
 static std::mutex cs_blockchange;
 static std::condition_variable cond_blockchange;
 static CUpdatedBlock latestblock;
+=======
+#include "accumulatormap.h"
+#include "accumulators.h"
+
+#include <stdint.h>
+#include <univalue.h>
+
+using namespace std;
+>>>>>>> Stashed changes
 
 extern void TxToJSON(const CTransaction& tx, const uint256 hashBlock, UniValue& entry);
 void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fIncludeHex);
@@ -83,7 +101,10 @@ UniValue blockheaderToJSON(const CBlockIndex* blockindex)
     result.push_back(Pair("version", blockindex->nVersion));
     result.push_back(Pair("merkleroot", blockindex->hashMerkleRoot.GetHex()));
     result.push_back(Pair("time", (int64_t)blockindex->nTime));
+<<<<<<< Updated upstream
     result.push_back(Pair("mediantime", (int64_t)blockindex->GetMedianTimePast()));
+=======
+>>>>>>> Stashed changes
     result.push_back(Pair("nonce", (uint64_t)blockindex->nNonce));
     result.push_back(Pair("bits", strprintf("%08x", blockindex->nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
@@ -113,7 +134,11 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     result.push_back(Pair("merkleroot", block.hashMerkleRoot.GetHex()));
     result.push_back(Pair("acc_checkpoint", block.nAccumulatorCheckpoint.GetHex()));
     UniValue txs(UniValue::VARR);
+<<<<<<< Updated upstream
     for (const CTransaction& tx : block.vtx) {
+=======
+    BOOST_FOREACH (const CTransaction& tx, block.vtx) {
+>>>>>>> Stashed changes
         if (txDetails) {
             UniValue objTx(UniValue::VOBJ);
             TxToJSON(tx, uint256(0), objTx);
@@ -123,7 +148,10 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     }
     result.push_back(Pair("tx", txs));
     result.push_back(Pair("time", block.GetBlockTime()));
+<<<<<<< Updated upstream
     result.push_back(Pair("mediantime", (int64_t)blockindex->GetMedianTimePast()));
+=======
+>>>>>>> Stashed changes
     result.push_back(Pair("nonce", (uint64_t)block.nNonce));
     result.push_back(Pair("bits", strprintf("%08x", block.nBits)));
     result.push_back(Pair("difficulty", GetDifficulty(blockindex)));
@@ -135,6 +163,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
     if (pnext)
         result.push_back(Pair("nextblockhash", pnext->GetBlockHash().GetHex()));
 
+<<<<<<< Updated upstream
     result.push_back(Pair("modifier", strprintf("%016x", blockindex->nStakeModifier)));
     result.push_back(Pair("modifierV2", blockindex->nStakeModifierV2.GetHex()));
 
@@ -171,10 +200,21 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
                 stake->getStakeModifierHeight()))));
         result.push_back(Pair("CoinStake", stakeData));
     }
+=======
+    result.push_back(Pair("moneysupply",ValueFromAmount(blockindex->nMoneySupply)));
+
+    UniValue zPSCObj(UniValue::VOBJ);
+    for (auto denom : libzerocoin::zerocoinDenomList) {
+        zPSCObj.push_back(Pair(to_string(denom), ValueFromAmount(blockindex->mapZerocoinSupply.at(denom) * (denom*COIN))));
+    }
+    zPSCObj.push_back(Pair("total", ValueFromAmount(blockindex->GetZerocoinSupply())));
+    result.push_back(Pair("zPSCsupply", zPSCObj));
+>>>>>>> Stashed changes
 
     return result;
 }
 
+<<<<<<< Updated upstream
 UniValue getchecksumblock(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 2 || params.size() > 3)
@@ -265,6 +305,12 @@ UniValue getblockcount(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw std::runtime_error(
+=======
+UniValue getblockcount(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getblockcount\n"
             "\nReturns the number of blocks in the longest block chain.\n"
 
@@ -281,7 +327,11 @@ UniValue getblockcount(const UniValue& params, bool fHelp)
 UniValue getbestblockhash(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getbestblockhash\n"
             "\nReturns the hash of the best (tip) block in the longest block chain.\n"
 
@@ -295,6 +345,7 @@ UniValue getbestblockhash(const UniValue& params, bool fHelp)
     return chainActive.Tip()->GetBlockHash().GetHex();
 }
 
+<<<<<<< Updated upstream
 void RPCNotifyBlockChange(const uint256 hashBlock)
 {
     CBlockIndex* pindex = nullptr;
@@ -441,6 +492,12 @@ UniValue getdifficulty(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw std::runtime_error(
+=======
+UniValue getdifficulty(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getdifficulty\n"
             "\nReturns the proof-of-work difficulty as a multiple of the minimum difficulty.\n"
 
@@ -460,7 +517,11 @@ UniValue mempoolToJSON(bool fVerbose = false)
     if (fVerbose) {
         LOCK(mempool.cs);
         UniValue o(UniValue::VOBJ);
+<<<<<<< Updated upstream
         for (const PAIRTYPE(uint256, CTxMemPoolEntry) & entry : mempool.mapTx) {
+=======
+        BOOST_FOREACH (const PAIRTYPE(uint256, CTxMemPoolEntry) & entry, mempool.mapTx) {
+>>>>>>> Stashed changes
             const uint256& hash = entry.first;
             const CTxMemPoolEntry& e = entry.second;
             UniValue info(UniValue::VOBJ);
@@ -471,14 +532,23 @@ UniValue mempoolToJSON(bool fVerbose = false)
             info.push_back(Pair("startingpriority", e.GetPriority(e.GetHeight())));
             info.push_back(Pair("currentpriority", e.GetPriority(chainActive.Height())));
             const CTransaction& tx = e.GetTx();
+<<<<<<< Updated upstream
             std::set<std::string> setDepends;
             for (const CTxIn& txin : tx.vin) {
+=======
+            set<string> setDepends;
+            BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+>>>>>>> Stashed changes
                 if (mempool.exists(txin.prevout.hash))
                     setDepends.insert(txin.prevout.hash.ToString());
             }
 
             UniValue depends(UniValue::VARR);
+<<<<<<< Updated upstream
             for (const std::string& dep : setDepends) {
+=======
+            BOOST_FOREACH(const string& dep, setDepends) {
+>>>>>>> Stashed changes
                 depends.push_back(dep);
             }
 
@@ -487,11 +557,19 @@ UniValue mempoolToJSON(bool fVerbose = false)
         }
         return o;
     } else {
+<<<<<<< Updated upstream
         std::vector<uint256> vtxid;
         mempool.queryHashes(vtxid);
 
         UniValue a(UniValue::VARR);
         for (const uint256& hash : vtxid)
+=======
+        vector<uint256> vtxid;
+        mempool.queryHashes(vtxid);
+
+        UniValue a(UniValue::VARR);
+        BOOST_FOREACH (const uint256& hash, vtxid)
+>>>>>>> Stashed changes
             a.push_back(hash.ToString());
 
         return a;
@@ -501,7 +579,11 @@ UniValue mempoolToJSON(bool fVerbose = false)
 UniValue getrawmempool(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getrawmempool ( verbose )\n"
             "\nReturns all transaction ids in memory pool as a json array of string transaction ids.\n"
 
@@ -518,7 +600,11 @@ UniValue getrawmempool(const UniValue& params, bool fHelp)
             "{                           (json object)\n"
             "  \"transactionid\" : {       (json object)\n"
             "    \"size\" : n,             (numeric) transaction size in bytes\n"
+<<<<<<< Updated upstream
             "    \"fee\" : n,              (numeric) transaction fee in pivx\n"
+=======
+            "    \"fee\" : n,              (numeric) transaction fee in primestone\n"
+>>>>>>> Stashed changes
             "    \"time\" : n,             (numeric) local time transaction entered pool in seconds since 1 Jan 1970 GMT\n"
             "    \"height\" : n,           (numeric) block height when transaction entered pool\n"
             "    \"startingpriority\" : n, (numeric) priority when transaction entered pool\n"
@@ -544,7 +630,11 @@ UniValue getrawmempool(const UniValue& params, bool fHelp)
 UniValue getblockhash(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getblockhash index\n"
             "\nReturns hash of block in best-block-chain at index provided.\n"
 
@@ -570,7 +660,11 @@ UniValue getblockhash(const UniValue& params, bool fHelp)
 UniValue getblock(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getblock \"hash\" ( verbose )\n"
             "\nIf verbose is false, returns a string that is serialized, hex-encoded data for block 'hash'.\n"
             "If verbose is true, returns an Object with information about block <hash>.\n"
@@ -592,13 +686,17 @@ UniValue getblock(const UniValue& params, bool fHelp)
             "     ,...\n"
             "  ],\n"
             "  \"time\" : ttt,          (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)\n"
+<<<<<<< Updated upstream
             "  \"mediantime\" : ttt,    (numeric) The median block time in seconds since epoch (Jan 1 1970 GMT)\n"
+=======
+>>>>>>> Stashed changes
             "  \"nonce\" : n,           (numeric) The nonce\n"
             "  \"bits\" : \"1d00ffff\", (string) The bits\n"
             "  \"difficulty\" : x.xxx,  (numeric) The difficulty\n"
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
             "  \"moneysupply\" : \"supply\"       (numeric) The money supply when this block was added to the blockchain\n"
+<<<<<<< Updated upstream
             "  \"zPIVsupply\" :\n"
             "  {\n"
             "     \"1\" : n,            (numeric) supply of 1 zPIV denomination\n"
@@ -616,6 +714,19 @@ UniValue getblock(const UniValue& params, bool fHelp)
             "    \"BlockFromHeight\" : n,           (numeric) Block Height of the coin stake input\n"
             "    \"hashProofOfStake\" : \"hash\",   (string) Proof of Stake hash\n"
             "    \"stakeModifierHeight\" : \"nnn\"  (string) Stake modifier block height\n"
+=======
+            "  \"zPSCsupply\" :\n"
+            "  {\n"
+            "     \"1\" : n,            (numeric) supply of 1 zPSC denomination\n"
+            "     \"5\" : n,            (numeric) supply of 5 zPSC denomination\n"
+            "     \"10\" : n,           (numeric) supply of 10 zPSC denomination\n"
+            "     \"50\" : n,           (numeric) supply of 50 zPSC denomination\n"
+            "     \"100\" : n,          (numeric) supply of 100 zPSC denomination\n"
+            "     \"500\" : n,          (numeric) supply of 500 zPSC denomination\n"
+            "     \"1000\" : n,         (numeric) supply of 1000 zPSC denomination\n"
+            "     \"5000\" : n,         (numeric) supply of 5000 zPSC denomination\n"
+            "     \"total\" : n,        (numeric) The total supply of all zPSC denominations\n"
+>>>>>>> Stashed changes
             "  }\n"
             "}\n"
 
@@ -657,7 +768,11 @@ UniValue getblock(const UniValue& params, bool fHelp)
 UniValue getblockheader(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getblockheader \"hash\" ( verbose )\n"
             "\nIf verbose is false, returns a string that is serialized, hex-encoded data for block 'hash' header.\n"
             "If verbose is true, returns an Object with information about block <hash> header.\n"
@@ -672,9 +787,14 @@ UniValue getblockheader(const UniValue& params, bool fHelp)
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"merkleroot\" : \"xxxx\", (string) The merkle root\n"
             "  \"time\" : ttt,          (numeric) The block time in seconds since epoch (Jan 1 1970 GMT)\n"
+<<<<<<< Updated upstream
             "  \"mediantime\" : ttt,    (numeric) The median block time in seconds since epoch (Jan 1 1970 GMT)\n"
             "  \"nonce\" : n,           (numeric) The nonce\n"
             "  \"bits\" : \"1d00ffff\", (string) The bits\n"
+=======
+            "  \"bits\" : \"1d00ffff\", (string) The bits\n"
+            "  \"nonce\" : n,           (numeric) The nonce\n"
+>>>>>>> Stashed changes
             "}\n"
 
             "\nResult (for verbose=false):\n"
@@ -709,7 +829,11 @@ UniValue getblockheader(const UniValue& params, bool fHelp)
 UniValue gettxoutsetinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "gettxoutsetinfo\n"
             "\nReturns statistics about the unspent transaction output set.\n"
             "Note this call may take some time.\n"
@@ -749,7 +873,11 @@ UniValue gettxoutsetinfo(const UniValue& params, bool fHelp)
 UniValue gettxout(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 2 || params.size() > 3)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "gettxout \"txid\" n ( includemempool )\n"
             "\nReturns details about an unspent transaction output.\n"
 
@@ -768,8 +896,13 @@ UniValue gettxout(const UniValue& params, bool fHelp)
             "     \"hex\" : \"hex\",        (string) \n"
             "     \"reqSigs\" : n,          (numeric) Number of required signatures\n"
             "     \"type\" : \"pubkeyhash\", (string) The type, eg pubkeyhash\n"
+<<<<<<< Updated upstream
             "     \"addresses\" : [          (array of string) array of pivx addresses\n"
             "     \"pivxaddress\"            (string) pivx address\n"
+=======
+            "     \"addresses\" : [          (array of string) array of primestone addresses\n"
+            "     \"primestoneaddress\"   	 	(string) primestone address\n"
+>>>>>>> Stashed changes
             "        ,...\n"
             "     ]\n"
             "  },\n"
@@ -829,8 +962,13 @@ UniValue gettxout(const UniValue& params, bool fHelp)
 
 UniValue verifychain(const UniValue& params, bool fHelp)
 {
+<<<<<<< Updated upstream
     if (fHelp || params.size() > 1)
         throw std::runtime_error(
+=======
+    if (fHelp || params.size() > 2)
+        throw runtime_error(
+>>>>>>> Stashed changes
             "verifychain ( numblocks )\n"
             "\nVerifies blockchain database.\n"
 
@@ -848,7 +986,11 @@ UniValue verifychain(const UniValue& params, bool fHelp)
     int nCheckLevel = 4;
     int nCheckDepth = GetArg("-checkblocks", 288);
     if (params.size() > 0)
+<<<<<<< Updated upstream
         nCheckDepth = params[0].get_int();
+=======
+        nCheckDepth = params[1].get_int();
+>>>>>>> Stashed changes
 
     fVerifyingBlocks = true;
     bool fVerified = CVerifyDB().VerifyDB(pcoinsTip, nCheckLevel, nCheckDepth);
@@ -857,6 +999,7 @@ UniValue verifychain(const UniValue& params, bool fHelp)
     return fVerified;
 }
 
+<<<<<<< Updated upstream
 /** Implementation of IsSuperMajority with better feedback */
 static UniValue SoftForkMajorityDesc(int minVersion, CBlockIndex* pindex, int nRequired)
 {
@@ -889,6 +1032,12 @@ UniValue getblockchaininfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
         throw std::runtime_error(
+=======
+UniValue getblockchaininfo(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getblockchaininfo\n"
             "Returns an object containing various state info regarding block chain processing.\n"
 
@@ -901,6 +1050,7 @@ UniValue getblockchaininfo(const UniValue& params, bool fHelp)
             "  \"difficulty\": xxxxxx,     (numeric) the current difficulty\n"
             "  \"verificationprogress\": xxxx, (numeric) estimate of verification progress [0..1]\n"
             "  \"chainwork\": \"xxxx\"     (string) total amount of work in active chain, in hexadecimal\n"
+<<<<<<< Updated upstream
             "  \"softforks\": [            (array) status of softforks in progress\n"
             "     {\n"
             "        \"id\": \"xxxx\",        (string) name of softfork\n"
@@ -914,6 +1064,8 @@ UniValue getblockchaininfo(const UniValue& params, bool fHelp)
             "        \"reject\": { ... }      (object) progress toward rejecting pre-softfork blocks (same fields as \"enforce\")\n"
             "     }, ...\n"
             "  ]\n"
+=======
+>>>>>>> Stashed changes
             "}\n"
 
             "\nExamples:\n" +
@@ -929,10 +1081,13 @@ UniValue getblockchaininfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("difficulty", (double)GetDifficulty()));
     obj.push_back(Pair("verificationprogress", Checkpoints::GuessVerificationProgress(chainActive.Tip())));
     obj.push_back(Pair("chainwork", chainActive.Tip()->nChainWork.GetHex()));
+<<<<<<< Updated upstream
     CBlockIndex* tip = chainActive.Tip();
     UniValue softforks(UniValue::VARR);
     softforks.push_back(SoftForkDesc("bip65", 5, tip));
     obj.push_back(Pair("softforks",             softforks));
+=======
+>>>>>>> Stashed changes
     return obj;
 }
 
@@ -953,7 +1108,11 @@ struct CompareBlocksByHeight {
 UniValue getchaintips(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getchaintips\n"
             "Return information about all known tips in the block tree,"
             " including the main chain as well as orphaned branches.\n"
@@ -990,9 +1149,15 @@ UniValue getchaintips(const UniValue& params, bool fHelp)
        known blocks, and successively remove blocks that appear as pprev
        of another block.  */
     std::set<const CBlockIndex*, CompareBlocksByHeight> setTips;
+<<<<<<< Updated upstream
     for (const PAIRTYPE(const uint256, CBlockIndex*) & item : mapBlockIndex)
         setTips.insert(item.second);
     for (const PAIRTYPE(const uint256, CBlockIndex*) & item : mapBlockIndex) {
+=======
+    BOOST_FOREACH (const PAIRTYPE(const uint256, CBlockIndex*) & item, mapBlockIndex)
+        setTips.insert(item.second);
+    BOOST_FOREACH (const PAIRTYPE(const uint256, CBlockIndex*) & item, mapBlockIndex) {
+>>>>>>> Stashed changes
         const CBlockIndex* pprev = item.second->pprev;
         if (pprev)
             setTips.erase(pprev);
@@ -1003,7 +1168,11 @@ UniValue getchaintips(const UniValue& params, bool fHelp)
 
     /* Construct the output array.  */
     UniValue res(UniValue::VARR);
+<<<<<<< Updated upstream
     for (const CBlockIndex* block : setTips) {
+=======
+    BOOST_FOREACH (const CBlockIndex* block, setTips) {
+>>>>>>> Stashed changes
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("height", block->nHeight));
         obj.push_back(Pair("hash", block->phashBlock->GetHex()));
@@ -1011,7 +1180,11 @@ UniValue getchaintips(const UniValue& params, bool fHelp)
         const int branchLen = block->nHeight - chainActive.FindFork(block)->nHeight;
         obj.push_back(Pair("branchlen", branchLen));
 
+<<<<<<< Updated upstream
         std::string status;
+=======
+        string status;
+>>>>>>> Stashed changes
         if (chainActive.Contains(block)) {
             // This block is part of the currently active chain.
             status = "active";
@@ -1042,7 +1215,11 @@ UniValue getchaintips(const UniValue& params, bool fHelp)
 UniValue getfeeinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getfeeinfo blocks\n"
             "\nReturns details of transaction fees over the last n blocks.\n"
 
@@ -1061,22 +1238,84 @@ UniValue getfeeinfo(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getfeeinfo", "5") + HelpExampleRpc("getfeeinfo", "5"));
 
+<<<<<<< Updated upstream
     int nBlocks = params[0].get_int();
     int nBestHeight;
     {
         LOCK(cs_main);
         nBestHeight = chainActive.Height();
     }
+=======
+    LOCK(cs_main);
+
+    int nBlocks = params[0].get_int();
+    int nBestHeight = chainActive.Height();
+>>>>>>> Stashed changes
     int nStartHeight = nBestHeight - nBlocks;
     if (nBlocks < 0 || nStartHeight <= 0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "invalid start height");
 
+<<<<<<< Updated upstream
     UniValue newParams(UniValue::VARR);
     newParams.push_back(UniValue(nStartHeight));
     newParams.push_back(UniValue(nBlocks));
     newParams.push_back(UniValue(true));    // fFeeOnly
 
     return getblockindexstats(newParams, false);
+=======
+    CAmount nFees = 0;
+    int64_t nBytes = 0;
+    int64_t nTotal = 0;
+    for (int i = nStartHeight; i <= nBestHeight; i++) {
+        CBlockIndex* pindex = chainActive[i];
+        CBlock block;
+        if (!ReadBlockFromDisk(block, pindex))
+            throw JSONRPCError(RPC_DATABASE_ERROR, "failed to read block from disk");
+
+        CAmount nValueIn = 0;
+        CAmount nValueOut = 0;
+        for (const CTransaction& tx : block.vtx) {
+            if (tx.IsCoinBase() || tx.IsCoinStake())
+                continue;
+
+            for (unsigned int j = 0; j < tx.vin.size(); j++) {
+                if (tx.vin[j].scriptSig.IsZerocoinSpend()) {
+                    nValueIn += tx.vin[j].nSequence * COIN;
+                    continue;
+                }
+
+                COutPoint prevout = tx.vin[j].prevout;
+                CTransaction txPrev;
+                uint256 hashBlock;
+                if(!GetTransaction(prevout.hash, txPrev, hashBlock, true))
+                    throw JSONRPCError(RPC_DATABASE_ERROR, "failed to read tx from disk");
+                nValueIn += txPrev.vout[prevout.n].nValue;
+            }
+
+            for (unsigned int j = 0; j < tx.vout.size(); j++) {
+                nValueOut += tx.vout[j].nValue;
+            }
+
+            nFees += nValueIn - nValueOut;
+            nBytes += tx.GetSerializeSize(SER_NETWORK, CLIENT_VERSION);
+            nTotal++;
+        }
+
+        pindex = chainActive.Next(pindex);
+        if (!pindex)
+            break;
+    }
+
+    UniValue ret(UniValue::VOBJ);
+    CFeeRate nFeeRate = CFeeRate(nFees, nBytes);
+    ret.push_back(Pair("txcount", (int64_t)nTotal));
+    ret.push_back(Pair("txbytes", (int64_t)nBytes));
+    ret.push_back(Pair("ttlfee", FormatMoney(nFees)));
+    ret.push_back(Pair("feeperkb", FormatMoney(nFeeRate.GetFeePerK())));
+    ret.push_back(Pair("rec_highpriorityfee_perkb", FormatMoney(nFeeRate.GetFeePerK() + 1000)));
+
+    return ret;
+>>>>>>> Stashed changes
 }
 
 UniValue mempoolInfoToJSON()
@@ -1092,7 +1331,11 @@ UniValue mempoolInfoToJSON()
 UniValue getmempoolinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getmempoolinfo\n"
             "\nReturns details on the active state of the TX memory pool.\n"
 
@@ -1111,7 +1354,11 @@ UniValue getmempoolinfo(const UniValue& params, bool fHelp)
 UniValue invalidateblock(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "invalidateblock \"hash\"\n"
             "\nPermanently marks a block as invalid, as if it violated a consensus rule.\n"
 
@@ -1148,7 +1395,11 @@ UniValue invalidateblock(const UniValue& params, bool fHelp)
 UniValue reconsiderblock(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "reconsiderblock \"hash\"\n"
             "\nRemoves invalidity status of a block and its descendants, reconsider them for activation.\n"
             "This can be used to undo the effects of invalidateblock.\n"
@@ -1186,7 +1437,11 @@ UniValue reconsiderblock(const UniValue& params, bool fHelp)
 UniValue findserial(const UniValue& params, bool fHelp)
 {
     if(fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "findserial \"serial\"\n"
             "\nSearches the zerocoin database for a zerocoin spend transaction that contains the specified serial\n"
 
@@ -1206,7 +1461,11 @@ UniValue findserial(const UniValue& params, bool fHelp)
     CBigNum bnSerial = 0;
     bnSerial.SetHex(strSerial);
     if (!bnSerial)
+<<<<<<< Updated upstream
     throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid serial");
+=======
+	throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid serial");
+>>>>>>> Stashed changes
 
     uint256 txid = 0;
     bool fSuccess = zerocoinDB->ReadCoinSpend(bnSerial, txid);
@@ -1220,7 +1479,11 @@ UniValue findserial(const UniValue& params, bool fHelp)
 UniValue getaccumulatorvalues(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getaccumulatorvalues \"height\"\n"
                     "\nReturns the accumulator values associated with a block height\n"
 
@@ -1248,6 +1511,7 @@ UniValue getaccumulatorvalues(const UniValue& params, bool fHelp)
     }
 
     return ret;
+<<<<<<< Updated upstream
 }
 
 
@@ -1687,3 +1951,6 @@ UniValue getblockindexstats(const UniValue& params, bool fHelp) {
 
 }
 
+=======
+}
+>>>>>>> Stashed changes

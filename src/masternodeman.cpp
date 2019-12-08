@@ -1,5 +1,10 @@
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,11 +12,18 @@
 #include "activemasternode.h"
 #include "addrman.h"
 #include "masternode.h"
+<<<<<<< Updated upstream
 #include "messagesigner.h"
+=======
+>>>>>>> Stashed changes
 #include "obfuscation.h"
 #include "spork.h"
 #include "util.h"
 #include <boost/filesystem.hpp>
+<<<<<<< Updated upstream
+=======
+#include <boost/lexical_cast.hpp>
+>>>>>>> Stashed changes
 
 #define MN_WINNER_MINIMUM_AGE 8000    // Age in seconds. This should be > MASTERNODE_REMOVAL_SECONDS to avoid misconfigured new nodes in the list.
 
@@ -19,24 +31,39 @@
 CMasternodeMan mnodeman;
 
 struct CompareLastPaid {
+<<<<<<< Updated upstream
     bool operator()(const std::pair<int64_t, CTxIn>& t1,
         const std::pair<int64_t, CTxIn>& t2) const
+=======
+    bool operator()(const pair<int64_t, CTxIn>& t1,
+        const pair<int64_t, CTxIn>& t2) const
+>>>>>>> Stashed changes
     {
         return t1.first < t2.first;
     }
 };
 
 struct CompareScoreTxIn {
+<<<<<<< Updated upstream
     bool operator()(const std::pair<int64_t, CTxIn>& t1,
         const std::pair<int64_t, CTxIn>& t2) const
+=======
+    bool operator()(const pair<int64_t, CTxIn>& t1,
+        const pair<int64_t, CTxIn>& t2) const
+>>>>>>> Stashed changes
     {
         return t1.first < t2.first;
     }
 };
 
 struct CompareScoreMN {
+<<<<<<< Updated upstream
     bool operator()(const std::pair<int64_t, CMasternode>& t1,
         const std::pair<int64_t, CMasternode>& t2) const
+=======
+    bool operator()(const pair<int64_t, CMasternode>& t1,
+        const pair<int64_t, CMasternode>& t2) const
+>>>>>>> Stashed changes
     {
         return t1.first < t2.first;
     }
@@ -73,7 +100,11 @@ bool CMasternodeDB::Write(const CMasternodeMan& mnodemanToSave)
     // Write and commit header, data
     try {
         fileout << ssMasternodes;
+<<<<<<< Updated upstream
     } catch (const std::exception& e) {
+=======
+    } catch (std::exception& e) {
+>>>>>>> Stashed changes
         return error("%s : Serialize or I/O error - %s", __func__, e.what());
     }
     //    FileCommit(fileout);
@@ -102,7 +133,11 @@ CMasternodeDB::ReadResult CMasternodeDB::Read(CMasternodeMan& mnodemanToLoad, bo
     // Don't try to resize to a negative number if file is small
     if (dataSize < 0)
         dataSize = 0;
+<<<<<<< Updated upstream
     std::vector<unsigned char> vchData;
+=======
+    vector<unsigned char> vchData;
+>>>>>>> Stashed changes
     vchData.resize(dataSize);
     uint256 hashIn;
 
@@ -110,7 +145,11 @@ CMasternodeDB::ReadResult CMasternodeDB::Read(CMasternodeMan& mnodemanToLoad, bo
     try {
         filein.read((char*)&vchData[0], dataSize);
         filein >> hashIn;
+<<<<<<< Updated upstream
     } catch (const std::exception& e) {
+=======
+    } catch (std::exception& e) {
+>>>>>>> Stashed changes
         error("%s : Deserialize or I/O error - %s", __func__, e.what());
         return HashReadError;
     }
@@ -148,7 +187,11 @@ CMasternodeDB::ReadResult CMasternodeDB::Read(CMasternodeMan& mnodemanToLoad, bo
         }
         // de-serialize data into CMasternodeMan object
         ssMasternodes >> mnodemanToLoad;
+<<<<<<< Updated upstream
     } catch (const std::exception& e) {
+=======
+    } catch (std::exception& e) {
+>>>>>>> Stashed changes
         mnodemanToLoad.Clear();
         error("%s : Deserialize or I/O error - %s", __func__, e.what());
         return IncorrectFormat;
@@ -235,7 +278,11 @@ void CMasternodeMan::Check()
 {
     LOCK(cs);
 
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         mn.Check();
     }
 }
@@ -247,7 +294,11 @@ void CMasternodeMan::CheckAndRemove(bool forceExpiredRemoval)
     LOCK(cs);
 
     //remove inactive and outdated
+<<<<<<< Updated upstream
     std::vector<CMasternode>::iterator it = vMasternodes.begin();
+=======
+    vector<CMasternode>::iterator it = vMasternodes.begin();
+>>>>>>> Stashed changes
     while (it != vMasternodes.end()) {
         if ((*it).activeState == CMasternode::MASTERNODE_REMOVE ||
             (*it).activeState == CMasternode::MASTERNODE_VIN_SPENT ||
@@ -258,7 +309,11 @@ void CMasternodeMan::CheckAndRemove(bool forceExpiredRemoval)
             //erase all of the broadcasts we've seen from this vin
             // -- if we missed a few pings and the node was removed, this will allow is to get it back without them
             //    sending a brand new mnb
+<<<<<<< Updated upstream
             std::map<uint256, CMasternodeBroadcast>::iterator it3 = mapSeenMasternodeBroadcast.begin();
+=======
+            map<uint256, CMasternodeBroadcast>::iterator it3 = mapSeenMasternodeBroadcast.begin();
+>>>>>>> Stashed changes
             while (it3 != mapSeenMasternodeBroadcast.end()) {
                 if ((*it3).second.vin == (*it).vin) {
                     masternodeSync.mapSeenSyncMNB.erase((*it3).first);
@@ -269,7 +324,11 @@ void CMasternodeMan::CheckAndRemove(bool forceExpiredRemoval)
             }
 
             // allow us to ask for this masternode again if we see another ping
+<<<<<<< Updated upstream
             std::map<COutPoint, int64_t>::iterator it2 = mWeAskedForMasternodeListEntry.begin();
+=======
+            map<COutPoint, int64_t>::iterator it2 = mWeAskedForMasternodeListEntry.begin();
+>>>>>>> Stashed changes
             while (it2 != mWeAskedForMasternodeListEntry.end()) {
                 if ((*it2).first == (*it).vin.prevout) {
                     mWeAskedForMasternodeListEntry.erase(it2++);
@@ -285,7 +344,11 @@ void CMasternodeMan::CheckAndRemove(bool forceExpiredRemoval)
     }
 
     // check who's asked for the Masternode list
+<<<<<<< Updated upstream
     std::map<CNetAddr, int64_t>::iterator it1 = mAskedUsForMasternodeList.begin();
+=======
+    map<CNetAddr, int64_t>::iterator it1 = mAskedUsForMasternodeList.begin();
+>>>>>>> Stashed changes
     while (it1 != mAskedUsForMasternodeList.end()) {
         if ((*it1).second < GetTime()) {
             mAskedUsForMasternodeList.erase(it1++);
@@ -305,7 +368,11 @@ void CMasternodeMan::CheckAndRemove(bool forceExpiredRemoval)
     }
 
     // check which Masternodes we've asked for
+<<<<<<< Updated upstream
     std::map<COutPoint, int64_t>::iterator it2 = mWeAskedForMasternodeListEntry.begin();
+=======
+    map<COutPoint, int64_t>::iterator it2 = mWeAskedForMasternodeListEntry.begin();
+>>>>>>> Stashed changes
     while (it2 != mWeAskedForMasternodeListEntry.end()) {
         if ((*it2).second < GetTime()) {
             mWeAskedForMasternodeListEntry.erase(it2++);
@@ -315,7 +382,11 @@ void CMasternodeMan::CheckAndRemove(bool forceExpiredRemoval)
     }
 
     // remove expired mapSeenMasternodeBroadcast
+<<<<<<< Updated upstream
     std::map<uint256, CMasternodeBroadcast>::iterator it3 = mapSeenMasternodeBroadcast.begin();
+=======
+    map<uint256, CMasternodeBroadcast>::iterator it3 = mapSeenMasternodeBroadcast.begin();
+>>>>>>> Stashed changes
     while (it3 != mapSeenMasternodeBroadcast.end()) {
         if ((*it3).second.lastPing.sigTime < GetTime() - (MASTERNODE_REMOVAL_SECONDS * 2)) {
             mapSeenMasternodeBroadcast.erase(it3++);
@@ -326,7 +397,11 @@ void CMasternodeMan::CheckAndRemove(bool forceExpiredRemoval)
     }
 
     // remove expired mapSeenMasternodePing
+<<<<<<< Updated upstream
     std::map<uint256, CMasternodePing>::iterator it4 = mapSeenMasternodePing.begin();
+=======
+    map<uint256, CMasternodePing>::iterator it4 = mapSeenMasternodePing.begin();
+>>>>>>> Stashed changes
     while (it4 != mapSeenMasternodePing.end()) {
         if ((*it4).second.sigTime < GetTime() - (MASTERNODE_REMOVAL_SECONDS * 2)) {
             mapSeenMasternodePing.erase(it4++);
@@ -355,11 +430,19 @@ int CMasternodeMan::stable_size ()
     int64_t nMasternode_Min_Age = MN_WINNER_MINIMUM_AGE;
     int64_t nMasternode_Age = 0;
 
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
         if (mn.protocolVersion < nMinProtocol) {
             continue; // Skip obsolete versions
         }
         if (sporkManager.IsSporkActive (SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+        if (mn.protocolVersion < nMinProtocol) {
+            continue; // Skip obsolete versions
+        }
+        if (IsSporkActive (SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+>>>>>>> Stashed changes
             nMasternode_Age = GetAdjustedTime() - mn.sigTime;
             if ((nMasternode_Age) < nMasternode_Min_Age) {
                 continue; // Skip masternodes younger than (default) 8000 sec (MUST be > MASTERNODE_REMOVAL_SECONDS)
@@ -380,7 +463,11 @@ int CMasternodeMan::CountEnabled(int protocolVersion)
     int i = 0;
     protocolVersion = protocolVersion == -1 ? masternodePayments.GetMinMasternodePaymentsProto() : protocolVersion;
 
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         mn.Check();
         if (mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
         i++;
@@ -393,7 +480,11 @@ void CMasternodeMan::CountNetworks(int protocolVersion, int& ipv4, int& ipv6, in
 {
     protocolVersion = protocolVersion == -1 ? masternodePayments.GetMinMasternodePaymentsProto() : protocolVersion;
 
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         mn.Check();
         std::string strHost;
         int port;
@@ -440,7 +531,11 @@ CMasternode* CMasternodeMan::Find(const CScript& payee)
     LOCK(cs);
     CScript payee2;
 
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         payee2 = GetScriptForDestination(mn.pubKeyCollateralAddress.GetID());
         if (payee2 == payee)
             return &mn;
@@ -452,7 +547,11 @@ CMasternode* CMasternodeMan::Find(const CTxIn& vin)
 {
     LOCK(cs);
 
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         if (mn.vin.prevout == vin.prevout)
             return &mn;
     }
@@ -464,7 +563,11 @@ CMasternode* CMasternodeMan::Find(const CPubKey& pubKeyMasternode)
 {
     LOCK(cs);
 
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         if (mn.pubKeyMasternode == pubKeyMasternode)
             return &mn;
     }
@@ -479,14 +582,22 @@ CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight
     LOCK(cs);
 
     CMasternode* pBestMasternode = NULL;
+<<<<<<< Updated upstream
     std::vector<std::pair<int64_t, CTxIn> > vecMasternodeLastPaid;
+=======
+    std::vector<pair<int64_t, CTxIn> > vecMasternodeLastPaid;
+>>>>>>> Stashed changes
 
     /*
         Make a vector with all of the last paid times
     */
 
     int nMnCount = CountEnabled();
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         mn.Check();
         if (!mn.IsEnabled()) continue;
 
@@ -502,7 +613,11 @@ CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight
         //make sure it has as many confirmations as there are masternodes
         if (mn.GetMasternodeInputAge() < nMnCount) continue;
 
+<<<<<<< Updated upstream
         vecMasternodeLastPaid.push_back(std::make_pair(mn.SecondsSincePayment(), mn.vin));
+=======
+        vecMasternodeLastPaid.push_back(make_pair(mn.SecondsSincePayment(), mn.vin));
+>>>>>>> Stashed changes
     }
 
     nCount = (int)vecMasternodeLastPaid.size();
@@ -520,7 +635,11 @@ CMasternode* CMasternodeMan::GetNextMasternodeInQueueForPayment(int nBlockHeight
     int nTenthNetwork = CountEnabled() / 10;
     int nCountTenth = 0;
     uint256 nHigh = 0;
+<<<<<<< Updated upstream
     for (PAIRTYPE(int64_t, CTxIn) & s : vecMasternodeLastPaid) {
+=======
+    BOOST_FOREACH (PAIRTYPE(int64_t, CTxIn) & s, vecMasternodeLastPaid) {
+>>>>>>> Stashed changes
         CMasternode* pmn = Find(s.second);
         if (!pmn) break;
 
@@ -549,10 +668,17 @@ CMasternode* CMasternodeMan::FindRandomNotInVec(std::vector<CTxIn>& vecToExclude
     LogPrint("masternode", "CMasternodeMan::FindRandomNotInVec - rand %d\n", rand);
     bool found;
 
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
         if (mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
         found = false;
         for (CTxIn& usedVin : vecToExclude) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+        if (mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
+        found = false;
+        BOOST_FOREACH (CTxIn& usedVin, vecToExclude) {
+>>>>>>> Stashed changes
             if (mn.vin.prevout == usedVin.prevout) {
                 found = true;
                 break;
@@ -573,7 +699,11 @@ CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight,
     CMasternode* winner = NULL;
 
     // scan for winner
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         mn.Check();
         if (mn.protocolVersion < minProtocol || !mn.IsEnabled()) continue;
 
@@ -593,7 +723,11 @@ CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight,
 
 int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol, bool fOnlyActive)
 {
+<<<<<<< Updated upstream
     std::vector<std::pair<int64_t, CTxIn> > vecMasternodeScores;
+=======
+    std::vector<pair<int64_t, CTxIn> > vecMasternodeScores;
+>>>>>>> Stashed changes
     int64_t nMasternode_Min_Age = MN_WINNER_MINIMUM_AGE;
     int64_t nMasternode_Age = 0;
 
@@ -602,13 +736,21 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
     if (!GetBlockHash(hash, nBlockHeight)) return -1;
 
     // scan for winner
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         if (mn.protocolVersion < minProtocol) {
             LogPrint("masternode","Skipping Masternode with obsolete version %d\n", mn.protocolVersion);
             continue;                                                       // Skip obsolete versions
         }
 
+<<<<<<< Updated upstream
         if (sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+=======
+        if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+>>>>>>> Stashed changes
             nMasternode_Age = GetAdjustedTime() - mn.sigTime;
             if ((nMasternode_Age) < nMasternode_Min_Age) {
                 if (fDebug) LogPrint("masternode","Skipping just activated Masternode. Age: %ld\n", nMasternode_Age);
@@ -622,13 +764,21 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
         uint256 n = mn.CalculateScore(1, nBlockHeight);
         int64_t n2 = n.GetCompact(false);
 
+<<<<<<< Updated upstream
         vecMasternodeScores.push_back(std::make_pair(n2, mn.vin));
+=======
+        vecMasternodeScores.push_back(make_pair(n2, mn.vin));
+>>>>>>> Stashed changes
     }
 
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareScoreTxIn());
 
     int rank = 0;
+<<<<<<< Updated upstream
     for (PAIRTYPE(int64_t, CTxIn) & s : vecMasternodeScores) {
+=======
+    BOOST_FOREACH (PAIRTYPE(int64_t, CTxIn) & s, vecMasternodeScores) {
+>>>>>>> Stashed changes
         rank++;
         if (s.second.prevout == vin.prevout) {
             return rank;
@@ -638,38 +788,63 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
     return -1;
 }
 
+<<<<<<< Updated upstream
 std::vector<std::pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int64_t nBlockHeight, int minProtocol)
 {
     std::vector<std::pair<int64_t, CMasternode> > vecMasternodeScores;
     std::vector<std::pair<int, CMasternode> > vecMasternodeRanks;
+=======
+std::vector<pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int64_t nBlockHeight, int minProtocol)
+{
+    std::vector<pair<int64_t, CMasternode> > vecMasternodeScores;
+    std::vector<pair<int, CMasternode> > vecMasternodeRanks;
+>>>>>>> Stashed changes
 
     //make sure we know about this block
     uint256 hash = 0;
     if (!GetBlockHash(hash, nBlockHeight)) return vecMasternodeRanks;
 
     // scan for winner
+<<<<<<< Updated upstream
     for (CMasternode& mn : vMasternodes) {
+=======
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         mn.Check();
 
         if (mn.protocolVersion < minProtocol) continue;
 
         if (!mn.IsEnabled()) {
+<<<<<<< Updated upstream
             vecMasternodeScores.push_back(std::make_pair(9999, mn));
+=======
+            vecMasternodeScores.push_back(make_pair(9999, mn));
+>>>>>>> Stashed changes
             continue;
         }
 
         uint256 n = mn.CalculateScore(1, nBlockHeight);
         int64_t n2 = n.GetCompact(false);
 
+<<<<<<< Updated upstream
         vecMasternodeScores.push_back(std::make_pair(n2, mn));
+=======
+        vecMasternodeScores.push_back(make_pair(n2, mn));
+>>>>>>> Stashed changes
     }
 
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareScoreMN());
 
     int rank = 0;
+<<<<<<< Updated upstream
     for (PAIRTYPE(int64_t, CMasternode) & s : vecMasternodeScores) {
         rank++;
         vecMasternodeRanks.push_back(std::make_pair(rank, s.second));
+=======
+    BOOST_FOREACH (PAIRTYPE(int64_t, CMasternode) & s, vecMasternodeScores) {
+        rank++;
+        vecMasternodeRanks.push_back(make_pair(rank, s.second));
+>>>>>>> Stashed changes
     }
 
     return vecMasternodeRanks;
@@ -677,10 +852,17 @@ std::vector<std::pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int
 
 CMasternode* CMasternodeMan::GetMasternodeByRank(int nRank, int64_t nBlockHeight, int minProtocol, bool fOnlyActive)
 {
+<<<<<<< Updated upstream
     std::vector<std::pair<int64_t, CTxIn> > vecMasternodeScores;
 
     // scan for winner
     for (CMasternode& mn : vMasternodes) {
+=======
+    std::vector<pair<int64_t, CTxIn> > vecMasternodeScores;
+
+    // scan for winner
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
         if (mn.protocolVersion < minProtocol) continue;
         if (fOnlyActive) {
             mn.Check();
@@ -690,13 +872,21 @@ CMasternode* CMasternodeMan::GetMasternodeByRank(int nRank, int64_t nBlockHeight
         uint256 n = mn.CalculateScore(1, nBlockHeight);
         int64_t n2 = n.GetCompact(false);
 
+<<<<<<< Updated upstream
         vecMasternodeScores.push_back(std::make_pair(n2, mn.vin));
+=======
+        vecMasternodeScores.push_back(make_pair(n2, mn.vin));
+>>>>>>> Stashed changes
     }
 
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareScoreTxIn());
 
     int rank = 0;
+<<<<<<< Updated upstream
     for (PAIRTYPE(int64_t, CTxIn) & s : vecMasternodeScores) {
+=======
+    BOOST_FOREACH (PAIRTYPE(int64_t, CTxIn) & s, vecMasternodeScores) {
+>>>>>>> Stashed changes
         rank++;
         if (rank == nRank) {
             return Find(s.second);
@@ -712,7 +902,11 @@ void CMasternodeMan::ProcessMasternodeConnections()
     if (Params().NetworkID() == CBaseChainParams::REGTEST) return;
 
     LOCK(cs_vNodes);
+<<<<<<< Updated upstream
     for (CNode* pnode : vNodes) {
+=======
+    BOOST_FOREACH (CNode* pnode, vNodes) {
+>>>>>>> Stashed changes
         if (pnode->fObfuScationMaster) {
             if (obfuScationPool.pSubmittedToMasternode != NULL && pnode->addr == obfuScationPool.pSubmittedToMasternode->addr) continue;
             LogPrint("masternode","Closing Masternode connection peer=%i \n", pnode->GetId());
@@ -737,7 +931,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             masternodeSync.AddedMasternodeList(mnb.GetHash());
             return;
         }
+<<<<<<< Updated upstream
         mapSeenMasternodeBroadcast.insert(std::make_pair(mnb.GetHash(), mnb));
+=======
+        mapSeenMasternodeBroadcast.insert(make_pair(mnb.GetHash(), mnb));
+>>>>>>> Stashed changes
 
         int nDoS = 0;
         if (!mnb.CheckAndUpdate(nDoS)) {
@@ -750,7 +948,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         // make sure the vout that was signed is related to the transaction that spawned the Masternode
         //  - this is expensive, so it's only done once per Masternode
+<<<<<<< Updated upstream
         if (!mnb.IsInputAssociatedWithPubkey()) {
+=======
+        if (!obfuScationSigner.IsVinAssociatedWithPubkey(mnb.vin, mnb.pubKeyCollateralAddress)) {
+>>>>>>> Stashed changes
             LogPrintf("CMasternodeMan::ProcessMessage() : mnb - Got mismatched pubkey and vin\n");
             Misbehaving(pfrom->GetId(), 33);
             return;
@@ -777,7 +979,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         LogPrint("masternode", "mnp - Masternode ping, vin: %s\n", mnp.vin.prevout.hash.ToString());
 
         if (mapSeenMasternodePing.count(mnp.GetHash())) return; //seen
+<<<<<<< Updated upstream
         mapSeenMasternodePing.insert(std::make_pair(mnp.GetHash(), mnp));
+=======
+        mapSeenMasternodePing.insert(make_pair(mnp.GetHash(), mnp));
+>>>>>>> Stashed changes
 
         int nDoS = 0;
         if (mnp.CheckAndUpdate(nDoS)) return;
@@ -823,7 +1029,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         int nInvCount = 0;
 
+<<<<<<< Updated upstream
         for (CMasternode& mn : vMasternodes) {
+=======
+        BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+>>>>>>> Stashed changes
             if (mn.addr.IsRFC1918()) continue; //local network
 
             if (mn.IsEnabled()) {
@@ -834,7 +1044,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                     pfrom->PushInventory(CInv(MSG_MASTERNODE_ANNOUNCE, hash));
                     nInvCount++;
 
+<<<<<<< Updated upstream
                     if (!mapSeenMasternodeBroadcast.count(hash)) mapSeenMasternodeBroadcast.insert(std::make_pair(hash, mnb));
+=======
+                    if (!mapSeenMasternodeBroadcast.count(hash)) mapSeenMasternodeBroadcast.insert(make_pair(hash, mnb));
+>>>>>>> Stashed changes
 
                     if (vin == mn.vin) {
                         LogPrint("masternode", "dseg - Sent 1 Masternode entry to peer %i\n", pfrom->GetId());
@@ -857,13 +1071,21 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
     // Light version for OLD MASSTERNODES - fake pings, no self-activation
     else if (strCommand == "dsee") { //ObfuScation Election Entry
 
+<<<<<<< Updated upstream
         if (sporkManager.IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return;
+=======
+        if (IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return;
+>>>>>>> Stashed changes
 
         CTxIn vin;
         CService addr;
         CPubKey pubkey;
         CPubKey pubkey2;
+<<<<<<< Updated upstream
         std::vector<unsigned char> vchSig;
+=======
+        vector<unsigned char> vchSig;
+>>>>>>> Stashed changes
         int64_t sigTime;
         int count;
         int current;
@@ -885,7 +1107,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         std::string vchPubKey(pubkey.begin(), pubkey.end());
         std::string vchPubKey2(pubkey2.begin(), pubkey2.end());
 
+<<<<<<< Updated upstream
         strMessage = addr.ToString() + std::to_string(sigTime) + vchPubKey + vchPubKey2 + std::to_string(protocolVersion) + donationAddress.ToString() + std::to_string(donationPercentage);
+=======
+        strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion) + donationAddress.ToString() + boost::lexical_cast<std::string>(donationPercentage);
+>>>>>>> Stashed changes
 
         if (protocolVersion < masternodePayments.GetMinMasternodePaymentsProto()) {
             LogPrintf("CMasternodeMan::ProcessMessage() : dsee - ignoring outdated Masternode %s protocol version %d < %d\n", vin.prevout.hash.ToString(), protocolVersion, masternodePayments.GetMinMasternodePaymentsProto());
@@ -917,17 +1143,30 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
+<<<<<<< Updated upstream
         std::string strError = "";
         if (!CMessageSigner::VerifyMessage(pubkey, vchSig, strMessage, strError)) {
             LogPrintf("CMasternodeMan::ProcessMessage() : dsee - Got bad Masternode address signature: %s\n", strError);
+=======
+        std::string errorMessage = "";
+        if (!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, errorMessage)) {
+            LogPrintf("CMasternodeMan::ProcessMessage() : dsee - Got bad Masternode address signature\n");
+>>>>>>> Stashed changes
             Misbehaving(pfrom->GetId(), 100);
             return;
         }
 
+<<<<<<< Updated upstream
         if (Params().NetworkID() == CBaseChainParams::MAIN) {
             if (addr.GetPort() != 51472) return;
         } else if (addr.GetPort() == 51472)
             return;
+=======
+        // if (Params().NetworkID() == CBaseChainParams::MAIN) {
+        //     if (addr.GetPort() != 34124) return;
+        // } else if (addr.GetPort() == 34124)
+        //     return;
+>>>>>>> Stashed changes
 
         //search existing Masternode list, this is where we update existing Masternodes with new dsee broadcasts
         CMasternode* pmn = this->Find(vin);
@@ -943,7 +1182,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                     if (pmn->protocolVersion < GETHEADERS_VERSION) {
                         pmn->pubKeyMasternode = pubkey2;
                         pmn->sigTime = sigTime;
+<<<<<<< Updated upstream
                         pmn->SetVchSig(vchSig);
+=======
+                        pmn->sig = vchSig;
+>>>>>>> Stashed changes
                         pmn->protocolVersion = protocolVersion;
                         pmn->addr = addr;
                         //fake ping
@@ -954,7 +1197,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                     if (pmn->IsEnabled()) {
                         TRY_LOCK(cs_vNodes, lockNodes);
                         if (!lockNodes) return;
+<<<<<<< Updated upstream
                         for (CNode* pnode : vNodes)
+=======
+                        BOOST_FOREACH (CNode* pnode, vNodes)
+>>>>>>> Stashed changes
                             if (pnode->nVersion >= masternodePayments.GetMinMasternodePaymentsProto())
                                 pnode->PushMessage("dsee", vin, addr, vchSig, sigTime, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
                     }
@@ -969,10 +1216,17 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             LogPrint("masternode", "dsee - already seen this vin %s\n", vin.prevout.ToString());
             return;
         }
+<<<<<<< Updated upstream
         mapSeenDsee.insert(std::make_pair(vin.prevout, pubkey));
         // make sure the vout that was signed is related to the transaction that spawned the Masternode
         //  - this is expensive, so it's only done once per Masternode
         if (!pmn->IsInputAssociatedWithPubkey()) {
+=======
+        mapSeenDsee.insert(make_pair(vin.prevout, pubkey));
+        // make sure the vout that was signed is related to the transaction that spawned the Masternode
+        //  - this is expensive, so it's only done once per Masternode
+        if (!obfuScationSigner.IsVinAssociatedWithPubkey(vin, pubkey)) {
+>>>>>>> Stashed changes
             LogPrintf("CMasternodeMan::ProcessMessage() : dsee - Got mismatched pubkey and vin\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
@@ -1005,13 +1259,21 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             }
 
             // verify that sig time is legit in past
+<<<<<<< Updated upstream
             // should be at least not earlier than block when 1000 PIVX tx got MASTERNODE_MIN_CONFIRMATIONS
+=======
+            // should be at least not earlier than block when 1000 PrimeStone tx got MASTERNODE_MIN_CONFIRMATIONS
+>>>>>>> Stashed changes
             uint256 hashBlock = 0;
             CTransaction tx2;
             GetTransaction(vin.prevout.hash, tx2, hashBlock, true);
             BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
             if (mi != mapBlockIndex.end() && (*mi).second) {
+<<<<<<< Updated upstream
                 CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 10000 PIV tx -> 1 confirmation
+=======
+                CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 10000 PrimeStone tx -> 1 confirmation
+>>>>>>> Stashed changes
                 CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + MASTERNODE_MIN_CONFIRMATIONS - 1]; // block where tx got MASTERNODE_MIN_CONFIRMATIONS
                 if (pConfIndex->GetBlockTime() > sigTime) {
                     LogPrint("masternode","mnb - Bad sigTime %d for Masternode %s (%i conf block is at %d)\n",
@@ -1028,7 +1290,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             mn.addr = addr;
             mn.vin = vin;
             mn.pubKeyCollateralAddress = pubkey;
+<<<<<<< Updated upstream
             mn.SetVchSig(vchSig);
+=======
+            mn.sig = vchSig;
+>>>>>>> Stashed changes
             mn.sigTime = sigTime;
             mn.pubKeyMasternode = pubkey2;
             mn.protocolVersion = protocolVersion;
@@ -1043,7 +1309,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             if (mn.IsEnabled()) {
                 TRY_LOCK(cs_vNodes, lockNodes);
                 if (!lockNodes) return;
+<<<<<<< Updated upstream
                 for (CNode* pnode : vNodes)
+=======
+                BOOST_FOREACH (CNode* pnode, vNodes)
+>>>>>>> Stashed changes
                     if (pnode->nVersion >= masternodePayments.GetMinMasternodePaymentsProto())
                         pnode->PushMessage("dsee", vin, addr, vchSig, sigTime, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
             }
@@ -1062,10 +1332,17 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
     else if (strCommand == "dseep") { //ObfuScation Election Entry Ping
 
+<<<<<<< Updated upstream
         if (sporkManager.IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return;
 
         CTxIn vin;
         std::vector<unsigned char> vchSig;
+=======
+        if (IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return;
+
+        CTxIn vin;
+        vector<unsigned char> vchSig;
+>>>>>>> Stashed changes
         int64_t sigTime;
         bool stop;
         vRecv >> vin >> vchSig >> sigTime >> stop;
@@ -1096,11 +1373,19 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             // LogPrint("masternode","dseep - Found corresponding mn for vin: %s\n", vin.ToString().c_str());
             // take this only if it's newer
             if (sigTime - pmn->nLastDseep > MASTERNODE_MIN_MNP_SECONDS) {
+<<<<<<< Updated upstream
                 std::string strMessage = pmn->addr.ToString() + std::to_string(sigTime) + std::to_string(stop);
 
                 std::string strError = "";
                 if (!CMessageSigner::VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, strError)) {
                     LogPrint("masternode","dseep - Got bad Masternode address signature %s, error: %s\n", vin.prevout.hash.ToString(), strError);
+=======
+                std::string strMessage = pmn->addr.ToString() + boost::lexical_cast<std::string>(sigTime) + boost::lexical_cast<std::string>(stop);
+
+                std::string errorMessage = "";
+                if (!obfuScationSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, errorMessage)) {
+                    LogPrint("masternode","dseep - Got bad Masternode address signature %s \n", vin.prevout.hash.ToString());
+>>>>>>> Stashed changes
                     //Misbehaving(pfrom->GetId(), 100);
                     return;
                 }
@@ -1113,7 +1398,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                     TRY_LOCK(cs_vNodes, lockNodes);
                     if (!lockNodes) return;
                     LogPrint("masternode", "dseep - relaying %s \n", vin.prevout.hash.ToString());
+<<<<<<< Updated upstream
                     for (CNode* pnode : vNodes)
+=======
+                    BOOST_FOREACH (CNode* pnode, vNodes)
+>>>>>>> Stashed changes
                         if (pnode->nVersion >= masternodePayments.GetMinMasternodePaymentsProto())
                             pnode->PushMessage("dseep", vin, vchSig, sigTime, stop);
                 }
@@ -1135,7 +1424,11 @@ void CMasternodeMan::Remove(CTxIn vin)
 {
     LOCK(cs);
 
+<<<<<<< Updated upstream
     std::vector<CMasternode>::iterator it = vMasternodes.begin();
+=======
+    vector<CMasternode>::iterator it = vMasternodes.begin();
+>>>>>>> Stashed changes
     while (it != vMasternodes.end()) {
         if ((*it).vin == vin) {
             LogPrint("masternode", "CMasternodeMan: Removing Masternode %s - %i now\n", (*it).vin.prevout.hash.ToString(), size() - 1);
@@ -1148,9 +1441,15 @@ void CMasternodeMan::Remove(CTxIn vin)
 
 void CMasternodeMan::UpdateMasternodeList(CMasternodeBroadcast mnb)
 {
+<<<<<<< Updated upstream
     mapSeenMasternodePing.insert(std::make_pair(mnb.lastPing.GetHash(), mnb.lastPing));
     mapSeenMasternodeBroadcast.insert(std::make_pair(mnb.GetHash(), mnb));
     masternodeSync.AddedMasternodeList(mnb.GetHash());
+=======
+	mapSeenMasternodePing.insert(make_pair(mnb.lastPing.GetHash(), mnb.lastPing));
+	mapSeenMasternodeBroadcast.insert(make_pair(mnb.GetHash(), mnb));
+	masternodeSync.AddedMasternodeList(mnb.GetHash());
+>>>>>>> Stashed changes
 
     LogPrint("masternode","CMasternodeMan::UpdateMasternodeList() -- masternode=%s\n", mnb.vin.prevout.ToString());
 
@@ -1159,7 +1458,11 @@ void CMasternodeMan::UpdateMasternodeList(CMasternodeBroadcast mnb)
         CMasternode mn(mnb);
         Add(mn);
     } else {
+<<<<<<< Updated upstream
         pmn->UpdateFromNewBroadcast(mnb);
+=======
+    	pmn->UpdateFromNewBroadcast(mnb);
+>>>>>>> Stashed changes
     }
 }
 

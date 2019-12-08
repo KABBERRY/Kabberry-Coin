@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,10 +17,20 @@
 
 #include <stdexcept>
 
+<<<<<<< Updated upstream
+=======
+#include <openssl/x509.h>
+#include <openssl/x509_vfy.h>
+
+>>>>>>> Stashed changes
 #include <QDateTime>
 #include <QDebug>
 #include <QSslCertificate>
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 class SSLVerifyError : public std::runtime_error
 {
@@ -44,7 +59,11 @@ bool PaymentRequestPlus::parse(const QByteArray& data)
     return true;
 }
 
+<<<<<<< Updated upstream
 bool PaymentRequestPlus::SerializeToString(std::string* output) const
+=======
+bool PaymentRequestPlus::SerializeToString(string* output) const
+>>>>>>> Stashed changes
 {
     return paymentRequest.SerializeToString(output);
 }
@@ -177,7 +196,11 @@ bool PaymentRequestPlus::getMerchant(X509_STORE* certStore, QString& merchant) c
             throw SSLVerifyError("Bad certificate, missing common name.");
         }
         // TODO: detect EV certificates and set merchant = business name instead of unfriendly NID_commonName ?
+<<<<<<< Updated upstream
     } catch (const SSLVerifyError& err) {
+=======
+    } catch (SSLVerifyError& err) {
+>>>>>>> Stashed changes
         fResult = false;
         qWarning() << "PaymentRequestPlus::getMerchant : SSL error: " << err.what();
     }
@@ -198,7 +221,11 @@ QList<std::pair<CScript, CAmount> > PaymentRequestPlus::getPayTo() const
         const unsigned char* scriptStr = (const unsigned char*)details.outputs(i).script().data();
         CScript s(scriptStr, scriptStr + details.outputs(i).script().size());
 
+<<<<<<< Updated upstream
         result.append(std::make_pair(s, details.outputs(i).amount()));
+=======
+        result.append(make_pair(s, details.outputs(i).amount()));
+>>>>>>> Stashed changes
     }
     return result;
 }

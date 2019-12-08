@@ -1,6 +1,11 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2018 The PIVX developers
+=======
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,6 +17,10 @@
 
 #include <boost/assign/list_of.hpp>
 
+<<<<<<< Updated upstream
+=======
+using namespace boost::assign;
+>>>>>>> Stashed changes
 
 /**
  * Main network
@@ -22,7 +31,11 @@ public:
     CBaseMainParams()
     {
         networkID = CBaseChainParams::MAIN;
+<<<<<<< Updated upstream
         nRPCPort = 51473;
+=======
+        nRPCPort = 34126;
+>>>>>>> Stashed changes
     }
 };
 static CBaseMainParams mainParams;
@@ -36,7 +49,11 @@ public:
     CBaseTestNetParams()
     {
         networkID = CBaseChainParams::TESTNET;
+<<<<<<< Updated upstream
         nRPCPort = 51475;
+=======
+        nRPCPort = 41995;
+>>>>>>> Stashed changes
         strDataDir = "testnet4";
     }
 };

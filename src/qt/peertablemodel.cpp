@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -59,7 +64,10 @@ public:
                 return;
             }
             cachedNodeStats.clear();
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
             cachedNodeStats.reserve(vNodes.size());
             foreach (CNode* pnode, vNodes) {
                 CNodeCombinedStats stats;
@@ -76,7 +84,11 @@ public:
         {
             TRY_LOCK(cs_main, lockMain);
             if (lockMain) {
+<<<<<<< Updated upstream
                 for (CNodeCombinedStats& stats : cachedNodeStats)
+=======
+                BOOST_FOREACH (CNodeCombinedStats& stats, cachedNodeStats)
+>>>>>>> Stashed changes
                     stats.fNodeStateStatsAvailable = GetNodeStateStats(stats.nodeStats.nodeid, stats.nodeStateStats);
             }
         }

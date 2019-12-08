@@ -1,10 +1,19 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "blocksignature.h"
 #include "main.h"
+<<<<<<< Updated upstream
 #include "zpivchain.h"
+=======
+#include "zPSCchain.h"
+>>>>>>> Stashed changes
 
 bool SignBlockWithKey(CBlock& block, const CKey& key)
 {
@@ -22,10 +31,15 @@ bool GetKeyIDFromUTXO(const CTxOut& txout, CKeyID& keyID)
         return false;
     if (whichType == TX_PUBKEY) {
         keyID = CPubKey(vSolutions[0]).GetID();
+<<<<<<< Updated upstream
     } else if (whichType == TX_PUBKEYHASH || whichType == TX_COLDSTAKE) {
         keyID = CKeyID(uint160(vSolutions[0]));
     } else {
         return false;
+=======
+    } else if (whichType == TX_PUBKEYHASH) {
+        keyID = CKeyID(uint160(vSolutions[0]));
+>>>>>>> Stashed changes
     }
 
     return true;
@@ -64,6 +78,7 @@ bool CheckBlockSignature(const CBlock& block)
     if (block.vchBlockSig.empty())
         return error("%s: vchBlockSig is empty!", __func__);
 
+<<<<<<< Updated upstream
     /** Each block is signed by the private key of the input that is staked. This can be either zPIV or normal UTXO
      *  zPIV: Each zPIV has a keypair associated with it. The serial number is a hash of the public key.
      *  UTXO: The public key that signs must match the public key associated with the first utxo of the coinstake tx.
@@ -71,6 +86,15 @@ bool CheckBlockSignature(const CBlock& block)
     CPubKey pubkey;
     bool fzPIVStake = block.vtx[1].vin[0].IsZerocoinSpend();
     if (fzPIVStake) {
+=======
+    /** Each block is signed by the private key of the input that is staked. This can be either zPSC or normal UTXO
+     *  zPSC: Each zPSC has a keypair associated with it. The serial number is a hash of the public key.
+     *  UTXO: The public key that signs must match the public key associated with the first utxo of the coinstake tx.
+     */
+    CPubKey pubkey;
+    bool fzPSCStake = block.vtx[1].IsZerocoinSpend();
+    if (fzPSCStake) {
+>>>>>>> Stashed changes
         libzerocoin::CoinSpend spend = TxInToZerocoinSpend(block.vtx[1].vin[0]);
         pubkey = spend.getPubKey();
     } else {
@@ -82,17 +106,27 @@ bool CheckBlockSignature(const CBlock& block)
         if (whichType == TX_PUBKEY || whichType == TX_PUBKEYHASH) {
             valtype& vchPubKey = vSolutions[0];
             pubkey = CPubKey(vchPubKey);
+<<<<<<< Updated upstream
         } else if (whichType == TX_COLDSTAKE) {
             // pick the public key from the P2CS input
             const CTxIn& txin = block.vtx[1].vin[0];
             int start = 1 + (int) *txin.scriptSig.begin(); // skip sig
             start += 1 + (int) *(txin.scriptSig.begin()+start); // skip flag
             pubkey = CPubKey(txin.scriptSig.begin()+start+1, txin.scriptSig.end());
+=======
+>>>>>>> Stashed changes
         }
     }
 
     if (!pubkey.IsValid())
+<<<<<<< Updated upstream
         return error("%s: invalid pubkey %s", __func__, HexStr(pubkey));
 
     return pubkey.Verify(block.GetHash(), block.vchBlockSig);
 }
+=======
+        return error("%s: invalid pubkey %s", __func__, pubkey.GetHex());
+
+    return pubkey.Verify(block.GetHash(), block.vchBlockSig);
+}
+>>>>>>> Stashed changes

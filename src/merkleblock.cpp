@@ -1,6 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2015-2017 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,13 +14,22 @@
 #include "primitives/block.h" // for MAX_BLOCK_SIZE
 #include "utilstrencodings.h"
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 CMerkleBlock::CMerkleBlock(const CBlock& block, CBloomFilter& filter)
 {
     header = block.GetBlockHeader();
 
+<<<<<<< Updated upstream
     std::vector<bool> vMatch;
     std::vector<uint256> vHashes;
+=======
+    vector<bool> vMatch;
+    vector<uint256> vHashes;
+>>>>>>> Stashed changes
 
     vMatch.reserve(block.vtx.size());
     vHashes.reserve(block.vtx.size());
@@ -25,7 +38,11 @@ CMerkleBlock::CMerkleBlock(const CBlock& block, CBloomFilter& filter)
         const uint256& hash = block.vtx[i].GetHash();
         if (filter.IsRelevantAndUpdate(block.vtx[i])) {
             vMatch.push_back(true);
+<<<<<<< Updated upstream
             vMatchedTxn.push_back(std::make_pair(i, hash));
+=======
+            vMatchedTxn.push_back(make_pair(i, hash));
+>>>>>>> Stashed changes
         } else
             vMatch.push_back(false);
         vHashes.push_back(hash);

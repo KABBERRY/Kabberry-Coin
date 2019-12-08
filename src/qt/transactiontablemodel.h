@@ -64,23 +64,33 @@ public:
         /** Formatted amount, without brackets when unconfirmed */
         FormattedAmountRole,
         /** Transaction status (TransactionRecord::Status) */
+<<<<<<< Updated upstream
         StatusRole,
         /** Transaction size in bytes */
         SizeRole
+=======
+        StatusRole
+>>>>>>> Stashed changes
     };
 
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
+<<<<<<< Updated upstream
     int size() const;
     bool hasZcTxes();
+=======
+>>>>>>> Stashed changes
     QVariant data(const QModelIndex& index, int role) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
     QModelIndex index(int row, int column, const QModelIndex& parent = QModelIndex()) const;
     bool processingQueuedTransactions() { return fProcessingQueuedTransactions; }
 
+<<<<<<< Updated upstream
 signals:
     void txArrived(const QString& hash, const bool& isCoinStake, const bool& isCSAnyType);
 
+=======
+>>>>>>> Stashed changes
 private:
     CWallet* wallet;
     WalletModel* walletModel;

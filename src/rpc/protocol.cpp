@@ -1,12 +1,20 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2018 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpc/protocol.h"
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 #include "random.h"
 #include "tinyformat.h"
 #include "util.h"
@@ -17,9 +25,16 @@
 #include <stdint.h>
 #include <fstream>
 
+<<<<<<< Updated upstream
 
 /**
  * JSON-RPC protocol.  PIVX speaks version 1.0 for maximum compatibility,
+=======
+using namespace std;
+
+/**
+ * JSON-RPC protocol.  PrimeStone speaks version 1.0 for maximum compatibility,
+>>>>>>> Stashed changes
  * but uses JSON-RPC 1.1/2.0 standards for parts of the 1.0 standard that were
  * unspecified (HTTP errors and contents of 'error').
  *
@@ -28,7 +43,11 @@
  * http://www.codeproject.com/KB/recipes/JSON_Spirit.aspx
  */
 
+<<<<<<< Updated upstream
 std::string JSONRPCRequest(const std::string& strMethod, const UniValue& params, const UniValue& id)
+=======
+string JSONRPCRequest(const string& strMethod, const UniValue& params, const UniValue& id)
+>>>>>>> Stashed changes
 {
     UniValue request(UniValue::VOBJ);
     request.push_back(Pair("method", strMethod));
@@ -49,13 +68,21 @@ UniValue JSONRPCReplyObj(const UniValue& result, const UniValue& error, const Un
     return reply;
 }
 
+<<<<<<< Updated upstream
 std::string JSONRPCReply(const UniValue& result, const UniValue& error, const UniValue& id)
+=======
+string JSONRPCReply(const UniValue& result, const UniValue& error, const UniValue& id)
+>>>>>>> Stashed changes
 {
     UniValue reply = JSONRPCReplyObj(result, error, id);
     return reply.write() + "\n";
 }
 
+<<<<<<< Updated upstream
 UniValue JSONRPCError(int code, const std::string& message)
+=======
+UniValue JSONRPCError(int code, const string& message)
+>>>>>>> Stashed changes
 {
     UniValue error(UniValue::VOBJ);
     error.push_back(Pair("code", code));

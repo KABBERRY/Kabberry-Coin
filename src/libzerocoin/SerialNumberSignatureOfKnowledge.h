@@ -9,7 +9,11 @@
 * @copyright  Copyright 2013 Ian Miers, Christina Garman and Matthew Green
 * @license    This project is released under the MIT license.
 **/
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PrimeStone developers
+>>>>>>> Stashed changes
 
 #ifndef SERIALNUMBERPROOF_H_
 #define SERIALNUMBERPROOF_H_
@@ -25,6 +29,10 @@
 #include "Accumulator.h"
 #include "hash.h"
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 namespace libzerocoin {
 
 /**A Signature of knowledge on the hash of metadata attesting that the signer knows the values
@@ -33,6 +41,7 @@ namespace libzerocoin {
  */
 class SerialNumberSignatureOfKnowledge {
 public:
+<<<<<<< Updated upstream
     SerialNumberSignatureOfKnowledge(){};
     SerialNumberSignatureOfKnowledge(const ZerocoinParams* p);
     /** Creates a Signature of knowledge object that a commitment to a coin contains a coin with serial number x
@@ -69,6 +78,43 @@ private:
     std::vector<CBigNum> sprime;
     inline CBigNum challengeCalculation(const CBigNum& a_exp, const CBigNum& b_exp,
                                        const CBigNum& h_exp) const;
+=======
+	SerialNumberSignatureOfKnowledge(const ZerocoinParams* p);
+	/** Creates a Signature of knowledge object that a commitment to a coin contains a coin with serial number x
+	 *
+	 * @param p params
+	 * @param coin the coin we are going to prove the serial number of.
+	 * @param commitmentToCoin the commitment to the coin
+	 * @param msghash hash of meta data to create a signature of knowledge on.
+	 */
+	SerialNumberSignatureOfKnowledge(const ZerocoinParams* p, const PrivateCoin& coin, const Commitment& commitmentToCoin, uint256 msghash);
+
+	/** Verifies the Signature of knowledge.
+	 *
+	 * @param msghash hash of meta data to create a signature of knowledge on.
+	 * @return
+	 */
+	bool Verify(const CBigNum& coinSerialNumber, const CBigNum& valueOfCommitmentToCoin,const uint256 msghash) const;
+	ADD_SERIALIZE_METHODS;
+  template <typename Stream, typename Operation>  inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion) {
+	    READWRITE(s_notprime);
+	    READWRITE(sprime);
+	    READWRITE(hash);
+	}
+private:
+	const ZerocoinParams* params;
+	// challenge hash
+	uint256 hash; //TODO For efficiency, should this be a bitset where Templates define params?
+
+	// challenge response values
+	// this is s_notprime instead of s
+	// because the serialization macros
+	// define something named s and it conflicts
+	vector<CBigNum> s_notprime;
+	vector<CBigNum> sprime;
+	inline CBigNum challengeCalculation(const CBigNum& a_exp, const CBigNum& b_exp,
+	                                   const CBigNum& h_exp) const;
+>>>>>>> Stashed changes
 };
 
 } /* namespace libzerocoin */

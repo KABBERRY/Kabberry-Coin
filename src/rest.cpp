@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,6 +26,10 @@
 
 #include <univalue.h>
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 static const size_t MAX_GETUTXOS_OUTPOINTS = 15; //allow a max of 15 outpoints to be queried at once
 
@@ -64,14 +73,22 @@ extern UniValue mempoolToJSON(bool fVerbose = false);
 extern void ScriptPubKeyToJSON(const CScript& scriptPubKey, UniValue& out, bool fIncludeHex);
 extern UniValue blockheaderToJSON(const CBlockIndex* blockindex);
 
+<<<<<<< Updated upstream
 static bool RESTERR(HTTPRequest* req, enum HTTPStatusCode status, std::string message)
+=======
+static bool RESTERR(HTTPRequest* req, enum HTTPStatusCode status, string message)
+>>>>>>> Stashed changes
 {
     req->WriteHeader("Content-Type", "text/plain");
     req->WriteReply(status, message + "\r\n");
     return false;
 }
 
+<<<<<<< Updated upstream
 static enum RetFormat ParseDataFormat(std::vector<std::string>& params, const std::string& strReq)
+=======
+static enum RetFormat ParseDataFormat(vector<string>& params, const string& strReq)
+>>>>>>> Stashed changes
 {
     boost::split(params, strReq, boost::is_any_of("."));
     if (params.size() > 1) {
@@ -83,9 +100,15 @@ static enum RetFormat ParseDataFormat(std::vector<std::string>& params, const st
     return rf_names[0].rf;
 }
 
+<<<<<<< Updated upstream
 static std::string AvailableDataFormatsString()
 {
     std::string formats = "";
+=======
+static string AvailableDataFormatsString()
+{
+    string formats = "";
+>>>>>>> Stashed changes
     for (unsigned int i = 0; i < ARRAYLEN(rf_names); i++)
         if (strlen(rf_names[i].name) > 0) {
             formats.append(".");
@@ -99,7 +122,11 @@ static std::string AvailableDataFormatsString()
     return formats;
 }
 
+<<<<<<< Updated upstream
 static bool ParseHashStr(const std::string& strReq, uint256& v)
+=======
+static bool ParseHashStr(const string& strReq, uint256& v)
+>>>>>>> Stashed changes
 {
     if (!IsHex(strReq) || (strReq.size() != 64))
         return false;
@@ -121,9 +148,15 @@ static bool rest_headers(HTTPRequest* req,
 {
     if (!CheckWarmup(req))
         return false;
+<<<<<<< Updated upstream
     std::vector<std::string> params;
     const RetFormat rf = ParseDataFormat(params, strURIPart);
     std::vector<std::string> path;
+=======
+    vector<string> params;
+    const RetFormat rf = ParseDataFormat(params, strURIPart);
+    vector<string> path;
+>>>>>>> Stashed changes
     boost::split(path, params[0], boost::is_any_of("/"));
 
     if (path.size() != 2)
@@ -133,7 +166,11 @@ static bool rest_headers(HTTPRequest* req,
     if (count < 1 || count > 2000)
         return RESTERR(req, HTTP_BAD_REQUEST, "Header count out of range: " + path[0]);
 
+<<<<<<< Updated upstream
     std::string hashStr = path[1];
+=======
+    string hashStr = path[1];
+>>>>>>> Stashed changes
     uint256 hash;
     if (!ParseHashStr(hashStr, hash))
         return RESTERR(req, HTTP_BAD_REQUEST, "Invalid hash: " + hashStr);
@@ -153,30 +190,49 @@ static bool rest_headers(HTTPRequest* req,
     }
 
     CDataStream ssHeader(SER_NETWORK, PROTOCOL_VERSION);
+<<<<<<< Updated upstream
     for (const CBlockIndex *pindex : headers) {
+=======
+    BOOST_FOREACH(const CBlockIndex *pindex, headers) {
+>>>>>>> Stashed changes
         ssHeader << pindex->GetBlockHeader();
     }
 
     switch (rf) {
     case RF_BINARY: {
+<<<<<<< Updated upstream
         std::string binaryHeader = ssHeader.str();
+=======
+        string binaryHeader = ssHeader.str();
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/octet-stream");
         req->WriteReply(HTTP_OK, binaryHeader);
         return true;
     }
 
     case RF_HEX: {
+<<<<<<< Updated upstream
         std::string strHex = HexStr(ssHeader.begin(), ssHeader.end()) + "\n";
+=======
+        string strHex = HexStr(ssHeader.begin(), ssHeader.end()) + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "text/plain");
         req->WriteReply(HTTP_OK, strHex);
         return true;
     }
     case RF_JSON: {
         UniValue jsonHeaders(UniValue::VARR);
+<<<<<<< Updated upstream
         for (const CBlockIndex *pindex : headers) {
             jsonHeaders.push_back(blockheaderToJSON(pindex));
         }
         std::string strJSON = jsonHeaders.write() + "\n";
+=======
+        BOOST_FOREACH(const CBlockIndex *pindex, headers) {
+            jsonHeaders.push_back(blockheaderToJSON(pindex));
+        }
+        string strJSON = jsonHeaders.write() + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
         return true;
@@ -196,10 +252,17 @@ static bool rest_block(HTTPRequest* req,
 {
     if (!CheckWarmup(req))
         return false;
+<<<<<<< Updated upstream
     std::vector<std::string> params;
     const RetFormat rf = ParseDataFormat(params, strURIPart);
 
     std::string hashStr = params[0];
+=======
+    vector<string> params;
+    const RetFormat rf = ParseDataFormat(params, strURIPart);
+
+    string hashStr = params[0];
+>>>>>>> Stashed changes
     uint256 hash;
     if (!ParseHashStr(hashStr, hash))
         return RESTERR(req, HTTP_BAD_REQUEST, "Invalid hash: " + hashStr);
@@ -224,14 +287,22 @@ static bool rest_block(HTTPRequest* req,
 
     switch (rf) {
     case RF_BINARY: {
+<<<<<<< Updated upstream
         std::string binaryBlock = ssBlock.str();
+=======
+        string binaryBlock = ssBlock.str();
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/octet-stream");
         req->WriteReply(HTTP_OK, binaryBlock);
         return true;
     }
 
     case RF_HEX: {
+<<<<<<< Updated upstream
         std::string strHex = HexStr(ssBlock.begin(), ssBlock.end()) + "\n";
+=======
+        string strHex = HexStr(ssBlock.begin(), ssBlock.end()) + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "text/plain");
         req->WriteReply(HTTP_OK, strHex);
         return true;
@@ -239,7 +310,11 @@ static bool rest_block(HTTPRequest* req,
 
     case RF_JSON: {
         UniValue objBlock = blockToJSON(block, pblockindex, showTxDetails);
+<<<<<<< Updated upstream
         std::string strJSON = objBlock.write() + "\n";
+=======
+        string strJSON = objBlock.write() + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
         return true;
@@ -268,14 +343,22 @@ static bool rest_chaininfo(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
         return false;
+<<<<<<< Updated upstream
     std::vector<std::string> params;
+=======
+    vector<string> params;
+>>>>>>> Stashed changes
     const RetFormat rf = ParseDataFormat(params, strURIPart);
 
     switch (rf) {
     case RF_JSON: {
         UniValue rpcParams(UniValue::VARR);
         UniValue chainInfoObject = getblockchaininfo(rpcParams, false);
+<<<<<<< Updated upstream
         std::string strJSON = chainInfoObject.write() + "\n";
+=======
+        string strJSON = chainInfoObject.write() + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
         return true;
@@ -293,14 +376,22 @@ static bool rest_mempool_info(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
         return false;
+<<<<<<< Updated upstream
     std::vector<std::string> params;
+=======
+    vector<string> params;
+>>>>>>> Stashed changes
     const RetFormat rf = ParseDataFormat(params, strURIPart);
 
     switch (rf) {
     case RF_JSON: {
         UniValue mempoolInfoObject = mempoolInfoToJSON();
 
+<<<<<<< Updated upstream
         std::string strJSON = mempoolInfoObject.write() + "\n";
+=======
+        string strJSON = mempoolInfoObject.write() + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
         return true;
@@ -318,14 +409,22 @@ static bool rest_mempool_contents(HTTPRequest* req, const std::string& strURIPar
 {
     if (!CheckWarmup(req))
         return false;
+<<<<<<< Updated upstream
     std::vector<std::string> params;
+=======
+    vector<string> params;
+>>>>>>> Stashed changes
     const RetFormat rf = ParseDataFormat(params, strURIPart);
 
     switch (rf) {
     case RF_JSON: {
         UniValue mempoolObject = mempoolToJSON(true);
 
+<<<<<<< Updated upstream
         std::string strJSON = mempoolObject.write() + "\n";
+=======
+        string strJSON = mempoolObject.write() + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
         return true;
@@ -343,10 +442,17 @@ static bool rest_tx(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
         return false;
+<<<<<<< Updated upstream
     std::vector<std::string> params;
     const RetFormat rf = ParseDataFormat(params, strURIPart);
 
     std::string hashStr = params[0];
+=======
+    vector<string> params;
+    const RetFormat rf = ParseDataFormat(params, strURIPart);
+
+    string hashStr = params[0];
+>>>>>>> Stashed changes
     uint256 hash;
     if (!ParseHashStr(hashStr, hash))
         return RESTERR(req, HTTP_BAD_REQUEST, "Invalid hash: " + hashStr);
@@ -361,14 +467,22 @@ static bool rest_tx(HTTPRequest* req, const std::string& strURIPart)
 
     switch (rf) {
     case RF_BINARY: {
+<<<<<<< Updated upstream
         std::string binaryTx = ssTx.str();
+=======
+        string binaryTx = ssTx.str();
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/octet-stream");
         req->WriteReply(HTTP_OK, binaryTx);
         return true;
     }
 
     case RF_HEX: {
+<<<<<<< Updated upstream
         std::string strHex = HexStr(ssTx.begin(), ssTx.end()) + "\n";
+=======
+        string strHex = HexStr(ssTx.begin(), ssTx.end()) + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "text/plain");
         req->WriteReply(HTTP_OK, strHex);
         return true;
@@ -377,7 +491,11 @@ static bool rest_tx(HTTPRequest* req, const std::string& strURIPart)
     case RF_JSON: {
         UniValue objTx(UniValue::VOBJ);
         TxToJSON(tx, hashBlock, objTx);
+<<<<<<< Updated upstream
         std::string strJSON = objTx.write() + "\n";
+=======
+        string strJSON = objTx.write() + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
         return true;
@@ -396,10 +514,17 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
 {
     if (!CheckWarmup(req))
         return false;
+<<<<<<< Updated upstream
     std::vector<std::string> params;
     enum RetFormat rf = ParseDataFormat(params, strURIPart);
 
     std::vector<std::string> uriParts;
+=======
+    vector<string> params;
+    enum RetFormat rf = ParseDataFormat(params, strURIPart);
+
+    vector<string> uriParts;
+>>>>>>> Stashed changes
     if (params.size() > 0 && params[0].length() > 1)
     {
         std::string strUriParams = params[0].substr(1);
@@ -413,7 +538,11 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
 
     bool fInputParsed = false;
     bool fCheckMemPool = false;
+<<<<<<< Updated upstream
     std::vector<COutPoint> vOutPoints;
+=======
+    vector<COutPoint> vOutPoints;
+>>>>>>> Stashed changes
 
     // parse/deserialize input
     // input-format = output-format, rest/getutxos/bin requires binary input, gives binary output, ...
@@ -487,8 +616,13 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
         return RESTERR(req, HTTP_INTERNAL_SERVER_ERROR, strprintf("Error: max outpoints exceeded (max: %d, tried: %d)", MAX_GETUTXOS_OUTPOINTS, vOutPoints.size()));
 
     // check spentness and form a bitmap (as well as a JSON capable human-readble string representation)
+<<<<<<< Updated upstream
     std::vector<unsigned char> bitmap;
     std::vector<CCoin> outs;
+=======
+    vector<unsigned char> bitmap;
+    vector<CCoin> outs;
+>>>>>>> Stashed changes
     std::string bitmapStringRepresentation;
     boost::dynamic_bitset<unsigned char> hits(vOutPoints.size());
     {
@@ -532,7 +666,11 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
         // use exact same output as mentioned in Bip64
         CDataStream ssGetUTXOResponse(SER_NETWORK, PROTOCOL_VERSION);
         ssGetUTXOResponse << chainActive.Height() << chainActive.Tip()->GetBlockHash() << bitmap << outs;
+<<<<<<< Updated upstream
         std::string ssGetUTXOResponseString = ssGetUTXOResponse.str();
+=======
+        string ssGetUTXOResponseString = ssGetUTXOResponse.str();
+>>>>>>> Stashed changes
 
         req->WriteHeader("Content-Type", "application/octet-stream");
         req->WriteReply(HTTP_OK, ssGetUTXOResponseString);
@@ -542,7 +680,11 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
     case RF_HEX: {
         CDataStream ssGetUTXOResponse(SER_NETWORK, PROTOCOL_VERSION);
         ssGetUTXOResponse << chainActive.Height() << chainActive.Tip()->GetBlockHash() << bitmap << outs;
+<<<<<<< Updated upstream
         std::string strHex = HexStr(ssGetUTXOResponse.begin(), ssGetUTXOResponse.end()) + "\n";
+=======
+        string strHex = HexStr(ssGetUTXOResponse.begin(), ssGetUTXOResponse.end()) + "\n";
+>>>>>>> Stashed changes
 
         req->WriteHeader("Content-Type", "text/plain");
         req->WriteReply(HTTP_OK, strHex);
@@ -559,7 +701,11 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
         objGetUTXOResponse.push_back(Pair("bitmap", bitmapStringRepresentation));
 
         UniValue utxos(UniValue::VARR);
+<<<<<<< Updated upstream
         for (const CCoin& coin : outs) {
+=======
+        BOOST_FOREACH (const CCoin& coin, outs) {
+>>>>>>> Stashed changes
             UniValue utxo(UniValue::VOBJ);
             utxo.push_back(Pair("txvers", (int32_t)coin.nTxVer));
             utxo.push_back(Pair("height", (int32_t)coin.nHeight));
@@ -574,7 +720,11 @@ static bool rest_getutxos(HTTPRequest* req, const std::string& strURIPart)
         objGetUTXOResponse.push_back(Pair("utxos", utxos));
 
         // return json string
+<<<<<<< Updated upstream
         std::string strJSON = objGetUTXOResponse.write() + "\n";
+=======
+        string strJSON = objGetUTXOResponse.write() + "\n";
+>>>>>>> Stashed changes
         req->WriteHeader("Content-Type", "application/json");
         req->WriteReply(HTTP_OK, strJSON);
         return true;

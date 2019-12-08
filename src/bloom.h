@@ -1,12 +1,20 @@
 // Copyright (c) 2012-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_BLOOM_H
 #define BITCOIN_BLOOM_H
 
+<<<<<<< Updated upstream
 #include "libzerocoin/bignum.h"
+=======
+>>>>>>> Stashed changes
 #include "serialize.h"
 
 #include <vector>
@@ -78,8 +86,11 @@ public:
         READWRITE(nFlags);
     }
 
+<<<<<<< Updated upstream
     void setNotFull();
 
+=======
+>>>>>>> Stashed changes
     void insert(const std::vector<unsigned char>& vKey);
     void insert(const COutPoint& outpoint);
     void insert(const uint256& hash);
@@ -94,9 +105,12 @@ public:
     //! (catch a filter which was just deserialized which was too big)
     bool IsWithinSizeConstraints() const;
 
+<<<<<<< Updated upstream
     bool Merge(const CBloomFilter& filter);
     bool MatchesAll() const;
 
+=======
+>>>>>>> Stashed changes
     //! Also adds any outputs which match the filter to the filter (to match their spending txes)
     bool IsRelevantAndUpdate(const CTransaction& tx);
 

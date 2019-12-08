@@ -4,11 +4,17 @@
 
 #include "compat/sanity.h"
 #include "key.h"
+<<<<<<< Updated upstream
 #include "test_pivx.h"
 
 #include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_SUITE(sanity_tests, TestingSetup)
+=======
+
+#include <boost/test/unit_test.hpp>
+BOOST_AUTO_TEST_SUITE(sanity_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(basic_sanity)
 {

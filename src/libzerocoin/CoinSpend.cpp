@@ -9,7 +9,11 @@
  * @copyright  Copyright 2013 Ian Miers, Christina Garman and Matthew Green
  * @license    This project is released under the MIT license.
  **/
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 
 #include "CoinSpend.h"
 #include <iostream>
@@ -18,6 +22,7 @@
 namespace libzerocoin
 {
     CoinSpend::CoinSpend(const ZerocoinParams* paramsCoin, const ZerocoinParams* paramsAcc, const PrivateCoin& coin, Accumulator& a, const uint32_t& checksum,
+<<<<<<< Updated upstream
                      const AccumulatorWitness& witness, const uint256& ptxHash, const SpendType& spendType) :
                                                                                   coinSerialNumber((coin.getSerialNumber())),
                                                                                   spendType(spendType),
@@ -27,6 +32,16 @@ namespace libzerocoin
                                                                                   serialNumberSoK(paramsCoin),
                                                                                   commitmentPoK(&paramsCoin->serialNumberSoKCommitmentGroup,
                                                                                                 &paramsAcc->accumulatorParams.accumulatorPoKCommitmentGroup)
+=======
+                     const AccumulatorWitness& witness, const uint256& ptxHash, const SpendType& spendType) : accChecksum(checksum),
+                                                                                  ptxHash(ptxHash),
+                                                                                  coinSerialNumber((coin.getSerialNumber())),
+                                                                                  accumulatorPoK(&paramsAcc->accumulatorParams),
+                                                                                  serialNumberSoK(paramsCoin),
+                                                                                  commitmentPoK(&paramsCoin->serialNumberSoKCommitmentGroup,
+                                                                                                &paramsAcc->accumulatorParams.accumulatorPoKCommitmentGroup),
+                                                                                  spendType(spendType)
+>>>>>>> Stashed changes
 {
     denomination = coin.getPublicCoin().getDenomination();
     version = coin.getVersion();
@@ -58,7 +73,11 @@ namespace libzerocoin
 
     // Now generate the two core ZK proofs:
     // 3. Proves that the committed public coin is in the Accumulator (PoK of "witness")
+<<<<<<< Updated upstream
     this->accumulatorPoK = AccumulatorProofOfKnowledge(&paramsAcc->accumulatorParams, fullCommitmentToCoinUnderAccParams, witness);
+=======
+    this->accumulatorPoK = AccumulatorProofOfKnowledge(&paramsAcc->accumulatorParams, fullCommitmentToCoinUnderAccParams, witness, a);
+>>>>>>> Stashed changes
 
     // 4. Proves that the coin is correct w.r.t. serial number and hidden coin secret
     // (This proof is bound to the coin 'metadata', i.e., transaction hash)
@@ -73,32 +92,57 @@ namespace libzerocoin
     }
 }
 
+<<<<<<< Updated upstream
 bool CoinSpend::Verify(const Accumulator& a, bool verifyParams) const
 {
     // Double check that the version is the same as marked in the serial
     if (ExtractVersionFromSerial(coinSerialNumber) != version) {
         //cout << "CoinSpend::Verify: version does not match serial=" << (int)ExtractVersionFromSerial(coinSerialNumber) << " actual=" << (int)version << endl;
+=======
+bool CoinSpend::Verify(const Accumulator& a) const
+{
+    // Double check that the version is the same as marked in the serial
+    if (ExtractVersionFromSerial(coinSerialNumber) != version) {
+        // cout << "CoinSpend::Verify: version does not match serial=" << (int)ExtractVersionFromSerial(coinSerialNumber) << " actual=" << (int)version << endl;
+>>>>>>> Stashed changes
         return false;
     }
 
     if (a.getDenomination() != this->denomination) {
+<<<<<<< Updated upstream
         //std::cout << "CoinsSpend::Verify: failed, denominations do not match\n";
+=======
+        // std::cout << "CoinsSpend::Verify: failed, denominations do not match\n";
+>>>>>>> Stashed changes
         return false;
     }
 
     // Verify both of the sub-proofs using the given meta-data
     if (!commitmentPoK.Verify(serialCommitmentToCoinValue, accCommitmentToCoinValue)) {
+<<<<<<< Updated upstream
         //std::cout << "CoinsSpend::Verify: commitmentPoK failed\n";
+=======
+        // std::cout << "CoinsSpend::Verify: commitmentPoK failed\n";
+>>>>>>> Stashed changes
         return false;
     }
 
     if (!accumulatorPoK.Verify(a, accCommitmentToCoinValue)) {
+<<<<<<< Updated upstream
         //std::cout << "CoinsSpend::Verify: accumulatorPoK failed\n";
         return false;
     }
 
     if (!serialNumberSoK.Verify(coinSerialNumber, serialCommitmentToCoinValue, signatureHash(), verifyParams)) {
         //std::cout << "CoinsSpend::Verify: serialNumberSoK failed. sighash:" << signatureHash().GetHex() << "\n";
+=======
+        // std::cout << "CoinsSpend::Verify: accumulatorPoK failed\n";
+        return false;
+    }
+
+    if (!serialNumberSoK.Verify(coinSerialNumber, serialCommitmentToCoinValue, signatureHash())) {
+        // std::cout << "CoinsSpend::Verify: serialNumberSoK failed. sighash:" << signatureHash().GetHex() << "\n";
+>>>>>>> Stashed changes
         return false;
     }
 
@@ -132,6 +176,7 @@ bool CoinSpend::HasValidSerial(ZerocoinParams* params) const
 //Additional verification layer that requires the spend be signed by the private key associated with the serial
 bool CoinSpend::HasValidSignature() const
 {
+<<<<<<< Updated upstream
     const int coinVersion = getCoinVersion();
     //No private key for V1
     if (coinVersion < PrivateCoin::PUBKEY_VERSION)
@@ -147,6 +192,17 @@ bool CoinSpend::HasValidSignature() const
     } catch (const std::range_error& e) {
         //std::cout << "HasValidSignature() error: " << e.what() << std::endl;
         throw InvalidSerialException("Serial longer than 256 bits");
+=======
+    //No private key for V1
+    if (version < PrivateCoin::PUBKEY_VERSION)
+        return true;
+
+    //V2 serial requires that the signature hash be signed by the public key associated with the serial
+    uint256 hashedPubkey = Hash(pubkey.begin(), pubkey.end()) >> PrivateCoin::V2_BITSHIFT;
+    if (hashedPubkey != GetAdjustedSerial(coinSerialNumber).getuint256()) {
+        //cout << "CoinSpend::HasValidSignature() hashedpubkey is not equal to the serial!\n";
+        return false;
+>>>>>>> Stashed changes
     }
 
     return pubkey.Verify(signatureHash(), vchSig);
@@ -155,6 +211,7 @@ bool CoinSpend::HasValidSignature() const
 CBigNum CoinSpend::CalculateValidSerial(ZerocoinParams* params)
 {
     CBigNum bnSerial = coinSerialNumber;
+<<<<<<< Updated upstream
     bnSerial = bnSerial % params->coinCommitmentGroup.groupOrder;
     return bnSerial;
 }
@@ -176,4 +233,10 @@ void CoinSpend::setPubKey(CPubKey pkey, bool fUpdateSerial) {
     }
 }
 
+=======
+    bnSerial = bnSerial.mul_mod(CBigNum(1),params->coinCommitmentGroup.groupOrder);
+    return bnSerial;
+}
+
+>>>>>>> Stashed changes
 } /* namespace libzerocoin */

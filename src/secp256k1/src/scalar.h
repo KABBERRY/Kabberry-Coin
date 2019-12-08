@@ -93,7 +93,11 @@ static void secp256k1_scalar_order_get_num(secp256k1_num *r);
 /** Compare two scalars. */
 static int secp256k1_scalar_eq(const secp256k1_scalar *a, const secp256k1_scalar *b);
 
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
 /** Find r1 and r2 such that r1+r2*2^128 = a. */
 static void secp256k1_scalar_split_128(secp256k1_scalar *r1, secp256k1_scalar *r2, const secp256k1_scalar *a);
 /** Find r1 and r2 such that r1+r2*lambda = a, and r1 and r2 are maximum 128 bits long (see secp256k1_gej_mul_lambda). */

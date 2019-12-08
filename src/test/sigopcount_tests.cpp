@@ -1,5 +1,10 @@
 // Copyright (c) 2012-2013 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,12 +13,22 @@
 #include "script/script.h"
 #include "script/standard.h"
 #include "uint256.h"
+<<<<<<< Updated upstream
 #include "test_pivx.h"
 
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
+=======
+
+#include <vector>
+
+#include <boost/foreach.hpp>
+#include <boost/test/unit_test.hpp>
+
+using namespace std;
+>>>>>>> Stashed changes
 
 // Helpers:
 static std::vector<unsigned char>
@@ -23,7 +38,11 @@ Serialize(const CScript& s)
     return sSerialized;
 }
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(sigopcount_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(sigopcount_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(GetSigOpCount)
 {

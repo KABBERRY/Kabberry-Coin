@@ -1,5 +1,10 @@
 // Copyright (c) 2014-2016 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,12 +13,19 @@
 #include "masternode.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"
+<<<<<<< Updated upstream
 #include "messagesigner.h"
+=======
+>>>>>>> Stashed changes
 #include "protocol.h"
 #include "spork.h"
 
 //
+<<<<<<< Updated upstream
 // Bootup the Masternode, look for a 10000 PIVX input and register on the network
+=======
+// Bootup the Masternode, look for a 10000 PrimeStone input and register on the network
+>>>>>>> Stashed changes
 //
 void CActiveMasternode::ManageStatus()
 {
@@ -101,8 +113,14 @@ void CActiveMasternode::ManageStatus()
             CPubKey pubKeyMasternode;
             CKey keyMasternode;
 
+<<<<<<< Updated upstream
             if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
                 LogPrintf("%s : Invalid masternode key", __func__);
+=======
+            if (!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, keyMasternode, pubKeyMasternode)) {
+                notCapableReason = "Error upon calling SetKey: " + errorMessage;
+                LogPrintf("Register::ManageStatus() - %s\n", notCapableReason);
+>>>>>>> Stashed changes
                 return;
             }
 
@@ -162,13 +180,19 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
     CPubKey pubKeyMasternode;
     CKey keyMasternode;
 
+<<<<<<< Updated upstream
     if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
         errorMessage = "Error upon calling GetKeysFromSecret.\n";
+=======
+    if (!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, keyMasternode, pubKeyMasternode)) {
+        errorMessage = strprintf("Error upon calling SetKey: %s\n", errorMessage);
+>>>>>>> Stashed changes
         return false;
     }
 
     LogPrintf("CActiveMasternode::SendMasternodePing() - Relay Masternode Ping vin = %s\n", vin.ToString());
 
+<<<<<<< Updated upstream
     bool fNewSigs = false;
     {
         LOCK(cs_main);
@@ -177,6 +201,10 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
 
     CMasternodePing mnp(vin);
     if (!mnp.Sign(keyMasternode, pubKeyMasternode, fNewSigs)) {
+=======
+    CMasternodePing mnp(vin);
+    if (!mnp.Sign(keyMasternode, pubKeyMasternode)) {
+>>>>>>> Stashed changes
         errorMessage = "Couldn't sign Masternode Ping";
         return false;
     }
@@ -190,7 +218,11 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
         }
 
         pmn->lastPing = mnp;
+<<<<<<< Updated upstream
         mnodeman.mapSeenMasternodePing.insert(std::make_pair(mnp.GetHash(), mnp));
+=======
+        mnodeman.mapSeenMasternodePing.insert(make_pair(mnp.GetHash(), mnp));
+>>>>>>> Stashed changes
 
         //mnodeman.mapSeenMasternodeBroadcast.lastPing is probably outdated, so we'll update it
         CMasternodeBroadcast mnb(*pmn);
@@ -204,12 +236,17 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
          * AFTER MIGRATION TO V12 IS DONE
          */
 
+<<<<<<< Updated upstream
         if (sporkManager.IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return true;
+=======
+        if (IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return true;
+>>>>>>> Stashed changes
         // for migration purposes ping our node on old masternodes network too
         std::string retErrorMessage;
         std::vector<unsigned char> vchMasterNodeSignature;
         int64_t masterNodeSignatureTime = GetAdjustedTime();
 
+<<<<<<< Updated upstream
         std::string strMessage = service.ToString() + std::to_string(masterNodeSignatureTime) + std::to_string(false);
 
         if (!CMessageSigner::SignMessage(strMessage, vchMasterNodeSignature, keyMasternode)) {
@@ -218,13 +255,27 @@ bool CActiveMasternode::SendMasternodePing(std::string& errorMessage)
         }
 
         if (!CMessageSigner::VerifyMessage(pubKeyMasternode, vchMasterNodeSignature, strMessage, retErrorMessage)) {
+=======
+        std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(masterNodeSignatureTime) + boost::lexical_cast<std::string>(false);
+
+        if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchMasterNodeSignature, keyMasternode)) {
+            errorMessage = "dseep sign message failed: " + retErrorMessage;
+            return false;
+        }
+
+        if (!obfuScationSigner.VerifyMessage(pubKeyMasternode, vchMasterNodeSignature, strMessage, retErrorMessage)) {
+>>>>>>> Stashed changes
             errorMessage = "dseep verify message failed: " + retErrorMessage;
             return false;
         }
 
         LogPrint("masternode", "dseep - relaying from active mn, %s \n", vin.ToString().c_str());
         LOCK(cs_vNodes);
+<<<<<<< Updated upstream
         for (CNode* pnode : vNodes)
+=======
+        BOOST_FOREACH (CNode* pnode, vNodes)
+>>>>>>> Stashed changes
             pnode->PushMessage("dseep", vin, vchMasterNodeSignature, masterNodeSignatureTime, false);
 
         /*
@@ -256,8 +307,13 @@ bool CActiveMasternode::CreateBroadcast(std::string strService, std::string strK
         return false;
     }
 
+<<<<<<< Updated upstream
     if (!CMessageSigner::GetKeysFromSecret(strKeyMasternode, keyMasternode, pubKeyMasternode)) {
         errorMessage = strprintf("Can't find keys for masternode %s", strService);
+=======
+    if (!obfuScationSigner.SetKey(strKeyMasternode, errorMessage, keyMasternode, pubKeyMasternode)) {
+        errorMessage = strprintf("Can't find keys for masternode %s - %s", strService, errorMessage);
+>>>>>>> Stashed changes
         LogPrintf("CActiveMasternode::CreateBroadcast() - %s\n", errorMessage);
         return false;
     }
@@ -281,6 +337,7 @@ bool CActiveMasternode::CreateBroadcast(std::string strService, std::string strK
 
 bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCollateralAddress, CPubKey pubKeyCollateralAddress, CKey keyMasternode, CPubKey pubKeyMasternode, std::string& errorMessage, CMasternodeBroadcast &mnb)
 {
+<<<<<<< Updated upstream
     // wait for reindex and/or import to finish
     if (fImporting || fReindex) return false;
 
@@ -292,6 +349,13 @@ bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCol
 
     CMasternodePing mnp(vin);
     if (!mnp.Sign(keyMasternode, pubKeyMasternode, fNewSigs)) {
+=======
+	// wait for reindex and/or import to finish
+	if (fImporting || fReindex) return false;
+
+    CMasternodePing mnp(vin);
+    if (!mnp.Sign(keyMasternode, pubKeyMasternode)) {
+>>>>>>> Stashed changes
         errorMessage = strprintf("Failed to sign ping, vin: %s", vin.ToString());
         LogPrintf("CActiveMasternode::CreateBroadcast() -  %s\n", errorMessage);
         mnb = CMasternodeBroadcast();
@@ -300,7 +364,11 @@ bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCol
 
     mnb = CMasternodeBroadcast(service, vin, pubKeyCollateralAddress, pubKeyMasternode, PROTOCOL_VERSION);
     mnb.lastPing = mnp;
+<<<<<<< Updated upstream
     if (!mnb.Sign(keyCollateralAddress, pubKeyCollateralAddress, fNewSigs)) {
+=======
+    if (!mnb.Sign(keyCollateralAddress)) {
+>>>>>>> Stashed changes
         errorMessage = strprintf("Failed to sign broadcast, vin: %s", vin.ToString());
         LogPrintf("CActiveMasternode::CreateBroadcast() - %s\n", errorMessage);
         mnb = CMasternodeBroadcast();
@@ -312,7 +380,11 @@ bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCol
      * AFTER MIGRATION TO V12 IS DONE
      */
 
+<<<<<<< Updated upstream
     if (sporkManager.IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return true;
+=======
+    if (IsSporkActive(SPORK_10_MASTERNODE_PAY_UPDATED_NODES)) return true;
+>>>>>>> Stashed changes
     // for migration purposes inject our node in old masternodes' list too
     std::string retErrorMessage;
     std::vector<unsigned char> vchMasterNodeSignature;
@@ -323,22 +395,37 @@ bool CActiveMasternode::CreateBroadcast(CTxIn vin, CService service, CKey keyCol
     std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
     std::string vchPubKey2(pubKeyMasternode.begin(), pubKeyMasternode.end());
 
+<<<<<<< Updated upstream
     std::string strMessage = service.ToString() + std::to_string(masterNodeSignatureTime) + vchPubKey + vchPubKey2 + std::to_string(PROTOCOL_VERSION) + donationAddress + std::to_string(donationPercantage);
 
     if (!CMessageSigner::SignMessage(strMessage, vchMasterNodeSignature, keyCollateralAddress)) {
         errorMessage = "dsee sign message failed.";
+=======
+    std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(masterNodeSignatureTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(PROTOCOL_VERSION) + donationAddress + boost::lexical_cast<std::string>(donationPercantage);
+
+    if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchMasterNodeSignature, keyCollateralAddress)) {
+        errorMessage = "dsee sign message failed: " + retErrorMessage;
+>>>>>>> Stashed changes
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", errorMessage.c_str());
         return false;
     }
 
+<<<<<<< Updated upstream
     if (!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, vchMasterNodeSignature, strMessage, retErrorMessage)) {
+=======
+    if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, vchMasterNodeSignature, strMessage, retErrorMessage)) {
+>>>>>>> Stashed changes
         errorMessage = "dsee verify message failed: " + retErrorMessage;
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", errorMessage.c_str());
         return false;
     }
 
     LOCK(cs_vNodes);
+<<<<<<< Updated upstream
     for (CNode* pnode : vNodes)
+=======
+    BOOST_FOREACH (CNode* pnode, vNodes)
+>>>>>>> Stashed changes
         pnode->PushMessage("dsee", vin, service, vchMasterNodeSignature, masterNodeSignatureTime, pubKeyCollateralAddress, pubKeyMasternode, -1, -1, masterNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
 
     /*
@@ -355,14 +442,23 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
 
 bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey, std::string strTxHash, std::string strOutputIndex)
 {
+<<<<<<< Updated upstream
     // wait for reindex and/or import to finish
     if (fImporting || fReindex) return false;
+=======
+	// wait for reindex and/or import to finish
+	if (fImporting || fReindex) return false;
+>>>>>>> Stashed changes
 
     // Find possible candidates
     TRY_LOCK(pwalletMain->cs_wallet, fWallet);
     if (!fWallet) return false;
 
+<<<<<<< Updated upstream
     std::vector<COutput> possibleCoins = SelectCoinsMasternode();
+=======
+    vector<COutput> possibleCoins = SelectCoinsMasternode();
+>>>>>>> Stashed changes
     COutput* selectedOutput;
 
     // Find the vin
@@ -378,7 +474,11 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
         }
 
         bool found = false;
+<<<<<<< Updated upstream
         for (COutput& out : possibleCoins) {
+=======
+        BOOST_FOREACH (COutput& out, possibleCoins) {
+>>>>>>> Stashed changes
             if (out.tx->GetHash() == txHash && out.i == outputIndex) {
                 selectedOutput = &out;
                 found = true;
@@ -407,8 +507,13 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
 // Extract Masternode vin information from output
 bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubkey, CKey& secretKey)
 {
+<<<<<<< Updated upstream
     // wait for reindex and/or import to finish
     if (fImporting || fReindex) return false;
+=======
+	// wait for reindex and/or import to finish
+	if (fImporting || fReindex) return false;
+>>>>>>> Stashed changes
 
     CScript pubScript;
 
@@ -435,16 +540,28 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
 }
 
 // get all possible outputs for running Masternode
+<<<<<<< Updated upstream
 std::vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 {
     std::vector<COutput> vCoins;
     std::vector<COutput> filteredCoins;
     std::vector<COutPoint> confLockedCoins;
+=======
+vector<COutput> CActiveMasternode::SelectCoinsMasternode()
+{
+    vector<COutput> vCoins;
+    vector<COutput> filteredCoins;
+    vector<COutPoint> confLockedCoins;
+>>>>>>> Stashed changes
 
     // Temporary unlock MN coins from masternode.conf
     if (GetBoolArg("-mnconflock", true)) {
         uint256 mnTxHash;
+<<<<<<< Updated upstream
         for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+=======
+        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+>>>>>>> Stashed changes
             mnTxHash.SetHex(mne.getTxHash());
 
             int nIndex;
@@ -462,13 +579,22 @@ std::vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 
     // Lock MN coins from masternode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
+<<<<<<< Updated upstream
         for (COutPoint outpoint : confLockedCoins)
+=======
+        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
+>>>>>>> Stashed changes
             pwalletMain->LockCoin(outpoint);
     }
 
     // Filter
+<<<<<<< Updated upstream
     for (const COutput& out : vCoins) {
         if (out.tx->vout[out.i].nValue == 10000 * COIN) { //exactly
+=======
+    BOOST_FOREACH (const COutput& out, vCoins) {
+        if (out.tx->vout[out.i].nValue == Params().MasternodeCollateral()) { //exactly
+>>>>>>> Stashed changes
             filteredCoins.push_back(out);
         }
     }

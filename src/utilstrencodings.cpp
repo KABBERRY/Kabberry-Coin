@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2018 The PIVX developers
+=======
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,6 +20,7 @@
 
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
+<<<<<<< Updated upstream
 #include <openssl/evp.h>
 
 
@@ -34,11 +40,30 @@ std::string SanitizeString(const std::string& str, int rule)
     for (std::string::size_type i = 0; i < str.size(); i++)
     {
         if (SAFE_CHARS[rule].find(str[i]) != std::string::npos)
+=======
+#include <openssl/crypto.h> // for OPENSSL_cleanse()
+#include <openssl/evp.h>
+
+
+using namespace std;
+
+string SanitizeString(const string& str)
+{
+    /**
+     * safeChars chosen to allow simple messages/URLs/email addresses, but avoid anything
+     * even possibly remotely dangerous like & or >
+     */
+    static string safeChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890 .,;_-/:?@()");
+    string strResult;
+    for (std::string::size_type i = 0; i < str.size(); i++) {
+        if (safeChars.find(str[i]) != std::string::npos)
+>>>>>>> Stashed changes
             strResult.push_back(str[i]);
     }
     return strResult;
 }
 
+<<<<<<< Updated upstream
 bool validateURL(std::string strURL, std::string& strErr, unsigned int maxSize) {
 
     // Check URL size
@@ -66,6 +91,8 @@ bool validateURL(std::string strURL, std::string& strErr, unsigned int maxSize) 
     return true;
 }
 
+=======
+>>>>>>> Stashed changes
 const signed char p_util_hexdigit[256] =
     {
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -91,7 +118,11 @@ signed char HexDigit(char c)
     return p_util_hexdigit[(unsigned char)c];
 }
 
+<<<<<<< Updated upstream
 bool IsHex(const std::string& str)
+=======
+bool IsHex(const string& str)
+>>>>>>> Stashed changes
 {
     for (std::string::const_iterator it(str.begin()); it != str.end(); ++it) {
         if (HexDigit(*it) < 0)
@@ -100,10 +131,17 @@ bool IsHex(const std::string& str)
     return (str.size() > 0) && (str.size() % 2 == 0);
 }
 
+<<<<<<< Updated upstream
 std::vector<unsigned char> ParseHex(const char* psz)
 {
     // convert hex dump to vector
     std::vector<unsigned char> vch;
+=======
+vector<unsigned char> ParseHex(const char* psz)
+{
+    // convert hex dump to vector
+    vector<unsigned char> vch;
+>>>>>>> Stashed changes
     while (true) {
         while (isspace(*psz))
             psz++;
@@ -120,16 +158,28 @@ std::vector<unsigned char> ParseHex(const char* psz)
     return vch;
 }
 
+<<<<<<< Updated upstream
 std::vector<unsigned char> ParseHex(const std::string& str)
+=======
+vector<unsigned char> ParseHex(const string& str)
+>>>>>>> Stashed changes
 {
     return ParseHex(str.c_str());
 }
 
+<<<<<<< Updated upstream
 std::string EncodeBase64(const unsigned char* pch, size_t len)
 {
     static const char* pbase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
     std::string strRet = "";
+=======
+string EncodeBase64(const unsigned char* pch, size_t len)
+{
+    static const char* pbase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+    string strRet = "";
+>>>>>>> Stashed changes
     strRet.reserve((len + 2) / 3 * 4);
 
     int mode = 0, left = 0;
@@ -168,12 +218,20 @@ std::string EncodeBase64(const unsigned char* pch, size_t len)
     return strRet;
 }
 
+<<<<<<< Updated upstream
 std::string EncodeBase64(const std::string& str)
+=======
+string EncodeBase64(const string& str)
+>>>>>>> Stashed changes
 {
     return EncodeBase64((const unsigned char*)str.c_str(), str.size());
 }
 
+<<<<<<< Updated upstream
 std::vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)
+=======
+vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)
+>>>>>>> Stashed changes
 {
     static const int decode64_table[256] =
         {
@@ -194,7 +252,11 @@ std::vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)
     if (pfInvalid)
         *pfInvalid = false;
 
+<<<<<<< Updated upstream
     std::vector<unsigned char> vchRet;
+=======
+    vector<unsigned char> vchRet;
+>>>>>>> Stashed changes
     vchRet.reserve(strlen(p) * 3 / 4);
 
     int mode = 0;
@@ -252,10 +314,17 @@ std::vector<unsigned char> DecodeBase64(const char* p, bool* pfInvalid)
     return vchRet;
 }
 
+<<<<<<< Updated upstream
 std::string DecodeBase64(const std::string& str)
 {
     std::vector<unsigned char> vchRet = DecodeBase64(str.c_str());
     return (vchRet.size() == 0) ? std::string() : std::string((const char*)&vchRet[0], vchRet.size());
+=======
+string DecodeBase64(const string& str)
+{
+    vector<unsigned char> vchRet = DecodeBase64(str.c_str());
+    return (vchRet.size() == 0) ? string() : string((const char*)&vchRet[0], vchRet.size());
+>>>>>>> Stashed changes
 }
 
 // Base64 decoding with secure memory allocation
@@ -272,7 +341,11 @@ SecureString DecodeBase64Secure(const SecureString& input)
 
     // Prepare buffer to receive decoded data
     if (input.size() % 4 != 0) {
+<<<<<<< Updated upstream
         throw std::runtime_error("Input length should be a multiple of 4");
+=======
+        throw runtime_error("Input length should be a multiple of 4");
+>>>>>>> Stashed changes
     }
     size_t nMaxLen = input.size() / 4 * 3; // upper bound, guaranteed divisible by 4
     output.resize(nMaxLen);
@@ -307,18 +380,30 @@ SecureString EncodeBase64Secure(const SecureString& input)
     SecureString output(bptr->data, bptr->length);
 
     // Cleanse secure data buffer from memory
+<<<<<<< Updated upstream
     memory_cleanse((void*)bptr->data, bptr->length);
+=======
+    OPENSSL_cleanse((void*)bptr->data, bptr->length);
+>>>>>>> Stashed changes
 
     // Free memory
     BIO_free_all(b64);
     return output;
 }
 
+<<<<<<< Updated upstream
 std::string EncodeBase32(const unsigned char* pch, size_t len)
 {
     static const char* pbase32 = "abcdefghijklmnopqrstuvwxyz234567";
 
     std::string strRet = "";
+=======
+string EncodeBase32(const unsigned char* pch, size_t len)
+{
+    static const char* pbase32 = "abcdefghijklmnopqrstuvwxyz234567";
+
+    string strRet = "";
+>>>>>>> Stashed changes
     strRet.reserve((len + 4) / 5 * 8);
 
     int mode = 0, left = 0;
@@ -370,12 +455,20 @@ std::string EncodeBase32(const unsigned char* pch, size_t len)
     return strRet;
 }
 
+<<<<<<< Updated upstream
 std::string EncodeBase32(const std::string& str)
+=======
+string EncodeBase32(const string& str)
+>>>>>>> Stashed changes
 {
     return EncodeBase32((const unsigned char*)str.c_str(), str.size());
 }
 
+<<<<<<< Updated upstream
 std::vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid)
+=======
+vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid)
+>>>>>>> Stashed changes
 {
     static const int decode32_table[256] =
         {
@@ -396,7 +489,11 @@ std::vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid)
     if (pfInvalid)
         *pfInvalid = false;
 
+<<<<<<< Updated upstream
     std::vector<unsigned char> vchRet;
+=======
+    vector<unsigned char> vchRet;
+>>>>>>> Stashed changes
     vchRet.reserve((strlen(p)) * 5 / 8);
 
     int mode = 0;
@@ -488,10 +585,17 @@ std::vector<unsigned char> DecodeBase32(const char* p, bool* pfInvalid)
     return vchRet;
 }
 
+<<<<<<< Updated upstream
 std::string DecodeBase32(const std::string& str)
 {
     std::vector<unsigned char> vchRet = DecodeBase32(str.c_str());
     return (vchRet.size() == 0) ? std::string() : std::string((const char*)&vchRet[0], vchRet.size());
+=======
+string DecodeBase32(const string& str)
+{
+    vector<unsigned char> vchRet = DecodeBase32(str.c_str());
+    return (vchRet.size() == 0) ? string() : string((const char*)&vchRet[0], vchRet.size());
+>>>>>>> Stashed changes
 }
 
 static bool ParsePrechecks(const std::string& str)

@@ -1,7 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2018 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,10 +24,14 @@
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock)
 {
+<<<<<<< Updated upstream
     if (Params().NetworkID() == CBaseChainParams::REGTEST)
         return pindexLast->nBits;
 
     /* current difficulty formula, pivx - DarkGravity v3, written by Evan Duffield - evan@dashpay.io */
+=======
+    /* current difficulty formula, primestone - DarkGravity v3, written by Evan Duffield - evan@dashpay.io */
+>>>>>>> Stashed changes
     const CBlockIndex* BlockLastSolved = pindexLast;
     const CBlockIndex* BlockReading = pindexLast;
     int64_t nActualTimespan = 0;
@@ -37,29 +46,45 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return Params().ProofOfWorkLimit().GetCompact();
     }
 
+<<<<<<< Updated upstream
     if (pindexLast->nHeight >= Params().LAST_POW_BLOCK()) {
         const bool fTimeV2 = Params().IsTimeProtocolV2(pindexLast->nHeight+1);
         const uint256 bnTargetLimit = Params().ProofOfStakeLimit(fTimeV2);
         const int64_t nTargetSpacing = Params().TargetSpacing();
         const int64_t nTargetTimespan = Params().TargetTimespan(fTimeV2);
+=======
+    if (pindexLast->nHeight > Params().LAST_POW_BLOCK()) {
+        uint256 bnTargetLimit = (~uint256(0) >> 24);
+        int64_t nTargetSpacing = 60;
+        int64_t nTargetTimespan = 60 * 40;
+>>>>>>> Stashed changes
 
         int64_t nActualSpacing = 0;
         if (pindexLast->nHeight != 0)
             nActualSpacing = pindexLast->GetBlockTime() - pindexLast->pprev->GetBlockTime();
+<<<<<<< Updated upstream
         if (nActualSpacing < 0)
             nActualSpacing = 1;
         if (fTimeV2 && nActualSpacing > nTargetSpacing*10)
             nActualSpacing = nTargetSpacing*10;
+=======
+
+        if (nActualSpacing < 0)
+            nActualSpacing = 1;
+>>>>>>> Stashed changes
 
         // ppcoin: target change every block
         // ppcoin: retarget with exponential moving toward target spacing
         uint256 bnNew;
         bnNew.SetCompact(pindexLast->nBits);
 
+<<<<<<< Updated upstream
         // on first block with V2 time protocol, reduce the difficulty by a factor 16
         if (fTimeV2 && !Params().IsTimeProtocolV2(pindexLast->nHeight))
             bnNew <<= 4;
 
+=======
+>>>>>>> Stashed changes
         int64_t nInterval = nTargetTimespan / nTargetSpacing;
         bnNew *= ((nInterval - 1) * nTargetSpacing + nActualSpacing + nActualSpacing);
         bnNew /= ((nInterval + 1) * nTargetSpacing);
@@ -135,12 +160,17 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits)
 
     // Check proof of work matches claimed amount
     if (hash > bnTarget) {
+<<<<<<< Updated upstream
         if (Params().MineBlocksOnDemand())
             return false;
         else
             return error("CheckProofOfWork() : hash doesn't match nBits");
     }
 
+=======
+        return error("CheckProofOfWork() : hash doesn't match nBits");
+    }
+>>>>>>> Stashed changes
     return true;
 }
 

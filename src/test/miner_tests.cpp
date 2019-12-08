@@ -1,21 +1,35 @@
 // Copyright (c) 2011-2014 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2019 The PIVX developers
+=======
+// Copyright (c) 2016 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "init.h"
+<<<<<<< Updated upstream
 #include "consensus/merkle.h"
+=======
+>>>>>>> Stashed changes
 #include "main.h"
 #include "miner.h"
 #include "pubkey.h"
 #include "uint256.h"
 #include "util.h"
 
+<<<<<<< Updated upstream
 #include "test/test_bitcoin.h"
 
 #include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_SUITE(miner_tests, TestingSetup)
+=======
+#include <boost/test/unit_test.hpp>
+
+BOOST_AUTO_TEST_SUITE(miner_tests)
+>>>>>>> Stashed changes
 
 static
 struct {
@@ -83,7 +97,11 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
         pblock->vtx[0] = CTransaction(txCoinbase);
         if (txFirst.size() < 2)
             txFirst.push_back(new CTransaction(pblock->vtx[0]));
+<<<<<<< Updated upstream
         pblock->hashMerkleRoot = BlockMerkleRoot(*pblock);
+=======
+        pblock->hashMerkleRoot = pblock->BuildMerkleTree();
+>>>>>>> Stashed changes
         pblock->nNonce = blockinfo[i].nonce;
         CValidationState state;
         BOOST_CHECK(ProcessNewBlock(state, NULL, pblock));
@@ -262,7 +280,11 @@ BOOST_AUTO_TEST_CASE(CreateNewBlock_validity)
     SetMockTime(0);
     mempool.clear();
 
+<<<<<<< Updated upstream
     for (CTransaction *tx : txFirst)
+=======
+    BOOST_FOREACH(CTransaction *tx, txFirst)
+>>>>>>> Stashed changes
         delete tx;
 
     Checkpoints::fEnabled = true;

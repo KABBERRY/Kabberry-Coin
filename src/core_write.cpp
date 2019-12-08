@@ -1,5 +1,10 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,16 +21,30 @@
 #include "utilmoneystr.h"
 #include "utilstrencodings.h"
 
+<<<<<<< Updated upstream
 
 
 std::string FormatScript(const CScript& script)
 {
     std::string ret;
+=======
+#include <boost/foreach.hpp>
+
+using namespace std;
+
+string FormatScript(const CScript& script)
+{
+    string ret;
+>>>>>>> Stashed changes
     CScript::const_iterator it = script.begin();
     opcodetype op;
     while (it != script.end()) {
         CScript::const_iterator it2 = it;
+<<<<<<< Updated upstream
         std::vector<unsigned char> vch;
+=======
+        vector<unsigned char> vch;
+>>>>>>> Stashed changes
         if (script.GetOp2(it, op, &vch)) {
             if (op == OP_0) {
                 ret += "0 ";
@@ -34,9 +53,15 @@ std::string FormatScript(const CScript& script)
                 ret += strprintf("%i ", op - OP_1NEGATE - 1);
                 continue;
             } else if (op >= OP_NOP && op <= OP_CHECKMULTISIGVERIFY) {
+<<<<<<< Updated upstream
                 std::string str(GetOpName(op));
                 if (str.substr(0, 3) == std::string("OP_")) {
                     ret += str.substr(3, std::string::npos) + " ";
+=======
+                string str(GetOpName(op));
+                if (str.substr(0, 3) == string("OP_")) {
+                    ret += str.substr(3, string::npos) + " ";
+>>>>>>> Stashed changes
                     continue;
                 }
             }
@@ -53,7 +78,11 @@ std::string FormatScript(const CScript& script)
     return ret.substr(0, ret.size() - 1);
 }
 
+<<<<<<< Updated upstream
 std::string EncodeHexTx(const CTransaction& tx)
+=======
+string EncodeHexTx(const CTransaction& tx)
+>>>>>>> Stashed changes
 {
     CDataStream ssTx(SER_NETWORK, PROTOCOL_VERSION);
     ssTx << tx;
@@ -65,7 +94,11 @@ void ScriptPubKeyToUniv(const CScript& scriptPubKey,
     bool fIncludeHex)
 {
     txnouttype type;
+<<<<<<< Updated upstream
     std::vector<CTxDestination> addresses;
+=======
+    vector<CTxDestination> addresses;
+>>>>>>> Stashed changes
     int nRequired;
 
     out.pushKV("asm", scriptPubKey.ToString());
@@ -81,6 +114,7 @@ void ScriptPubKeyToUniv(const CScript& scriptPubKey,
     out.pushKV("type", GetTxnOutputType(type));
 
     UniValue a(UniValue::VARR);
+<<<<<<< Updated upstream
     if (type == TX_COLDSTAKE && addresses.size() == 2) {
         a.push_back(CBitcoinAddress(addresses[0], CChainParams::STAKING_ADDRESS).ToString());
         a.push_back(CBitcoinAddress(addresses[1], CChainParams::PUBKEY_ADDRESS).ToString());
@@ -88,6 +122,10 @@ void ScriptPubKeyToUniv(const CScript& scriptPubKey,
         for (const CTxDestination& addr : addresses)
             a.push_back(CBitcoinAddress(addr).ToString());
     }
+=======
+    BOOST_FOREACH (const CTxDestination& addr, addresses)
+        a.push_back(CBitcoinAddress(addr).ToString());
+>>>>>>> Stashed changes
     out.pushKV("addresses", a);
 }
 
@@ -95,11 +133,18 @@ void TxToUniv(const CTransaction& tx, const uint256& hashBlock, UniValue& entry)
 {
     entry.pushKV("txid", tx.GetHash().GetHex());
     entry.pushKV("version", tx.nVersion);
+<<<<<<< Updated upstream
     entry.pushKV("size", (int)::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION));
     entry.pushKV("locktime", (int64_t)tx.nLockTime);
 
     UniValue vin(UniValue::VARR);
     for (const CTxIn& txin : tx.vin) {
+=======
+    entry.pushKV("locktime", (int64_t)tx.nLockTime);
+
+    UniValue vin(UniValue::VARR);
+    BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+>>>>>>> Stashed changes
         UniValue in(UniValue::VOBJ);
         if (tx.IsCoinBase())
             in.pushKV("coinbase", HexStr(txin.scriptSig.begin(), txin.scriptSig.end()));

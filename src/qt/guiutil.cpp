@@ -1,6 +1,10 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018 The PSC developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -59,7 +63,10 @@
 #include <QUrlQuery>
 #include <QMouseEvent>
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 #if BOOST_FILESYSTEM_VERSION >= 3
 static boost::filesystem::detail::utf8_codecvt_facet utf8;
 #endif
@@ -74,7 +81,11 @@ extern double NSAppKitVersionNumber;
 #endif
 #endif
 
+<<<<<<< Updated upstream
 #define URI_SCHEME "pivx"
+=======
+#define URI_SCHEME "PSC"
+>>>>>>> Stashed changes
 
 namespace GUIUtil
 {
@@ -83,11 +94,14 @@ QString dateTimeStr(const QDateTime& date)
     return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm");
 }
 
+<<<<<<< Updated upstream
 QString dateTimeStrWithSeconds(const QDateTime& date)
 {
     return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm:ss");
 }
 
+=======
+>>>>>>> Stashed changes
 QString dateTimeStr(qint64 nTime)
 {
     return dateTimeStr(QDateTime::fromTime_t((qint32)nTime));
@@ -100,6 +114,7 @@ QFont bitcoinAddressFont()
     return font;
 }
 
+<<<<<<< Updated upstream
 /**
  * Parse a string into a number of base monetary units and
  * return validity.
@@ -131,6 +146,8 @@ bool requestUnlock(WalletModel* walletModel, AskPassphraseDialog::Context contex
     return true;
 }
 
+=======
+>>>>>>> Stashed changes
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
 {
     parent->setFocusProxy(widget);
@@ -138,7 +155,11 @@ void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
     widget->setFont(bitcoinAddressFont());
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
+<<<<<<< Updated upstream
     widget->setPlaceholderText(QObject::tr("Enter a PIVX address (e.g. %1)").arg("D7VFR83SQbiezrW72hjcWJtcfip5krte2Z"));
+=======
+    widget->setPlaceholderText(QObject::tr("Enter a PSC address (e.g. %1)").arg("D7VFR83SQbiezrW72hjcWJtcfip5krte2Z"));
+>>>>>>> Stashed changes
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
     widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
 }
@@ -154,7 +175,11 @@ void setupAmountWidget(QLineEdit* widget, QWidget* parent)
 
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
 {
+<<<<<<< Updated upstream
     // return if URI is not valid or is no PIVX: URI
+=======
+    // return if URI is not valid or is no PSC: URI
+>>>>>>> Stashed changes
     if (!uri.isValid() || uri.scheme() != QString(URI_SCHEME))
         return false;
 
@@ -169,7 +194,11 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
     QUrlQuery uriQuery(uri);
     QList<QPair<QString, QString> > items = uriQuery.queryItems();
     for (QList<QPair<QString, QString> >::iterator i = items.begin(); i != items.end(); i++)
+<<<<<<< Updated upstream
     {
+=======
+	{
+>>>>>>> Stashed changes
         bool fShouldReturnFalse = false;
         if (i->first.startsWith("req-")) {
             i->first.remove(0, 4);
@@ -185,7 +214,11 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
             fShouldReturnFalse = false;
         } else if (i->first == "amount") {
             if (!i->second.isEmpty()) {
+<<<<<<< Updated upstream
                 if (!BitcoinUnits::parse(BitcoinUnits::PIV, i->second, &rv.amount)) {
+=======
+                if (!BitcoinUnits::parse(BitcoinUnits::PSC, i->second, &rv.amount)) {
+>>>>>>> Stashed changes
                     return false;
                 }
             }
@@ -203,9 +236,15 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out)
 {
+<<<<<<< Updated upstream
     // Convert pivx:// to pivx:
     //
     //    Cannot handle this later, because pivx:// will cause Qt to see the part after // as host,
+=======
+    // Convert PSC:// to PSC:
+    //
+    //    Cannot handle this later, because PSC:// will cause Qt to see the part after // as host,
+>>>>>>> Stashed changes
     //    which will lower-case it (and thus invalidate the address).
     if (uri.startsWith(URI_SCHEME "://", Qt::CaseInsensitive)) {
         uri.replace(0, std::strlen(URI_SCHEME) + 3, URI_SCHEME ":");
@@ -220,7 +259,11 @@ QString formatBitcoinURI(const SendCoinsRecipient& info)
     int paramCount = 0;
 
     if (info.amount) {
+<<<<<<< Updated upstream
         ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::PIV, info.amount, false, BitcoinUnits::separatorNever));
+=======
+        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::PSC, info.amount, false, BitcoinUnits::separatorNever));
+>>>>>>> Stashed changes
         paramCount++;
     }
 
@@ -294,9 +337,15 @@ QString getSaveFileName(QWidget* parent, const QString& caption, const QString& 
     if (dir.isEmpty()) // Default to user documents location
     {
         myDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+<<<<<<< Updated upstream
     }
     else
     {
+=======
+    } 
+	else 
+	{
+>>>>>>> Stashed changes
         myDir = dir;
     }
     /* Directly convert path to native OS path separators */
@@ -334,9 +383,15 @@ QString getOpenFileName(QWidget* parent, const QString& caption, const QString& 
     if (dir.isEmpty()) // Default to user documents location
     {
         myDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+<<<<<<< Updated upstream
     }
     else
     {
+=======
+    } 
+	else
+		{
+>>>>>>> Stashed changes
         myDir = dir;
     }
     /* Directly convert path to native OS path separators */
@@ -375,12 +430,17 @@ bool isObscured(QWidget* w)
     return !(checkPoint(QPoint(0, 0), w) && checkPoint(QPoint(w->width() - 1, 0), w) && checkPoint(QPoint(0, w->height() - 1), w) && checkPoint(QPoint(w->width() - 1, w->height() - 1), w) && checkPoint(QPoint(w->width() / 2, w->height() / 2), w));
 }
 
+<<<<<<< Updated upstream
 bool openDebugLogfile()
+=======
+void openDebugLogfile()
+>>>>>>> Stashed changes
 {
     boost::filesystem::path pathDebug = GetDataDir() / "debug.log";
 
     /* Open debug.log with the associated application */
     if (boost::filesystem::exists(pathDebug))
+<<<<<<< Updated upstream
         return QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathDebug)));
     return false;
 }
@@ -396,23 +456,49 @@ bool openConfigfile()
 }
 
 bool openMNConfigfile()
+=======
+        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathDebug)));
+}
+
+void openConfigfile()
+{
+    boost::filesystem::path pathConfig = GetConfigFile();
+
+    /* Open PSC.conf with the associated application */
+    if (boost::filesystem::exists(pathConfig))
+        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
+}
+
+void openMNConfigfile()
+>>>>>>> Stashed changes
 {
     boost::filesystem::path pathConfig = GetMasternodeConfigFile();
 
     /* Open masternode.conf with the associated application */
     if (boost::filesystem::exists(pathConfig))
+<<<<<<< Updated upstream
         return QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
     return false;
 }
 
 bool showBackups()
+=======
+        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
+}
+
+void showBackups()
+>>>>>>> Stashed changes
 {
     boost::filesystem::path pathBackups = GetDataDir() / "backups";
 
     /* Open folder with default browser */
     if (boost::filesystem::exists(pathBackups))
+<<<<<<< Updated upstream
         return QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathBackups)));
     return false;
+=======
+        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathBackups)));
+>>>>>>> Stashed changes
 }
 
 void SubstituteFonts(const QString& language)
@@ -610,12 +696,20 @@ bool DHMSTableWidgetItem::operator<(QTableWidgetItem const& item) const
 #ifdef WIN32
 boost::filesystem::path static StartupShortcutPath()
 {
+<<<<<<< Updated upstream
     return GetSpecialFolderPath(CSIDL_STARTUP) / "PIVX.lnk";
+=======
+    return GetSpecialFolderPath(CSIDL_STARTUP) / "PSC.lnk";
+>>>>>>> Stashed changes
 }
 
 bool GetStartOnSystemStartup()
 {
+<<<<<<< Updated upstream
     // check for PIVX.lnk
+=======
+    // check for PSC.lnk
+>>>>>>> Stashed changes
     return boost::filesystem::exists(StartupShortcutPath());
 }
 
@@ -689,7 +783,11 @@ boost::filesystem::path static GetAutostartDir()
 
 boost::filesystem::path static GetAutostartFilePath()
 {
+<<<<<<< Updated upstream
     return GetAutostartDir() / "pivx.desktop";
+=======
+    return GetAutostartDir() / "PSC.desktop";
+>>>>>>> Stashed changes
 }
 
 bool GetStartOnSystemStartup()
@@ -725,10 +823,17 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         boost::filesystem::ofstream optionFile(GetAutostartFilePath(), std::ios_base::out | std::ios_base::trunc);
         if (!optionFile.good())
             return false;
+<<<<<<< Updated upstream
         // Write a pivx.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         optionFile << "Name=PIVX\n";
+=======
+        // Write a PSC.desktop file to the autostart directory:
+        optionFile << "[Desktop Entry]\n";
+        optionFile << "Type=Application\n";
+        optionFile << "Name=PSC\n";
+>>>>>>> Stashed changes
         optionFile << "Exec=" << pszExePath << " -min\n";
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -749,7 +854,11 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
 {
+<<<<<<< Updated upstream
     // loop through the list of startup items and try to find the pivx app
+=======
+    // loop through the list of startup items and try to find the PSC app
+>>>>>>> Stashed changes
     CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(list, NULL);
     for (int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
@@ -794,7 +903,11 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
 
     if (fAutoStart && !foundItem) {
+<<<<<<< Updated upstream
         // add pivx app to startup item list
+=======
+        // add PSC app to startup item list
+>>>>>>> Stashed changes
         LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, bitcoinAppUrl, NULL, NULL);
     } else if (!fAutoStart && foundItem) {
         // remove item
@@ -836,6 +949,7 @@ void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSize, 
     parent->move(pos);
 }
 
+<<<<<<< Updated upstream
 // Check whether a theme is not build-in
 bool isExternal(QString theme)
 {
@@ -843,6 +957,19 @@ bool isExternal(QString theme)
         return false;
 
     return (theme.operator!=("default") && theme.operator!=("default-dark"));
+=======
+// Return name of current UI-theme or default theme if no theme was found
+
+QString getThemeName()
+{
+    QSettings settings;
+    QString theme = settings.value("theme", "").toString();
+
+    if(!theme.isEmpty()){
+        return theme;
+    }
+    return QString("default");  
+>>>>>>> Stashed changes
 }
 
 // Open CSS when configured
@@ -853,6 +980,7 @@ QString loadStyleSheet()
     QString cssName;
     QString theme = settings.value("theme", "").toString();
 
+<<<<<<< Updated upstream
     if (isExternal(theme)) {
         // External CSS
         settings.setValue("fCSSexternal", true);
@@ -861,20 +989,29 @@ QString loadStyleSheet()
     } else {
         // Build-in CSS
         settings.setValue("fCSSexternal", false);
+=======
+>>>>>>> Stashed changes
         if (!theme.isEmpty()) {
             cssName = QString(":/css/") + theme;
         } else {
             cssName = QString(":/css/default");
             settings.setValue("theme", "default");
         }
+<<<<<<< Updated upstream
     }
+=======
+>>>>>>> Stashed changes
 
     QFile qFile(cssName);
     if (qFile.open(QFile::ReadOnly)) {
         styleSheet = QLatin1String(qFile.readAll());
     }
 
+<<<<<<< Updated upstream
     return styleSheet;
+=======
+return styleSheet;
+>>>>>>> Stashed changes
 }
 
 void setClipboard(const QString& str)
@@ -942,9 +1079,12 @@ QString formatServicesStr(quint64 mask)
             case NODE_BLOOM_WITHOUT_MN:
                 strList.append(QObject::tr("BLOOM"));
                 break;
+<<<<<<< Updated upstream
             case NODE_BLOOM_LIGHT_ZC:
                 strList.append(QObject::tr("ZK_BLOOM"));
                 break;
+=======
+>>>>>>> Stashed changes
             default:
                 strList.append(QString("%1[%2]").arg(QObject::tr("UNKNOWN")).arg(check));
             }

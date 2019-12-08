@@ -8,7 +8,10 @@
 #include "key.h"
 #include "uint256.h"
 #include "util.h"
+<<<<<<< Updated upstream
 #include "test/test_bitcoin.h"
+=======
+>>>>>>> Stashed changes
 
 #include <string>
 #include <vector>
@@ -83,7 +86,11 @@ void RunTest(const TestVector &test) {
     CExtPubKey pubkey;
     key.SetMaster(&seed[0], seed.size());
     pubkey = key.Neuter();
+<<<<<<< Updated upstream
     for (const TestDerivation &derive : test.vDerive) {
+=======
+    BOOST_FOREACH(const TestDerivation &derive, test.vDerive) {
+>>>>>>> Stashed changes
         unsigned char data[74];
         key.Encode(data);
         pubkey.Encode(data);
@@ -108,7 +115,11 @@ void RunTest(const TestVector &test) {
     }
 }
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(bip32_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(bip32_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(bip32_test1) {
     RunTest(test1);

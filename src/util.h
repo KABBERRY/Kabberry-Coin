@@ -1,7 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +18,11 @@
 #define BITCOIN_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include "compat.h"
@@ -28,9 +37,14 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/exceptions.hpp>
+<<<<<<< Updated upstream
 #include <boost/thread/condition_variable.hpp> // for boost::thread_interrupted
 
 //PIVX only features
+=======
+
+//PrimeStone only features
+>>>>>>> Stashed changes
 
 extern bool fMasterNode;
 extern bool fLiteMode;
@@ -39,8 +53,14 @@ extern int nSwiftTXDepth;
 extern int nZeromintPercentage;
 extern const int64_t AUTOMINT_DELAY;
 extern int nPreferredDenom;
+<<<<<<< Updated upstream
 extern bool fEnableZeromint;
 extern bool fEnableAutoConvert;
+=======
+extern int nAnonymizePrimeStoneAmount;
+extern int nLiquidityProvider;
+extern bool fEnableZeromint;
+>>>>>>> Stashed changes
 extern int64_t enforceMasternodePaymentsTime;
 extern std::string strMasterNodeAddr;
 extern int keysLoaded;
@@ -53,6 +73,10 @@ extern std::map<std::string, std::vector<std::string> > mapMultiArgs;
 extern bool fDebug;
 extern bool fPrintToConsole;
 extern bool fPrintToDebugLog;
+<<<<<<< Updated upstream
+=======
+extern bool fServer;
+>>>>>>> Stashed changes
 extern std::string strMiscWarning;
 extern bool fLogTimestamps;
 extern bool fLogIPs;
@@ -68,9 +92,12 @@ int LogPrintStr(const std::string& str);
 
 #define LogPrintf(...) LogPrint(NULL, __VA_ARGS__)
 
+<<<<<<< Updated upstream
 /** Get format string from VA_ARGS for error reporting */
 template<typename... Args> std::string FormatStringFromLogArgs(const char *fmt, const Args&... args) { return fmt; }
 
+=======
+>>>>>>> Stashed changes
 /**
  * When we switch to C++11, this can be switched to variadic templates instead
  * of this macro-based construction (see tinyformat.h).
@@ -81,6 +108,7 @@ template<typename... Args> std::string FormatStringFromLogArgs(const char *fmt, 
     static inline int LogPrint(const char* category, const char* format, TINYFORMAT_VARARGS(n)) \
     {                                                                                           \
         if (!LogAcceptCategory(category)) return 0;                                             \
+<<<<<<< Updated upstream
         std::string _log_msg_; /* Unlikely name to avoid shadowing variables */                 \
         try {                                                                                   \
             _log_msg_ = tfm::format(format, TINYFORMAT_PASSARGS(n));                            \
@@ -88,11 +116,15 @@ template<typename... Args> std::string FormatStringFromLogArgs(const char *fmt, 
             _log_msg_ = "Error \"" + std::string(e.what()) + "\" while formatting log message: " + FormatStringFromLogArgs(format, TINYFORMAT_PASSARGS(n));\
         }                                                                                       \
         return LogPrintStr(_log_msg_);                                                          \
+=======
+        return LogPrintStr(tfm::format(format, TINYFORMAT_PASSARGS(n)));                        \
+>>>>>>> Stashed changes
     }                                                                                           \
     /**   Log error and return false */                                                         \
     template <TINYFORMAT_ARGTYPES(n)>                                                           \
     static inline bool error(const char* format, TINYFORMAT_VARARGS(n))                         \
     {                                                                                           \
+<<<<<<< Updated upstream
         std::string _log_msg_; /* Unlikely name to avoid shadowing variables */                 \
         try {                                                                                   \
             _log_msg_ = tfm::format(format, TINYFORMAT_PASSARGS(n));                            \
@@ -100,6 +132,9 @@ template<typename... Args> std::string FormatStringFromLogArgs(const char *fmt, 
             _log_msg_ = "Error \"" + std::string(e.what()) + "\" while formatting log message: " + FormatStringFromLogArgs(format, TINYFORMAT_PASSARGS(n));\
         }                                                                                       \
         LogPrintStr(std::string("ERROR: ") + _log_msg_ + "\n");                                 \
+=======
+        LogPrintStr(std::string("ERROR: ") + tfm::format(format, TINYFORMAT_PASSARGS(n)) + "\n");            \
+>>>>>>> Stashed changes
         return false;                                                                           \
     }
 
@@ -122,7 +157,11 @@ static inline bool error(const char* format)
 
 double double_safe_addition(double fValue, double fIncrement);
 double double_safe_multiplication(double fValue, double fmultiplicator);
+<<<<<<< Updated upstream
 void PrintExceptionContinue(const std::exception* pex, const char* pszThread);
+=======
+void PrintExceptionContinue(std::exception* pex, const char* pszThread);
+>>>>>>> Stashed changes
 void ParseParameters(int argc, const char* const argv[]);
 void FileCommit(FILE* fileout);
 bool TruncateFile(FILE* file, unsigned int length);
@@ -131,8 +170,12 @@ void AllocateFileRange(FILE* file, unsigned int offset, unsigned int length);
 bool RenameOver(boost::filesystem::path src, boost::filesystem::path dest);
 bool TryCreateDirectory(const boost::filesystem::path& p);
 boost::filesystem::path GetDefaultDataDir();
+<<<<<<< Updated upstream
 const boost::filesystem::path &GetDataDir(bool fNetSpecific = true);
 void ClearDatadirCache();
+=======
+const boost::filesystem::path& GetDataDir(bool fNetSpecific = true);
+>>>>>>> Stashed changes
 boost::filesystem::path GetConfigFile();
 boost::filesystem::path GetMasternodeConfigFile();
 #ifndef WIN32
@@ -227,7 +270,11 @@ void RenameThread(const char* name);
 template <typename Callable>
 void TraceThread(const char* name, Callable func)
 {
+<<<<<<< Updated upstream
     std::string s = strprintf("pivx-%s", name);
+=======
+    std::string s = strprintf("primestone-%s", name);
+>>>>>>> Stashed changes
     RenameThread(s.c_str());
     try {
         LogPrintf("%s thread start\n", name);

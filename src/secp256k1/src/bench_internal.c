@@ -92,7 +92,11 @@ void bench_scalar_mul(void* arg) {
     }
 }
 
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
 void bench_scalar_split(void* arg) {
     int i;
     bench_inv *data = (bench_inv*)arg;
@@ -330,7 +334,11 @@ int main(int argc, char **argv) {
     if (have_flag(argc, argv, "scalar") || have_flag(argc, argv, "negate")) run_benchmark("scalar_negate", bench_scalar_negate, bench_setup, NULL, &data, 10, 2000000);
     if (have_flag(argc, argv, "scalar") || have_flag(argc, argv, "sqr")) run_benchmark("scalar_sqr", bench_scalar_sqr, bench_setup, NULL, &data, 10, 200000);
     if (have_flag(argc, argv, "scalar") || have_flag(argc, argv, "mul")) run_benchmark("scalar_mul", bench_scalar_mul, bench_setup, NULL, &data, 10, 200000);
+<<<<<<< Updated upstream
 #ifdef USE_ENDOMORPHISM
+=======
+#ifdef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
     if (have_flag(argc, argv, "scalar") || have_flag(argc, argv, "split")) run_benchmark("scalar_split", bench_scalar_split, bench_setup, NULL, &data, 10, 20000);
 #endif
     if (have_flag(argc, argv, "scalar") || have_flag(argc, argv, "inverse")) run_benchmark("scalar_inverse", bench_scalar_inverse, bench_setup, NULL, &data, 10, 2000);

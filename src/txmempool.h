@@ -1,6 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2016-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +17,10 @@
 #include "coins.h"
 #include "primitives/transaction.h"
 #include "sync.h"
+<<<<<<< Updated upstream
 #include "random.h"
+=======
+>>>>>>> Stashed changes
 
 class CAutoFile;
 

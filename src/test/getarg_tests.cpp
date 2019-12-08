@@ -1,18 +1,33 @@
 // Copyright (c) 2012-2016 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "util.h"
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
+=======
+>>>>>>> Stashed changes
 
 #include <string>
 #include <vector>
 
 #include <boost/algorithm/string.hpp>
+<<<<<<< Updated upstream
 #include <boost/test/unit_test.hpp>
 
 BOOST_FIXTURE_TEST_SUITE(getarg_tests, BasicTestingSetup)
+=======
+#include <boost/foreach.hpp>
+#include <boost/test/unit_test.hpp>
+
+BOOST_AUTO_TEST_SUITE(getarg_tests)
+>>>>>>> Stashed changes
 
 static void ResetArgs(const std::string& strArg)
 {
@@ -25,7 +40,11 @@ static void ResetArgs(const std::string& strArg)
 
     // Convert to char*:
     std::vector<const char*> vecChar;
+<<<<<<< Updated upstream
     for (std::string& s : vecArg)
+=======
+    BOOST_FOREACH(std::string& s, vecArg)
+>>>>>>> Stashed changes
         vecChar.push_back(s.c_str());
 
     ParseParameters(vecChar.size(), &vecChar[0]);

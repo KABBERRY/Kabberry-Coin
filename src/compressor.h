@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -92,6 +97,7 @@ public:
             return;
         }
         nSize -= nSpecialScripts;
+<<<<<<< Updated upstream
         if (nSize > MAX_SCRIPT_SIZE) {
             // Overly long script, replace with a short invalid one
             script << OP_RETURN;
@@ -100,6 +106,10 @@ public:
             script.resize(nSize);
             s >> REF(CFlatData(script));
         }
+=======
+        script.resize(nSize);
+        s >> REF(CFlatData(script));
+>>>>>>> Stashed changes
     }
 };
 

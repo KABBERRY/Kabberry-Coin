@@ -2,11 +2,20 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
+<<<<<<< Updated upstream
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef PIVX_HASH_H
 #define PIVX_HASH_H
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PrimeStone_HASH_H
+#define PrimeStone_HASH_H
+>>>>>>> Stashed changes
 
 #include "crypto/ripemd160.h"
 #include "crypto/sha256.h"
@@ -27,6 +36,10 @@
 #include <sstream>
 #include <vector>
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 typedef uint256 ChainCode;
 
@@ -155,9 +168,15 @@ inline std::string Hash(std::string input)
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, input.c_str(), input.size());
     SHA256_Final(hash, &sha256);
+<<<<<<< Updated upstream
     std::stringstream ss;
     for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
         ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
+=======
+    stringstream ss;
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+        ss << hex << setw(2) << setfill('0') << (int)hash[i];
+>>>>>>> Stashed changes
     }
     return ss.str();
 }
@@ -405,4 +424,8 @@ inline uint256 HashQuark(const T1 pbegin, const T1 pend)
 
 void scrypt_hash(const char* pass, unsigned int pLen, const char* salt, unsigned int sLen, char* output, unsigned int N, unsigned int r, unsigned int p, unsigned int dkLen);
 
+<<<<<<< Updated upstream
 #endif // PIVX_HASH_H
+=======
+#endif // PrimeStone_HASH_H
+>>>>>>> Stashed changes

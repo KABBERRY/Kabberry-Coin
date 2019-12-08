@@ -7,7 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>769</width>
+<<<<<<< Updated upstream
     <height>496</height>
+=======
+    <height>516</height>
+>>>>>>> Stashed changes
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,6 +31,16 @@
        <property name="horizontalSpacing">
         <number>12</number>
        </property>
+<<<<<<< Updated upstream
+=======
+       <item row="7" column="1">
+        <widget class="QLabel" name="dataDir">
+         <property name="text">
+          <string>N/A</string>
+         </property>
+        </widget>
+       </item>
+>>>>>>> Stashed changes
        <item row="0" column="0">
         <widget class="QLabel" name="generalHeader">
          <property name="font">
@@ -87,9 +101,15 @@
         </widget>
        </item>
        <item row="3" column="0">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="berkeleyDBVersionLabel">
          <property name="text">
           <string>Using BerkeleyDB version</string>
+=======
+        <widget class="QLabel" name="openSSLVersionLabel">
+         <property name="text">
+          <string>Using OpenSSL version</string>
+>>>>>>> Stashed changes
          </property>
          <property name="indent">
           <number>10</number>
@@ -97,7 +117,11 @@
         </widget>
        </item>
        <item row="3" column="1">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="berkeleyDBVersion">
+=======
+        <widget class="QLabel" name="openSSLVersion">
+>>>>>>> Stashed changes
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
@@ -113,14 +137,27 @@
         </widget>
        </item>
        <item row="4" column="0">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="buildDateLabel">
          <property name="text">
           <string>Build date</string>
+=======
+        <widget class="QLabel" name="berkeleyDBVersionLabel">
+         <property name="text">
+          <string>Using BerkeleyDB version</string>
+         </property>
+         <property name="indent">
+          <number>10</number>
+>>>>>>> Stashed changes
          </property>
         </widget>
        </item>
        <item row="4" column="1">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="buildDate">
+=======
+        <widget class="QLabel" name="berkeleyDBVersion">
+>>>>>>> Stashed changes
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
@@ -136,14 +173,24 @@
         </widget>
        </item>
        <item row="5" column="0">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="startupTimeLabel">
          <property name="text">
           <string>Startup time</string>
+=======
+        <widget class="QLabel" name="buildDateLabel">
+         <property name="text">
+          <string>Build date</string>
+>>>>>>> Stashed changes
          </property>
         </widget>
        </item>
        <item row="5" column="1">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="startupTime">
+=======
+        <widget class="QLabel" name="buildDate">
+>>>>>>> Stashed changes
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
@@ -159,13 +206,20 @@
         </widget>
        </item>
        <item row="6" column="0">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="dataDirLabel">
          <property name="text">
           <string>Data Directory</string>
+=======
+        <widget class="QLabel" name="startupTimeLabel">
+         <property name="text">
+          <string>Startup time</string>
+>>>>>>> Stashed changes
          </property>
         </widget>
        </item>
        <item row="6" column="1">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="dataDir">
          <property name="text">
           <string>N/A</string>
@@ -173,6 +227,24 @@
         </widget>
        </item>
        <item row="7" column="0">
+=======
+        <widget class="QLabel" name="startupTime">
+         <property name="cursor">
+          <cursorShape>IBeamCursor</cursorShape>
+         </property>
+         <property name="text">
+          <string>N/A</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::PlainText</enum>
+         </property>
+         <property name="textInteractionFlags">
+          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="networkHeader">
          <property name="font">
           <font>
@@ -185,14 +257,22 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="8" column="0">
+=======
+       <item row="9" column="0">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="networkNameLabel">
          <property name="text">
           <string>Name</string>
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="8" column="1">
+=======
+       <item row="9" column="1">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="networkName">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
@@ -208,14 +288,22 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="9" column="0">
+=======
+       <item row="10" column="0">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="numberOfConnectionsLabel">
          <property name="text">
           <string>Number of connections</string>
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="9" column="1">
+=======
+       <item row="10" column="1">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="numberOfConnections">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
@@ -231,14 +319,22 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="10" column="0">
+=======
+       <item row="11" column="0">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="masternodeCountLabel">
          <property name="text">
           <string>Number of Masternodes</string>
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="10" column="1">
+=======
+       <item row="11" column="1">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="masternodeCount">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
@@ -254,7 +350,11 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="11" column="0">
+=======
+       <item row="12" column="0">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="blockchainHeader">
          <property name="font">
           <font>
@@ -267,14 +367,22 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="12" column="0">
+=======
+       <item row="13" column="0">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="numberOfBlocksLabel">
          <property name="text">
           <string>Current number of blocks</string>
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="12" column="1">
+=======
+       <item row="13" column="1">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="numberOfBlocks">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
@@ -290,14 +398,22 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="13" column="0">
+=======
+       <item row="14" column="0">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="lastBlockTimeLabel">
          <property name="text">
           <string>Last block time</string>
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="13" column="1">
+=======
+       <item row="14" column="1">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="lastBlockTime">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
@@ -313,6 +429,7 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="14" column="0">
         <widget class="QLabel" name="lastBlockHashLabel">
          <property name="text">
@@ -328,6 +445,9 @@
         </widget>
        </item>
        <item row="15" column="0">
+=======
+       <item row="16" column="0">
+>>>>>>> Stashed changes
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -340,7 +460,11 @@
          </property>
         </spacer>
        </item>
+<<<<<<< Updated upstream
        <item row="16" column="0">
+=======
+       <item row="17" column="0">
+>>>>>>> Stashed changes
         <widget class="QLabel" name="debugLogFileHeader">
          <property name="font">
           <font>
@@ -353,10 +477,17 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
        <item row="17" column="0">
         <widget class="QPushButton" name="openDebugLogfileButton">
          <property name="toolTip">
           <string>Open the PIVX debug log file from the current data directory. This can take a few seconds for large log files.</string>
+=======
+       <item row="18" column="0">
+        <widget class="QPushButton" name="openDebugLogfileButton">
+         <property name="toolTip">
+          <string>Open the PrimeStone debug log file from the current data directory. This can take a few seconds for large log files.</string>
+>>>>>>> Stashed changes
          </property>
          <property name="text">
           <string>&amp;Open</string>
@@ -366,6 +497,30 @@
          </property>
         </widget>
        </item>
+<<<<<<< Updated upstream
+=======
+	   <item row="7" column="0">
+        <widget class="QLabel" name="dataDirLabel">
+         <property name="text">
+          <string>Data Directory</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0">
+        <widget class="QLabel" name="lastBlockHashLabel">
+         <property name="text">
+          <string>Last block hash</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="1">
+        <widget class="QLabel" name="lastBlockHash">
+         <property name="text">
+          <string>N/A</string>
+         </property>
+        </widget>
+       </item>
+>>>>>>> Stashed changes
       </layout>
      </widget>
      <widget class="QWidget" name="tab_console">
@@ -425,7 +580,11 @@
             <string/>
            </property>
            <property name="icon">
+<<<<<<< Updated upstream
             <iconset resource="../pivx.qrc">
+=======
+            <iconset resource="../primestone.qrc">
+>>>>>>> Stashed changes
              <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
            </property>
            <property name="shortcut">
@@ -1328,17 +1487,29 @@
         </widget>
        </item>
        <item row="4" column="0">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="wallet_customzpivbackuppath_label">
+=======
+        <widget class="QLabel" name="wallet_customzPSCbackuppath_label">
+>>>>>>> Stashed changes
          <property name="visible">
           <bool>false</bool>
          </property>
          <property name="text">
+<<<<<<< Updated upstream
           <string>Custom zPIV Backup Path:</string>
+=======
+          <string>Custom zPSC Backup Path:</string>
+>>>>>>> Stashed changes
          </property>
         </widget>
        </item>
        <item row="4" column="1" colspan="3">
+<<<<<<< Updated upstream
         <widget class="QLabel" name="wallet_customzpivbackuppath">
+=======
+        <widget class="QLabel" name="wallet_customzPSCbackuppath">
+>>>>>>> Stashed changes
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>
@@ -1639,7 +1810,11 @@
   </customwidget>
  </customwidgets>
  <resources>
+<<<<<<< Updated upstream
   <include location="../pivx.qrc"/>
+=======
+  <include location="../primestone.qrc"/>
+>>>>>>> Stashed changes
  </resources>
  <connections/>
 </ui>

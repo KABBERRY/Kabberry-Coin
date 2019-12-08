@@ -1,5 +1,10 @@
 // Copyright (c) 2015 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2018-2019 The PIVX developers
+=======
+// Copyright (c) 2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +16,11 @@
 #include "netbase.h"
 #include "rpc/protocol.h" // For HTTP status codes
 #include "sync.h"
+<<<<<<< Updated upstream
 #include "guiinterface.h"
+=======
+#include "ui_interface.h"
+>>>>>>> Stashed changes
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -20,7 +29,10 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <signal.h>
+<<<<<<< Updated upstream
 #include <future>
+=======
+>>>>>>> Stashed changes
 
 #include <event2/event.h>
 #include <event2/http.h>
@@ -36,6 +48,13 @@
 #endif
 #endif
 
+<<<<<<< Updated upstream
+=======
+#include <boost/algorithm/string/case_conv.hpp> // for to_lower()
+#include <boost/foreach.hpp>
+#include <boost/scoped_ptr.hpp>
+
+>>>>>>> Stashed changes
 /** Maximum size of http request (request line + headers) */
 static const size_t MAX_HEADERS_SIZE = 8192;
 
@@ -52,7 +71,11 @@ public:
         func(req.get(), path);
     }
 
+<<<<<<< Updated upstream
     std::unique_ptr<HTTPRequest> req;
+=======
+    boost::scoped_ptr<HTTPRequest> req;
+>>>>>>> Stashed changes
 
 private:
     std::string path;
@@ -67,8 +90,13 @@ class WorkQueue
 {
 private:
     /** Mutex protects entire object */
+<<<<<<< Updated upstream
     std::mutex cs;
     std::condition_variable cond;
+=======
+    CWaitableCriticalSection cs;
+    CConditionVariable cond;
+>>>>>>> Stashed changes
     /* XXX in C++11 we can use std::unique_ptr here and avoid manual cleanup */
     std::deque<WorkItem*> queue;
     bool running;
@@ -82,12 +110,20 @@ private:
         WorkQueue &wq;
         ThreadCounter(WorkQueue &w): wq(w)
         {
+<<<<<<< Updated upstream
             std::lock_guard<std::mutex> lock(wq.cs);
+=======
+            boost::lock_guard<boost::mutex> lock(wq.cs);
+>>>>>>> Stashed changes
             wq.numThreads += 1;
         }
         ~ThreadCounter()
         {
+<<<<<<< Updated upstream
             std::lock_guard<std::mutex> lock(wq.cs);
+=======
+            boost::lock_guard<boost::mutex> lock(wq.cs);
+>>>>>>> Stashed changes
             wq.numThreads -= 1;
             wq.cond.notify_all();
         }
@@ -112,7 +148,11 @@ public:
     /** Enqueue a work item */
     bool Enqueue(WorkItem* item)
     {
+<<<<<<< Updated upstream
         std::unique_lock<std::mutex> lock(cs);
+=======
+        boost::unique_lock<boost::mutex> lock(cs);
+>>>>>>> Stashed changes
         if (queue.size() >= maxDepth) {
             return false;
         }
@@ -127,7 +167,11 @@ public:
         while (running) {
             WorkItem* i = 0;
             {
+<<<<<<< Updated upstream
                 std::unique_lock<std::mutex> lock(cs);
+=======
+                boost::unique_lock<boost::mutex> lock(cs);
+>>>>>>> Stashed changes
                 while (running && queue.empty())
                     cond.wait(lock);
                 if (!running)
@@ -142,14 +186,22 @@ public:
     /** Interrupt and exit loops */
     void Interrupt()
     {
+<<<<<<< Updated upstream
         std::unique_lock<std::mutex> lock(cs);
+=======
+        boost::unique_lock<boost::mutex> lock(cs);
+>>>>>>> Stashed changes
         running = false;
         cond.notify_all();
     }
     /** Wait for worker threads to exit */
     void WaitExit()
     {
+<<<<<<< Updated upstream
         std::unique_lock<std::mutex> lock(cs);
+=======
+        boost::unique_lock<boost::mutex> lock(cs);
+>>>>>>> Stashed changes
         while (numThreads > 0)
             cond.wait(lock);
     }
@@ -157,7 +209,11 @@ public:
     /** Return current depth of queue */
     size_t Depth()
     {
+<<<<<<< Updated upstream
         std::unique_lock<std::mutex> lock(cs);
+=======
+        boost::unique_lock<boost::mutex> lock(cs);
+>>>>>>> Stashed changes
         return queue.size();
     }
 };
@@ -193,7 +249,11 @@ static bool ClientAllowed(const CNetAddr& netaddr)
 {
     if (!netaddr.IsValid())
         return false;
+<<<<<<< Updated upstream
     for (const CSubNet& subnet : rpc_allow_subnets)
+=======
+    BOOST_FOREACH (const CSubNet& subnet, rpc_allow_subnets)
+>>>>>>> Stashed changes
         if (subnet.Match(netaddr))
             return true;
     return false;
@@ -207,7 +267,11 @@ static bool InitHTTPAllowList()
     rpc_allow_subnets.push_back(CSubNet("::1"));         // always allow IPv6 localhost
     if (mapMultiArgs.count("-rpcallowip")) {
         const std::vector<std::string>& vAllow = mapMultiArgs["-rpcallowip"];
+<<<<<<< Updated upstream
         for (std::string strAllow : vAllow) {
+=======
+        BOOST_FOREACH (std::string strAllow, vAllow) {
+>>>>>>> Stashed changes
             CSubNet subnet(strAllow);
             if (!subnet.IsValid()) {
                 uiInterface.ThreadSafeMessageBox(
@@ -219,7 +283,11 @@ static bool InitHTTPAllowList()
         }
     }
     std::string strAllowed;
+<<<<<<< Updated upstream
     for (const CSubNet& subnet : rpc_allow_subnets)
+=======
+    BOOST_FOREACH (const CSubNet& subnet, rpc_allow_subnets)
+>>>>>>> Stashed changes
         strAllowed += subnet.ToString() + " ";
     LogPrint("http", "Allowing HTTP connections from: %s\n", strAllowed);
     return true;
@@ -303,14 +371,21 @@ static void http_reject_request_cb(struct evhttp_request* req, void*)
     evhttp_send_error(req, HTTP_SERVUNAVAIL, NULL);
 }
 /** Event dispatcher thread */
+<<<<<<< Updated upstream
 static bool ThreadHTTP(struct event_base* base, struct evhttp* http)
+=======
+static void ThreadHTTP(struct event_base* base, struct evhttp* http)
+>>>>>>> Stashed changes
 {
     RenameThread("bitcoin-http");
     LogPrint("http", "Entering http event loop\n");
     event_base_dispatch(base);
     // Event loop will be interrupted by InterruptHTTPServer()
     LogPrint("http", "Exited http event loop\n");
+<<<<<<< Updated upstream
     return event_base_got_break(base) == 0;
+=======
+>>>>>>> Stashed changes
 }
 
 /** Bind HTTP server to specified addresses */
@@ -439,14 +514,19 @@ bool InitHTTPServer()
     return true;
 }
 
+<<<<<<< Updated upstream
 std::thread threadHTTP;
 std::future<bool> threadResult;
+=======
+boost::thread threadHTTP;
+>>>>>>> Stashed changes
 
 bool StartHTTPServer()
 {
     LogPrint("http", "Starting HTTP server\n");
     int rpcThreads = std::max((long)GetArg("-rpcthreads", DEFAULT_HTTP_THREADS), 1L);
     LogPrintf("HTTP: starting %d worker threads\n", rpcThreads);
+<<<<<<< Updated upstream
     std::packaged_task<bool(event_base*, evhttp*)> task(ThreadHTTP);
     threadResult = task.get_future();
     threadHTTP = std::thread(std::move(task), eventBase, eventHTTP);
@@ -455,6 +535,12 @@ bool StartHTTPServer()
         std::thread rpc_worker(HTTPWorkQueueRun, workQueue);
         rpc_worker.detach();
     }
+=======
+    threadHTTP = boost::thread(boost::bind(&ThreadHTTP, eventBase, eventHTTP));
+
+    for (int i = 0; i < rpcThreads; i++)
+        boost::thread(boost::bind(&HTTPWorkQueueRun, workQueue));
+>>>>>>> Stashed changes
     return true;
 }
 
@@ -462,7 +548,11 @@ void InterruptHTTPServer()
 {
     LogPrint("http", "Interrupting HTTP server\n");
     if (eventHTTP) {
+<<<<<<< Updated upstream
         for (evhttp_bound_socket *socket : boundSockets) {
+=======
+        BOOST_FOREACH (evhttp_bound_socket *socket, boundSockets) {
+>>>>>>> Stashed changes
             evhttp_del_accept_socket(eventHTTP, socket);
         }
         evhttp_set_gencb(eventHTTP, http_reject_request_cb, NULL);
@@ -488,12 +578,24 @@ void StopHTTPServer()
         // master that appears to be solved, so in the future that solution
         // could be used again (if desirable).
         // (see discussion in https://github.com/bitcoin/bitcoin/pull/6990)
+<<<<<<< Updated upstream
         if (threadResult.valid() && threadResult.wait_for(std::chrono::milliseconds(2000)) == std::future_status::timeout) {
             LogPrintf("HTTP event loop did not exit within allotted time, sending loopbreak\n");
             event_base_loopbreak(eventBase);
 
         }
         threadHTTP.join();
+=======
+#if BOOST_VERSION >= 105000
+        if (!threadHTTP.try_join_for(boost::chrono::milliseconds(2000))) {
+#else
+        if (!threadHTTP.timed_join(boost::posix_time::milliseconds(2000))) {
+#endif
+            LogPrintf("HTTP event loop did not exit within allotted time, sending loopbreak\n");
+            event_base_loopbreak(eventBase);
+            threadHTTP.join();
+        }
+>>>>>>> Stashed changes
     }
     if (eventHTTP) {
         evhttp_free(eventHTTP);
@@ -520,7 +622,11 @@ static void httpevent_callback_fn(evutil_socket_t, short, void* data)
         delete self;
 }
 
+<<<<<<< Updated upstream
 HTTPEvent::HTTPEvent(struct event_base* base, bool deleteWhenTriggered, const std::function<void(void)>& handler):
+=======
+HTTPEvent::HTTPEvent(struct event_base* base, bool deleteWhenTriggered, const boost::function<void(void)>& handler):
+>>>>>>> Stashed changes
     deleteWhenTriggered(deleteWhenTriggered), handler(handler)
 {
     ev = event_new(base, -1, 0, httpevent_callback_fn, this);
@@ -602,7 +708,11 @@ void HTTPRequest::WriteReply(int nStatus, const std::string& strReply)
     assert(evb);
     evbuffer_add(evb, strReply.data(), strReply.size());
     HTTPEvent* ev = new HTTPEvent(eventBase, true,
+<<<<<<< Updated upstream
         std::bind(evhttp_send_reply, req, nStatus, (const char*)NULL, (struct evbuffer *)NULL));
+=======
+        boost::bind(evhttp_send_reply, req, nStatus, (const char*)NULL, (struct evbuffer *)NULL));
+>>>>>>> Stashed changes
     ev->trigger(0);
     replySent = true;
     req = 0; // transferred back to main thread

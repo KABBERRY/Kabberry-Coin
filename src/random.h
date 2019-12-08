@@ -6,14 +6,25 @@
 #ifndef BITCOIN_RANDOM_H
 #define BITCOIN_RANDOM_H
 
+<<<<<<< Updated upstream
 #include "crypto/chacha20.h"
 #include "crypto/common.h"
+=======
+>>>>>>> Stashed changes
 #include "uint256.h"
 
 #include <stdint.h>
 
+<<<<<<< Updated upstream
 /* Seed OpenSSL PRNG with additional entropy data */
 void RandAddSeed();
+=======
+/**
+ * Seed OpenSSL PRNG with additional entropy data
+ */
+void RandAddSeed();
+void RandAddSeedPerfmon();
+>>>>>>> Stashed changes
 
 /**
  * Functions to gather random data via the OpenSSL PRNG
@@ -24,6 +35,7 @@ int GetRandInt(int nMax);
 uint256 GetRandHash();
 
 /**
+<<<<<<< Updated upstream
  * Add a little bit of randomness to the output of GetStrongRangBytes.
  * This sleeps for a millisecond, so should only be called when there is
  * no other work to be done.
@@ -150,5 +162,27 @@ bool Random_SanityCheck();
 
 /** Initialize the RNG. */
 void RandomInit();
+=======
+ * Seed insecure_rand using the random pool.
+ * @param Deterministic Use a deterministic seed
+ */
+void seed_insecure_rand(bool fDeterministic = false);
+
+/**
+ * MWC RNG of George Marsaglia
+ * This is intended to be fast. It has a period of 2^59.3, though the
+ * least significant 16 bits only have a period of about 2^30.1.
+ *
+ * @return random value
+ */
+extern uint32_t insecure_rand_Rz;
+extern uint32_t insecure_rand_Rw;
+static inline uint32_t insecure_rand(void)
+{
+    insecure_rand_Rz = 36969 * (insecure_rand_Rz & 65535) + (insecure_rand_Rz >> 16);
+    insecure_rand_Rw = 18000 * (insecure_rand_Rw & 65535) + (insecure_rand_Rw >> 16);
+    return (insecure_rand_Rw << 16) + insecure_rand_Rz;
+}
+>>>>>>> Stashed changes
 
 #endif // BITCOIN_RANDOM_H

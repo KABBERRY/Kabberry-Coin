@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -24,6 +29,7 @@
 /** This is needed because the foreach macro can't get over the comma in pair<t1, t2> */
 #define PAIRTYPE(t1, t2) std::pair<t1, t2>
 
+<<<<<<< Updated upstream
 /** Used by SanitizeString() */
 enum SafeChars
 {
@@ -50,6 +56,9 @@ std::string SanitizeString(const std::string& str, int rule = SAFE_CHARS_DEFAULT
 */
 bool validateURL(std::string strURL, std::string& strErr, unsigned int maxSize = 64);
 
+=======
+std::string SanitizeString(const std::string& str);
+>>>>>>> Stashed changes
 std::vector<unsigned char> ParseHex(const char* psz);
 std::vector<unsigned char> ParseHex(const std::string& str);
 signed char HexDigit(char c);

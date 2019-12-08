@@ -1,9 +1,18 @@
 // Copyright (c) 2017-2018 The PIVX developers
+<<<<<<< Updated upstream
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef PIVX_UINT512_H
 #define PIVX_UINT512_H
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PrimeStone_UINT512_H
+#define PrimeStone_UINT512_H
+>>>>>>> Stashed changes
 
 #include "arith_uint256.h"
 #include "uint256.h"
@@ -42,4 +51,8 @@ inline uint512 uint512S(const char* str)
     return rv;
 }
 
+<<<<<<< Updated upstream
 #endif // PIVX_UINT512_H
+=======
+#endif // PrimeStone_UINT512_H
+>>>>>>> Stashed changes

@@ -68,6 +68,7 @@ enum
     // discouraged NOPs fails the script. This verification flag will never be
     // a mandatory flag applied to scripts in a block. NOPs that are not
     // executed, e.g.  within an unexecuted IF ENDIF block, are *not* rejected.
+<<<<<<< Updated upstream
     SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS  = (1U << 7),
 
     // Require that only a single stack element remains after evaluation. This changes the success criterion from
@@ -81,6 +82,10 @@ enum
     //
     // See BIP65 for details.
     SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY = (1U << 9)
+=======
+    SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS  = (1U << 7)
+
+>>>>>>> Stashed changes
 };
 
 uint256 SignatureHash(const CScript &scriptCode, const CTransaction& txTo, unsigned int nIn, int nHashType);
@@ -93,6 +98,7 @@ public:
         return false;
     }
 
+<<<<<<< Updated upstream
     virtual bool CheckLockTime(const CScriptNum& nLockTime) const
     {
          return false;
@@ -103,6 +109,8 @@ public:
          return false;
     }
 
+=======
+>>>>>>> Stashed changes
     virtual ~BaseSignatureChecker() {}
 };
 
@@ -117,11 +125,15 @@ protected:
 
 public:
     TransactionSignatureChecker(const CTransaction* txToIn, unsigned int nInIn) : txTo(txToIn), nIn(nInIn) {}
+<<<<<<< Updated upstream
     bool CheckSig(const std::vector<unsigned char>& scriptSig, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode) const override;
     bool CheckLockTime(const CScriptNum& nLockTime) const override;
     bool CheckColdStake(const CScript& script) const override {
         return txTo->CheckColdStake(script);
     }
+=======
+    bool CheckSig(const std::vector<unsigned char>& scriptSig, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode) const;
+>>>>>>> Stashed changes
 };
 
 class MutableTransactionSignatureChecker : public TransactionSignatureChecker

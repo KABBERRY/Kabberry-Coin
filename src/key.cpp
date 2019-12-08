@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2017 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -159,7 +163,11 @@ bool CKey::Check(const unsigned char* vch)
 void CKey::MakeNewKey(bool fCompressedIn)
 {
     do {
+<<<<<<< Updated upstream
         GetStrongRandBytes(keydata.data(), keydata.size());
+=======
+        GetRandBytes(keydata.data(), keydata.size());
+>>>>>>> Stashed changes
     } while (!Check(keydata.data()));
     fValid = true;
     fCompressed = fCompressedIn;

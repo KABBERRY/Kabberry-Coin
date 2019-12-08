@@ -1,5 +1,9 @@
 // Copyright (c) 2011-2013 The Bitcoin Core developers
 // Copyright (c) 2015-2017 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +18,11 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
+<<<<<<< Updated upstream
         return @"io.pivx.Pivx-Qt";
+=======
+        return @"io.primestone.PrimeStone-Qt";
+>>>>>>> Stashed changes
     } else {
         return [self __bundleIdentifier];
     }

@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2019 The PIVX developers
+=======
+// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -16,11 +21,19 @@
 #include <assert.h>
 #include <stdint.h>
 
+<<<<<<< Updated upstream
+=======
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 #include <boost/unordered_map.hpp>
 
 /** 
 
+<<<<<<< Updated upstream
     ****Note - for PIVX we added fCoinStake to the 2nd bit. Keep in mind when reading the following and adjust as needed.
+=======
+    ****Note - for PrimeStone we added fCoinStake to the 2nd bit. Keep in mind when reading the following and adjust as needed.
+>>>>>>> Stashed changes
  * Pruned version of CTransaction: only retains metadata and unspent transaction outputs
  *
  * Serialized format:
@@ -127,7 +140,11 @@ public:
 
     void ClearUnspendable()
     {
+<<<<<<< Updated upstream
         for (CTxOut& txout : vout) {
+=======
+        BOOST_FOREACH (CTxOut& txout, vout) {
+>>>>>>> Stashed changes
             if (txout.scriptPubKey.IsUnspendable())
                 txout.SetNull();
         }
@@ -271,14 +288,22 @@ public:
     //! check whether a particular output is still available
     bool IsAvailable(unsigned int nPos) const
     {
+<<<<<<< Updated upstream
         return (nPos < vout.size() && !vout[nPos].IsNull() && !vout[nPos].IsZerocoinMint());
+=======
+        return (nPos < vout.size() && !vout[nPos].IsNull() && !vout[nPos].scriptPubKey.IsZerocoinMint());
+>>>>>>> Stashed changes
     }
 
     //! check whether the entire CCoins is spent
     //! note that only !IsPruned() CCoins can be serialized
     bool IsPruned() const
     {
+<<<<<<< Updated upstream
         for (const CTxOut& out : vout)
+=======
+        BOOST_FOREACH (const CTxOut& out, vout)
+>>>>>>> Stashed changes
             if (!out.IsNull())
                 return false;
         return true;
@@ -457,7 +482,11 @@ public:
     unsigned int GetCacheSize() const;
 
     /** 
+<<<<<<< Updated upstream
      * Amount of pivx coming in to a transaction
+=======
+     * Amount of primestone coming in to a transaction
+>>>>>>> Stashed changes
      * Note that lightweight clients may not know anything besides the hash of previous transactions,
      * so may not be able to calculate this.
      *
@@ -469,9 +498,12 @@ public:
     //! Check whether all prevouts of the transaction are present in the UTXO set represented by this view
     bool HaveInputs(const CTransaction& tx) const;
 
+<<<<<<< Updated upstream
     //! Check if the specific output is available in this view
     bool IsOutputAvailable(const uint256& txId, int index);
 
+=======
+>>>>>>> Stashed changes
     //! Return priority of tx at height nHeight
     double GetPriority(const CTransaction& tx, int nHeight) const;
 

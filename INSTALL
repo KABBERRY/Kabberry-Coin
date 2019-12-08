@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 Building PIVX
+=======
+Building PrimeStone
+>>>>>>> Stashed changes
 
 Use the autogen script to prepare the build environment.
 
@@ -8,6 +12,12 @@ Use the autogen script to prepare the build environment.
 
 Always verify the signatures and checksums.
 
+<<<<<<< Updated upstream
 See doc/build-*.md for instructions on building pivxd,
 the intended-for-services, no-graphical-interface, reference
 implementation of PIVX.
+=======
+See doc/build-*.md for instructions on building primestoned,
+the intended-for-services, no-graphical-interface, reference
+implementation of PrimeStone.
+>>>>>>> Stashed changes

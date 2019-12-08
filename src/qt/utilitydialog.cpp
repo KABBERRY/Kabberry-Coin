@@ -1,6 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2018 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,13 +13,20 @@
 
 #include "ui_helpmessagedialog.h"
 
+<<<<<<< Updated upstream
+=======
+#include "bitcoingui.h"
+>>>>>>> Stashed changes
 #include "clientmodel.h"
 #include "guiconstants.h"
 #include "intro.h"
 #include "guiutil.h"
 
+<<<<<<< Updated upstream
 #include "qt/pivx/qtutils.cpp"
 
+=======
+>>>>>>> Stashed changes
 #include "clientversion.h"
 #include "init.h"
 #include "util.h"
@@ -33,10 +45,16 @@ HelpMessageDialog::HelpMessageDialog(QWidget* parent, bool about) : QDialog(pare
                                                                     ui(new Ui::HelpMessageDialog)
 {
     ui->setupUi(this);
+<<<<<<< Updated upstream
     if (parent) this->setStyleSheet(parent->styleSheet());
     GUIUtil::restoreWindowGeometry("nHelpMessageDialogWindow", this->size(), this);
 
     QString version = tr("PIVX Core") + " " + tr("version") + " " + QString::fromStdString(FormatFullVersion());
+=======
+    GUIUtil::restoreWindowGeometry("nHelpMessageDialogWindow", this->size(), this);
+
+    QString version = tr("PrimeStone") + " " + tr("version") + " " + QString::fromStdString(FormatFullVersion());
+>>>>>>> Stashed changes
 /* On x86 add a bit specifier to the version so that users can distinguish between
      * 32 and 64 bit builds. On other architectures, 32/64 bit may be more ambigious.
      */
@@ -46,10 +64,15 @@ HelpMessageDialog::HelpMessageDialog(QWidget* parent, bool about) : QDialog(pare
     version += " " + tr("(%1-bit)").arg(32);
 #endif
 
+<<<<<<< Updated upstream
     setCssBtnPrimary(ui->pushButtonOk);
     connect(ui->pushButtonOk, &QPushButton::clicked, this, &HelpMessageDialog::close);
     if (about) {
         setWindowTitle(tr("About PIVX Core"));
+=======
+    if (about) {
+        setWindowTitle(tr("About PrimeStone"));
+>>>>>>> Stashed changes
 
         /// HTML-format the license message from the core
         QString licenseInfo = QString::fromStdString(LicenseInfo());
@@ -58,7 +81,11 @@ HelpMessageDialog::HelpMessageDialog(QWidget* parent, bool about) : QDialog(pare
         // Make URLs clickable
         QRegExp uri("<(.*)>", Qt::CaseSensitive, QRegExp::RegExp2);
         uri.setMinimal(true); // use non-greedy matching
+<<<<<<< Updated upstream
         licenseInfoHTML.replace(uri, "<a style='color: #b088ff;text-decoration:none'  href=\"\\1\">\\1</a>");
+=======
+        licenseInfoHTML.replace(uri, "<a href=\"\\1\">\\1</a>");
+>>>>>>> Stashed changes
         // Replace newlines with HTML breaks
         licenseInfoHTML.replace("\n\n", "<br><br>");
 
@@ -71,7 +98,11 @@ HelpMessageDialog::HelpMessageDialog(QWidget* parent, bool about) : QDialog(pare
     } else {
         setWindowTitle(tr("Command-line options"));
         QString header = tr("Usage:") + "\n" +
+<<<<<<< Updated upstream
                          "  pivx-qt [" + tr("command-line options") + "]                     " + "\n";
+=======
+                         "  primestone-qt [" + tr("command-line options") + "]                     " + "\n";
+>>>>>>> Stashed changes
         QTextCursor cursor(ui->helpMessage->document());
         cursor.insertText(version);
         cursor.insertBlock();
@@ -147,18 +178,34 @@ void HelpMessageDialog::showOrPrint()
 #endif
 }
 
+<<<<<<< Updated upstream
+=======
+void HelpMessageDialog::on_okButton_accepted()
+{
+    close();
+}
+
+>>>>>>> Stashed changes
 
 /** "Shutdown" window */
 ShutdownWindow::ShutdownWindow(QWidget* parent, Qt::WindowFlags f) : QWidget(parent, f)
 {
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(new QLabel(
+<<<<<<< Updated upstream
         tr("PIVX Core is shutting down...") + "<br /><br />" +
+=======
+        tr("PrimeStone is shutting down...") + "<br /><br />" +
+>>>>>>> Stashed changes
         tr("Do not shut down the computer until this window disappears.")));
     setLayout(layout);
 }
 
+<<<<<<< Updated upstream
 void ShutdownWindow::showShutdownWindow(QMainWindow* window)
+=======
+void ShutdownWindow::showShutdownWindow(BitcoinGUI* window)
+>>>>>>> Stashed changes
 {
     if (!window)
         return;

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 // Copyright (c) 2018-2019 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -8,12 +9,25 @@
 #include "main.h"
 #include "txdb.h"
 #include "guiinterface.h"
+=======
+// Copyright (c) 2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#include "zPSCchain.h"
+#include "invalid.h"
+#include "main.h"
+#include "txdb.h"
+#include "ui_interface.h"
+>>>>>>> Stashed changes
 
 // 6 comes from OPCODE (1) + vch.size() (1) + BIGNUM size (4)
 #define SCRIPT_OFFSET 6
 // For Script size (BIGNUM/Uint256 size)
 #define BIGNUM_SIZE   4
 
+<<<<<<< Updated upstream
 bool BlockToMintValueVector(const CBlock& block, const libzerocoin::CoinDenomination denom, std::vector<CBigNum>& vValues)
 {
     for (const CTransaction& tx : block.vtx) {
@@ -22,6 +36,16 @@ bool BlockToMintValueVector(const CBlock& block, const libzerocoin::CoinDenomina
 
         for (const CTxOut& txOut : tx.vout) {
             if(!txOut.IsZerocoinMint())
+=======
+bool BlockToMintValueVector(const CBlock& block, const libzerocoin::CoinDenomination denom, vector<CBigNum>& vValues)
+{
+    for (const CTransaction& tx : block.vtx) {
+        if(!tx.IsZerocoinMint())
+            continue;
+
+        for (const CTxOut& txOut : tx.vout) {
+            if(!txOut.scriptPubKey.IsZerocoinMint())
+>>>>>>> Stashed changes
                 continue;
 
             CValidationState state;
@@ -42,7 +66,11 @@ bool BlockToMintValueVector(const CBlock& block, const libzerocoin::CoinDenomina
 bool BlockToPubcoinList(const CBlock& block, std::list<libzerocoin::PublicCoin>& listPubcoins, bool fFilterInvalid)
 {
     for (const CTransaction& tx : block.vtx) {
+<<<<<<< Updated upstream
         if(!tx.HasZerocoinMintOutputs())
+=======
+        if(!tx.IsZerocoinMint())
+>>>>>>> Stashed changes
             continue;
 
         // Filter out mints that have used invalid outpoints
@@ -65,7 +93,11 @@ bool BlockToPubcoinList(const CBlock& block, std::list<libzerocoin::PublicCoin>&
                 break;
 
             const CTxOut txOut = tx.vout[i];
+<<<<<<< Updated upstream
             if(!txOut.IsZerocoinMint())
+=======
+            if(!txOut.scriptPubKey.IsZerocoinMint())
+>>>>>>> Stashed changes
                 continue;
 
             CValidationState state;
@@ -84,7 +116,11 @@ bool BlockToPubcoinList(const CBlock& block, std::list<libzerocoin::PublicCoin>&
 bool BlockToZerocoinMintList(const CBlock& block, std::list<CZerocoinMint>& vMints, bool fFilterInvalid)
 {
     for (const CTransaction& tx : block.vtx) {
+<<<<<<< Updated upstream
         if(!tx.HasZerocoinMintOutputs())
+=======
+        if(!tx.IsZerocoinMint())
+>>>>>>> Stashed changes
             continue;
 
         // Filter out mints that have used invalid outpoints
@@ -107,7 +143,11 @@ bool BlockToZerocoinMintList(const CBlock& block, std::list<CZerocoinMint>& vMin
                 break;
 
             const CTxOut txOut = tx.vout[i];
+<<<<<<< Updated upstream
             if(!txOut.IsZerocoinMint())
+=======
+            if(!txOut.scriptPubKey.IsZerocoinMint())
+>>>>>>> Stashed changes
                 continue;
 
             CValidationState state;
@@ -284,6 +324,7 @@ std::string ReindexZerocoinDB()
                 if (tx.ContainsZerocoins()) {
                     uint256 txid = tx.GetHash();
                     //Record Serials
+<<<<<<< Updated upstream
                     if (tx.HasZerocoinSpendInputs()) {
                         for (auto& in : tx.vin) {
                             bool isPublicSpend = in.IsZerocoinPublicSpend();
@@ -301,11 +342,24 @@ std::string ReindexZerocoinDB()
                                 libzerocoin::CoinSpend spend = TxInToZerocoinSpend(in);
                                 vSpendInfo.push_back(std::make_pair(spend, txid));
                             }
+=======
+                    if (tx.IsZerocoinSpend()) {
+                        for (auto& in : tx.vin) {
+                            if (!in.scriptSig.IsZerocoinSpend())
+                                continue;
+
+                            libzerocoin::CoinSpend spend = TxInToZerocoinSpend(in);
+                            vSpendInfo.push_back(make_pair(spend, txid));
+>>>>>>> Stashed changes
                         }
                     }
 
                     //Record mints
+<<<<<<< Updated upstream
                     if (tx.HasZerocoinMintOutputs()) {
+=======
+                    if (tx.IsZerocoinMint()) {
+>>>>>>> Stashed changes
                         for (auto& out : tx.vout) {
                             if (!out.IsZerocoinMint())
                                 continue;
@@ -313,7 +367,11 @@ std::string ReindexZerocoinDB()
                             CValidationState state;
                             libzerocoin::PublicCoin coin(Params().Zerocoin_Params(pindex->nHeight < Params().Zerocoin_Block_V2_Start()));
                             TxOutToPublicCoin(out, coin, state);
+<<<<<<< Updated upstream
                             vMintInfo.push_back(std::make_pair(coin, txid));
+=======
+                            vMintInfo.push_back(make_pair(coin, txid));
+>>>>>>> Stashed changes
                         }
                     }
                 }
@@ -362,7 +420,11 @@ libzerocoin::CoinSpend TxInToZerocoinSpend(const CTxIn& txin)
 bool TxOutToPublicCoin(const CTxOut& txout, libzerocoin::PublicCoin& pubCoin, CValidationState& state)
 {
     CBigNum publicZerocoin;
+<<<<<<< Updated upstream
     std::vector<unsigned char> vchZeroMint;
+=======
+    vector<unsigned char> vchZeroMint;
+>>>>>>> Stashed changes
     vchZeroMint.insert(vchZeroMint.end(), txout.scriptPubKey.begin() + SCRIPT_OFFSET,
                        txout.scriptPubKey.begin() + txout.scriptPubKey.size());
     publicZerocoin.setvch(vchZeroMint);
@@ -383,6 +445,7 @@ std::list<libzerocoin::CoinDenomination> ZerocoinSpendListFromBlock(const CBlock
 {
     std::list<libzerocoin::CoinDenomination> vSpends;
     for (const CTransaction& tx : block.vtx) {
+<<<<<<< Updated upstream
         if (!tx.HasZerocoinSpendInputs())
             continue;
 
@@ -392,6 +455,16 @@ std::list<libzerocoin::CoinDenomination> ZerocoinSpendListFromBlock(const CBlock
                 continue;
 
             if (fFilterInvalid && !isPublicSpend) {
+=======
+        if (!tx.IsZerocoinSpend())
+            continue;
+
+        for (const CTxIn& txin : tx.vin) {
+            if (!txin.scriptSig.IsZerocoinSpend())
+                continue;
+
+            if (fFilterInvalid) {
+>>>>>>> Stashed changes
                 libzerocoin::CoinSpend spend = TxInToZerocoinSpend(txin);
                 if (invalid_out::ContainsSerial(spend.getCoinSerialNumber()))
                     continue;

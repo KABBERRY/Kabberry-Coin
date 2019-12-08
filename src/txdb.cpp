@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2019 The PIVX developers
+=======
+// Copyright (c) 2016-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,19 +14,34 @@
 #include "main.h"
 #include "pow.h"
 #include "uint256.h"
+<<<<<<< Updated upstream
 #include "zpiv/accumulators.h"
+=======
+#include "accumulators.h"
+>>>>>>> Stashed changes
 
 #include <stdint.h>
 
 #include <boost/thread.hpp>
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+using namespace libzerocoin;
+>>>>>>> Stashed changes
 
 void static BatchWriteCoins(CLevelDBBatch& batch, const uint256& hash, const CCoins& coins)
 {
     if (coins.IsPruned())
+<<<<<<< Updated upstream
         batch.Erase(std::make_pair('c', hash));
     else
         batch.Write(std::make_pair('c', hash), coins);
+=======
+        batch.Erase(make_pair('c', hash));
+    else
+        batch.Write(make_pair('c', hash), coins);
+>>>>>>> Stashed changes
 }
 
 void static BatchWriteHashBestChain(CLevelDBBatch& batch, const uint256& hash)
@@ -35,12 +55,20 @@ CCoinsViewDB::CCoinsViewDB(size_t nCacheSize, bool fMemory, bool fWipe) : db(Get
 
 bool CCoinsViewDB::GetCoins(const uint256& txid, CCoins& coins) const
 {
+<<<<<<< Updated upstream
     return db.Read(std::make_pair('c', txid), coins);
+=======
+    return db.Read(make_pair('c', txid), coins);
+>>>>>>> Stashed changes
 }
 
 bool CCoinsViewDB::HaveCoins(const uint256& txid) const
 {
+<<<<<<< Updated upstream
     return db.Exists(std::make_pair('c', txid));
+=======
+    return db.Exists(make_pair('c', txid));
+>>>>>>> Stashed changes
 }
 
 uint256 CCoinsViewDB::GetBestBlock() const
@@ -78,12 +106,30 @@ CBlockTreeDB::CBlockTreeDB(size_t nCacheSize, bool fMemory, bool fWipe) : CLevel
 
 bool CBlockTreeDB::WriteBlockIndex(const CDiskBlockIndex& blockindex)
 {
+<<<<<<< Updated upstream
     return Write(std::make_pair('b', blockindex.GetBlockHash()), blockindex);
+=======
+    return Write(make_pair('b', blockindex.GetBlockHash()), blockindex);
+}
+
+bool CBlockTreeDB::WriteBlockFileInfo(int nFile, const CBlockFileInfo& info)
+{
+    return Write(make_pair('f', nFile), info);
+>>>>>>> Stashed changes
 }
 
 bool CBlockTreeDB::ReadBlockFileInfo(int nFile, CBlockFileInfo& info)
 {
+<<<<<<< Updated upstream
     return Read(std::make_pair('f', nFile), info);
+=======
+    return Read(make_pair('f', nFile), info);
+}
+
+bool CBlockTreeDB::WriteLastBlockFile(int nFile)
+{
+    return Write('l', nFile);
+>>>>>>> Stashed changes
 }
 
 bool CBlockTreeDB::WriteReindexing(bool fReindexing)
@@ -149,7 +195,11 @@ bool CCoinsViewDB::GetStats(CCoinsStats& stats) const
                 ss << VARINT(0);
             }
             pcursor->Next();
+<<<<<<< Updated upstream
         } catch (const std::exception& e) {
+=======
+        } catch (std::exception& e) {
+>>>>>>> Stashed changes
             return error("%s : Deserialize or I/O error - %s", __func__, e.what());
         }
     }
@@ -159,6 +209,7 @@ bool CCoinsViewDB::GetStats(CCoinsStats& stats) const
     return true;
 }
 
+<<<<<<< Updated upstream
 bool CBlockTreeDB::WriteBatchSync(const std::vector<std::pair<int, const CBlockFileInfo*> >& fileInfo, int nLastFile, const std::vector<const CBlockIndex*>& blockinfo) {
     CLevelDBBatch batch;
     for (std::vector<std::pair<int, const CBlockFileInfo*> >::const_iterator it=fileInfo.begin(); it != fileInfo.end(); it++) {
@@ -174,13 +225,22 @@ bool CBlockTreeDB::WriteBatchSync(const std::vector<std::pair<int, const CBlockF
 bool CBlockTreeDB::ReadTxIndex(const uint256& txid, CDiskTxPos& pos)
 {
     return Read(std::make_pair('t', txid), pos);
+=======
+bool CBlockTreeDB::ReadTxIndex(const uint256& txid, CDiskTxPos& pos)
+{
+    return Read(make_pair('t', txid), pos);
+>>>>>>> Stashed changes
 }
 
 bool CBlockTreeDB::WriteTxIndex(const std::vector<std::pair<uint256, CDiskTxPos> >& vect)
 {
     CLevelDBBatch batch;
     for (std::vector<std::pair<uint256, CDiskTxPos> >::const_iterator it = vect.begin(); it != vect.end(); it++)
+<<<<<<< Updated upstream
         batch.Write(std::make_pair('t', it->first), it->second);
+=======
+        batch.Write(make_pair('t', it->first), it->second);
+>>>>>>> Stashed changes
     return WriteBatch(batch);
 }
 
@@ -213,7 +273,11 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
     boost::scoped_ptr<leveldb::Iterator> pcursor(NewIterator());
 
     CDataStream ssKeySet(SER_DISK, CLIENT_VERSION);
+<<<<<<< Updated upstream
     ssKeySet << std::make_pair('b', uint256(0));
+=======
+    ssKeySet << make_pair('b', uint256(0));
+>>>>>>> Stashed changes
     pcursor->Seek(ssKeySet.str());
 
     // Load mapBlockIndex
@@ -256,11 +320,15 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                 pindexNew->nMint = diskindex.nMint;
                 pindexNew->nMoneySupply = diskindex.nMoneySupply;
                 pindexNew->nFlags = diskindex.nFlags;
+<<<<<<< Updated upstream
                 if (!Params().IsStakeModifierV2(pindexNew->nHeight)) {
                     pindexNew->nStakeModifier = diskindex.nStakeModifier;
                 } else {
                     pindexNew->nStakeModifierV2 = diskindex.nStakeModifierV2;
                 }
+=======
+                pindexNew->nStakeModifier = diskindex.nStakeModifier;
+>>>>>>> Stashed changes
                 pindexNew->prevoutStake = diskindex.prevoutStake;
                 pindexNew->nStakeTime = diskindex.nStakeTime;
                 pindexNew->hashProofOfStake = diskindex.hashProofOfStake;
@@ -269,10 +337,20 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                     if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits))
                         return error("LoadBlockIndex() : CheckProofOfWork failed: %s", pindexNew->ToString());
                 }
+<<<<<<< Updated upstream
 
                 //populate accumulator checksum map in memory
                 if(pindexNew->nAccumulatorCheckpoint != 0 && pindexNew->nAccumulatorCheckpoint != nPreviousCheckpoint) {
                     //Don't load any checkpoints that exist before v2 zpiv. The accumulator is invalid for v1 and not used.
+=======
+                // ppcoin: build setStakeSeen
+                if (pindexNew->IsProofOfStake())
+                    setStakeSeen.insert(make_pair(pindexNew->prevoutStake, pindexNew->nStakeTime));
+
+                //populate accumulator checksum map in memory
+                if(pindexNew->nAccumulatorCheckpoint != 0 && pindexNew->nAccumulatorCheckpoint != nPreviousCheckpoint) {
+                    //Don't load any checkpoints that exist before v2 zPSC. The accumulator is invalid for v1 and not used.
+>>>>>>> Stashed changes
                     if (pindexNew->nHeight >= Params().Zerocoin_Block_V2_Start())
                         LoadAccumulatorValuesFromDB(pindexNew->nAccumulatorCheckpoint);
 
@@ -283,7 +361,11 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
             } else {
                 break; // if shutdown requested or finished loading block index
             }
+<<<<<<< Updated upstream
         } catch (const std::exception& e) {
+=======
+        } catch (std::exception& e) {
+>>>>>>> Stashed changes
             return error("%s : Deserialize or I/O error - %s", __func__, e.what());
         }
     }
@@ -300,9 +382,15 @@ bool CZerocoinDB::WriteCoinMintBatch(const std::vector<std::pair<libzerocoin::Pu
     CLevelDBBatch batch;
     size_t count = 0;
     for (std::vector<std::pair<libzerocoin::PublicCoin, uint256> >::const_iterator it=mintInfo.begin(); it != mintInfo.end(); it++) {
+<<<<<<< Updated upstream
         libzerocoin::PublicCoin pubCoin = it->first;
         uint256 hash = GetPubCoinHash(pubCoin.getValue());
         batch.Write(std::make_pair('m', hash), it->second);
+=======
+        PublicCoin pubCoin = it->first;
+        uint256 hash = GetPubCoinHash(pubCoin.getValue());
+        batch.Write(make_pair('m', hash), it->second);
+>>>>>>> Stashed changes
         ++count;
     }
 
@@ -317,13 +405,21 @@ bool CZerocoinDB::ReadCoinMint(const CBigNum& bnPubcoin, uint256& hashTx)
 
 bool CZerocoinDB::ReadCoinMint(const uint256& hashPubcoin, uint256& hashTx)
 {
+<<<<<<< Updated upstream
     return Read(std::make_pair('m', hashPubcoin), hashTx);
+=======
+    return Read(make_pair('m', hashPubcoin), hashTx);
+>>>>>>> Stashed changes
 }
 
 bool CZerocoinDB::EraseCoinMint(const CBigNum& bnPubcoin)
 {
     uint256 hash = GetPubCoinHash(bnPubcoin);
+<<<<<<< Updated upstream
     return Erase(std::make_pair('m', hash));
+=======
+    return Erase(make_pair('m', hash));
+>>>>>>> Stashed changes
 }
 
 bool CZerocoinDB::WriteCoinSpendBatch(const std::vector<std::pair<libzerocoin::CoinSpend, uint256> >& spendInfo)
@@ -335,7 +431,11 @@ bool CZerocoinDB::WriteCoinSpendBatch(const std::vector<std::pair<libzerocoin::C
         CDataStream ss(SER_GETHASH, 0);
         ss << bnSerial;
         uint256 hash = Hash(ss.begin(), ss.end());
+<<<<<<< Updated upstream
         batch.Write(std::make_pair('s', hash), it->second);
+=======
+        batch.Write(make_pair('s', hash), it->second);
+>>>>>>> Stashed changes
         ++count;
     }
 
@@ -349,12 +449,20 @@ bool CZerocoinDB::ReadCoinSpend(const CBigNum& bnSerial, uint256& txHash)
     ss << bnSerial;
     uint256 hash = Hash(ss.begin(), ss.end());
 
+<<<<<<< Updated upstream
     return Read(std::make_pair('s', hash), txHash);
+=======
+    return Read(make_pair('s', hash), txHash);
+>>>>>>> Stashed changes
 }
 
 bool CZerocoinDB::ReadCoinSpend(const uint256& hashSerial, uint256 &txHash)
 {
+<<<<<<< Updated upstream
     return Read(std::make_pair('s', hashSerial), txHash);
+=======
+    return Read(make_pair('s', hashSerial), txHash);
+>>>>>>> Stashed changes
 }
 
 bool CZerocoinDB::EraseCoinSpend(const CBigNum& bnSerial)
@@ -363,7 +471,11 @@ bool CZerocoinDB::EraseCoinSpend(const CBigNum& bnSerial)
     ss << bnSerial;
     uint256 hash = Hash(ss.begin(), ss.end());
 
+<<<<<<< Updated upstream
     return Erase(std::make_pair('s', hash));
+=======
+    return Erase(make_pair('s', hash));
+>>>>>>> Stashed changes
 }
 
 bool CZerocoinDB::WipeCoins(std::string strType)
@@ -375,7 +487,11 @@ bool CZerocoinDB::WipeCoins(std::string strType)
 
     char type = (strType == "spends" ? 's' : 'm');
     CDataStream ssKeySet(SER_DISK, CLIENT_VERSION);
+<<<<<<< Updated upstream
     ssKeySet << std::make_pair(type, uint256(0));
+=======
+    ssKeySet << make_pair(type, uint256(0));
+>>>>>>> Stashed changes
     pcursor->Seek(ssKeySet.str());
     // Load mapBlockIndex
     std::set<uint256> setDelete;
@@ -396,13 +512,21 @@ bool CZerocoinDB::WipeCoins(std::string strType)
             } else {
                 break; // if shutdown requested or finished loading block index
             }
+<<<<<<< Updated upstream
         } catch (const std::exception& e) {
+=======
+        } catch (std::exception& e) {
+>>>>>>> Stashed changes
             return error("%s : Deserialize or I/O error - %s", __func__, e.what());
         }
     }
 
     for (auto& hash : setDelete) {
+<<<<<<< Updated upstream
         if (!Erase(std::make_pair(type, hash)))
+=======
+        if (!Erase(make_pair(type, hash)))
+>>>>>>> Stashed changes
             LogPrintf("%s: error failed to delete %s\n", __func__, hash.GetHex());
     }
 
@@ -412,16 +536,28 @@ bool CZerocoinDB::WipeCoins(std::string strType)
 bool CZerocoinDB::WriteAccumulatorValue(const uint32_t& nChecksum, const CBigNum& bnValue)
 {
     LogPrint("zero","%s : checksum:%d val:%s\n", __func__, nChecksum, bnValue.GetHex());
+<<<<<<< Updated upstream
     return Write(std::make_pair('2', nChecksum), bnValue);
+=======
+    return Write(make_pair('2', nChecksum), bnValue);
+>>>>>>> Stashed changes
 }
 
 bool CZerocoinDB::ReadAccumulatorValue(const uint32_t& nChecksum, CBigNum& bnValue)
 {
+<<<<<<< Updated upstream
     return Read(std::make_pair('2', nChecksum), bnValue);
+=======
+    return Read(make_pair('2', nChecksum), bnValue);
+>>>>>>> Stashed changes
 }
 
 bool CZerocoinDB::EraseAccumulatorValue(const uint32_t& nChecksum)
 {
     LogPrint("zero", "%s : checksum:%d\n", __func__, nChecksum);
+<<<<<<< Updated upstream
     return Erase(std::make_pair('2', nChecksum));
+=======
+    return Erase(make_pair('2', nChecksum));
+>>>>>>> Stashed changes
 }

@@ -1,10 +1,19 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif
 
 #include "optionsdialog.h"
@@ -20,7 +29,11 @@
 #include "txdb.h" // for -dbcache defaults
 
 #ifdef ENABLE_WALLET
+<<<<<<< Updated upstream
 #include "wallet/wallet.h" // for CWallet::minTxFee
+=======
+#include "wallet.h" // for CWallet::minTxFee
+>>>>>>> Stashed changes
 #endif
 
 #include <boost/thread.hpp>
@@ -47,7 +60,11 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
     ui->threadsScriptVerif->setMinimum(-(int)boost::thread::hardware_concurrency());
     ui->threadsScriptVerif->setMaximum(MAX_SCRIPTCHECK_THREADS);
 
+<<<<<<< Updated upstream
     /* Network elements init */
+=======
+/* Network elements init */
+>>>>>>> Stashed changes
 #ifndef USE_UPNP
     ui->mapPortUpnp->setEnabled(false);
 #endif
@@ -68,12 +85,18 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
     ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabWindow));
 #endif
 
+<<<<<<< Updated upstream
     /* remove Wallet tab and zPiv options in case of -disablewallet */
     if (!enableWallet) {
         ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabWallet));
 
         ui->verticalZpivOptionsWidget->hide();
         ui->verticalZpivDisplayWidget->hide();
+=======
+    /* remove Wallet tab in case of -disablewallet */
+    if (!enableWallet) {
+        ui->tabWidget->removeTab(ui->tabWidget->indexOf(ui->tabWallet));
+>>>>>>> Stashed changes
     }
 
     /* Display elements init */
@@ -87,6 +110,10 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
 
     /* Theme selector static themes */
     ui->theme->addItem(QString("Default"), QVariant("default"));
+<<<<<<< Updated upstream
+=======
+    ui->theme->addItem(QString("Light"), QVariant("light"));                                                                 
+>>>>>>> Stashed changes
 
     /* Preferred Zerocoin Denominations */
     ui->preferredDenom->addItem(QString(tr("Any")), QVariant("0"));
@@ -122,8 +149,13 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
             /** display language strings as "native language - native country (locale name)", e.g. "Deutsch - Deutschland (de)" */
             ui->lang->addItem(locale.nativeLanguageName() + QString(" - ") + locale.nativeCountryName() + QString(" (") + langStr + QString(")"), QVariant(langStr));
         }
+<<<<<<< Updated upstream
         else
         {
+=======
+		else
+			{
+>>>>>>> Stashed changes
             /** display language strings as "native language (locale name)", e.g. "Deutsch (de)" */
             ui->lang->addItem(locale.nativeLanguageName() + QString(" (") + langStr + QString(")"), QVariant(langStr));
         }
@@ -139,6 +171,15 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
 
     /* setup/change UI elements when proxy IP is invalid/valid */
     connect(this, SIGNAL(proxyIpChecks(QValidatedLineEdit*, QLineEdit*)), this, SLOT(doProxyIpChecks(QValidatedLineEdit*, QLineEdit*)));
+<<<<<<< Updated upstream
+=======
+
+    ui->checkBoxZeromintEnable->setVisible(false);
+    ui->percentage_label->setVisible(false);
+    ui->zeromintPercentage->setVisible(false);
+    ui->labelPreferredDenom->setVisible(false);
+    ui->preferredDenom->setVisible(false);
+>>>>>>> Stashed changes
 }
 
 OptionsDialog::~OptionsDialog()
@@ -164,9 +205,12 @@ void OptionsDialog::setModel(OptionsModel* model)
         mapper->setModel(model);
         setMapper();
         mapper->toFirst();
+<<<<<<< Updated upstream
 
         /* keep consistency for action triggered elsewhere */
         connect(model, SIGNAL(hideOrphansChanged(bool)), this, SLOT(updateHideOrphans(bool)));
+=======
+>>>>>>> Stashed changes
     }
 
     /* warn when one of the following settings changes by user action (placed here so init via mapper doesn't trigger them) */
@@ -195,8 +239,11 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->databaseCache, OptionsModel::DatabaseCache);
     // Zeromint Enabled
     mapper->addMapping(ui->checkBoxZeromintEnable, OptionsModel::ZeromintEnable);
+<<<<<<< Updated upstream
     // Zeromint Addresses
     mapper->addMapping(ui->checkBoxZeromintAddresses, OptionsModel::ZeromintAddresses);
+=======
+>>>>>>> Stashed changes
     // Zerocoin mint percentage
     mapper->addMapping(ui->zeromintPercentage, OptionsModel::ZeromintPercentage);
     // Zerocoin preferred denomination
@@ -229,7 +276,10 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->unit, OptionsModel::DisplayUnit);
     mapper->addMapping(ui->thirdPartyTxUrls, OptionsModel::ThirdPartyTxUrls);
     mapper->addMapping(ui->checkBoxHideZeroBalances, OptionsModel::HideZeroBalances);
+<<<<<<< Updated upstream
     mapper->addMapping(ui->checkBoxHideOrphans, OptionsModel::HideOrphans);
+=======
+>>>>>>> Stashed changes
 
     /* Masternode Tab */
     mapper->addMapping(ui->showMasternodesTab, OptionsModel::ShowMasternodesTab);
@@ -272,6 +322,10 @@ void OptionsDialog::on_resetButton_clicked()
 void OptionsDialog::on_okButton_clicked()
 {
     mapper->submit();
+<<<<<<< Updated upstream
+=======
+    obfuScationPool.cachedNumBlocks = std::numeric_limits<int>::max();
+>>>>>>> Stashed changes
     pwalletMain->MarkDirty();
     accept();
 }
@@ -300,12 +354,15 @@ void OptionsDialog::clearStatusLabel()
     ui->statusLabel->clear();
 }
 
+<<<<<<< Updated upstream
 void OptionsDialog::updateHideOrphans(bool fHide)
 {
     if(ui->checkBoxHideOrphans->isChecked() != fHide)
         ui->checkBoxHideOrphans->setChecked(fHide);
 }
 
+=======
+>>>>>>> Stashed changes
 void OptionsDialog::doProxyIpChecks(QValidatedLineEdit* pUiProxyIp, QLineEdit* pUiProxyPort)
 {
     const std::string strAddrProxy = pUiProxyIp->text().toStdString();
@@ -348,8 +405,11 @@ bool OptionsDialog::eventFilter(QObject* object, QEvent* event)
     }
     return QDialog::eventFilter(object, event);
 }
+<<<<<<< Updated upstream
 
 void OptionsDialog::setCurrentIndex(int index)
 {
     ui->tabWidget->setCurrentIndex(index);
 }
+=======
+>>>>>>> Stashed changes

@@ -1,5 +1,10 @@
 // Copyright (c) 2015-2017 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +19,11 @@
 #include "sync.h"
 #include "util.h"
 #include "utilstrencodings.h"
+<<<<<<< Updated upstream
 #include "guiinterface.h"
+=======
+#include "ui_interface.h"
+>>>>>>> Stashed changes
 
 #include <boost/algorithm/string.hpp> // boost::trim
 
@@ -177,7 +186,11 @@ bool StartHTTPRPC()
 
     assert(EventBase());
     httpRPCTimerInterface = new HTTPRPCTimerInterface(EventBase());
+<<<<<<< Updated upstream
     RPCSetTimerInterface(httpRPCTimerInterface);
+=======
+    RPCRegisterTimerInterface(httpRPCTimerInterface);
+>>>>>>> Stashed changes
     return true;
 }
 
@@ -191,7 +204,11 @@ void StopHTTPRPC()
     LogPrint("rpc", "Stopping HTTP RPC server\n");
     UnregisterHTTPHandler("/", true);
     if (httpRPCTimerInterface) {
+<<<<<<< Updated upstream
         RPCUnsetTimerInterface(httpRPCTimerInterface);
+=======
+        RPCUnregisterTimerInterface(httpRPCTimerInterface);
+>>>>>>> Stashed changes
         delete httpRPCTimerInterface;
         httpRPCTimerInterface = 0;
     }

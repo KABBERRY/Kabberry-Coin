@@ -1,5 +1,10 @@
 // Copyright (c) 2012-2013 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -10,25 +15,41 @@
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
+<<<<<<< Updated upstream
 #include "test_pivx.h"
+=======
+>>>>>>> Stashed changes
 
 #include <string>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
+<<<<<<< Updated upstream
 
 static const std::string strSecret1     ("87vK7Vayi3QLsuiva5yWSuVwSMhMcRM9dBsaD6JXMD1P5vnjRFn");
 static const std::string strSecret2     ("87FGYGFDg5SYfdD4XL593hr7do6f52czPecVsYSAXi8N4RGeS9i");
 static const std::string strSecret1C    ("YRYJwfAyJ9c2jhi3T2xQyLijGvM7yLTw4izDaNQLxBzgUYrQiPmJ");
 static const std::string strSecret2C    ("YNZyazHkwUbkmUpEYsBGWwHnHQTy2n9rJy1gS5k54YXVx3pE8n6N");
+=======
+using namespace std;
+
+static const string strSecret1     ("87vK7Vayi3QLsuiva5yWSuVwSMhMcRM9dBsaD6JXMD1P5vnjRFn");
+static const string strSecret2     ("87FGYGFDg5SYfdD4XL593hr7do6f52czPecVsYSAXi8N4RGeS9i");
+static const string strSecret1C    ("YRYJwfAyJ9c2jhi3T2xQyLijGvM7yLTw4izDaNQLxBzgUYrQiPmJ");
+static const string strSecret2C    ("YNZyazHkwUbkmUpEYsBGWwHnHQTy2n9rJy1gS5k54YXVx3pE8n6N");
+>>>>>>> Stashed changes
 static const CBitcoinAddress addr1 ("DBFi8XAE1rcdCQfkv9w22n8Y9RxgaJnrDD");
 static const CBitcoinAddress addr2 ("DPvKfv1FVp69yZMDzeuugvfZ9pzYiMv1bs");
 static const CBitcoinAddress addr1C("DNPrHK9ezAAUVExFDpZ7EE1xWpPskgp1gP");
 static const CBitcoinAddress addr2C("DNBVSAoc2whPFjZVAZ1pQbXPJk1LRrDC8Q");
 
 
+<<<<<<< Updated upstream
 static const std::string strAddressBad("Xta1praZQjyELweyMByXyiREw1ZRsjXzVP");
+=======
+static const string strAddressBad("Xta1praZQjyELweyMByXyiREw1ZRsjXzVP");
+>>>>>>> Stashed changes
 
 
 #ifdef KEY_TESTS_DUMPINFO
@@ -37,7 +58,11 @@ void dumpKeyInfo(uint256 privkey)
     CKey key;
     key.resize(32);
     memcpy(&secret[0], &privkey, 32);
+<<<<<<< Updated upstream
     std::vector<unsigned char> sec;
+=======
+    vector<unsigned char> sec;
+>>>>>>> Stashed changes
     sec.resize(32);
     memcpy(&sec[0], &secret[0], 32);
     printf("  * secret (hex): %s\n", HexStr(sec).c_str());
@@ -51,14 +76,23 @@ void dumpKeyInfo(uint256 privkey)
         printf("    * secret (base58): %s\n", bsecret.ToString().c_str());
         CKey key;
         key.SetSecret(secret, fCompressed);
+<<<<<<< Updated upstream
         std::vector<unsigned char> vchPubKey = key.GetPubKey();
+=======
+        vector<unsigned char> vchPubKey = key.GetPubKey();
+>>>>>>> Stashed changes
         printf("    * pubkey (hex): %s\n", HexStr(vchPubKey).c_str());
         printf("    * address (base58): %s\n", CBitcoinAddress(vchPubKey).ToString().c_str());
     }
 }
 #endif
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(key_tests, TestingSetup)
+=======
+
+BOOST_AUTO_TEST_SUITE(key_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(key_test1)
 {
@@ -110,12 +144,20 @@ BOOST_AUTO_TEST_CASE(key_test1)
 
     for (int n=0; n<16; n++)
     {
+<<<<<<< Updated upstream
         std::string strMsg = strprintf("Very secret message %i: 11", n);
+=======
+        string strMsg = strprintf("Very secret message %i: 11", n);
+>>>>>>> Stashed changes
         uint256 hashMsg = Hash(strMsg.begin(), strMsg.end());
 
         // normal signatures
 
+<<<<<<< Updated upstream
         std::vector<unsigned char> sign1, sign2, sign1C, sign2C;
+=======
+        vector<unsigned char> sign1, sign2, sign1C, sign2C;
+>>>>>>> Stashed changes
 
         BOOST_CHECK(key1.Sign (hashMsg, sign1));
         BOOST_CHECK(key2.Sign (hashMsg, sign2));
@@ -144,7 +186,11 @@ BOOST_AUTO_TEST_CASE(key_test1)
 
         // compact signatures (with key recovery)
 
+<<<<<<< Updated upstream
         std::vector<unsigned char> csign1, csign2, csign1C, csign2C;
+=======
+        vector<unsigned char> csign1, csign2, csign1C, csign2C;
+>>>>>>> Stashed changes
 
         BOOST_CHECK(key1.SignCompact (hashMsg, csign1));
         BOOST_CHECK(key2.SignCompact (hashMsg, csign2));
@@ -167,7 +213,11 @@ BOOST_AUTO_TEST_CASE(key_test1)
     // test deterministic signing
 
     std::vector<unsigned char> detsig, detsigc;
+<<<<<<< Updated upstream
     std::string strMsg = "Very deterministic message";
+=======
+    string strMsg = "Very deterministic message";
+>>>>>>> Stashed changes
     uint256 hashMsg = Hash(strMsg.begin(), strMsg.end());
     BOOST_CHECK(key1.Sign(hashMsg, detsig));
     BOOST_CHECK(key1C.Sign(hashMsg, detsigc));

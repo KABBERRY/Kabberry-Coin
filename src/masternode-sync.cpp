@@ -1,5 +1,10 @@
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -29,6 +34,7 @@ bool CMasternodeSync::IsSynced()
     return RequestedMasternodeAssets == MASTERNODE_SYNC_FINISHED;
 }
 
+<<<<<<< Updated upstream
 bool CMasternodeSync::IsSporkListSynced()
 {
     return RequestedMasternodeAssets > MASTERNODE_SYNC_SPORKS;
@@ -58,11 +64,25 @@ bool CMasternodeSync::IsBlockchainSynced()
         fBlockchainSynced = false;
     }
     lastProcess = now;
+=======
+bool CMasternodeSync::IsBlockchainSynced()
+{
+    static bool fBlockchainSynced = false;
+    static int64_t lastProcess = GetTime();
+
+    // if the last call to this function was more than 60 minutes ago (client was in sleep mode) reset the sync process
+    if (GetTime() - lastProcess > 60 * 60) {
+        Reset();
+        fBlockchainSynced = false;
+    }
+    lastProcess = GetTime();
+>>>>>>> Stashed changes
 
     if (fBlockchainSynced) return true;
 
     if (fImporting || fReindex) return false;
 
+<<<<<<< Updated upstream
     int64_t blockTime = 0;
     {
         TRY_LOCK(cs_main, lockMain);
@@ -73,6 +93,16 @@ bool CMasternodeSync::IsBlockchainSynced()
     }
 
     if (blockTime + 60 * 60 < lastProcess)
+=======
+    TRY_LOCK(cs_main, lockMain);
+    if (!lockMain) return false;
+
+    CBlockIndex* pindex = chainActive.Tip();
+    if (pindex == NULL) return false;
+
+
+    if (pindex->nTime + 3 * 60 * 60 < GetTime())
+>>>>>>> Stashed changes
         return false;
 
     fBlockchainSynced = true;
@@ -82,8 +112,11 @@ bool CMasternodeSync::IsBlockchainSynced()
 
 void CMasternodeSync::Reset()
 {
+<<<<<<< Updated upstream
     fBlockchainSynced = false;
     lastProcess = 0;
+=======
+>>>>>>> Stashed changes
     lastMasternodeList = 0;
     lastMasternodeWinner = 0;
     lastBudgetItem = 0;
@@ -114,7 +147,11 @@ void CMasternodeSync::AddedMasternodeList(uint256 hash)
         }
     } else {
         lastMasternodeList = GetTime();
+<<<<<<< Updated upstream
         mapSeenSyncMNB.insert(std::make_pair(hash, 1));
+=======
+        mapSeenSyncMNB.insert(make_pair(hash, 1));
+>>>>>>> Stashed changes
     }
 }
 
@@ -127,7 +164,11 @@ void CMasternodeSync::AddedMasternodeWinner(uint256 hash)
         }
     } else {
         lastMasternodeWinner = GetTime();
+<<<<<<< Updated upstream
         mapSeenSyncMNW.insert(std::make_pair(hash, 1));
+=======
+        mapSeenSyncMNW.insert(make_pair(hash, 1));
+>>>>>>> Stashed changes
     }
 }
 
@@ -141,7 +182,11 @@ void CMasternodeSync::AddedBudgetItem(uint256 hash)
         }
     } else {
         lastBudgetItem = GetTime();
+<<<<<<< Updated upstream
         mapSeenSyncBudget.insert(std::make_pair(hash, 1));
+=======
+        mapSeenSyncBudget.insert(make_pair(hash, 1));
+>>>>>>> Stashed changes
     }
 }
 
@@ -244,7 +289,11 @@ void CMasternodeSync::ClearFulfilledRequest()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
+<<<<<<< Updated upstream
     for (CNode* pnode : vNodes) {
+=======
+    BOOST_FOREACH (CNode* pnode, vNodes) {
+>>>>>>> Stashed changes
         pnode->ClearFulfilledRequest("getspork");
         pnode->ClearFulfilledRequest("mnsync");
         pnode->ClearFulfilledRequest("mnwsync");
@@ -286,7 +335,11 @@ void CMasternodeSync::Process()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
+<<<<<<< Updated upstream
     for (CNode* pnode : vNodes) {
+=======
+    BOOST_FOREACH (CNode* pnode, vNodes) {
+>>>>>>> Stashed changes
         if (Params().NetworkID() == CBaseChainParams::REGTEST) {
             if (RequestedMasternodeAttempt <= 2) {
                 pnode->PushMessage("getsporks"); //get current network sporks
@@ -330,8 +383,13 @@ void CMasternodeSync::Process()
                 // timeout
                 if (lastMasternodeList == 0 &&
                     (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > MASTERNODE_SYNC_TIMEOUT * 5)) {
+<<<<<<< Updated upstream
                     if (sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
                         LogPrintf("CMasternodeSync::Process - ERROR - Sync has failed on %s, will retry later\n", "MASTERNODE_SYNC_LIST");
+=======
+                    if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+                        LogPrintf("CMasternodeSync::Process - ERROR - Sync has failed, will retry later\n");
+>>>>>>> Stashed changes
                         RequestedMasternodeAssets = MASTERNODE_SYNC_FAILED;
                         RequestedMasternodeAttempt = 0;
                         lastFailure = GetTime();
@@ -361,8 +419,13 @@ void CMasternodeSync::Process()
                 // timeout
                 if (lastMasternodeWinner == 0 &&
                     (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > MASTERNODE_SYNC_TIMEOUT * 5)) {
+<<<<<<< Updated upstream
                     if (sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
                         LogPrintf("CMasternodeSync::Process - ERROR - Sync has failed on %s, will retry later\n", "MASTERNODE_SYNC_MNW");
+=======
+                    if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)) {
+                        LogPrintf("CMasternodeSync::Process - ERROR - Sync has failed, will retry later\n");
+>>>>>>> Stashed changes
                         RequestedMasternodeAssets = MASTERNODE_SYNC_FAILED;
                         RequestedMasternodeAttempt = 0;
                         lastFailure = GetTime();
@@ -375,6 +438,12 @@ void CMasternodeSync::Process()
 
                 if (RequestedMasternodeAttempt >= MASTERNODE_SYNC_THRESHOLD * 3) return;
 
+<<<<<<< Updated upstream
+=======
+                CBlockIndex* pindexPrev = chainActive.Tip();
+                if (pindexPrev == NULL) return;
+
+>>>>>>> Stashed changes
                 int nMnCount = mnodeman.CountEnabled();
                 pnode->PushMessage("mnget", nMnCount); //sync payees
                 RequestedMasternodeAttempt++;

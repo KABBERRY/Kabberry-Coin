@@ -1,5 +1,10 @@
 // Copyright (c) 2012-2013 The Bitcoin Core developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,27 +13,43 @@
 #include "streams.h"
 #include "uint256.h"
 #include "version.h"
+<<<<<<< Updated upstream
 #include "consensus/merkle.h"
 #include "test/test_pivx.h"
+=======
+>>>>>>> Stashed changes
 
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
+<<<<<<< Updated upstream
+=======
+using namespace std;
+>>>>>>> Stashed changes
 
 class CPartialMerkleTreeTester : public CPartialMerkleTree
 {
 public:
     // flip one bit in one of the hashes - this should break the authentication
     void Damage() {
+<<<<<<< Updated upstream
         unsigned int n = InsecureRandRange(vHash.size());
         int bit = InsecureRandBits(8);
+=======
+        unsigned int n = rand() % vHash.size();
+        int bit = rand() % 256;
+>>>>>>> Stashed changes
         uint256 &hash = vHash[n];
         hash ^= ((uint256)1 << bit);
     }
 };
 
+<<<<<<< Updated upstream
 BOOST_FIXTURE_TEST_SUITE(pmt_tests, BasicTestingSetup)
+=======
+BOOST_AUTO_TEST_SUITE(pmt_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(pmt_test1)
 {
@@ -46,7 +67,11 @@ BOOST_AUTO_TEST_CASE(pmt_test1)
         }
 
         // calculate actual merkle root and height
+<<<<<<< Updated upstream
         uint256 merkleRoot1 = BlockMerkleRoot(block);
+=======
+        uint256 merkleRoot1 = block.BuildMerkleTree();
+>>>>>>> Stashed changes
         std::vector<uint256> vTxid(nTx, 0);
         for (unsigned int j=0; j<nTx; j++)
             vTxid[j] = block.vtx[j].GetHash();
@@ -62,7 +87,11 @@ BOOST_AUTO_TEST_CASE(pmt_test1)
             std::vector<bool> vMatch(nTx, false);
             std::vector<uint256> vMatchTxid1;
             for (unsigned int j=0; j<nTx; j++) {
+<<<<<<< Updated upstream
                 bool fInclude = InsecureRandBits(att / 2) == 0;
+=======
+                bool fInclude = (rand() & ((1 << (att/2)) - 1)) == 0;
+>>>>>>> Stashed changes
                 vMatch[j] = fInclude;
                 if (fInclude)
                     vMatchTxid1.push_back(vTxid[j]);

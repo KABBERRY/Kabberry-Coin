@@ -1,18 +1,31 @@
 // Copyright (c) 2012-2014 The Bitcoin Core developers
 // Copyright (c) 2014-2015 The Dash Core developers
 // Copyright (c) 2015-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "netbase.h"
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
+=======
+>>>>>>> Stashed changes
 
 #include <string>
 
 #include <boost/test/unit_test.hpp>
 
+<<<<<<< Updated upstream
 
 BOOST_FIXTURE_TEST_SUITE(netbase_tests, BasicTestingSetup)
+=======
+using namespace std;
+
+BOOST_AUTO_TEST_SUITE(netbase_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(netbase_networks)
 {
@@ -47,9 +60,15 @@ BOOST_AUTO_TEST_CASE(netbase_properties)
     BOOST_CHECK(CNetAddr("127.0.0.1").IsValid());
 }
 
+<<<<<<< Updated upstream
 bool static TestSplitHost(std::string test, std::string host, int port)
 {
     std::string hostOut;
+=======
+bool static TestSplitHost(string test, string host, int port)
+{
+    string hostOut;
+>>>>>>> Stashed changes
     int portOut = -1;
     SplitHostPort(test, portOut, hostOut);
     return hostOut == host && port == portOut;
@@ -62,6 +81,7 @@ BOOST_AUTO_TEST_CASE(netbase_splithost)
     BOOST_CHECK(TestSplitHost("www.bitcoin.org:80", "www.bitcoin.org", 80));
     BOOST_CHECK(TestSplitHost("[www.bitcoin.org]:80", "www.bitcoin.org", 80));
     BOOST_CHECK(TestSplitHost("127.0.0.1", "127.0.0.1", -1));
+<<<<<<< Updated upstream
     BOOST_CHECK(TestSplitHost("127.0.0.1:51472", "127.0.0.1", 51472));
     BOOST_CHECK(TestSplitHost("[127.0.0.1]", "127.0.0.1", -1));
     BOOST_CHECK(TestSplitHost("[127.0.0.1]:51472", "127.0.0.1", 51472));
@@ -75,6 +95,21 @@ BOOST_AUTO_TEST_CASE(netbase_splithost)
 }
 
 bool static TestParse(std::string src, std::string canon)
+=======
+    BOOST_CHECK(TestSplitHost("127.0.0.1:34124", "127.0.0.1", 34124));
+    BOOST_CHECK(TestSplitHost("[127.0.0.1]", "127.0.0.1", -1));
+    BOOST_CHECK(TestSplitHost("[127.0.0.1]:34124", "127.0.0.1", 34124));
+    BOOST_CHECK(TestSplitHost("::ffff:127.0.0.1", "::ffff:127.0.0.1", -1));
+    BOOST_CHECK(TestSplitHost("[::ffff:127.0.0.1]:34124", "::ffff:127.0.0.1", 34124));
+    BOOST_CHECK(TestSplitHost("[::]:34124", "::", 34124));
+    BOOST_CHECK(TestSplitHost("::34124", "::34124", -1));
+    BOOST_CHECK(TestSplitHost(":34124", "", 34124));
+    BOOST_CHECK(TestSplitHost("[]:34124", "", 34124));
+    BOOST_CHECK(TestSplitHost("", "", -1));
+}
+
+bool static TestParse(string src, string canon)
+>>>>>>> Stashed changes
 {
     CService addr;
     if (!LookupNumeric(src.c_str(), addr, 65535))
@@ -85,10 +120,17 @@ bool static TestParse(std::string src, std::string canon)
 BOOST_AUTO_TEST_CASE(netbase_lookupnumeric)
 {
     BOOST_CHECK(TestParse("127.0.0.1", "127.0.0.1:65535"));
+<<<<<<< Updated upstream
     BOOST_CHECK(TestParse("127.0.0.1:51472", "127.0.0.1:51472"));
     BOOST_CHECK(TestParse("::ffff:127.0.0.1", "127.0.0.1:65535"));
     BOOST_CHECK(TestParse("::", "[::]:65535"));
     BOOST_CHECK(TestParse("[::]:51472", "[::]:51472"));
+=======
+    BOOST_CHECK(TestParse("127.0.0.1:34124", "127.0.0.1:34124"));
+    BOOST_CHECK(TestParse("::ffff:127.0.0.1", "127.0.0.1:65535"));
+    BOOST_CHECK(TestParse("::", "[::]:65535"));
+    BOOST_CHECK(TestParse("[::]:34124", "[::]:34124"));
+>>>>>>> Stashed changes
     BOOST_CHECK(TestParse("[127.0.0.1]", "127.0.0.1:65535"));
     BOOST_CHECK(TestParse(":::", ""));
 }

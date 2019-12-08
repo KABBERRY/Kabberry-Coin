@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2018 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,14 +32,22 @@ class CBlockHeader
 {
 public:
     // header
+<<<<<<< Updated upstream
     static const int32_t CURRENT_VERSION=7;     //!> Version 7 removes nAccumulatorCheckpoint from serialization
+=======
+    static const int32_t CURRENT_VERSION=4;
+>>>>>>> Stashed changes
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
     uint32_t nTime;
     uint32_t nBits;
     uint32_t nNonce;
+<<<<<<< Updated upstream
     uint256 nAccumulatorCheckpoint;             // only for version 4, 5 and 6.
+=======
+    uint256 nAccumulatorCheckpoint;
+>>>>>>> Stashed changes
 
     CBlockHeader()
     {
@@ -54,7 +67,11 @@ public:
         READWRITE(nNonce);
 
         //zerocoin active, header changes to include accumulator checksum
+<<<<<<< Updated upstream
         if(nVersion > 3 && nVersion < 7)
+=======
+        if(nVersion > 3)
+>>>>>>> Stashed changes
             READWRITE(nAccumulatorCheckpoint);
     }
 
@@ -94,7 +111,11 @@ public:
 
     // memory only
     mutable CScript payee;
+<<<<<<< Updated upstream
     mutable bool fChecked;
+=======
+    mutable std::vector<uint256> vMerkleTree;
+>>>>>>> Stashed changes
 
     CBlock()
     {
@@ -121,7 +142,11 @@ public:
     {
         CBlockHeader::SetNull();
         vtx.clear();
+<<<<<<< Updated upstream
         fChecked = false;
+=======
+        vMerkleTree.clear();
+>>>>>>> Stashed changes
         payee = CScript();
         vchBlockSig.clear();
     }
@@ -157,6 +182,17 @@ public:
         return IsProofOfStake()? std::make_pair(vtx[1].vin[0].prevout, nTime) : std::make_pair(COutPoint(), (unsigned int)0);
     }
 
+<<<<<<< Updated upstream
+=======
+    // Build the in-memory merkle tree for this block and return the merkle root.
+    // If non-NULL, *mutated is set to whether mutation was detected in the merkle
+    // tree (a duplication of transactions in the block leading to an identical
+    // merkle root).
+    uint256 BuildMerkleTree(bool* mutated = NULL) const;
+
+    std::vector<uint256> GetMerkleBranch(int nIndex) const;
+    static uint256 CheckMerkleBranch(uint256 hash, const std::vector<uint256>& vMerkleBranch, int nIndex);
+>>>>>>> Stashed changes
     std::string ToString() const;
     void print() const;
 };

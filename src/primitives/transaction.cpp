@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,6 +19,10 @@
 #include "utilstrencodings.h"
 #include "transaction.h"
 
+<<<<<<< Updated upstream
+=======
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 
 extern bool GetTransaction(const uint256 &hash, CTransaction &txOut, uint256 &hashBlock, bool fAllowSlow);
 
@@ -46,6 +55,7 @@ CTxIn::CTxIn(uint256 hashPrevTx, uint32_t nOut, CScript scriptSigIn, uint32_t nS
     nSequence = nSequenceIn;
 }
 
+<<<<<<< Updated upstream
 CTxIn::CTxIn(const libzerocoin::CoinSpend& spend, libzerocoin::CoinDenomination denom)
 {
     //Serialize the coinspend object and append it to a CScript
@@ -69,13 +79,19 @@ bool CTxIn::IsZerocoinPublicSpend() const
     return scriptSig.IsZerocoinPublicSpend();
 }
 
+=======
+>>>>>>> Stashed changes
 std::string CTxIn::ToString() const
 {
     std::string str;
     str += "CTxIn(";
     str += prevout.ToString();
     if (prevout.IsNull())
+<<<<<<< Updated upstream
         if(IsZerocoinSpend())
+=======
+        if(scriptSig.IsZerocoinSpend())
+>>>>>>> Stashed changes
             str += strprintf(", zerocoinspend %s...", HexStr(scriptSig).substr(0, 25));
         else
             str += strprintf(", coinbase %s", HexStr(scriptSig));
@@ -107,6 +123,7 @@ uint256 CTxOut::GetHash() const
     return SerializeHash(*this);
 }
 
+<<<<<<< Updated upstream
 bool CTxOut::IsZerocoinMint() const
 {
     return scriptPubKey.IsZerocoinMint();
@@ -120,6 +137,8 @@ CAmount CTxOut::GetZerocoinMinted() const
     return nValue;
 }
 
+=======
+>>>>>>> Stashed changes
 std::string CTxOut::ToString() const
 {
     return strprintf("CTxOut(nValue=%d.%08d, scriptPubKey=%s)", nValue / COIN, nValue % COIN, scriptPubKey.ToString().substr(0,30));
@@ -168,6 +187,7 @@ CTransaction& CTransaction::operator=(const CTransaction &tx) {
     return *this;
 }
 
+<<<<<<< Updated upstream
 bool CTransaction::HasZerocoinSpendInputs() const
 {
     for (const CTxIn& txin: vin) {
@@ -196,12 +216,15 @@ bool CTransaction::HasZerocoinPublicSpendInputs() const
     return false;
 }
 
+=======
+>>>>>>> Stashed changes
 bool CTransaction::IsCoinStake() const
 {
     if (vin.empty())
         return false;
 
     // ppcoin: the coin stake transaction is marked with the first output empty
+<<<<<<< Updated upstream
     bool fAllowNull = vin[0].IsZerocoinSpend();
     if (vin[0].prevout.IsNull() && !fAllowNull)
         return false;
@@ -241,6 +264,13 @@ bool CTransaction::HasP2CSOutputs() const
             return true;
     }
     return false;
+=======
+    bool fAllowNull = vin[0].scriptSig.IsZerocoinSpend();
+    if (vin[0].prevout.IsNull() && !fAllowNull)
+        return false;
+
+    return (vin.size() > 0 && vout.size() >= 2 && vout[0].IsEmpty());
+>>>>>>> Stashed changes
 }
 
 CAmount CTransaction::GetValueOut() const
@@ -248,7 +278,11 @@ CAmount CTransaction::GetValueOut() const
     CAmount nValueOut = 0;
     for (std::vector<CTxOut>::const_iterator it(vout.begin()); it != vout.end(); ++it)
     {
+<<<<<<< Updated upstream
         // PIVX: previously MoneyRange() was called here. This has been replaced with negative check and boundary wrap check.
+=======
+        // PrimeStone: previously MoneyRange() was called here. This has been replaced with negative check and boundary wrap check.
+>>>>>>> Stashed changes
         if (it->nValue < 0)
             throw std::runtime_error("CTransaction::GetValueOut() : value out of range : less than 0");
 
@@ -262,12 +296,23 @@ CAmount CTransaction::GetValueOut() const
 
 CAmount CTransaction::GetZerocoinMinted() const
 {
+<<<<<<< Updated upstream
     CAmount nValueOut = 0;
     for (const CTxOut& txOut : vout) {
         nValueOut += txOut.GetZerocoinMinted();
     }
 
     return  nValueOut;
+=======
+    for (const CTxOut& txOut : vout) {
+        if(!txOut.scriptPubKey.IsZerocoinMint())
+            continue;
+
+        return txOut.nValue;
+    }
+
+    return  CAmount(0);
+>>>>>>> Stashed changes
 }
 
 bool CTransaction::UsesUTXO(const COutPoint out)
@@ -291,9 +336,18 @@ std::list<COutPoint> CTransaction::GetOutPoints() const
 
 CAmount CTransaction::GetZerocoinSpent() const
 {
+<<<<<<< Updated upstream
     CAmount nValueOut = 0;
     for (const CTxIn& txin : vin) {
         if(!txin.IsZerocoinSpend())
+=======
+    if(!IsZerocoinSpend())
+        return 0;
+
+    CAmount nValueOut = 0;
+    for (const CTxIn& txin : vin) {
+        if(!txin.scriptSig.IsZerocoinSpend())
+>>>>>>> Stashed changes
             continue;
 
         nValueOut += txin.nSequence * COIN;
@@ -306,7 +360,11 @@ int CTransaction::GetZerocoinMintCount() const
 {
     int nCount = 0;
     for (const CTxOut& out : vout) {
+<<<<<<< Updated upstream
         if (out.IsZerocoinMint())
+=======
+        if (out.scriptPubKey.IsZerocoinMint())
+>>>>>>> Stashed changes
             nCount++;
     }
     return nCount;
@@ -338,11 +396,14 @@ unsigned int CTransaction::CalculateModifiedSize(unsigned int nTxSize) const
     return nTxSize;
 }
 
+<<<<<<< Updated upstream
 unsigned int CTransaction::GetTotalSize() const
 {
     return ::GetSerializeSize(*this, SER_NETWORK, PROTOCOL_VERSION);
 }
 
+=======
+>>>>>>> Stashed changes
 std::string CTransaction::ToString() const
 {
     std::string str;

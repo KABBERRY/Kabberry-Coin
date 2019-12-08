@@ -1,5 +1,9 @@
 // Copyright (c) 2009-2017 The Bitcoin Core developers
 // Copyright (c) 2017-2018 The PIVX developers
+<<<<<<< Updated upstream
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,12 +11,20 @@
 #define BITCOIN_CLIENTVERSION_H
 
 #if defined(HAVE_CONFIG_H)
+<<<<<<< Updated upstream
 #include "config/pivx-config.h"
+=======
+#include "config/primestone-config.h"
+>>>>>>> Stashed changes
 #endif //HAVE_CONFIG_H
 
 // Check that required client information is defined
 #if !defined(CLIENT_VERSION_MAJOR) || !defined(CLIENT_VERSION_MINOR) || !defined(CLIENT_VERSION_REVISION) || !defined(CLIENT_VERSION_BUILD) || !defined(CLIENT_VERSION_IS_RELEASE) || !defined(COPYRIGHT_YEAR)
+<<<<<<< Updated upstream
 #error Client version information missing: version is not defined by pivx-config.h or in any other way
+=======
+#error Client version information missing: version is not defined by primestone-config.h or in any other way
+>>>>>>> Stashed changes
 #endif
 
 /**
@@ -23,10 +35,17 @@
 #define DO_STRINGIZE(X) #X
 
 //! Copyright string used in Windows .rc files
+<<<<<<< Updated upstream
 #define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The Bitcoin Core Developers, 2014-" STRINGIZE(COPYRIGHT_YEAR) " The Dash Core Developers, 2015-" STRINGIZE(COPYRIGHT_YEAR) " The PIVX Core Developers"
 
 /**
  * pivxd-res.rc includes this file, but it cannot cope with real c++ code.
+=======
+#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The Bitcoin Core Developers, 2014-" STRINGIZE(COPYRIGHT_YEAR) " The Dash Core Developers, 2015-" STRINGIZE(COPYRIGHT_YEAR) " The PIVX Core Developers, " STRINGIZE(COPYRIGHT_YEAR) " The PrimeStone Developers"
+
+/**
+ * primestoned-res.rc includes this file, but it cannot cope with real c++ code.
+>>>>>>> Stashed changes
  * WINDRES_PREPROC is defined to indicate that its pre-processor is running.
  * Anything other than a define should be guarded below.
  */
@@ -50,9 +69,12 @@ extern const std::string CLIENT_DATE;
 std::string FormatFullVersion();
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments);
 
+<<<<<<< Updated upstream
 // Returns a friendly formatted version string to show in the UI
 std::string FormatVersionFriendly();
 
+=======
+>>>>>>> Stashed changes
 #endif // WINDRES_PREPROC
 
 #endif // BITCOIN_CLIENTVERSION_H

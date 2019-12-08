@@ -1,19 +1,29 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2011-2013 The PPCoin developers
 // Copyright (c) 2013-2014 The NovaCoin Developers
 // Copyright (c) 2014-2018 The BlackCoin Developers
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_CHAIN_H
 #define BITCOIN_CHAIN_H
 
+<<<<<<< Updated upstream
 #include "chainparams.h"
 #include "pow.h"
 #include "primitives/block.h"
 #include "timedata.h"
+=======
+#include "pow.h"
+#include "primitives/block.h"
+>>>>>>> Stashed changes
 #include "tinyformat.h"
 #include "uint256.h"
 #include "util.h"
@@ -21,6 +31,11 @@
 
 #include <vector>
 
+<<<<<<< Updated upstream
+=======
+#include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
+>>>>>>> Stashed changes
 
 struct CDiskBlockPos {
     int nFile;
@@ -160,7 +175,10 @@ public:
         BLOCK_STAKE_MODIFIER = (1 << 2), // regenerated stake modifier
     };
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
     // proof-of-stake specific fields
     uint256 GetBlockTrust() const;
     uint64_t nStakeModifier;             // hash modifier for proof-of-stake
@@ -170,7 +188,10 @@ public:
     uint256 hashProofOfStake;
     int64_t nMint;
     int64_t nMoneySupply;
+<<<<<<< Updated upstream
     uint256 nStakeModifierV2;
+=======
+>>>>>>> Stashed changes
 
     //! block header
     int nVersion;
@@ -182,11 +203,19 @@ public:
 
     //! (memory only) Sequential id assigned to distinguish order in which blocks are received.
     uint32_t nSequenceId;
+<<<<<<< Updated upstream
 
     //! zerocoin specific fields
     std::map<libzerocoin::CoinDenomination, int64_t> mapZerocoinSupply;
     std::vector<libzerocoin::CoinDenomination> vMintDenominationsInBlock;
 
+=======
+    
+    //! zerocoin specific fields
+    std::map<libzerocoin::CoinDenomination, int64_t> mapZerocoinSupply;
+    std::vector<libzerocoin::CoinDenomination> vMintDenominationsInBlock;
+    
+>>>>>>> Stashed changes
     void SetNull()
     {
         phashBlock = NULL;
@@ -206,7 +235,10 @@ public:
         nMoneySupply = 0;
         nFlags = 0;
         nStakeModifier = 0;
+<<<<<<< Updated upstream
         nStakeModifierV2 = uint256();
+=======
+>>>>>>> Stashed changes
         nStakeModifierChecksum = 0;
         prevoutStake.SetNull();
         nStakeTime = 0;
@@ -219,7 +251,11 @@ public:
         nAccumulatorCheckpoint = 0;
         // Start supply of each denomination with 0s
         for (auto& denom : libzerocoin::zerocoinDenomList) {
+<<<<<<< Updated upstream
             mapZerocoinSupply.insert(std::make_pair(denom, 0));
+=======
+            mapZerocoinSupply.insert(make_pair(denom, 0));
+>>>>>>> Stashed changes
         }
         vMintDenominationsInBlock.clear();
     }
@@ -238,16 +274,40 @@ public:
         nTime = block.nTime;
         nBits = block.nBits;
         nNonce = block.nNonce;
+<<<<<<< Updated upstream
         if(block.nVersion > 3 && block.nVersion < 7)
             nAccumulatorCheckpoint = block.nAccumulatorCheckpoint;
 
+=======
+        if(block.nVersion > 3)
+            nAccumulatorCheckpoint = block.nAccumulatorCheckpoint;
+
+        //Proof of Stake
+        bnChainTrust = uint256();
+        nMint = 0;
+        nMoneySupply = 0;
+        nFlags = 0;
+        nStakeModifier = 0;
+        nStakeModifierChecksum = 0;
+        hashProofOfStake = uint256();
+
+>>>>>>> Stashed changes
         if (block.IsProofOfStake()) {
             SetProofOfStake();
             prevoutStake = block.vtx[1].vin[0].prevout;
             nStakeTime = block.nTime;
+<<<<<<< Updated upstream
         }
     }
 
+=======
+        } else {
+            prevoutStake.SetNull();
+            nStakeTime = 0;
+        }
+    }
+    
+>>>>>>> Stashed changes
 
     CDiskBlockPos GetBlockPos() const
     {
@@ -287,11 +347,16 @@ public:
     {
         int64_t nTotal = 0;
         for (auto& denom : libzerocoin::zerocoinDenomList) {
+<<<<<<< Updated upstream
             nTotal += GetZcMintsAmount(denom);
+=======
+            nTotal += libzerocoin::ZerocoinDenominationToAmount(denom) * mapZerocoinSupply.at(denom);
+>>>>>>> Stashed changes
         }
         return nTotal;
     }
 
+<<<<<<< Updated upstream
     /**
      * Total of mints added to the specific accumulator.
      * @param denom
@@ -312,6 +377,8 @@ public:
         return libzerocoin::ZerocoinDenominationToAmount(denom) * GetZcMints(denom);
     }
 
+=======
+>>>>>>> Stashed changes
     bool MintedDenomination(libzerocoin::CoinDenomination denom) const
     {
         return std::find(vMintDenominationsInBlock.begin(), vMintDenominationsInBlock.end(), denom) != vMintDenominationsInBlock.end();
@@ -343,6 +410,7 @@ public:
         return pbegin[(pend - pbegin) / 2];
     }
 
+<<<<<<< Updated upstream
     int64_t MaxFutureBlockTime() const
     {
         return GetAdjustedTime() + Params().FutureBlockTimeDrift(nHeight+1);
@@ -364,6 +432,8 @@ public:
         return GetBlockTime();
     }
 
+=======
+>>>>>>> Stashed changes
     bool IsProofOfWork() const
     {
         return !(nFlags & BLOCK_PROOF_OF_STAKE);
@@ -410,7 +480,11 @@ public:
 
     /**
      * Returns true if there are nRequired or more blocks of minVersion or above
+<<<<<<< Updated upstream
      * in the last Params().ToCheckBlockUpgradeMajority() blocks, starting at pstart
+=======
+     * in the last Params().ToCheckBlockUpgradeMajority() blocks, starting at pstart 
+>>>>>>> Stashed changes
      * and going backwards.
      */
     static bool IsSuperMajority(int minVersion, const CBlockIndex* pstart, unsigned int nRequired);
@@ -467,9 +541,15 @@ public:
         hashNext = uint256();
     }
 
+<<<<<<< Updated upstream
     explicit CDiskBlockIndex(const CBlockIndex* pindex) : CBlockIndex(*pindex)
     {
         hashPrev = (pprev ? pprev->GetBlockHash() : uint256(0));
+=======
+    explicit CDiskBlockIndex(CBlockIndex* pindex) : CBlockIndex(*pindex)
+    {
+        hashPrev = (pprev ? pprev->GetBlockHash() : uint256());
+>>>>>>> Stashed changes
     }
 
     ADD_SERIALIZE_METHODS;
@@ -494,6 +574,7 @@ public:
         READWRITE(nMint);
         READWRITE(nMoneySupply);
         READWRITE(nFlags);
+<<<<<<< Updated upstream
 
         // v1/v2 modifier selection.
         if (!Params().IsStakeModifierV2(nHeight)) {
@@ -502,6 +583,9 @@ public:
             READWRITE(nStakeModifierV2);
         }
 
+=======
+        READWRITE(nStakeModifier);
+>>>>>>> Stashed changes
         if (IsProofOfStake()) {
             READWRITE(prevoutStake);
             READWRITE(nStakeTime);
@@ -624,9 +708,12 @@ public:
 
     /** Find the last common block between this chain and a block index entry. */
     const CBlockIndex* FindFork(const CBlockIndex* pindex) const;
+<<<<<<< Updated upstream
 
     /** Check if new message signatures are active **/
     bool NewSigsActive() { return Params().NewSigsActive(Height()); }
+=======
+>>>>>>> Stashed changes
 };
 
 #endif // BITCOIN_CHAIN_H

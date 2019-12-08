@@ -3,12 +3,21 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "timedata.h"
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
 
 #include <boost/test/unit_test.hpp>
 
 
 BOOST_FIXTURE_TEST_SUITE(timedata_tests, BasicTestingSetup)
+=======
+
+#include <boost/test/unit_test.hpp>
+
+using namespace std;
+
+BOOST_AUTO_TEST_SUITE(timedata_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(util_MedianFilter)
 {

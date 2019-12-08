@@ -1,11 +1,20 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2016-2018 The PIVX developers
+<<<<<<< Updated upstream
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef PIVX_PUBKEY_H
 #define PIVX_PUBKEY_H
+=======
+// Copyright (c) 2018-2019 The PrimeStone developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PrimeStone_PUBKEY_H
+#define PrimeStone_PUBKEY_H
+>>>>>>> Stashed changes
 
 #include "hash.h"
 #include "serialize.h"
@@ -204,6 +213,14 @@ public:
         return std::vector<unsigned char>(vch, vch + size());
     }
 
+<<<<<<< Updated upstream
+=======
+    std::string GetHex()
+    {
+        std::string my_std_string(reinterpret_cast<const char*>(vch), 65);
+        return my_std_string;
+    }
+>>>>>>> Stashed changes
 };
 
 struct CExtPubKey {
@@ -263,4 +280,8 @@ public:
     ~ECCVerifyHandle();
 };
 
+<<<<<<< Updated upstream
 #endif // PIVX_PUBKEY_H
+=======
+#endif // PrimeStone_PUBKEY_H
+>>>>>>> Stashed changes

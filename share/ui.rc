@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 bitcoin               ICON    "pixmaps/pivx.ico"
+=======
+bitcoin               ICON    "pixmaps/bitcoin.ico"
+>>>>>>> Stashed changes
 
 #include "wx/msw/wx.rc"
 

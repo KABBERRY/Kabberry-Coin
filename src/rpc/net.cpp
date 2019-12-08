@@ -1,11 +1,19 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2015-2019 The PIVX developers
+=======
+// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "rpc/server.h"
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 #include "clientversion.h"
 #include "main.h"
 #include "net.h"
@@ -13,6 +21,7 @@
 #include "protocol.h"
 #include "sync.h"
 #include "timedata.h"
+<<<<<<< Updated upstream
 #include "guiinterface.h"
 #include "util.h"
 #include "version.h"
@@ -20,11 +29,26 @@
 
 #include <univalue.h>
 
+=======
+#include "ui_interface.h"
+#include "util.h"
+#include "version.h"
+
+#include <boost/foreach.hpp>
+
+#include <univalue.h>
+
+using namespace std;
+>>>>>>> Stashed changes
 
 UniValue getconnectioncount(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getconnectioncount\n"
             "\nReturns the number of connections to other nodes.\n"
 
@@ -42,7 +66,11 @@ UniValue getconnectioncount(const UniValue& params, bool fHelp)
 UniValue ping(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "ping\n"
             "\nRequests that a ping be sent to all other nodes, to measure ping time.\n"
             "Results provided in getpeerinfo, pingtime and pingwait fields are decimal seconds.\n"
@@ -54,7 +82,11 @@ UniValue ping(const UniValue& params, bool fHelp)
     // Request that each node send a ping during next message processing pass
     LOCK2(cs_main, cs_vNodes);
 
+<<<<<<< Updated upstream
     for (CNode* pNode : vNodes) {
+=======
+    BOOST_FOREACH (CNode* pNode, vNodes) {
+>>>>>>> Stashed changes
         pNode->fPingQueued = true;
     }
 
@@ -67,7 +99,11 @@ static void CopyNodeStats(std::vector<CNodeStats>& vstats)
 
     LOCK(cs_vNodes);
     vstats.reserve(vNodes.size());
+<<<<<<< Updated upstream
     for (CNode* pnode : vNodes) {
+=======
+    BOOST_FOREACH (CNode* pnode, vNodes) {
+>>>>>>> Stashed changes
         CNodeStats stats;
         pnode->copyStats(stats);
         vstats.push_back(stats);
@@ -77,7 +113,11 @@ static void CopyNodeStats(std::vector<CNodeStats>& vstats)
 UniValue getpeerinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getpeerinfo\n"
             "\nReturns data about each connected network node as a json array of objects.\n"
 
@@ -97,7 +137,11 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
             "    \"pingtime\": n,             (numeric) ping time\n"
             "    \"pingwait\": n,             (numeric) ping wait\n"
             "    \"version\": v,              (numeric) The peer version, such as 7001\n"
+<<<<<<< Updated upstream
             "    \"subver\": \"/Pivx Core:x.x.x.x/\",  (string) The string version\n"
+=======
+            "    \"subver\": \"/PrimeStone:x.x.x.x/\",  (string) The string version\n"
+>>>>>>> Stashed changes
             "    \"inbound\": true|false,     (boolean) Inbound (true) or Outbound (false)\n"
             "    \"startingheight\": n,       (numeric) The starting height (block) of the peer\n"
             "    \"banscore\": n,             (numeric) The ban score\n"
@@ -116,12 +160,20 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
 
     LOCK(cs_main);
 
+<<<<<<< Updated upstream
     std::vector<CNodeStats> vstats;
+=======
+    vector<CNodeStats> vstats;
+>>>>>>> Stashed changes
     CopyNodeStats(vstats);
 
     UniValue ret(UniValue::VARR);
 
+<<<<<<< Updated upstream
     for (const CNodeStats& stats : vstats) {
+=======
+    BOOST_FOREACH (const CNodeStats& stats, vstats) {
+>>>>>>> Stashed changes
         UniValue obj(UniValue::VOBJ);
         CNodeStateStats statestats;
         bool fStateStats = GetNodeStateStats(stats.nodeid, statestats);
@@ -151,7 +203,11 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
             obj.push_back(Pair("synced_headers", statestats.nSyncHeight));
             obj.push_back(Pair("synced_blocks", statestats.nCommonHeight));
             UniValue heights(UniValue::VARR);
+<<<<<<< Updated upstream
             for (int height : statestats.vHeightInFlight) {
+=======
+            BOOST_FOREACH (int height, statestats.vHeightInFlight) {
+>>>>>>> Stashed changes
                 heights.push_back(height);
             }
             obj.push_back(Pair("inflight", heights));
@@ -166,12 +222,20 @@ UniValue getpeerinfo(const UniValue& params, bool fHelp)
 
 UniValue addnode(const UniValue& params, bool fHelp)
 {
+<<<<<<< Updated upstream
     std::string strCommand;
+=======
+    string strCommand;
+>>>>>>> Stashed changes
     if (params.size() == 2)
         strCommand = params[1].get_str();
     if (fHelp || params.size() != 2 ||
         (strCommand != "onetry" && strCommand != "add" && strCommand != "remove"))
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "addnode \"node\" \"add|remove|onetry\"\n"
             "\nAttempts add or remove a node from the addnode list.\n"
             "Or try a connection to a node once.\n"
@@ -181,9 +245,15 @@ UniValue addnode(const UniValue& params, bool fHelp)
             "2. \"command\"  (string, required) 'add' to add a node to the list, 'remove' to remove a node from the list, 'onetry' to try a connection to the node once\n"
 
             "\nExamples:\n" +
+<<<<<<< Updated upstream
             HelpExampleCli("addnode", "\"192.168.0.6:51472\" \"onetry\"") + HelpExampleRpc("addnode", "\"192.168.0.6:51472\", \"onetry\""));
 
     std::string strNode = params[0].get_str();
+=======
+            HelpExampleCli("addnode", "\"192.168.0.6:34124\" \"onetry\"") + HelpExampleRpc("addnode", "\"192.168.0.6:34124\", \"onetry\""));
+
+    string strNode = params[0].get_str();
+>>>>>>> Stashed changes
 
     if (strCommand == "onetry") {
         CAddress addr;
@@ -192,7 +262,11 @@ UniValue addnode(const UniValue& params, bool fHelp)
     }
 
     LOCK(cs_vAddedNodes);
+<<<<<<< Updated upstream
     std::vector<std::string>::iterator it = vAddedNodes.begin();
+=======
+    vector<string>::iterator it = vAddedNodes.begin();
+>>>>>>> Stashed changes
     for (; it != vAddedNodes.end(); it++)
         if (strNode == *it)
             break;
@@ -213,7 +287,11 @@ UniValue addnode(const UniValue& params, bool fHelp)
 UniValue disconnectnode(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "disconnectnode \"node\" \n"
             "\nImmediately disconnects from the specified node.\n"
 
@@ -237,7 +315,11 @@ UniValue disconnectnode(const UniValue& params, bool fHelp)
 UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getaddednodeinfo dns ( \"node\" )\n"
             "\nReturns information about the given added node, or all added nodes\n"
             "(note that onetry addnodes are not listed here)\n"
@@ -255,7 +337,11 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
             "    \"connected\" : true|false,          (boolean) If connected\n"
             "    \"addresses\" : [\n"
             "       {\n"
+<<<<<<< Updated upstream
             "         \"address\" : \"192.168.0.201:51472\",  (string) The pivx server host and port\n"
+=======
+            "         \"address\" : \"192.168.0.201:34124\",  (string) The primestone server host and port\n"
+>>>>>>> Stashed changes
             "         \"connected\" : \"outbound\"           (string) connection, inbound or outbound\n"
             "       }\n"
             "       ,...\n"
@@ -269,6 +355,7 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
 
     bool fDns = params[0].get_bool();
 
+<<<<<<< Updated upstream
     std::list<std::string> laddedNodes(0);
     if (params.size() == 1) {
         LOCK(cs_vAddedNodes);
@@ -278,6 +365,17 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
         std::string strNode = params[1].get_str();
         LOCK(cs_vAddedNodes);
         for (std::string& strAddNode : vAddedNodes)
+=======
+    list<string> laddedNodes(0);
+    if (params.size() == 1) {
+        LOCK(cs_vAddedNodes);
+        BOOST_FOREACH (string& strAddNode, vAddedNodes)
+            laddedNodes.push_back(strAddNode);
+    } else {
+        string strNode = params[1].get_str();
+        LOCK(cs_vAddedNodes);
+        BOOST_FOREACH (string& strAddNode, vAddedNodes)
+>>>>>>> Stashed changes
             if (strAddNode == strNode) {
                 laddedNodes.push_back(strAddNode);
                 break;
@@ -288,7 +386,11 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
 
     UniValue ret(UniValue::VARR);
     if (!fDns) {
+<<<<<<< Updated upstream
         for (std::string& strAddNode : laddedNodes) {
+=======
+        BOOST_FOREACH (string& strAddNode, laddedNodes) {
+>>>>>>> Stashed changes
             UniValue obj(UniValue::VOBJ);
             obj.push_back(Pair("addednode", strAddNode));
             ret.push_back(obj);
@@ -296,11 +398,19 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
         return ret;
     }
 
+<<<<<<< Updated upstream
     std::list<std::pair<std::string, std::vector<CService> > > laddedAddreses(0);
     for (std::string& strAddNode : laddedNodes) {
         std::vector<CService> vservNode(0);
         if (Lookup(strAddNode.c_str(), vservNode, Params().GetDefaultPort(), fNameLookup, 0))
             laddedAddreses.push_back(std::make_pair(strAddNode, vservNode));
+=======
+    list<pair<string, vector<CService> > > laddedAddreses(0);
+    BOOST_FOREACH (string& strAddNode, laddedNodes) {
+        vector<CService> vservNode(0);
+        if (Lookup(strAddNode.c_str(), vservNode, Params().GetDefaultPort(), fNameLookup, 0))
+            laddedAddreses.push_back(make_pair(strAddNode, vservNode));
+>>>>>>> Stashed changes
         else {
             UniValue obj(UniValue::VOBJ);
             obj.push_back(Pair("addednode", strAddNode));
@@ -311,17 +421,29 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
     }
 
     LOCK(cs_vNodes);
+<<<<<<< Updated upstream
     for (std::list<std::pair<std::string, std::vector<CService> > >::iterator it = laddedAddreses.begin(); it != laddedAddreses.end(); it++) {
+=======
+    for (list<pair<string, vector<CService> > >::iterator it = laddedAddreses.begin(); it != laddedAddreses.end(); it++) {
+>>>>>>> Stashed changes
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("addednode", it->first));
 
         UniValue addresses(UniValue::VARR);
         bool fConnected = false;
+<<<<<<< Updated upstream
         for (CService& addrNode : it->second) {
             bool fFound = false;
             UniValue node(UniValue::VOBJ);
             node.push_back(Pair("address", addrNode.ToString()));
             for (CNode* pnode : vNodes)
+=======
+        BOOST_FOREACH (CService& addrNode, it->second) {
+            bool fFound = false;
+            UniValue node(UniValue::VOBJ);
+            node.push_back(Pair("address", addrNode.ToString()));
+            BOOST_FOREACH (CNode* pnode, vNodes)
+>>>>>>> Stashed changes
                 if (pnode->addr == addrNode) {
                     fFound = true;
                     fConnected = true;
@@ -343,7 +465,11 @@ UniValue getaddednodeinfo(const UniValue& params, bool fHelp)
 UniValue getnettotals(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getnettotals\n"
             "\nReturns information about network traffic, including bytes in, bytes out,\n"
             "and current time.\n"
@@ -378,7 +504,11 @@ static UniValue GetNetworksInfo()
         obj.push_back(Pair("name", GetNetworkName(network)));
         obj.push_back(Pair("limited", IsLimited(network)));
         obj.push_back(Pair("reachable", IsReachable(network)));
+<<<<<<< Updated upstream
         obj.push_back(Pair("proxy", proxy.IsValid() ? proxy.proxy.ToStringIPPort() : std::string()));
+=======
+        obj.push_back(Pair("proxy", proxy.IsValid() ? proxy.proxy.ToStringIPPort() : string()));
+>>>>>>> Stashed changes
         obj.push_back(Pair("proxy_randomize_credentials", proxy.randomize_credentials));
         networks.push_back(obj);
     }
@@ -388,14 +518,22 @@ static UniValue GetNetworksInfo()
 UniValue getnetworkinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "getnetworkinfo\n"
             "\nReturns an object containing various state info regarding P2P networking.\n"
 
             "\nResult:\n"
             "{\n"
             "  \"version\": xxxxx,                      (numeric) the server version\n"
+<<<<<<< Updated upstream
             "  \"subversion\": \"/Pivx Core:x.x.x.x/\",     (string) the server subversion string\n"
+=======
+            "  \"subversion\": \"/PrimeStone:x.x.x.x/\",     (string) the server subversion string\n"
+>>>>>>> Stashed changes
             "  \"protocolversion\": xxxxx,              (numeric) the protocol version\n"
             "  \"localservices\": \"xxxxxxxxxxxxxxxx\", (string) the services we offer to the network\n"
             "  \"timeoffset\": xxxxx,                   (numeric) the time offset\n"
@@ -409,7 +547,11 @@ UniValue getnetworkinfo(const UniValue& params, bool fHelp)
             "  }\n"
             "  ,...\n"
             "  ],\n"
+<<<<<<< Updated upstream
             "  \"relayfee\": x.xxxxxxxx,                (numeric) minimum relay fee for non-free transactions in pivx/kb\n"
+=======
+            "  \"relayfee\": x.xxxxxxxx,                (numeric) minimum relay fee for non-free transactions in primestone/kb\n"
+>>>>>>> Stashed changes
             "  \"localaddresses\": [                    (array) list of local addresses\n"
             "  {\n"
             "    \"address\": \"xxxx\",                 (string) network address\n"
@@ -427,7 +569,12 @@ UniValue getnetworkinfo(const UniValue& params, bool fHelp)
 
     UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("version", CLIENT_VERSION));
+<<<<<<< Updated upstream
     obj.push_back(Pair("subversion",    strSubVersion));
+=======
+    obj.push_back(Pair("subversion",
+        FormatSubVersion(CLIENT_NAME, CLIENT_VERSION, std::vector<string>())));
+>>>>>>> Stashed changes
     obj.push_back(Pair("protocolversion", PROTOCOL_VERSION));
     obj.push_back(Pair("localservices", strprintf("%016x", nLocalServices)));
     obj.push_back(Pair("timeoffset", GetTimeOffset()));
@@ -437,7 +584,11 @@ UniValue getnetworkinfo(const UniValue& params, bool fHelp)
     UniValue localAddresses(UniValue::VARR);
     {
         LOCK(cs_mapLocalHost);
+<<<<<<< Updated upstream
         for (const std::pair<const CNetAddr, LocalServiceInfo> &item : mapLocalHost) {
+=======
+        BOOST_FOREACH (const PAIRTYPE(CNetAddr, LocalServiceInfo) & item, mapLocalHost) {
+>>>>>>> Stashed changes
             UniValue rec(UniValue::VOBJ);
             rec.push_back(Pair("address", item.first.ToString()));
             rec.push_back(Pair("port", item.second.nPort));
@@ -451,12 +602,20 @@ UniValue getnetworkinfo(const UniValue& params, bool fHelp)
 
 UniValue setban(const UniValue& params, bool fHelp)
 {
+<<<<<<< Updated upstream
     std::string strCommand;
+=======
+    string strCommand;
+>>>>>>> Stashed changes
     if (params.size() >= 2)
         strCommand = params[1].get_str();
     if (fHelp || params.size() < 2 ||
         (strCommand != "add" && strCommand != "remove"))
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "setban \"ip(/netmask)\" \"add|remove\" (bantime) (absolute)\n"
             "\nAttempts add or remove a IP/Subnet from the banned list.\n"
 
@@ -475,7 +634,11 @@ UniValue setban(const UniValue& params, bool fHelp)
     CNetAddr netAddr;
     bool isSubnet = false;
 
+<<<<<<< Updated upstream
     if (params[0].get_str().find("/") != std::string::npos)
+=======
+    if (params[0].get_str().find("/") != string::npos)
+>>>>>>> Stashed changes
         isSubnet = true;
 
     if (!isSubnet)
@@ -520,7 +683,11 @@ UniValue setban(const UniValue& params, bool fHelp)
 UniValue listbanned(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "listbanned\n"
             "\nList all banned IPs/Subnets.\n"
 
@@ -561,7 +728,11 @@ UniValue listbanned(const UniValue& params, bool fHelp)
 UniValue clearbanned(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
+<<<<<<< Updated upstream
         throw std::runtime_error(
+=======
+        throw runtime_error(
+>>>>>>> Stashed changes
             "clearbanned\n"
             "\nClear all banned IPs.\n"
 

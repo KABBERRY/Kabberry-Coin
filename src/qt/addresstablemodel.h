@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,8 +32,12 @@ public:
 
     enum ColumnIndex {
         Label = 0,  /**< User specified label */
+<<<<<<< Updated upstream
         Address = 1, /**< Bitcoin address */
         Date = 2 /**< Address creation date */
+=======
+        Address = 1 /**< Bitcoin address */
+>>>>>>> Stashed changes
     };
 
     enum RoleIndex {
@@ -48,19 +57,25 @@ public:
     static const QString Send;    /**< Specifies send address */
     static const QString Receive; /**< Specifies receive address */
     static const QString Zerocoin; /**< Specifies stealth address */
+<<<<<<< Updated upstream
     static const QString Delegators; /**< Specifies cold staking addresses which delegated tokens to this wallet */
     static const QString ColdStaking; /**< Specifies cold staking own addresses */
     static const QString ColdStakingSend; /**< Specifies send cold staking addresses (simil 'contacts')*/
+=======
+>>>>>>> Stashed changes
 
     /** @name Methods overridden from QAbstractTableModel
         @{*/
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
+<<<<<<< Updated upstream
     int sizeSend() const;
     int sizeRecv() const;
     int sizeDell() const;
     int sizeColdSend() const;
     void notifyChange(const QModelIndex &index);
+=======
+>>>>>>> Stashed changes
     QVariant data(const QModelIndex& index, int role) const;
     bool setData(const QModelIndex& index, const QVariant& value, int role);
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
@@ -83,6 +98,7 @@ public:
      */
     int lookupAddress(const QString& address) const;
 
+<<<<<<< Updated upstream
     /*
      * Look up purpose for address in address book, if not found return empty string
      */
@@ -93,6 +109,8 @@ public:
      */
     QString getAddressToShow() const;
 
+=======
+>>>>>>> Stashed changes
     EditStatus getEditStatus() const { return editStatus; }
 
 private:

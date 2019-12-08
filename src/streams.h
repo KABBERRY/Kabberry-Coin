@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -17,7 +22,10 @@
 #include <map>
 #include <set>
 #include <stdint.h>
+<<<<<<< Updated upstream
 #include <stdio.h>
+=======
+>>>>>>> Stashed changes
 #include <string.h>
 #include <string>
 #include <utility>
@@ -229,6 +237,7 @@ public:
         return (*this);
     }
 
+<<<<<<< Updated upstream
     CDataStream& movePos(size_t nSize){
         nReadPos = nReadPos + nSize;
         return (*this);
@@ -240,6 +249,12 @@ public:
         if (nSize < 0) {
             throw std::ios_base::failure("CDataStream::ignore(): nSize negative");
         }
+=======
+    CDataStream& ignore(int nSize)
+    {
+        // Ignore from the beginning of the buffer
+        assert(nSize >= 0);
+>>>>>>> Stashed changes
         unsigned int nReadPosNext = nReadPos + nSize;
         if (nReadPosNext >= vch.size()) {
             if (nReadPosNext > vch.size())
@@ -377,6 +392,7 @@ public:
         return (*this);
     }
 
+<<<<<<< Updated upstream
     CAutoFile& ignore(size_t nSize)
     {
         if (!file)
@@ -392,6 +408,8 @@ public:
     }
 
 
+=======
+>>>>>>> Stashed changes
     CAutoFile& write(const char* pch, size_t nSize)
     {
         if (!file)

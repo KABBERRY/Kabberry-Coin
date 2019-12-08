@@ -1,5 +1,10 @@
 // Copyright 2014 BitPay, Inc.
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,12 +13,21 @@
 #include <string>
 #include <map>
 #include <univalue.h>
+<<<<<<< Updated upstream
 #include "test/test_pivx.h"
 
 #include <boost/test/unit_test.hpp>
 
 
 BOOST_FIXTURE_TEST_SUITE(univalue_tests, BasicTestingSetup)
+=======
+
+#include <boost/test/unit_test.hpp>
+
+using namespace std;
+
+BOOST_AUTO_TEST_SUITE(univalue_tests)
+>>>>>>> Stashed changes
 
 BOOST_AUTO_TEST_CASE(univalue_constructor)
 {
@@ -52,7 +66,11 @@ BOOST_AUTO_TEST_CASE(univalue_constructor)
     BOOST_CHECK(v7.isNum());
     BOOST_CHECK_EQUAL(v7.getValStr(), "-7.21");
 
+<<<<<<< Updated upstream
     std::string vs("yawn");
+=======
+    string vs("yawn");
+>>>>>>> Stashed changes
     UniValue v8(vs);
     BOOST_CHECK(v8.isStr());
     BOOST_CHECK_EQUAL(v8.getValStr(), "yawn");
@@ -68,22 +86,35 @@ BOOST_AUTO_TEST_CASE(univalue_typecheck)
     UniValue v1;
     BOOST_CHECK(v1.setNumStr("1"));
     BOOST_CHECK(v1.isNum());
+<<<<<<< Updated upstream
     BOOST_CHECK_THROW(v1.get_bool(), std::runtime_error);
+=======
+    BOOST_CHECK_THROW(v1.get_bool(), runtime_error);
+>>>>>>> Stashed changes
 
     UniValue v2;
     BOOST_CHECK(v2.setBool(true));
     BOOST_CHECK_EQUAL(v2.get_bool(), true);
+<<<<<<< Updated upstream
     BOOST_CHECK_THROW(v2.get_int(), std::runtime_error);
 
     UniValue v3;
     BOOST_CHECK(v3.setNumStr("32482348723847471234"));
     BOOST_CHECK_THROW(v3.get_int64(), std::runtime_error);
+=======
+    BOOST_CHECK_THROW(v2.get_int(), runtime_error);
+
+    UniValue v3;
+    BOOST_CHECK(v3.setNumStr("32482348723847471234"));
+    BOOST_CHECK_THROW(v3.get_int64(), runtime_error);
+>>>>>>> Stashed changes
     BOOST_CHECK(v3.setNumStr("1000"));
     BOOST_CHECK_EQUAL(v3.get_int64(), 1000);
 
     UniValue v4;
     BOOST_CHECK(v4.setNumStr("2147483648"));
     BOOST_CHECK_EQUAL(v4.get_int64(), 2147483648);
+<<<<<<< Updated upstream
     BOOST_CHECK_THROW(v4.get_int(), std::runtime_error);
     BOOST_CHECK(v4.setNumStr("1000"));
     BOOST_CHECK_EQUAL(v4.get_int(), 1000);
@@ -93,16 +124,35 @@ BOOST_AUTO_TEST_CASE(univalue_typecheck)
     BOOST_CHECK_THROW(v4.getKeys(), std::runtime_error);
     BOOST_CHECK_THROW(v4.getValues(), std::runtime_error);
     BOOST_CHECK_THROW(v4.get_obj(), std::runtime_error);
+=======
+    BOOST_CHECK_THROW(v4.get_int(), runtime_error);
+    BOOST_CHECK(v4.setNumStr("1000"));
+    BOOST_CHECK_EQUAL(v4.get_int(), 1000);
+    BOOST_CHECK_THROW(v4.get_str(), runtime_error);
+    BOOST_CHECK_EQUAL(v4.get_real(), 1000);
+    BOOST_CHECK_THROW(v4.get_array(), runtime_error);
+    BOOST_CHECK_THROW(v4.getKeys(), runtime_error);
+    BOOST_CHECK_THROW(v4.getValues(), runtime_error);
+    BOOST_CHECK_THROW(v4.get_obj(), runtime_error);
+>>>>>>> Stashed changes
 
     UniValue v5;
     BOOST_CHECK(v5.read("[true, 10]"));
     BOOST_CHECK_NO_THROW(v5.get_array());
     std::vector<UniValue> vals = v5.getValues();
+<<<<<<< Updated upstream
     BOOST_CHECK_THROW(vals[0].get_int(), std::runtime_error);
     BOOST_CHECK_EQUAL(vals[0].get_bool(), true);
 
     BOOST_CHECK_EQUAL(vals[1].get_int(), 10);
     BOOST_CHECK_THROW(vals[1].get_bool(), std::runtime_error);
+=======
+    BOOST_CHECK_THROW(vals[0].get_int(), runtime_error);
+    BOOST_CHECK_EQUAL(vals[0].get_bool(), true);
+
+    BOOST_CHECK_EQUAL(vals[1].get_int(), 10);
+    BOOST_CHECK_THROW(vals[1].get_bool(), runtime_error);
+>>>>>>> Stashed changes
 }
 
 BOOST_AUTO_TEST_CASE(univalue_set)
@@ -171,13 +221,21 @@ BOOST_AUTO_TEST_CASE(univalue_array)
     UniValue v((int64_t)1023LL);
     BOOST_CHECK(arr.push_back(v));
 
+<<<<<<< Updated upstream
     std::string vStr("zippy");
+=======
+    string vStr("zippy");
+>>>>>>> Stashed changes
     BOOST_CHECK(arr.push_back(vStr));
 
     const char *s = "pippy";
     BOOST_CHECK(arr.push_back(s));
 
+<<<<<<< Updated upstream
     std::vector<UniValue> vec;
+=======
+    vector<UniValue> vec;
+>>>>>>> Stashed changes
     v.setStr("boing");
     vec.push_back(v);
 
@@ -205,7 +263,11 @@ BOOST_AUTO_TEST_CASE(univalue_array)
 BOOST_AUTO_TEST_CASE(univalue_object)
 {
     UniValue obj(UniValue::VOBJ);
+<<<<<<< Updated upstream
     std::string strKey, strVal;
+=======
+    string strKey, strVal;
+>>>>>>> Stashed changes
     UniValue v;
 
     strKey = "age";
@@ -265,7 +327,11 @@ BOOST_AUTO_TEST_CASE(univalue_object)
 
     BOOST_CHECK(!obj.exists("nyuknyuknyuk"));
 
+<<<<<<< Updated upstream
     std::map<std::string, UniValue::VType> objTypes;
+=======
+    map<string, UniValue::VType> objTypes;
+>>>>>>> Stashed changes
     objTypes["age"] = UniValue::VNUM;
     objTypes["first"] = UniValue::VSTR;
     objTypes["last"] = UniValue::VSTR;
@@ -293,7 +359,11 @@ BOOST_AUTO_TEST_CASE(univalue_readwrite)
     UniValue v;
     BOOST_CHECK(v.read(json1));
 
+<<<<<<< Updated upstream
     std::string strJson1(json1);
+=======
+    string strJson1(json1);
+>>>>>>> Stashed changes
     BOOST_CHECK(v.read(strJson1));
 
     BOOST_CHECK(v.isArray());

@@ -10,7 +10,11 @@
 #ifdef USE_BASIC_CONFIG
 
 #undef USE_ASM_X86_64
+<<<<<<< Updated upstream
 #undef USE_ENDOMORPHISM
+=======
+#undef USE_ENPrimeStoneRPHISM
+>>>>>>> Stashed changes
 #undef USE_FIELD_10X26
 #undef USE_FIELD_5X52
 #undef USE_FIELD_INV_BUILTIN

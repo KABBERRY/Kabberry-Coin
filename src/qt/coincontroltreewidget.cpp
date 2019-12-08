@@ -1,5 +1,10 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2018 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,7 +26,11 @@ void CoinControlTreeWidget::keyPressEvent(QKeyEvent* event)
     } else if (event->key() == Qt::Key_Escape) // press esc -> close dialog
     {
         event->ignore();
+<<<<<<< Updated upstream
         auto* coinControlDialog = (CoinControlDialog*) this->parentWidget()->parentWidget();
+=======
+        CoinControlDialog* coinControlDialog = (CoinControlDialog*)this->parentWidget();
+>>>>>>> Stashed changes
         coinControlDialog->done(QDialog::Accepted);
     } else {
         this->QTreeWidget::keyPressEvent(event);

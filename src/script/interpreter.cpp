@@ -1,6 +1,11 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+<<<<<<< Updated upstream
 // Copyright (c) 2017-2019 The PIVX developers
+=======
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,8 +19,14 @@
 #include "script/script.h"
 #include "uint256.h"
 
+<<<<<<< Updated upstream
 
 typedef std::vector<unsigned char> valtype;
+=======
+using namespace std;
+
+typedef vector<unsigned char> valtype;
+>>>>>>> Stashed changes
 
 namespace {
 
@@ -56,10 +67,17 @@ bool CastToBool(const valtype& vch)
  */
 #define stacktop(i)  (stack.at(stack.size()+(i)))
 #define altstacktop(i)  (altstack.at(altstack.size()+(i)))
+<<<<<<< Updated upstream
 static inline void popstack(std::vector<valtype>& stack)
 {
     if (stack.empty())
         throw std::runtime_error("popstack() : stack empty");
+=======
+static inline void popstack(vector<valtype>& stack)
+{
+    if (stack.empty())
+        throw runtime_error("popstack() : stack empty");
+>>>>>>> Stashed changes
     stack.pop_back();
 }
 
@@ -90,7 +108,11 @@ bool static IsCompressedOrUncompressedPubKey(const valtype &vchPubKey) {
  * Where R and S are not negative (their first byte has its highest bit not set), and not
  * excessively padded (do not start with a 0 byte, unless an otherwise negative number follows,
  * in which case a single 0 byte is necessary and even required).
+<<<<<<< Updated upstream
  *
+=======
+ * 
+>>>>>>> Stashed changes
  * See https://bitcointalk.org/index.php?topic=8392.msg127623#msg127623
  *
  * This function is consensus-critical since BIP66.
@@ -130,7 +152,11 @@ bool static IsValidSignatureEncoding(const std::vector<unsigned char> &sig) {
     // Verify that the length of the signature matches the sum of the length
     // of the elements.
     if ((size_t)(lenR + lenS + 7) != sig.size()) return false;
+<<<<<<< Updated upstream
 
+=======
+ 
+>>>>>>> Stashed changes
     // Check whether the R element is an integer.
     if (sig[2] != 0x02) return false;
 
@@ -235,7 +261,11 @@ bool static CheckMinimalPush(const valtype& data, opcodetype opcode) {
     return true;
 }
 
+<<<<<<< Updated upstream
 bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
+=======
+bool EvalScript(vector<vector<unsigned char> >& stack, const CScript& script, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
+>>>>>>> Stashed changes
 {
     static const CScriptNum bnZero(0);
     static const CScriptNum bnOne(1);
@@ -250,10 +280,17 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
     CScript::const_iterator pbegincodehash = script.begin();
     opcodetype opcode;
     valtype vchPushValue;
+<<<<<<< Updated upstream
     std::vector<bool> vfExec;
     std::vector<valtype> altstack;
     set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
     if (script.size() > MAX_SCRIPT_SIZE)
+=======
+    vector<bool> vfExec;
+    vector<valtype> altstack;
+    set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
+    if (script.size() > 10000)
+>>>>>>> Stashed changes
         return set_error(serror, SCRIPT_ERR_SCRIPT_SIZE);
     int nOpCount = 0;
     bool fRequireMinimal = (flags & SCRIPT_VERIFY_MINIMALDATA) != 0;
@@ -335,6 +372,7 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                 // Control
                 //
                 case OP_NOP:
+<<<<<<< Updated upstream
                     break;
 
                 case OP_CHECKLOCKTIMEVERIFY:
@@ -383,6 +421,11 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                 }
 
                 case OP_NOP1: case OP_NOP3: case OP_NOP4: case OP_NOP5:
+=======
+                break;
+
+                case OP_NOP1: case OP_NOP2: case OP_NOP3: case OP_NOP4: case OP_NOP5:
+>>>>>>> Stashed changes
                 case OP_NOP6: case OP_NOP7: case OP_NOP8: case OP_NOP9: case OP_NOP10:
                 {
                     if (flags & SCRIPT_VERIFY_DISCOURAGE_UPGRADABLE_NOPS)
@@ -806,6 +849,7 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     valtype& vch = stacktop(-1);
                     valtype vchHash((opcode == OP_RIPEMD160 || opcode == OP_SHA1 || opcode == OP_HASH160) ? 20 : 32);
                     if (opcode == OP_RIPEMD160)
+<<<<<<< Updated upstream
                         CRIPEMD160().Write(vch.data(), vch.size()).Finalize(vchHash.data());
                     else if (opcode == OP_SHA1)
                         CSHA1().Write(vch.data(), vch.size()).Finalize(vchHash.data());
@@ -819,6 +863,21 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                     stack.push_back(vchHash);
                 }
                 break;
+=======
+                        CRIPEMD160().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
+                    else if (opcode == OP_SHA1)
+                        CSHA1().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
+                    else if (opcode == OP_SHA256)
+                        CSHA256().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
+                    else if (opcode == OP_HASH160)
+                        CHash160().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
+                    else if (opcode == OP_HASH256)
+                        CHash256().Write(begin_ptr(vch), vch.size()).Finalize(begin_ptr(vchHash));
+                    popstack(stack);
+                    stack.push_back(vchHash);
+                }
+                break;                                   
+>>>>>>> Stashed changes
 
                 case OP_CODESEPARATOR:
                 {
@@ -959,6 +1018,7 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                 }
                 break;
 
+<<<<<<< Updated upstream
                 case OP_CHECKCOLDSTAKEVERIFY:
                 {
                     // check it is used in a valid cold stake transaction.
@@ -968,6 +1028,8 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                 }
                 break;
 
+=======
+>>>>>>> Stashed changes
                 default:
                     return set_error(serror, SCRIPT_ERR_BAD_OPCODE);
             }
@@ -1116,14 +1178,22 @@ bool TransactionSignatureChecker::VerifySignature(const std::vector<unsigned cha
     return pubkey.Verify(sighash, vchSig);
 }
 
+<<<<<<< Updated upstream
 bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vchSigIn, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode) const
+=======
+bool TransactionSignatureChecker::CheckSig(const vector<unsigned char>& vchSigIn, const vector<unsigned char>& vchPubKey, const CScript& scriptCode) const
+>>>>>>> Stashed changes
 {
     CPubKey pubkey(vchPubKey);
     if (!pubkey.IsValid())
         return false;
 
     // Hash type is one byte tacked on to the end of the signature
+<<<<<<< Updated upstream
     std::vector<unsigned char> vchSig(vchSigIn);
+=======
+    vector<unsigned char> vchSig(vchSigIn);
+>>>>>>> Stashed changes
     if (vchSig.empty())
         return false;
     int nHashType = vchSig.back();
@@ -1137,6 +1207,7 @@ bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vch
     return true;
 }
 
+<<<<<<< Updated upstream
 bool TransactionSignatureChecker::CheckLockTime(const CScriptNum& nLockTime) const
 {
     // There are two times of nLockTime: lock-by-blockheight
@@ -1174,6 +1245,8 @@ bool TransactionSignatureChecker::CheckLockTime(const CScriptNum& nLockTime) con
 }
 
 
+=======
+>>>>>>> Stashed changes
 bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigned int flags, const BaseSignatureChecker& checker, ScriptError* serror)
 {
     set_error(serror, SCRIPT_ERR_UNKNOWN_ERROR);
@@ -1182,7 +1255,11 @@ bool VerifyScript(const CScript& scriptSig, const CScript& scriptPubKey, unsigne
         return set_error(serror, SCRIPT_ERR_SIG_PUSHONLY);
     }
 
+<<<<<<< Updated upstream
     std::vector<std::vector<unsigned char> > stack, stackCopy;
+=======
+    vector<vector<unsigned char> > stack, stackCopy;
+>>>>>>> Stashed changes
     if (!EvalScript(stack, scriptSig, flags, checker, serror))
         // serror is set
         return false;

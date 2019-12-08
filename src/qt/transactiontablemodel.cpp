@@ -1,6 +1,11 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2016 The Dash developers
+<<<<<<< Updated upstream
 // Copyright (c) 2016-2019 The PIVX developers
+=======
+// Copyright (c) 2016-2018 The PIVX developers
+// Copyright (c) 2018-2019 The PrimeStone developers
+>>>>>>> Stashed changes
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -18,17 +23,24 @@
 #include "sync.h"
 #include "uint256.h"
 #include "util.h"
+<<<<<<< Updated upstream
 #include "wallet/wallet.h"
+=======
+#include "wallet.h"
+>>>>>>> Stashed changes
 
 #include <QColor>
 #include <QDateTime>
 #include <QDebug>
 #include <QIcon>
 #include <QList>
+<<<<<<< Updated upstream
 #include <QtConcurrent/QtConcurrent>
 #include <QFuture>
 
 #define SINGLE_THREAD_MAX_TXES_SIZE 4000
+=======
+>>>>>>> Stashed changes
 
 // Amount column is right-aligned it contains numbers
 static int column_alignments[] = {
@@ -73,7 +85,10 @@ public:
      * this is sorted by sha256.
      */
     QList<TransactionRecord> cachedWallet;
+<<<<<<< Updated upstream
     bool hasZcTxes = false;
+=======
+>>>>>>> Stashed changes
 
     /* Query entire wallet anew from core.
      */
@@ -81,6 +96,7 @@ public:
     {
         qDebug() << "TransactionTablePriv::refreshWallet";
         cachedWallet.clear();
+<<<<<<< Updated upstream
 
         std::vector<CWalletTx> walletTxes = wallet->getWalletTxs();
 
@@ -154,6 +170,15 @@ public:
                 record.type == TransactionRecord::ZerocoinSpend ||
                 record.type == TransactionRecord::ZerocoinSpend_Change_zPiv ||
                 record.type == TransactionRecord::ZerocoinSpend_FromMe);
+=======
+        {
+            LOCK2(cs_main, wallet->cs_wallet);
+            for (std::map<uint256, CWalletTx>::iterator it = wallet->mapWallet.begin(); it != wallet->mapWallet.end(); ++it) {
+                if (TransactionRecord::showTransaction(it->second))
+                    cachedWallet.append(TransactionRecord::decomposeTransaction(wallet, it->second));
+            }
+        }
+>>>>>>> Stashed changes
     }
 
     /* Update our model of the wallet incrementally, to synchronize our model of the wallet
@@ -161,7 +186,11 @@ public:
 
        Call with transaction that was added, removed or changed.
      */
+<<<<<<< Updated upstream
     void updateWallet(const uint256& hash, int status, bool showTransaction, TransactionRecord& ret)
+=======
+    void updateWallet(const uint256& hash, int status, bool showTransaction)
+>>>>>>> Stashed changes
     {
         qDebug() << "TransactionTablePriv::updateWallet : " + QString::fromStdString(hash.ToString()) + " " + QString::number(status);
 
@@ -186,6 +215,7 @@ public:
                         " showTransaction=" + QString::number(showTransaction) + " derivedStatus=" + QString::number(status);
 
         switch (status) {
+<<<<<<< Updated upstream
             case CT_NEW:
                 if (inModel) {
                     qWarning() << "TransactionTablePriv::updateWallet : Warning: Got CT_NEW, but transaction is already in model";
@@ -229,6 +259,50 @@ public:
                 // Miscellaneous updates -- nothing to do, status update will take care of this, and is only computed for
                 // visible transactions.
                 break;
+=======
+        case CT_NEW:
+            if (inModel) {
+                qWarning() << "TransactionTablePriv::updateWallet : Warning: Got CT_NEW, but transaction is already in model";
+                break;
+            }
+            if (showTransaction) {
+                LOCK2(cs_main, wallet->cs_wallet);
+                // Find transaction in wallet
+                std::map<uint256, CWalletTx>::iterator mi = wallet->mapWallet.find(hash);
+                if (mi == wallet->mapWallet.end()) {
+                    qWarning() << "TransactionTablePriv::updateWallet : Warning: Got CT_NEW, but transaction is not in wallet";
+                    break;
+                }
+                // Added -- insert at the right position
+                QList<TransactionRecord> toInsert =
+                    TransactionRecord::decomposeTransaction(wallet, mi->second);
+                if (!toInsert.isEmpty()) /* only if something to insert */
+                {
+                    parent->beginInsertRows(QModelIndex(), lowerIndex, lowerIndex + toInsert.size() - 1);
+                    int insert_idx = lowerIndex;
+                    foreach (const TransactionRecord& rec, toInsert) {
+                        cachedWallet.insert(insert_idx, rec);
+                        insert_idx += 1;
+                    }
+                    parent->endInsertRows();
+                }
+            }
+            break;
+        case CT_DELETED:
+            if (!inModel) {
+                qWarning() << "TransactionTablePriv::updateWallet : Warning: Got CT_DELETED, but transaction is not in model";
+                break;
+            }
+            // Removed -- remove entire transaction from table
+            parent->beginRemoveRows(QModelIndex(), lowerIndex, upperIndex - 1);
+            cachedWallet.erase(lower, upper);
+            parent->endRemoveRows();
+            break;
+        case CT_UPDATED:
+            // Miscellaneous updates -- nothing to do, status update will take care of this, and is only computed for
+            // visible transactions.
+            break;
+>>>>>>> Stashed changes
         }
     }
 
@@ -237,11 +311,14 @@ public:
         return cachedWallet.size();
     }
 
+<<<<<<< Updated upstream
     bool containsZcTxes()
     {
         return hasZcTxes;
     }
 
+=======
+>>>>>>> Stashed changes
     TransactionRecord* index(int idx)
     {
         if (idx >= 0 && idx < cachedWallet.size()) {
@@ -315,11 +392,15 @@ void TransactionTableModel::updateTransaction(const QString& hash, int status, b
     uint256 updated;
     updated.SetHex(hash.toStdString());
 
+<<<<<<< Updated upstream
     TransactionRecord rec(0);
     priv->updateWallet(updated, status, showTransaction, rec);
 
     if (!rec.isNull())
         emit txArrived(hash, rec.isCoinStake(), rec.isAnyColdStakingType());
+=======
+    priv->updateWallet(updated, status, showTransaction);
+>>>>>>> Stashed changes
 }
 
 void TransactionTableModel::updateConfirmations()
@@ -344,6 +425,7 @@ int TransactionTableModel::columnCount(const QModelIndex& parent) const
     return columns.length();
 }
 
+<<<<<<< Updated upstream
 int TransactionTableModel::size() const{
     return priv->size();
 }
@@ -352,6 +434,8 @@ bool TransactionTableModel::hasZcTxes() {
     return priv->containsZcTxes();
 }
 
+=======
+>>>>>>> Stashed changes
 QString TransactionTableModel::formatTxStatus(const TransactionRecord* wtx) const
 {
     QString status;
@@ -408,10 +492,17 @@ QString TransactionTableModel::lookupAddress(const std::string& address, bool to
     QString label = walletModel->getAddressTableModel()->labelForAddress(QString::fromStdString(address));
     QString description;
     if (!label.isEmpty()) {
+<<<<<<< Updated upstream
         description += label + QString(" ");
     }
     if (label.isEmpty() || tooltip) {
         description += QString::fromStdString(address);
+=======
+        description += label;
+    }
+    if (label.isEmpty() || tooltip) {
+        description += QString(" (") + QString::fromStdString(address) + QString(")");
+>>>>>>> Stashed changes
     }
     return description;
 }
@@ -433,6 +524,7 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::SendToSelf:
         return tr("Payment to yourself");
     case TransactionRecord::StakeMint:
+<<<<<<< Updated upstream
         return tr("PIV Stake");
     case TransactionRecord::StakeZPIV:
         return tr("zPIV Stake");
@@ -443,6 +535,11 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::P2CSDelegationSent:
     case TransactionRecord::P2CSDelegation:
         return tr("Stake delegation");
+=======
+        return tr("PrimeStone Stake");
+    case TransactionRecord::StakezPSC:
+        return tr("zPSC Stake");
+>>>>>>> Stashed changes
     case TransactionRecord::Generated:
         return tr("Mined");
     case TransactionRecord::ObfuscationDenominate:
@@ -456,6 +553,7 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::Obfuscated:
         return tr("Obfuscated");
     case TransactionRecord::ZerocoinMint:
+<<<<<<< Updated upstream
         return tr("Converted PIV to zPIV");
     case TransactionRecord::ZerocoinSpend:
         return tr("Spent zPIV");
@@ -465,6 +563,18 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
         return tr("Minted Change as zPIV from zPIV Spend");
     case TransactionRecord::ZerocoinSpend_FromMe:
         return tr("Converted zPIV to PIV");
+=======
+        return tr("Converted PrimeStone to zPSC");
+    case TransactionRecord::ZerocoinSpend:
+        return tr("Spent zPSC");
+    case TransactionRecord::RecvFromZerocoinSpend:
+        return tr("Received PrimeStone from zPSC");
+    case TransactionRecord::ZerocoinSpend_Change_zPSC:
+        return tr("Minted Change as zPSC from zPSC Spend");
+    case TransactionRecord::ZerocoinSpend_FromMe:
+        return tr("Converted zPSC to PrimeStone");
+
+>>>>>>> Stashed changes
     default:
         return QString();
     }
@@ -475,7 +585,11 @@ QVariant TransactionTableModel::txAddressDecoration(const TransactionRecord* wtx
     switch (wtx->type) {
     case TransactionRecord::Generated:
     case TransactionRecord::StakeMint:
+<<<<<<< Updated upstream
     case TransactionRecord::StakeZPIV:
+=======
+    case TransactionRecord::StakezPSC:
+>>>>>>> Stashed changes
     case TransactionRecord::MNReward:
         return QIcon(":/icons/tx_mined");
     case TransactionRecord::RecvWithObfuscation:
@@ -486,7 +600,11 @@ QVariant TransactionTableModel::txAddressDecoration(const TransactionRecord* wtx
     case TransactionRecord::SendToAddress:
     case TransactionRecord::SendToOther:
     case TransactionRecord::ZerocoinSpend:
+<<<<<<< Updated upstream
         return QIcon("://ic-transaction-sent");
+=======
+        return QIcon(":/icons/tx_output");
+>>>>>>> Stashed changes
     default:
         return QIcon(":/icons/tx_inout");
     }
@@ -518,6 +636,7 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
     case TransactionRecord::SendToOther:
         return QString::fromStdString(wtx->address) + watchAddress;
     case TransactionRecord::ZerocoinMint:
+<<<<<<< Updated upstream
     case TransactionRecord::ZerocoinSpend_Change_zPiv:
     case TransactionRecord::StakeZPIV:
         return tr("Anonymous");
@@ -536,12 +655,26 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
             return tr("(n/a)") + watchAddress;
         }
     }
+=======
+    case TransactionRecord::ZerocoinSpend_Change_zPSC:
+        return tr("Anonymous (zPSC Transaction)");
+    case TransactionRecord::StakezPSC:
+        return tr("Anonymous (zPSC Stake)");
+    case TransactionRecord::SendToSelf:
+    default:
+        return tr("(n/a)") + watchAddress;
+>>>>>>> Stashed changes
     }
 }
 
 QVariant TransactionTableModel::addressColor(const TransactionRecord* wtx) const
 {
     switch (wtx->type) {
+<<<<<<< Updated upstream
+=======
+    case TransactionRecord::SendToSelf:
+        return COLOR_BAREADDRESS;
+>>>>>>> Stashed changes
     // Show addresses without label in a less visible color
     case TransactionRecord::RecvWithAddress:
     case TransactionRecord::SendToAddress:
@@ -551,7 +684,10 @@ QVariant TransactionTableModel::addressColor(const TransactionRecord* wtx) const
         if (label.isEmpty())
             return COLOR_BAREADDRESS;
     }
+<<<<<<< Updated upstream
     case TransactionRecord::SendToSelf:
+=======
+>>>>>>> Stashed changes
     default:
         // To avoid overriding above conditional formats a default text color for this QTableView is not defined in stylesheet,
         // so we must always return a color here
@@ -599,7 +735,11 @@ QVariant TransactionTableModel::txStatusDecoration(const TransactionRecord* wtx)
         return QIcon(":/icons/transaction_conflicted");
     case TransactionStatus::Immature: {
         int total = wtx->status.depth + wtx->status.matures_in;
+<<<<<<< Updated upstream
         int part = (wtx->status.depth * 5 / total) + 1;
+=======
+        int part = (wtx->status.depth * 4 / total) + 1;
+>>>>>>> Stashed changes
         return QIcon(QString(":/icons/transaction_%1").arg(part));
     }
     case TransactionStatus::MaturesWarning:
@@ -620,7 +760,16 @@ QVariant TransactionTableModel::txWatchonlyDecoration(const TransactionRecord* w
 
 QString TransactionTableModel::formatTooltip(const TransactionRecord* rec) const
 {
+<<<<<<< Updated upstream
     return formatTxStatus(rec);
+=======
+    QString tooltip = formatTxStatus(rec) + QString("\n") + formatTxType(rec);
+    if (rec->type == TransactionRecord::RecvFromOther || rec->type == TransactionRecord::SendToOther ||
+        rec->type == TransactionRecord::SendToAddress || rec->type == TransactionRecord::RecvWithAddress || rec->type == TransactionRecord::MNReward) {
+        tooltip += QString(" ") + formatTxToAddress(rec, true);
+    }
+    return tooltip;
+>>>>>>> Stashed changes
 }
 
 QVariant TransactionTableModel::data(const QModelIndex& index, int role) const
@@ -674,6 +823,7 @@ QVariant TransactionTableModel::data(const QModelIndex& index, int role) const
     case Qt::TextAlignmentRole:
         return column_alignments[index.column()];
     case Qt::ForegroundRole:
+<<<<<<< Updated upstream
         // Minted
         if (rec->type == TransactionRecord::Generated || rec->type == TransactionRecord::StakeMint ||
                 rec->type == TransactionRecord::StakeZPIV || rec->type == TransactionRecord::MNReward) {
@@ -683,6 +833,9 @@ QVariant TransactionTableModel::data(const QModelIndex& index, int role) const
                 return COLOR_STAKE;
         }
         // Conflicted tx
+=======
+        // Conflicted, most probably orphaned
+>>>>>>> Stashed changes
         if (rec->status.status == TransactionStatus::Conflicted || rec->status.status == TransactionStatus::NotAccepted) {
             return COLOR_CONFLICTED;
         }
@@ -702,8 +855,11 @@ QVariant TransactionTableModel::data(const QModelIndex& index, int role) const
         return COLOR_BLACK;
     case TypeRole:
         return rec->type;
+<<<<<<< Updated upstream
     case SizeRole:
         return rec->size;
+=======
+>>>>>>> Stashed changes
     case DateRole:
         return QDateTime::fromTime_t(static_cast<uint>(rec->time));
     case WatchonlyRole:
@@ -781,7 +937,11 @@ void TransactionTableModel::updateDisplayUnit()
 struct TransactionNotification {
 public:
     TransactionNotification() {}
+<<<<<<< Updated upstream
     TransactionNotification(uint256 hash, ChangeType status) : hash(hash), status(status) {}
+=======
+    TransactionNotification(uint256 hash, ChangeType status, bool showTransaction) : hash(hash), status(status), showTransaction(showTransaction) {}
+>>>>>>> Stashed changes
 
     void invoke(QObject* ttm)
     {
@@ -790,12 +950,20 @@ public:
         QMetaObject::invokeMethod(ttm, "updateTransaction", Qt::QueuedConnection,
             Q_ARG(QString, strHash),
             Q_ARG(int, status),
+<<<<<<< Updated upstream
             Q_ARG(bool, true));
+=======
+            Q_ARG(bool, showTransaction));
+>>>>>>> Stashed changes
     }
 
 private:
     uint256 hash;
     ChangeType status;
+<<<<<<< Updated upstream
+=======
+    bool showTransaction;
+>>>>>>> Stashed changes
 };
 
 static bool fQueueNotifications = false;
@@ -803,11 +971,23 @@ static std::vector<TransactionNotification> vQueueNotifications;
 
 static void NotifyTransactionChanged(TransactionTableModel* ttm, CWallet* wallet, const uint256& hash, ChangeType status)
 {
+<<<<<<< Updated upstream
 
     TransactionNotification notification(hash, status);
 
     if (fQueueNotifications)
     {
+=======
+    // Find transaction in wallet
+    std::map<uint256, CWalletTx>::iterator mi = wallet->mapWallet.find(hash);
+    // Determine whether to show transaction or not (determine this here so that no relocking is needed in GUI thread)
+    bool inWallet = mi != wallet->mapWallet.end();
+    bool showTransaction = (inWallet && TransactionRecord::showTransaction(mi->second));
+
+    TransactionNotification notification(hash, status, showTransaction);
+
+    if (fQueueNotifications) {
+>>>>>>> Stashed changes
         vQueueNotifications.push_back(notification);
         return;
     }

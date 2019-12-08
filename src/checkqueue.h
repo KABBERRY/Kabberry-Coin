@@ -8,6 +8,10 @@
 #include <algorithm>
 #include <vector>
 
+<<<<<<< Updated upstream
+=======
+#include <boost/foreach.hpp>
+>>>>>>> Stashed changes
 #include <boost/thread/condition_variable.hpp>
 #include <boost/thread/locks.hpp>
 #include <boost/thread/mutex.hpp>
@@ -118,7 +122,11 @@ private:
                 fOk = fAllOk;
             }
             // execute work
+<<<<<<< Updated upstream
             for (T& check : vChecks)
+=======
+            BOOST_FOREACH (T& check, vChecks)
+>>>>>>> Stashed changes
                 if (fOk)
                     fOk = check();
             vChecks.clear();
@@ -145,7 +153,11 @@ public:
     void Add(std::vector<T>& vChecks)
     {
         boost::unique_lock<boost::mutex> lock(mutex);
+<<<<<<< Updated upstream
         for (T& check : vChecks) {
+=======
+        BOOST_FOREACH (T& check, vChecks) {
+>>>>>>> Stashed changes
             queue.push_back(T());
             check.swap(queue.back());
         }
