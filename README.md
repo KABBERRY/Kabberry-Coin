@@ -32,9 +32,9 @@ https://kabberry.com
 <br>PRIMESTONE MASTERNODE SETUP MANUALS
 
 <br>Masternode SETUP (windows) 1.3-2.3 version
-<br>http://scripts.primestone.global/MasterNode_WIN_ENG.pdf
+<br>http://scripts.kabberry.com/MasterNode_WIN_ENG.pdf
 <br>Masternode CLEAR SETUP 1.3-2.3 version (VPS)
-<br>http://scripts.primestone.global/Masternode_SETUP_VPS_1.3.pdf
+<br>http://scripts.kabberry.com/Masternode_SETUP_VPS_1.3.pdf
 
 <br>MASTERNODE HOSTING & SHARED NODE SERVICES
 
@@ -52,9 +52,9 @@ https://kabberry.com
 <br>COIN INFO
 
 <br>Whitepaper
-<br>https://primestone.global/wp-content/uploads/2018/06/Primestone-WhitePaper.pdf
+<br>https://kabberry.com/wp-content/uploads/2018/06/Primestone-WhitePaper.pdf
 <br>Documentation
-<br>https://primestone.global/documentation/
+<br>https://kabberry.com/documentation/
 <br>Coinmarketcap
 <br>https://coinmarketcap.com/currencies/primestone
 <br>MNROI
