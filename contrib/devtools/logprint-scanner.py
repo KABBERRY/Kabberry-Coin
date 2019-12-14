@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (c) 2017-2018 The PSC developers
+# Copyright (c) 2017-2019 The Kabberry developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 

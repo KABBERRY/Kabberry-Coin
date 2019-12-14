@@ -1,21 +1,21 @@
 
 Debian
 ====================
-This directory contains files used to package primestoned/primestone-qt
-for Debian-based Linux systems. If you compile primestoned/primestone-qt yourself, there are some useful files here.
+This directory contains files used to package kabberryd/kabberry-qt
+for Debian-based Linux systems. If you compile kabberryd/kabberry-qt yourself, there are some useful files here.
 
-## primestone: URI support ##
+## kabberry: URI support ##
 
 
-primestone-qt.desktop  (Gnome / Open Desktop)
+kabberry-qt.desktop  (Gnome / Open Desktop)
 To install:
 
-	sudo desktop-file-install primestone-qt.desktop
+	sudo desktop-file-install kabberry-qt.desktop
 	sudo update-desktop-database
 
 If you build yourself, you will either need to modify the paths in
-the .desktop file or copy or symlink your primestoneqt binary to `/usr/bin`
-and the `../../share/pixmaps/primestone128.png` to `/usr/share/pixmaps`
+the .desktop file or copy or symlink your kabberryqt binary to `/usr/bin`
+and the `../../share/pixmaps/kabberry128.png` to `/usr/share/pixmaps`
 
-primestone-qt.protocol (KDE)
+kabberry-qt.protocol (KDE)
 
