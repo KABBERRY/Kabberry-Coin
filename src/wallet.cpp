@@ -1072,7 +1072,7 @@ CAmount CWalletTx::GetAvailableCredit(bool fUseCache) const
         }
     }
 
-    nAvailableCreditCached = nCredit - GetLockedCredit();
+    nAvailableCreditCached = nCredit;
     fAvailableCreditCached = true;
     return nCredit;
 }
@@ -1096,7 +1096,7 @@ CAmount CWalletTx::GetAnonymizableCredit(bool fUseCache) const
         const CTxIn vin = CTxIn(hashTx, i);
 
         if (pwallet->IsSpent(hashTx, i) || pwallet->IsLockedCoin(hashTx, i)) continue;
-        if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) continue; // do not count MN-like outputs
+        if (fMasterNode && vout[i].nValue == 10000 * COIN) continue; // do not count MN-like outputs
 
         const int rounds = pwallet->GetInputObfuscationRounds(vin);
         if (rounds >= -2 && rounds < nZeromintPercentage) {
@@ -1160,7 +1160,7 @@ CAmount CWalletTx::GetUnlockedCredit() const
         const CTxOut& txout = vout[i];
 
         if (pwallet->IsSpent(hashTx, i) || pwallet->IsLockedCoin(hashTx, i)) continue;
-        if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) continue; // do not count MN-like outputs
+        if (fMasterNode && vout[i].nValue == 10000 * COIN) continue; // do not count MN-like outputs
 
         nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         if (!MoneyRange(nCredit))
@@ -1194,7 +1194,7 @@ CAmount CWalletTx::GetLockedCredit() const
         }
 
         // Add masternode collaterals which are handled like locked coins
-        else if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) {
+        else if (fMasterNode && vout[i].nValue == 10000 * COIN) {
             nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         }
 
@@ -1313,7 +1313,7 @@ CAmount CWalletTx::GetLockedWatchOnlyCredit() const
         }
 
         // Add masternode collaterals which are handled like locked coins
-        else if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) {
+        else if (fMasterNode && vout[i].nValue == 10000 * COIN) {
             nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
         }
 
@@ -1946,13 +1946,13 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
                 if (nCoinType == ONLY_DENOMINATED) {
                     found = IsDenominatedAmount(pcoin->vout[i].nValue);
                 } else if (nCoinType == ONLY_NOT10000IFMN) {
-                    found = !(fMasterNode && pcoin->vout[i].nValue == Params().MasternodeCollateral());
+                    found = !(fMasterNode && pcoin->vout[i].nValue == 10000 * COIN);
                 } else if (nCoinType == ONLY_NONDENOMINATED_NOT10000IFMN) {
                     if (IsCollateralAmount(pcoin->vout[i].nValue)) continue; // do not use collateral amounts
                     found = !IsDenominatedAmount(pcoin->vout[i].nValue);
-                    if (found && fMasterNode) found = pcoin->vout[i].nValue != Params().MasternodeCollateral(); // do not use Hot MN funds
+                    if (found && fMasterNode) found = pcoin->vout[i].nValue != 10000 * COIN; // do not use Hot MN funds
                 } else if (nCoinType == ONLY_10000) {
-                    found = pcoin->vout[i].nValue == Params().MasternodeCollateral();
+                    found = pcoin->vout[i].nValue == 10000 * COIN;
                 } else {
                     found = true;
                 }
@@ -2100,10 +2100,6 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
             if (out.nDepth < (out.tx->IsCoinStake() ? Params().COINBASE_MATURITY() : 10))
                 continue;
 
-            if (fMasterNode && out.tx->vout[out.i].nValue == Params().MasternodeCollateral()) {
-                continue;
-            }
-            
             //add to our stake set
             nAmountSelected += out.tx->vout[out.i].nValue;
 
@@ -2481,7 +2477,7 @@ bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<
         if (out.tx->vout[out.i].nValue < CENT) continue;
         //do not allow collaterals to be selected
         if (IsCollateralAmount(out.tx->vout[out.i].nValue)) continue;
-        if (fMasterNode && out.tx->vout[out.i].nValue == Params().MasternodeCollateral()) continue; //masternode input
+        if (fMasterNode && out.tx->vout[out.i].nValue == 10000 * COIN) continue; //masternode input
 
         if (nValueRet + out.tx->vout[out.i].nValue <= nValueMax) {
             CTxIn vin = CTxIn(out.tx->GetHash(), out.i);
@@ -3211,7 +3207,6 @@ string CWallet::PrepareObfuscationDenominate(int minRounds, int maxRounds)
 
     /*
         Select the coins we'll use
-
         if minRounds >= 0 it means only denominated inputs are going in and coming out
     */
     if (minRounds >= 0) {
@@ -4019,7 +4014,7 @@ void CWallet::AutoZeromint()
     // Use the biggest denomination smaller than the needed zPSC We'll only mint exact denomination to make minting faster.
     // Exception: for big amounts use 6666 (6666 = 1*5000 + 1*1000 + 1*500 + 1*100 + 1*50 + 1*10 + 1*5 + 1) to create all
     // possible denominations to avoid having 5000 denominations only.
-    // If a preferred denomination is used (means nPreferredDenom != 0) do nothing until we have enough Kabberyy to mint this denomination
+    // If a preferred denomination is used (means nPreferredDenom != 0) do nothing until we have enough Kabberry to mint this denomination
 
     if (nPreferredDenom > 0){
         if (nToMintAmount >= nPreferredDenom)
