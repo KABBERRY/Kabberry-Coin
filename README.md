@@ -16,7 +16,7 @@ https://kabberry.com
 <br>BLOCK EXPLORER
 <br>http://primestone-explorer.com/
 <br>GITHUB
-<br>https://github.com/Primestonecoin
+<br>https://github.com/KABBERRY
 
 <br>PRIMESTONE WALLETS 2.3
 
