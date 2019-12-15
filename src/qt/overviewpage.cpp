@@ -167,7 +167,7 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
-void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBalance, QString& sKabberryPercentage, QString& szPSCPercentage)
+void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBalance, QString& sPrimeStonePercentage, QString& szPSCPercentage)
 {
     int nPrecision = 2;
     double dzPercentage = 0.0;
@@ -187,7 +187,7 @@ void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBala
     double dPercentage = 100.0 - dzPercentage;
     
     szPSCPercentage = "(" + QLocale(QLocale::system()).toString(dzPercentage, 'f', nPrecision) + " %)";
-    sKabberryPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
+    sPrimeStonePercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
     
 }
 
@@ -273,7 +273,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     manager->get(QNetworkRequest(QUrl("https://api.coingecko.com/api/v3/coins/kabberry?localization=false")));
   
     // Percentage labels
-    ui->labelKabberryPercent->setText(sPercentage);
+    ui->labelPrimeStonePercent->setText(sPercentage);
     ui->labelzPSCPercent->setText(szPercentage);
 
     // Adjust bubble-help according to AutoMint settings
