@@ -20,10 +20,7 @@
 #include "primitives/transaction.h"
 #include "scheduler.h"
 #include "ui_interface.h"
-
-#ifdef ENABLE_WALLET
 #include "wallet.h"
-#endif // ENABLE_WALLET
 
 #ifdef WIN32
 #include <string.h>
@@ -89,6 +86,7 @@ static std::vector<ListenSocket> vhListenSocket;
 CAddrMan addrman;
 int nMaxConnections = 125;
 bool fAddressesInitialized = false;
+std::string strSubVersion;
 
 vector<CNode*> vNodes;
 CCriticalSection cs_vNodes;
@@ -487,7 +485,7 @@ void CNode::PushVersion()
     else
         LogPrint("net", "send version message: version %d, blocks=%d, us=%s, peer=%d\n", PROTOCOL_VERSION, nBestHeight, addrMe.ToString(), id);
     PushMessage("version", PROTOCOL_VERSION, nLocalServices, nTime, addrYou, addrMe,
-        nLocalHostNonce, FormatSubVersion(CLIENT_NAME, CLIENT_VERSION, std::vector<string>()), nBestHeight, true);
+        nLocalHostNonce, strSubVersion, nBestHeight, true);
 }
 
 
@@ -1559,7 +1557,6 @@ void ThreadMessageHandler()
     }
 }
 
-#ifdef ENABLE_WALLET
 // ppcoin: stake minter thread
 void static ThreadStakeMinter()
 {
@@ -1576,7 +1573,6 @@ void static ThreadStakeMinter()
     }
     LogPrintf("ThreadStakeMinter exiting,\n");
 }
-#endif // ENABLE_WALLET
 
 bool BindListenPort(const CService& addrBind, string& strError, bool fWhitelisted)
 {
@@ -1730,7 +1726,7 @@ void StartNode(boost::thread_group& threadGroup, CScheduler& scheduler)
     CNode::SetBannedSetDirty(false); //no need to write down just read or nonexistent data
     CNode::SweepBanned(); //sweap out unused entries
 
-    // Initialize random numbers. Even when rand() is only usable for trivial use-cases most nodes should have a different 
+    // Initialize random numbers. Even when rand() is only usable for trivial use-cases most nodes should have a different
     // seed after all the file-IO done at this point. Should be good enough even when nodes are started via scripts.
     srand(time(NULL));
 
@@ -1776,12 +1772,10 @@ void StartNode(boost::thread_group& threadGroup, CScheduler& scheduler)
     // Dump network addresses
     scheduler.scheduleEvery(&DumpData, DUMP_ADDRESSES_INTERVAL);
 
-    #ifdef ENABLE_WALLET
-	// ppcoin:mint proof-of-stake blocks in the background
-    if (GetBoolArg("-staking", true) && pwalletMain)
+    // ppcoin:mint proof-of-stake blocks in the background
+    if (GetBoolArg("-staking", true))
         threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
-#endif // ENABLE_WALLET
-	}
+}
 
 bool StopNode()
 {
