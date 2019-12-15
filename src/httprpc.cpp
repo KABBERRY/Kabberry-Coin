@@ -178,7 +178,7 @@ bool StartHTTPRPC()
 
     assert(EventBase());
     httpRPCTimerInterface = new HTTPRPCTimerInterface(EventBase());
-    RPCRegisterTimerInterface(httpRPCTimerInterface);
+    RPCUnsetTimerInterface(httpRPCTimerInterface);
     return true;
 }
 
