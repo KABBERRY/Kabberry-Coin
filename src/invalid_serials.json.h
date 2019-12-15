@@ -1,12 +1,12 @@
-// Copyright (c) 2018 The PrimeStoneX developers
-// Copyright (c) 2018 The PrimeStone developers
+// Copyright (c) 2018 The KabberryX developers
+// Copyright (c) 2018 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
 
-#ifndef PrimeStone_INVALID_SERIALS_JSON_H
-#define PrimeStone_INVALID_SERIALS_JSON_H
+#ifndef Kabberry_INVALID_SERIALS_JSON_H
+#define Kabberry_INVALID_SERIALS_JSON_H
 
 #include <string>
 
@@ -1190,4 +1190,4 @@ std::string LoadInvalidSerials()
     return str;
 }
 
-#endif //PrimeStone_INVALID_SERIALS_JSON_H
+#endif //Kabberry_INVALID_SERIALS_JSON_H

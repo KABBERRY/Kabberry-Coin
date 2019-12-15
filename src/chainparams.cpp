@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -130,15 +130,15 @@ public:
         pchMessageStart[3] = 0xe9;
         vAlertPubKey = ParseHex("04c2c3cca22211d722d46e91ec78de67e13ea86b03fffab53609b90ed641a0770772d1780e59b65b9f22de7ac704b3dd31f7182c1ddb537e4024af2676155814e1");
         nDefaultPort = 34124;
-        bnProofOfWorkLimit = ~uint256(0) >> 20; // PrimeStone starting difficulty is 1 / 2^12
+        bnProofOfWorkLimit = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 259000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 720;
         nRejectBlockOutdatedMajority = 912;
         nToCheckBlockUpgradeMajority = 960;
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 60; // PrimeStone: 1 day
-        nTargetSpacing = 1.5 * 60;  // PrimeStone: 1.5 minute
+        nTargetTimespan = 1 * 60; // Kabberry: 1 day
+        nTargetSpacing = 1.5 * 60;  // Kabberry: 1.5 minute
         nMaturity = 25;  //25 confirms
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 60000000 * COIN;
@@ -170,7 +170,7 @@ public:
          *     CTxOut(nValue=50.00000000, scriptPubKey=0xA9037BAC7050C479B121CF)
          *   vMerkleTree: e0028e
          */
-        const char* pszTimestamp = "PrimeStone Genesis Block: 2018/12/28 12:30:00";
+        const char* pszTimestamp = "Kabberry Genesis Block: 2018/12/28 12:30:00";
         CMutableTransaction txNew;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
@@ -190,8 +190,8 @@ public:
         assert(hashGenesisBlock == uint256("0x00000fe79c10addf7e023042d3ef98ce24d36262ae7c05c46c085c1ee14434d1"));
         assert(genesis.hashMerkleRoot == uint256("0x50c1eda15daf3fb9c6f0a08ab64906d302abc01d57300cf8194c4b2a544bec12"));
 
-        // vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "primestone.seed.fuzzbawls.pw"));     // Primary DNS Seeder from Fuzzbawls
-        // vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "primestone.seed2.fuzzbawls.pw"));    // Secondary DNS Seeder from Fuzzbawls
+        // vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "kabberry.seed.fuzzbawls.pw"));     // Primary DNS Seeder from Fuzzbawls
+        // vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "kabberry.seed2.fuzzbawls.pw"));    // Secondary DNS Seeder from Fuzzbawls
         // vSeeds.push_back(CDNSSeedData("coin-server.com", "coin-server.com"));         // Single node address
         // vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net")); // Single node address
         // vSeeds.push_back(CDNSSeedData("178.254.23.111", "178.254.23.111"));           // Single node address
@@ -269,8 +269,8 @@ public:
         nRejectBlockOutdatedMajority = 75;
         nToCheckBlockUpgradeMajority = 100;
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 60; // PrimeStone: 1 day
-        nTargetSpacing = 1 * 30;  // PrimeStone: 1 minute
+        nTargetTimespan = 1 * 60; // Kabberry: 1 day
+        nTargetSpacing = 1 * 30;  // Kabberry: 1 minute
         nLastPOWBlock = 200;
         nMaturity = 15;
         nMasternodeCountDrift = 4;
@@ -298,19 +298,19 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "primestone-testnet.seed.fuzzbawls.pw"));
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "primestone-testnet.seed2.fuzzbawls.pw"));
+        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "kabberry-testnet.seed.fuzzbawls.pw"));
+        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "kabberry-testnet.seed2.fuzzbawls.pw"));
         vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net"));
         vSeeds.push_back(CDNSSeedData("88.198.192.110", "88.198.192.110"));
 
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 90); // Testnet primestone addresses start with 'x' or 'y'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 199);  // Testnet primestone script addresses start with '8' or '9'
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 90); // Testnet kabberry addresses start with 'x' or 'y'
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 199);  // Testnet kabberry script addresses start with '8' or '9'
         base58Prefixes[SECRET_KEY] = std::vector<unsigned char>(1, 247);     // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
-        // Testnet primestone BIP32 pubkeys start with 'DRKV'
+        // Testnet kabberry BIP32 pubkeys start with 'DRKV'
         base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x3a)(0x80)(0x61)(0xa0).convert_to_container<std::vector<unsigned char> >();
-        // Testnet primestone BIP32 prvkeys start with 'DRKP'
+        // Testnet kabberry BIP32 prvkeys start with 'DRKP'
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x3a)(0x80)(0x58)(0x37).convert_to_container<std::vector<unsigned char> >();
-        // Testnet primestone BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet kabberry BIP44 coin type is '1' (All coin's testnet default)
         base58Prefixes[EXT_COIN_TYPE] = boost::assign::list_of(0x80)(0x00)(0x00)(0x01).convert_to_container<std::vector<unsigned char> >();
 
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
@@ -357,8 +357,8 @@ public:
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 1;
-        nTargetTimespan = 24 * 60 * 60; // PrimeStone: 1 day
-        nTargetSpacing = 1 * 60;        // PrimeStone: 1 minutes
+        nTargetTimespan = 24 * 60 * 60; // Kabberry: 1 day
+        nTargetSpacing = 1 * 60;        // Kabberry: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         genesis.nTime = 1536062402;
         genesis.nBits = 0x207fffff;

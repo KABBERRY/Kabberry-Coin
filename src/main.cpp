@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -53,7 +53,7 @@ using namespace std;
 using namespace libzerocoin;
 
 #if defined(NDEBUG)
-#error "PrimeStone cannot be compiled without assertions."
+#error "Kabberry cannot be compiled without assertions."
 #endif
 
 /**
@@ -2599,7 +2599,7 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
         const CTransaction& tx = block.vtx[i];
 
         /** UNDO ZEROCOIN DATABASING
-         * note we only undo zerocoin databasing in the following statement, value to and from PrimeStone
+         * note we only undo zerocoin databasing in the following statement, value to and from Kabberry
          * addresses should still be handled by the typical bitcoin based undo code
          * */
         if (tx.ContainsZerocoins()) {
@@ -2744,7 +2744,7 @@ static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck()
 {
-    RenameThread("primestone-scriptch");
+    RenameThread("kabberry-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -2811,7 +2811,7 @@ void RecalculatezPSCSpent()
     }
 }
 
-bool RecalculatePrimeStoneSupply(int nHeightStart)
+bool RecalculateKabberrySupply(int nHeightStart)
 {
     if (nHeightStart > chainActive.Height())
         return false;
@@ -2883,7 +2883,7 @@ bool RecalculatePrimeStoneSupply(int nHeightStart)
 
 bool ReindexAccumulators(list<uint256>& listMissingCheckpoints, string& strError)
 {
-    // PrimeStone: recalculate Accumulator Checkpoints that failed to database properly
+    // Kabberry: recalculate Accumulator Checkpoints that failed to database properly
     if (!listMissingCheckpoints.empty()) {
         uiInterface.ShowProgress(_("Calculating missing accumulators..."), 0);
         LogPrintf("%s : finding missing checkpoints\n", __func__);
@@ -3190,7 +3190,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (pindex->nHeight == Params().Zerocoin_Block_RecalculateAccumulators() + 1) {
         RecalculatezPSCMinted();
         RecalculatezPSCSpent();
-        RecalculatePrimeStoneSupply(Params().Zerocoin_StartHeight());
+        RecalculateKabberrySupply(Params().Zerocoin_StartHeight());
     }
 
     //Track zPSC money supply in the block index
@@ -3405,7 +3405,7 @@ void static UpdateTip(CBlockIndex* pindexNew)
     chainActive.SetTip(pindexNew);
 
 	#ifdef ENABLE_WALLET
-    // If turned on AutoZeromint will automatically convert PrimeStone to zPSC
+    // If turned on AutoZeromint will automatically convert Kabberry to zPSC
     if (pwalletMain && pwalletMain->isZeromintEnabled())
         pwalletMain->AutoZeromint();
 	#endif // ENABLE_WALLET
@@ -4250,7 +4250,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 nHeight = (*mi).second->nHeight + 1;
         }
 
-        // PrimeStone
+        // Kabberry
         // It is entierly possible that we don't have enough data and this could fail
         // (i.e. the block could indeed be valid). Store the block for later consideration
         // but issue an initial reject message.
@@ -5932,7 +5932,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return false;
         }
 
-        // PrimeStone: We use certain sporks during IBD, so check to see if they are
+        // Kabberry: We use certain sporks during IBD, so check to see if they are
         // available. If not, ask the first peer connected for them.
         bool fMissingSporks = !pSporkDB->SporkExists(SPORK_14_NEW_PROTOCOL_ENFORCEMENT) &&
                               !pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&

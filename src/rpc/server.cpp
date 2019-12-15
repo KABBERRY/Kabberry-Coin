@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -263,11 +263,11 @@ UniValue stop(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 1)
         throw runtime_error(
             "stop\n"
-            "\nStop PrimeStone server.");
+            "\nStop Kabberry server.");
     // Event loop will exit after current HTTP requests have been handled, so
     // this reply will get back to the client.
     StartShutdown();
-    return "PrimeStone server stopping";
+    return "Kabberry server stopping";
 }
 
 
@@ -351,37 +351,37 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "reconsiderblock", &reconsiderblock, true, true, false},
         {"hidden", "setmocktime", &setmocktime, true, false, false},
 
-        /* PrimeStone features */
-        {"primestone", "masternode", &masternode, true, true, false},
-        {"primestone", "listmasternodes", &listmasternodes, true, true, false},
-        {"primestone", "getmasternodecount", &getmasternodecount, true, true, false},
-        {"primestone", "masternodeconnect", &masternodeconnect, true, true, false},
-        {"primestone", "createmasternodebroadcast", &createmasternodebroadcast, true, true, false},
-        {"primestone", "decodemasternodebroadcast", &decodemasternodebroadcast, true, true, false},
-        {"primestone", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
-        {"primestone", "masternodecurrent", &masternodecurrent, true, true, false},
-        {"primestone", "masternodedebug", &masternodedebug, true, true, false},
-        {"primestone", "startmasternode", &startmasternode, true, true, false},
-        {"primestone", "createmasternodekey", &createmasternodekey, true, true, false},
-        {"primestone", "getmasternodeoutputs", &getmasternodeoutputs, true, true, false},
-        {"primestone", "listmasternodeconf", &listmasternodeconf, true, true, false},
-        {"primestone", "getmasternodestatus", &getmasternodestatus, true, true, false},
-        {"primestone", "getmasternodewinners", &getmasternodewinners, true, true, false},
-        {"primestone", "getmasternodescores", &getmasternodescores, true, true, false},
-        {"primestone", "mnbudget", &mnbudget, true, true, false},
-        {"primestone", "preparebudget", &preparebudget, true, true, false},
-        {"primestone", "submitbudget", &submitbudget, true, true, false},
-        {"primestone", "mnbudgetvote", &mnbudgetvote, true, true, false},
-        {"primestone", "getbudgetvotes", &getbudgetvotes, true, true, false},
-        {"primestone", "getnextsuperblock", &getnextsuperblock, true, true, false},
-        {"primestone", "getbudgetprojection", &getbudgetprojection, true, true, false},
-        {"primestone", "getbudgetinfo", &getbudgetinfo, true, true, false},
-        {"primestone", "mnbudgetrawvote", &mnbudgetrawvote, true, true, false},
-        {"primestone", "mnfinalbudget", &mnfinalbudget, true, true, false},
-        {"primestone", "checkbudgets", &checkbudgets, true, true, false},
-        {"primestone", "mnsync", &mnsync, true, true, false},
-        {"primestone", "spork", &spork, true, true, false},
-        {"primestone", "getpoolinfo", &getpoolinfo, true, true, false},
+        /* Kabberry features */
+        {"kabberry", "masternode", &masternode, true, true, false},
+        {"kabberry", "listmasternodes", &listmasternodes, true, true, false},
+        {"kabberry", "getmasternodecount", &getmasternodecount, true, true, false},
+        {"kabberry", "masternodeconnect", &masternodeconnect, true, true, false},
+        {"kabberry", "createmasternodebroadcast", &createmasternodebroadcast, true, true, false},
+        {"kabberry", "decodemasternodebroadcast", &decodemasternodebroadcast, true, true, false},
+        {"kabberry", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
+        {"kabberry", "masternodecurrent", &masternodecurrent, true, true, false},
+        {"kabberry", "masternodedebug", &masternodedebug, true, true, false},
+        {"kabberry", "startmasternode", &startmasternode, true, true, false},
+        {"kabberry", "createmasternodekey", &createmasternodekey, true, true, false},
+        {"kabberry", "getmasternodeoutputs", &getmasternodeoutputs, true, true, false},
+        {"kabberry", "listmasternodeconf", &listmasternodeconf, true, true, false},
+        {"kabberry", "getmasternodestatus", &getmasternodestatus, true, true, false},
+        {"kabberry", "getmasternodewinners", &getmasternodewinners, true, true, false},
+        {"kabberry", "getmasternodescores", &getmasternodescores, true, true, false},
+        {"kabberry", "mnbudget", &mnbudget, true, true, false},
+        {"kabberry", "preparebudget", &preparebudget, true, true, false},
+        {"kabberry", "submitbudget", &submitbudget, true, true, false},
+        {"kabberry", "mnbudgetvote", &mnbudgetvote, true, true, false},
+        {"kabberry", "getbudgetvotes", &getbudgetvotes, true, true, false},
+        {"kabberry", "getnextsuperblock", &getnextsuperblock, true, true, false},
+        {"kabberry", "getbudgetprojection", &getbudgetprojection, true, true, false},
+        {"kabberry", "getbudgetinfo", &getbudgetinfo, true, true, false},
+        {"kabberry", "mnbudgetrawvote", &mnbudgetrawvote, true, true, false},
+        {"kabberry", "mnfinalbudget", &mnfinalbudget, true, true, false},
+        {"kabberry", "checkbudgets", &checkbudgets, true, true, false},
+        {"kabberry", "mnsync", &mnsync, true, true, false},
+        {"kabberry", "spork", &spork, true, true, false},
+        {"kabberry", "getpoolinfo", &getpoolinfo, true, true, false},
 
 #ifdef ENABLE_WALLET
         /* Wallet */
@@ -614,7 +614,7 @@ std::vector<std::string> CRPCTable::listCommands() const
 
 std::string HelpExampleCli(string methodname, string args)
 {
-    return "> primestone-cli " + methodname + " " + args + "\n";
+    return "> kabberry-cli " + methodname + " " + args + "\n";
 }
 
 std::string HelpExampleRpc(string methodname, string args)

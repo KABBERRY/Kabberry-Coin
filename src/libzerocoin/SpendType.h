@@ -1,10 +1,10 @@
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PrimeStone_SPENDTYPE_H
-#define PrimeStone_SPENDTYPE_H
+#ifndef Kabberry_SPENDTYPE_H
+#define Kabberry_SPENDTYPE_H
 
 #include <cstdint>
 
@@ -17,4 +17,4 @@ namespace libzerocoin {
     };
 }
 
-#endif //PrimeStone_SPENDTYPE_H
+#endif //Kabberry_SPENDTYPE_H
