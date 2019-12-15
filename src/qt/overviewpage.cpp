@@ -325,7 +325,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelzBalanceImmature->setVisible(showzPSCImmature);
     ui->labelzBalanceImmatureText->setVisible(showzPSCImmature);
     bool showPercentages = false;//! (zerocoinBalance == 0 && nTotalBalance == 0);
-    ui->labelKabberryPercent->setVisible(showPercentages);
+    ui->labelPrimeStonePercent->setVisible(showPercentages);
     ui->labelzPSCPercent->setVisible(showPercentages);
 
 
