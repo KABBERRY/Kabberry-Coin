@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2016 The Dash developers
 // Copyright (c) 2016-2018 The PIVX developers
-// Copyright (c) 2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -345,7 +345,7 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::SendToSelf:
         return tr("Payment to yourself");
     case TransactionRecord::StakeMint:
-        return tr("PrimeStone Stake");
+        return tr("Kabberry Stake");
     case TransactionRecord::StakezPSC:
         return tr("zPSC Stake");
     case TransactionRecord::Generated:
@@ -361,15 +361,15 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::Obfuscated:
         return tr("Obfuscated");
     case TransactionRecord::ZerocoinMint:
-        return tr("Converted PrimeStone to zPSC");
+        return tr("Converted Kabberry to zPSC");
     case TransactionRecord::ZerocoinSpend:
         return tr("Spent zPSC");
     case TransactionRecord::RecvFromZerocoinSpend:
-        return tr("Received PrimeStone from zPSC");
+        return tr("Received Kabberry from zPSC");
     case TransactionRecord::ZerocoinSpend_Change_zPSC:
         return tr("Minted Change as zPSC from zPSC Spend");
     case TransactionRecord::ZerocoinSpend_FromMe:
-        return tr("Converted zPSC to PrimeStone");
+        return tr("Converted zPSC to Kabberry");
 
     default:
         return QString();

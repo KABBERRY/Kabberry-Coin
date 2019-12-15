@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -102,7 +102,7 @@ TransactionView::TransactionView(QWidget* parent) : QWidget(parent), model(0), t
     typeWidget->addItem(tr("Mined"), TransactionFilterProxy::TYPE(TransactionRecord::Generated));
     typeWidget->addItem(tr("Minted"), TransactionFilterProxy::TYPE(TransactionRecord::StakeMint) | TransactionFilterProxy::TYPE(TransactionRecord::StakezPSC));
     typeWidget->addItem(tr("Masternode Reward"), TransactionFilterProxy::TYPE(TransactionRecord::MNReward));
-    typeWidget->addItem(tr("Received PrimeStone from zPSC"), TransactionFilterProxy::TYPE(TransactionRecord::RecvFromZerocoinSpend));
+    typeWidget->addItem(tr("Received Kabberry from zPSC"), TransactionFilterProxy::TYPE(TransactionRecord::RecvFromZerocoinSpend));
     typeWidget->addItem(tr("Zerocoin Mint"), TransactionFilterProxy::TYPE(TransactionRecord::ZerocoinMint));
     typeWidget->addItem(tr("Zerocoin Spend"), TransactionFilterProxy::TYPE(TransactionRecord::ZerocoinSpend));
     typeWidget->addItem(tr("Zerocoin Spend, Change in zPSC"), TransactionFilterProxy::TYPE(TransactionRecord::ZerocoinSpend_Change_zPSC));

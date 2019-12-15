@@ -1,10 +1,10 @@
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PrimeStone_ACCUMULATORCHECKPOINTS_H
-#define PrimeStone_ACCUMULATORCHECKPOINTS_H
+#ifndef Kabberry_ACCUMULATORCHECKPOINTS_H
+#define Kabberry_ACCUMULATORCHECKPOINTS_H
 
 #include <libzerocoin/bignum.h>
 #include <univalue/include/univalue.h>
@@ -19,4 +19,4 @@ namespace AccumulatorCheckpoints
     Checkpoint GetClosestCheckpoint(const int& nHeight, int& nHeightCheckpoint);
 }
 
-#endif //PrimeStone_ACCUMULATORCHECKPOINTS_H
+#endif //Kabberry_ACCUMULATORCHECKPOINTS_H

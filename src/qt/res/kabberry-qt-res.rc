@@ -19,14 +19,14 @@ BEGIN
     BEGIN
         BLOCK "040904E4" // U.S. English - multilingual (hex)
         BEGIN
-            VALUE "CompanyName",        "PrimeStone"
-            VALUE "FileDescription",    "PrimeStone (OSS GUI client for PrimeStone)"
+            VALUE "CompanyName",        "Kabberry"
+            VALUE "FileDescription",    "Kabberry (OSS GUI client for Kabberry)"
             VALUE "FileVersion",        VER_FILEVERSION_STR
-            VALUE "InternalName",       "primestone-qt"
+            VALUE "InternalName",       "kabberry-qt"
             VALUE "LegalCopyright",     COPYRIGHT_STR
             VALUE "LegalTrademarks1",   "Distributed under the MIT/X11 software license, see the accompanying file COPYING or http://www.opensource.org/licenses/mit-license.php."
-            VALUE "OriginalFilename",   "primestone-qt.exe"
-            VALUE "ProductName",        "PrimeStone"
+            VALUE "OriginalFilename",   "kabberry-qt.exe"
+            VALUE "ProductName",        "Kabberry"
             VALUE "ProductVersion",     VER_PRODUCTVERSION_STR
         END
     END

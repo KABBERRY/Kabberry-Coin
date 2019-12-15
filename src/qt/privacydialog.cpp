@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The PrimeStone developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -59,22 +59,22 @@ void PrivacyDialog::setModel(WalletModel* walletModel)
 
 void PrivacyDialog::on_officialWebsiteButton_clicked()
 {
-    QString link = "https://primestone.global/";
+    QString link = "https://kabberry.global/";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_mnVPSButton_clicked()
 {
-    QString link = "https://primestone.global/wp-content/uploads/2019/02/MasterNode_VPS.pdf";
+    QString link = "https://kabberry.global/wp-content/uploads/2019/02/MasterNode_VPS.pdf";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_mnWindowsButton_clicked()
 {
-    QString link = "https://primestone.global/wp-content/uploads/2019/02/MasterNode_WIN.pdf";
+    QString link = "https://kabberry.global/wp-content/uploads/2019/02/MasterNode_WIN.pdf";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_coinmarketcapButton_clicked()
 {
-    QString link = "https://coinmarketcap.com/currencies/primestone";
+    QString link = "https://coinmarketcap.com/currencies/kabberry";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_DiscordButton_clicked()
@@ -84,7 +84,7 @@ void PrivacyDialog::on_DiscordButton_clicked()
 }
 void PrivacyDialog::on_GithubButton_clicked()
 {
-    QString link = "https://github.com/Primestonecoin";
+    QString link = "https://github.com/Kabberrycoin";
     QDesktopServices::openUrl(QUrl(link));
 }
 
