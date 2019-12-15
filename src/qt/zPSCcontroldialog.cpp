@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -43,15 +43,6 @@ void zPSCControlDialog::setModel(WalletModel *model)
     updateList();
 }
 
-// helper function str_pad
-QString zPSCControlDialog::strPad(QString s, int nPadLength, QString sPadding)
-{
-    while (s.length() < nPadLength)
-        s = sPadding + s;
-
-    return s;
-}
-
 //Update the tree widget
 void zPSCControlDialog::updateList()
 {
@@ -70,7 +61,7 @@ void zPSCControlDialog::updateList()
         mapDenomPosition[denom] = ui->treeWidget->indexOfTopLevelItem(itemDenom);
 
         itemDenom->setFlags(flgTristate);
-        itemDenom->setText(COLUMN_DENOMINATION, strPad(QString::number(denom), 5, " "));
+        itemDenom->setText(COLUMN_DENOMINATION, QString::number(denom));
     }
 
     // select all unused coins - including not mature. Update status of coins too.
@@ -94,9 +85,9 @@ void zPSCControlDialog::updateList()
         else
             itemMint->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
 
-        itemMint->setText(COLUMN_DENOMINATION, strPad(QString::number(mint.denom), 5, " "));
+        itemMint->setText(COLUMN_DENOMINATION, QString::number(mint.denom));
         itemMint->setText(COLUMN_PUBCOIN, QString::fromStdString(strPubCoinHash));
-        itemMint->setText(COLUMN_VERSION, strPad(QString::number(mint.nVersion), 3, " "));
+        itemMint->setText(COLUMN_VERSION, QString::number(mint.nVersion));
 
         int nConfirmations = (mint.nHeight ? nBestHeight - mint.nHeight : 0);
         if (nConfirmations < 0) {
@@ -104,7 +95,7 @@ void zPSCControlDialog::updateList()
             nConfirmations = 0;
         }
 
-        itemMint->setText(COLUMN_CONFIRMATIONS, strPad(QString::number(nConfirmations), 15, " "));
+        itemMint->setText(COLUMN_CONFIRMATIONS, QString::number(nConfirmations));
 
         // check for maturity
         bool isMature = false;

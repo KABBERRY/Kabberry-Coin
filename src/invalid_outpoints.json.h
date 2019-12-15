@@ -1,10 +1,10 @@
-// Copyright (c) 2018 The KabberryX developers
-// Copyright (c) 2018 The Kabberry developers
+// Copyright (c) 2018 The PrimeStoneX developers
+// Copyright (c) 2018 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef Kabberry_INVALID_OUTPOINTS_JSON_H
-#define Kabberry_INVALID_OUTPOINTS_JSON_H
+#ifndef PrimeStone_INVALID_OUTPOINTS_JSON_H
+#define PrimeStone_INVALID_OUTPOINTS_JSON_H
 #include <string>
 
 std::string LoadInvalidOutPoints()
@@ -6794,4 +6794,4 @@ std::string LoadInvalidOutPoints()
     return str;
 }
 
-#endif //Kabberry_INVALID_OUTPOINTS_JSON_H
+#endif //PrimeStone_INVALID_OUTPOINTS_JSON_H

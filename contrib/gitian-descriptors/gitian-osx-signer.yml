@@ -1,5 +1,5 @@
 ---
-name: "kabberry-dmg-signer"
+name: "primestone-dmg-signer"
 suites:
 - "trusty"
 architectures:
@@ -7,10 +7,10 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/kabberry-project/kabberry-detached-sigs.git"
+- "url": "https://github.com/primestone-project/primestone-detached-sigs.git"
   "dir": "signature"
 files:
-- "kabberry-osx-unsigned.tar.gz"
+- "primestone-osx-unsigned.tar.gz"
 script: |
   WRAP_DIR=$HOME/wrapped
   mkdir -p ${WRAP_DIR}
@@ -27,11 +27,11 @@ script: |
     chmod +x ${WRAP_DIR}/${prog}
   done
 
-  UNSIGNED=kabberry-osx-unsigned.tar.gz
-  SIGNED=kabberry-osx-signed.dmg
+  UNSIGNED=primestone-osx-unsigned.tar.gz
+  SIGNED=primestone-osx-signed.dmg
 
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"
   ./detached-sig-apply.sh ${UNSIGNED} signature/osx
-  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "Kabberry-Qt" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
+  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "PrimeStone-Qt" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
   ${WRAP_DIR}/dmg dmg uncompressed.dmg ${OUTDIR}/${SIGNED}

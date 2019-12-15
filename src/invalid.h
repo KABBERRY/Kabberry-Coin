@@ -1,12 +1,12 @@
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef Kabberry_INVALID_H
-#define Kabberry_INVALID_H
+#ifndef PrimeStone_INVALID_H
+#define PrimeStone_INVALID_H
 
-#endif //Kabberry_INVALID_H
+#endif //PrimeStone_INVALID_H
 
 #include <libzerocoin/bignum.h>
 #include <univalue/include/univalue.h>

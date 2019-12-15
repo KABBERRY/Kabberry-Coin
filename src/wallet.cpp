@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -254,13 +254,23 @@ bool CWallet::LoadMultiSig(const CScript& dest)
 
 bool CWallet::Unlock(const SecureString& strWalletPassphrase, bool anonymizeOnly)
 {
+    SecureString strWalletPassphraseFinal;
+
+    if (!IsLocked()) {
+        fWalletUnlockAnonymizeOnly = anonymizeOnly;
+        return true;
+    }
+
+    strWalletPassphraseFinal = strWalletPassphrase;
+
+
     CCrypter crypter;
     CKeyingMaterial vMasterKey;
 
     {
         LOCK(cs_wallet);
         BOOST_FOREACH (const MasterKeyMap::value_type& pMasterKey, mapMasterKeys) {
-            if (!crypter.SetKeyFromPassphrase(strWalletPassphrase, pMasterKey.second.vchSalt, pMasterKey.second.nDeriveIterations, pMasterKey.second.nDerivationMethod))
+            if (!crypter.SetKeyFromPassphrase(strWalletPassphraseFinal, pMasterKey.second.vchSalt, pMasterKey.second.nDeriveIterations, pMasterKey.second.nDerivationMethod))
                 return false;
             if (!crypter.Decrypt(pMasterKey.second.vchCryptedKey, vMasterKey))
                 continue; // try another master key
@@ -748,6 +758,7 @@ void CWallet::EraseFromWallet(const uint256& hash)
     return;
 }
 
+
 isminetype CWallet::IsMine(const CTxIn& txin) const
 {
     {
@@ -760,27 +771,6 @@ isminetype CWallet::IsMine(const CTxIn& txin) const
         }
     }
     return ISMINE_NO;
-}
-
-bool CWallet::IsUsed(const CBitcoinAddress address) const
-{
-    LOCK(cs_wallet);
-    CScript scriptPubKey = GetScriptForDestination(address.Get());
-    if (!::IsMine(*this, scriptPubKey)) {
-        return false;
-    }
-
-    for (map<uint256, CWalletTx>::const_iterator it = mapWallet.begin(); it != mapWallet.end(); ++it) {
-        const CWalletTx& wtx = (*it).second;
-        if (wtx.IsCoinBase()) {
-            continue;
-        }
-        for (const CTxOut& txout : wtx.vout) {
-            if (txout.scriptPubKey == scriptPubKey)
-                return true;
-        }
-    }
-    return false;
 }
 
 bool CWallet::IsMyZerocoinSpend(const CBigNum& bnSerial) const
@@ -1092,7 +1082,7 @@ CAmount CWalletTx::GetAvailableCredit(bool fUseCache) const
         }
     }
 
-    nAvailableCreditCached = nCredit;
+    nAvailableCreditCached = nCredit - GetLockedCredit();
     fAvailableCreditCached = true;
     return nCredit;
 }
@@ -1116,7 +1106,7 @@ CAmount CWalletTx::GetAnonymizableCredit(bool fUseCache) const
         const CTxIn vin = CTxIn(hashTx, i);
 
         if (pwallet->IsSpent(hashTx, i) || pwallet->IsLockedCoin(hashTx, i)) continue;
-        if (fMasterNode && vout[i].nValue == 10000 * COIN) continue; // do not count MN-like outputs
+        if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) continue; // do not count MN-like outputs
 
         const int rounds = pwallet->GetInputObfuscationRounds(vin);
         if (rounds >= -2 && rounds < nZeromintPercentage) {
@@ -1180,7 +1170,7 @@ CAmount CWalletTx::GetUnlockedCredit() const
         const CTxOut& txout = vout[i];
 
         if (pwallet->IsSpent(hashTx, i) || pwallet->IsLockedCoin(hashTx, i)) continue;
-        if (fMasterNode && vout[i].nValue == 10000 * COIN) continue; // do not count MN-like outputs
+        if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) continue; // do not count MN-like outputs
 
         nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         if (!MoneyRange(nCredit))
@@ -1214,7 +1204,7 @@ CAmount CWalletTx::GetLockedCredit() const
         }
 
         // Add masternode collaterals which are handled like locked coins
-        else if (fMasterNode && vout[i].nValue == 10000 * COIN) {
+        else if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) {
             nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         }
 
@@ -1333,7 +1323,7 @@ CAmount CWalletTx::GetLockedWatchOnlyCredit() const
         }
 
         // Add masternode collaterals which are handled like locked coins
-        else if (fMasterNode && vout[i].nValue == 10000 * COIN) {
+        else if (fMasterNode && vout[i].nValue == Params().MasternodeCollateral()) {
             nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
         }
 
@@ -1966,13 +1956,13 @@ void CWallet::AvailableCoins(vector<COutput>& vCoins, bool fOnlyConfirmed, const
                 if (nCoinType == ONLY_DENOMINATED) {
                     found = IsDenominatedAmount(pcoin->vout[i].nValue);
                 } else if (nCoinType == ONLY_NOT10000IFMN) {
-                    found = !(fMasterNode && pcoin->vout[i].nValue == 10000 * COIN);
+                    found = !(fMasterNode && pcoin->vout[i].nValue == Params().MasternodeCollateral());
                 } else if (nCoinType == ONLY_NONDENOMINATED_NOT10000IFMN) {
                     if (IsCollateralAmount(pcoin->vout[i].nValue)) continue; // do not use collateral amounts
                     found = !IsDenominatedAmount(pcoin->vout[i].nValue);
-                    if (found && fMasterNode) found = pcoin->vout[i].nValue != 10000 * COIN; // do not use Hot MN funds
+                    if (found && fMasterNode) found = pcoin->vout[i].nValue != Params().MasternodeCollateral(); // do not use Hot MN funds
                 } else if (nCoinType == ONLY_10000) {
-                    found = pcoin->vout[i].nValue == 10000 * COIN;
+                    found = pcoin->vout[i].nValue == Params().MasternodeCollateral();
                 } else {
                     found = true;
                 }
@@ -2094,11 +2084,11 @@ bool less_then_denom(const COutput& out1, const COutput& out2)
 bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInputs, CAmount nTargetAmount)
 {
     LOCK(cs_main);
-    //Add Kabberry
+    //Add PrimeStone
     vector<COutput> vCoins;
     AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS);
     CAmount nAmountSelected = 0;
-    if (GetBoolArg("-kabberrystake", true)) {
+    if (GetBoolArg("-primestonestake", true)) {
         for (const COutput &out : vCoins) {
             //make sure not to outrun target amount
             if (nAmountSelected + out.tx->vout[out.i].nValue > nTargetAmount)
@@ -2120,10 +2110,14 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
             if (out.nDepth < (out.tx->IsCoinStake() ? Params().COINBASE_MATURITY() : 10))
                 continue;
 
+            if (fMasterNode && out.tx->vout[out.i].nValue == Params().MasternodeCollateral()) {
+                continue;
+            }
+            
             //add to our stake set
             nAmountSelected += out.tx->vout[out.i].nValue;
 
-            std::unique_ptr<CKabberryStake> input(new CKabberryStake());
+            std::unique_ptr<CPrimeStoneStake> input(new CPrimeStoneStake());
             input->SetInput((CTransaction) *out.tx, out.i);
             listInputs.emplace_back(std::move(input));
         }
@@ -2168,7 +2162,7 @@ bool CWallet::MintableCoins()
     CAmount nBalance = GetBalance();
     CAmount nzPSCBalance = GetZerocoinBalance(false);
 
-    // Regular Kabberry
+    // Regular PrimeStone
     if (nBalance > 0) {
         if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
             return error("%s : invalid reserve balance amount", __func__);
@@ -2339,13 +2333,13 @@ bool CWallet::SelectCoins(const CAmount& nTargetValue, set<pair<const CWalletTx*
         return (nValueRet >= nTargetValue);
     }
 
-    //if we're doing only denominated, we need to round up to the nearest .1 Kabberry
+    //if we're doing only denominated, we need to round up to the nearest .1 PrimeStone
     if (coin_type == ONLY_DENOMINATED) {
         // Make outputs by looping through denominations, from large to small
         BOOST_FOREACH (CAmount v, obfuScationDenominations) {
             BOOST_FOREACH (const COutput& out, vCoins) {
                 if (out.tx->vout[out.i].nValue == v                                               //make sure it's the denom we're looking for
-                    && nValueRet + out.tx->vout[out.i].nValue < nTargetValue + (0.1 * COIN) + 100 //round the amount up to .1 Kabberry over
+                    && nValueRet + out.tx->vout[out.i].nValue < nTargetValue + (0.1 * COIN) + 100 //round the amount up to .1 PrimeStone over
                     ) {
                     CTxIn vin = CTxIn(out.tx->GetHash(), out.i);
                     int rounds = GetInputObfuscationRounds(vin);
@@ -2407,12 +2401,12 @@ bool CWallet::SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount 
 
             // Function returns as follows:
             //
-            // bit 0 - 10000 Kabberry+1 ( bit on if present )
-            // bit 1 - 1000 Kabberry+1
-            // bit 2 - 100 Kabberry+1
-            // bit 3 - 10 Kabberry+1
-            // bit 4 - 1 Kabberry+1
-            // bit 5 - .1 Kabberry+1
+            // bit 0 - 10000 PrimeStone+1 ( bit on if present )
+            // bit 1 - 1000 PrimeStone+1
+            // bit 2 - 100 PrimeStone+1
+            // bit 3 - 10 PrimeStone+1
+            // bit 4 - 1 PrimeStone+1
+            // bit 5 - .1 PrimeStone+1
 
             CTxIn vin = CTxIn(out.tx->GetHash(), out.i);
 
@@ -2497,7 +2491,7 @@ bool CWallet::SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<
         if (out.tx->vout[out.i].nValue < CENT) continue;
         //do not allow collaterals to be selected
         if (IsCollateralAmount(out.tx->vout[out.i].nValue)) continue;
-        if (fMasterNode && out.tx->vout[out.i].nValue == 10000 * COIN) continue; //masternode input
+        if (fMasterNode && out.tx->vout[out.i].nValue == Params().MasternodeCollateral()) continue; //masternode input
 
         if (nValueRet + out.tx->vout[out.i].nValue <= nValueMax) {
             CTxIn vin = CTxIn(out.tx->GetHash(), out.i);
@@ -2652,7 +2646,7 @@ bool CWallet::GetBudgetSystemCollateralTX(CWalletTx& tx, uint256 hash, bool useI
     CAmount nFeeRet = 0;
     std::string strFail = "";
     vector<pair<CScript, CAmount> > vecSend;
-    vecSend.push_back(make_pair(scriptChange, BUDGET_FEE_TX_OLD)); // Old 50 Kabberry collateral
+    vecSend.push_back(make_pair(scriptChange, BUDGET_FEE_TX_OLD)); // Old 50 PrimeStone collateral
 
     CCoinControl* coinControl = NULL;
     bool success = CreateTransaction(vecSend, tx, reservekey, nFeeRet, strFail, coinControl, ALL_COINS, useIX, (CAmount)0);
@@ -2675,7 +2669,7 @@ bool CWallet::GetBudgetFinalizationCollateralTX(CWalletTx& tx, uint256 hash, boo
     CAmount nFeeRet = 0;
     std::string strFail = "";
     vector<pair<CScript, CAmount> > vecSend;
-    vecSend.push_back(make_pair(scriptChange, BUDGET_FEE_TX)); // New 5 Kabberry collateral
+    vecSend.push_back(make_pair(scriptChange, BUDGET_FEE_TX)); // New 5 PrimeStone collateral
 
     CCoinControl* coinControl = NULL;
     bool success = CreateTransaction(vecSend, tx, reservekey, nFeeRet, strFail, coinControl, ALL_COINS, useIX, (CAmount)0);
@@ -2783,9 +2777,9 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
                     if (coin_type == ALL_COINS) {
                         strFailReason = _("Insufficient funds.");
                     } else if (coin_type == ONLY_NOT10000IFMN) {
-                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 10000 Kabberry.");
+                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 10000 PrimeStone.");
                     } else if (coin_type == ONLY_NONDENOMINATED_NOT10000IFMN) {
-                        strFailReason = _("Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 Kabberry.");
+                        strFailReason = _("Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 PrimeStone.");
                     } else {
                         strFailReason = _("Unable to locate enough Obfuscation denominated funds for this transaction.");
                         strFailReason += " " + _("Obfuscation uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.");
@@ -2823,7 +2817,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
                 if (nChange > 0) {
                     // Fill a vout to ourself
                     // TODO: pass in scriptChange instead of reservekey so
-                    // change transaction isn't always pay-to-kabberry-address
+                    // change transaction isn't always pay-to-primestone-address
                     CScript scriptChange;
                     bool combineChange = false;
 
@@ -2978,11 +2972,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (GetAdjustedTime() - chainActive.Tip()->GetBlockTime() < 60)
         MilliSleep(10000);
 
-    CAmount nCredit;
+    CAmount nCredit = 0;
     CScript scriptPubKeyKernel;
     bool fKernelFound = false;
     for (std::unique_ptr<CStakeInput>& stakeInput : listInputs) {
-        nCredit = 0;
         // Make sure the wallet is unlocked and shutdown hasn't been requested
         if (IsLocked() || ShutdownRequested())
             return false;
@@ -3049,6 +3042,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 LogPrintf("%s : failed to create TxIn\n", __func__);
                 txNew.vin.clear();
                 txNew.vout.clear();
+                nCredit = 0;
                 continue;
             }
             txNew.vin.emplace_back(in);
@@ -3069,7 +3063,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (!fKernelFound)
         return false;
 
-    // Sign for Kabberry
+    // Sign for PrimeStone
     int nIn = 0;
     if (!txNew.vin[0].scriptSig.IsZerocoinSpend()) {
         for (CTxIn txIn : txNew.vin) {
@@ -4010,7 +4004,7 @@ void CWallet::AutoZeromint()
     CAmount nMintAmount = 0;
     CAmount nToMintAmount = 0;
 
-    // zPSC are integers > 0, so we can't mint 10% of 9 Kabberry
+    // zPSC are integers > 0, so we can't mint 10% of 9 PrimeStone
     if (nBalance < 10){
         LogPrint("zero", "CWallet::AutoZeromint(): available balance (%ld) too small for minting zPSC\n", nBalance);
         return;
@@ -4035,7 +4029,7 @@ void CWallet::AutoZeromint()
     // Use the biggest denomination smaller than the needed zPSC We'll only mint exact denomination to make minting faster.
     // Exception: for big amounts use 6666 (6666 = 1*5000 + 1*1000 + 1*500 + 1*100 + 1*50 + 1*10 + 1*5 + 1) to create all
     // possible denominations to avoid having 5000 denominations only.
-    // If a preferred denomination is used (means nPreferredDenom != 0) do nothing until we have enough Kabberry to mint this denomination
+    // If a preferred denomination is used (means nPreferredDenom != 0) do nothing until we have enough PrimeStone to mint this denomination
 
     if (nPreferredDenom > 0){
         if (nToMintAmount >= nPreferredDenom)
@@ -4553,7 +4547,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
     }
 
     //any change that is less than 0.0100000 will be ignored and given as an extra fee
-    //also assume that a zerocoinspend that is minting the change will not have any change that goes to Kabberry
+    //also assume that a zerocoinspend that is minting the change will not have any change that goes to PrimeStone
     CAmount nChange = nValueIn - nTotalValue; // Fee already accounted for in nTotalValue
     if (nChange > 1 * CENT && !isZCSpendChange) {
         // Fill a vout to ourself using the largest contributing address
@@ -4567,7 +4561,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
             reservekey->ReturnKey();
     }
 
-    // Sign if these are kabberry outputs - NOTE that zPSC outputs are signed later in SoK
+    // Sign if these are primestone outputs - NOTE that zPSC outputs are signed later in SoK
     if (!isZCSpendChange) {
         int nIn = 0;
         for (const std::pair<const CWalletTx*, unsigned int>& coin : setCoins) {
@@ -4656,7 +4650,7 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
         serializedCoinSpend << spend;
         std::vector<unsigned char> data(serializedCoinSpend.begin(), serializedCoinSpend.end());
 
-        //Add the coin spend into a Kabberry transaction
+        //Add the coin spend into a PrimeStone transaction
         newTxIn.scriptSig = CScript() << OP_ZEROCOINSPEND << data.size();
         newTxIn.scriptSig.insert(newTxIn.scriptSig.end(), data.begin(), data.end());
         newTxIn.prevout.SetNull();
@@ -4888,7 +4882,7 @@ bool CWallet::CreateZerocoinSpendTransaction(CAmount nValue, int nSecurityLevel,
                 }
             }
 
-            //add output to kabberry address to the transaction (the actual primary spend taking place)
+            //add output to primestone address to the transaction (the actual primary spend taking place)
             CTxOut txOutZerocoinSpend(nValue, scriptZerocoinSpend);
             txNew.vout.push_back(txOutZerocoinSpend);
 

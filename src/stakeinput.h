@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef Kabberry_STAKEINPUT_H
-#define Kabberry_STAKEINPUT_H
+#ifndef PrimeStone_STAKEINPUT_H
+#define PrimeStone_STAKEINPUT_H
 
 class CKeyStore;
 class CWallet;
@@ -64,13 +64,13 @@ public:
     uint32_t GetChecksum();
 };
 
-class CKabberryStake : public CStakeInput
+class CPrimeStoneStake : public CStakeInput
 {
 private:
     CTransaction txFrom;
     unsigned int nPosition;
 public:
-    CKabberryStake()
+    CPrimeStoneStake()
     {
         this->pindexFrom = nullptr;
     }
@@ -88,4 +88,4 @@ public:
 };
 
 
-#endif //Kabberry_STAKEINPUT_H
+#endif //PrimeStone_STAKEINPUT_H

@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -9,7 +9,6 @@
 #define BITCOIN_RPCSERVER_H
 
 #include "amount.h"
-#include "primitives/zerocoin.h"
 #include "rpc/protocol.h"
 #include "uint256.h"
 
@@ -103,12 +102,10 @@ public:
     virtual RPCTimerBase* NewTimer(boost::function<void(void)>& func, int64_t millis) = 0;
 };
 
-/** Set factory function for timers */
-void RPCSetTimerInterface(RPCTimerInterface *iface);
-/** Set factory function for timers, but only if unset */
-void RPCSetTimerInterfaceIfUnset(RPCTimerInterface *iface);
-/** Unset factory function for timers */
-void RPCUnsetTimerInterface(RPCTimerInterface *iface);
+/** Register factory function for timers */
+void RPCRegisterTimerInterface(RPCTimerInterface *iface);
+/** Unregister factory function for timers */
+void RPCUnregisterTimerInterface(RPCTimerInterface *iface);
 
 /**
  * Run func nSeconds from now.
@@ -130,7 +127,7 @@ public:
 };
 
 /**
- * Kabberry RPC command dispatcher.
+ * PrimeStone RPC command dispatcher.
  */
 class CRPCTable
 {
@@ -180,7 +177,6 @@ extern std::string HelpExampleCli(std::string methodname, std::string args);
 extern std::string HelpExampleRpc(std::string methodname, std::string args);
 
 extern void EnsureWalletIsUnlocked(bool fAllowAnonOnly = false);
-extern UniValue DozPSCSpend(const CAmount nAmount, bool fMintChange, bool fMinimizeChange, const int nSecurityLevel, vector<CZerocoinMint>& vMintsSelected, std::string address_str);
 
 extern UniValue getconnectioncount(const UniValue& params, bool fHelp); // in rpc/net.cpp
 extern UniValue getpeerinfo(const UniValue& params, bool fHelp);
@@ -256,7 +252,6 @@ extern UniValue listspentzerocoins(const UniValue& params, bool fHelp);
 extern UniValue listzerocoinamounts(const UniValue& params, bool fHelp);
 extern UniValue mintzerocoin(const UniValue& params, bool fHelp);
 extern UniValue spendzerocoin(const UniValue& params, bool fHelp);
-extern UniValue spendzerocoinmints(const UniValue& params, bool fHelp);
 extern UniValue resetmintzerocoin(const UniValue& params, bool fHelp);
 extern UniValue resetspentzerocoin(const UniValue& params, bool fHelp);
 extern UniValue getarchivedzerocoin(const UniValue& params, bool fHelp);

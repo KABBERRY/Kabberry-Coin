@@ -1,21 +1,21 @@
 dnl require autoconf 2.60 (AS_ECHO/AS_ECHO_N)
 AC_PREREQ([2.60])
 define(_CLIENT_VERSION_MAJOR, 2)
-define(_CLIENT_VERSION_MINOR, 9)
-define(_CLIENT_VERSION_REVISION, 99)
+define(_CLIENT_VERSION_MINOR, 4)
+define(_CLIENT_VERSION_REVISION, 0)
 define(_CLIENT_VERSION_BUILD, 0)
 define(_CLIENT_VERSION_IS_RELEASE, true)
 define(_COPYRIGHT_YEAR, 2019)
-AC_INIT([Kabberry Core],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION],[https://kabberry.com],[kabberry])
+AC_INIT([PrimeStone],[_CLIENT_VERSION_MAJOR._CLIENT_VERSION_MINOR._CLIENT_VERSION_REVISION],[www.primestone.org],[primestone])
 AC_CONFIG_SRCDIR([src/main.cpp])
-AC_CONFIG_HEADERS([src/config/kabberry-config.h])
+AC_CONFIG_HEADERS([src/config/primestone-config.h])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([build-aux/m4])
 
-BITCOIN_DAEMON_NAME=kabberryd
-BITCOIN_GUI_NAME=kabberry-qt
-BITCOIN_CLI_NAME=kabberry-cli
-BITCOIN_TX_NAME=kabberry-tx
+BITCOIN_DAEMON_NAME=primestoned
+BITCOIN_GUI_NAME=primestone-qt
+BITCOIN_CLI_NAME=primestone-cli
+BITCOIN_TX_NAME=primestone-tx
 
 dnl Unless the user specified ARFLAGS, force it to be cr
 AC_ARG_VAR(ARFLAGS, [Flags for the archiver, defaults to <cr> if not set])
@@ -25,9 +25,9 @@ fi
 
 AC_CANONICAL_HOST
 
-AH_TOP([#ifndef Kabberry_CONFIG_H])
-AH_TOP([#define Kabberry_CONFIG_H])
-AH_BOTTOM([#endif //Kabberry_CONFIG_H])
+AH_TOP([#ifndef PrimeStone_CONFIG_H])
+AH_TOP([#define PrimeStone_CONFIG_H])
+AH_BOTTOM([#endif //PrimeStone_CONFIG_H])
 
 dnl faketime breaks configure and is only needed for make. Disable it here.
 unset FAKETIME
@@ -270,7 +270,7 @@ CPPFLAGS="$CPPFLAGS -DHAVE_BUILD_INFO -D__STDC_FORMAT_MACROS"
 
 AC_ARG_WITH([utils],
   [AS_HELP_STRING([--with-utils],
-  [build kabberry-cli kabberry-tx (default=yes)])],
+  [build primestone-cli primestone-tx (default=yes)])],
   [build_bitcoin_utils=$withval],
   [build_bitcoin_utils=yes])
 
@@ -282,7 +282,7 @@ AC_ARG_WITH([libs],
 
 AC_ARG_WITH([daemon],
   [AS_HELP_STRING([--with-daemon],
-  [build kabberryd daemon (default=yes)])],
+  [build primestoned daemon (default=yes)])],
   [build_bitcoind=$withval],
   [build_bitcoind=yes])
 
@@ -484,7 +484,7 @@ AC_C_BIGENDIAN([AC_MSG_ERROR("Big Endian not supported")])
 dnl Check for pthread compile/link requirements
 AX_PTHREAD
 
-# The following macro will add the necessary defines to kabberry-config.h, but
+# The following macro will add the necessary defines to primestone-config.h, but
 # they also need to be passed down to any subprojects. Pull the results out of
 # the cache and add them to CPPFLAGS.
 AC_SYS_LARGEFILE
@@ -762,6 +762,7 @@ if test x$use_tests = xyes; then
        #define BOOST_TEST_DYN_LINK
        #define BOOST_TEST_MAIN
         #include <boost/test/unit_test.hpp>
+
        ])],
     [AC_MSG_RESULT(yes)]
     [TESTDEFS="$TESTDEFS -DBOOST_TEST_DYN_LINK"],
@@ -882,6 +883,7 @@ if test x$use_pkgconfig = xyes; then
           PKG_CHECK_MODULES([EVENT_PTHREADS], [libevent_pthreads],, [AC_MSG_ERROR(libevent_pthreads not found.)])
         fi
       fi
+
       if test "x$use_zmq" = "xyes"; then
         PKG_CHECK_MODULES([ZMQ],[libzmq >= 4],
           [AC_DEFINE([ENABLE_ZMQ],[1],[Define to 1 to enable ZMQ functions])],
@@ -994,11 +996,11 @@ LIBS="$LIBS_TEMP"
 
 BITCOIN_QT_PATH_PROGS([PROTOC], [protoc],$protoc_bin_path)
 
-AC_MSG_CHECKING([whether to build kabberryd])
+AC_MSG_CHECKING([whether to build primestoned])
 AM_CONDITIONAL([BUILD_BITCOIND], [test x$build_bitcoind = xyes])
 AC_MSG_RESULT($build_bitcoind)
 
-AC_MSG_CHECKING([whether to build utils (kabberry-cli kabberry-tx)])
+AC_MSG_CHECKING([whether to build utils (primestone-cli primestone-tx)])
 AM_CONDITIONAL([BUILD_BITCOIN_UTILS], [test x$build_bitcoin_utils = xyes])
 AC_MSG_RESULT($build_bitcoin_utils)
 
@@ -1031,30 +1033,27 @@ if test "x$use_ccache" = "xyes"; then
 fi
 
 dnl bignum value
-set_bignum=$req_bignum
-case $req_bignum in
-auto)
+if test x"$req_bignum" = x"auto"; then
   GMP_CHECK
-  if test x"$has_gmp" != x"yes"; then
-    AC_MSG_ERROR([gmp bignum automatically selected but libgmp is not available. Use depends,
-    install libgmp or select an other bignum implementation (ONLY gmp is fully SUPPORTED)])
-  else
+  if test x"$has_gmp" = x"yes"; then
     set_bignum=gmp
   fi
-  ;;
-gmp)
-  GMP_CHECK
-  if test x"$has_gmp" != x"yes"; then
-    AC_MSG_ERROR([gmp bignum explicitly requested but libgmp is not available])
-  fi
-  ;;
-openssl)
-    AC_MSG_WARN([openssl bignum explicitly requested. This is DEPRECATED.])
-  ;;
-*)
-  AC_MSG_ERROR([invalid bignum implementation selection])
-  ;;
-esac
+else
+  set_bignum=$req_bignum
+  case $set_bignum in
+  gmp)
+    GMP_CHECK
+    if test x"$has_gmp" != x"yes"; then
+      AC_MSG_ERROR([gmp bignum explicitly requested but libgmp not available])
+    fi
+    ;;
+  openssl)
+    ;;
+  *)
+    AC_MSG_ERROR([invalid bignum implementation selection])
+    ;;
+  esac
+fi
 
 dnl enable wallet
 AC_MSG_CHECKING([if wallet should be enabled])
@@ -1124,7 +1123,7 @@ if test x$bitcoin_enable_qt != xno; then
     AC_MSG_WARN("xgettext is required to update qt translations")
   fi
 
-  AC_MSG_CHECKING([whether to build test_kabberry-qt])
+  AC_MSG_CHECKING([whether to build test_primestone-qt])
   if test x$use_tests$bitcoin_enable_qt_test = xyesyes; then
     AC_MSG_RESULT([yes])
     BUILD_TEST_QT="test"
@@ -1148,7 +1147,7 @@ openssl)
   ;;
 esac
 
-AC_MSG_CHECKING([whether to build test_kabberry])
+AC_MSG_CHECKING([whether to build test_primestone])
 if test x$use_tests = xyes; then
   AC_MSG_RESULT([yes])
   BUILD_TEST="test"

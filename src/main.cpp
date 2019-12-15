@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -45,6 +45,7 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/thread.hpp>
 
 using namespace boost;
@@ -52,7 +53,7 @@ using namespace std;
 using namespace libzerocoin;
 
 #if defined(NDEBUG)
-#error "Kabberry cannot be compiled without assertions."
+#error "PrimeStone cannot be compiled without assertions."
 #endif
 
 /**
@@ -941,6 +942,57 @@ int GetIXConfirmations(uint256 nTXHash)
     }
 
     return 0;
+}
+
+// ppcoin: total coin age spent in transaction, in the unit of coin-days.
+// Only those coins meeting minimum age requirement counts. As those
+// transactions not in main chain are not currently indexed so we
+// might not find out about their coin age. Older transactions are
+// guaranteed to be in main chain by sync-checkpoint. This rule is
+// introduced to help nodes establish a consistent view of the coin
+// age (trust score) of competing branches.
+bool GetCoinAge(const CTransaction& tx, const unsigned int nTxTime, uint64_t& nCoinAge)
+{
+    uint256 bnCentSecond = 0; // coin age in the unit of cent-seconds
+    nCoinAge = 0;
+
+    CBlockIndex* pindex = NULL;
+    BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+        // First try finding the previous transaction in database
+        CTransaction txPrev;
+        uint256 hashBlockPrev;
+        if (!GetTransaction(txin.prevout.hash, txPrev, hashBlockPrev, true)) {
+            LogPrintf("GetCoinAge: failed to find vin transaction \n");
+            continue; // previous transaction not in main chain
+        }
+
+        BlockMap::iterator it = mapBlockIndex.find(hashBlockPrev);
+        if (it != mapBlockIndex.end())
+            pindex = it->second;
+        else {
+            LogPrintf("GetCoinAge() failed to find block index \n");
+            continue;
+        }
+
+        // Read block header
+        CBlockHeader prevblock = pindex->GetBlockHeader();
+
+        if (prevblock.nTime + nStakeMinAge > nTxTime)
+            continue; // only count coins meeting min age requirement
+
+        if (nTxTime < prevblock.nTime) {
+            LogPrintf("GetCoinAge: Timestamp Violation: txtime less than txPrev.nTime");
+            return false; // Transaction timestamp violation
+        }
+
+        int64_t nValueIn = txPrev.vout[txin.prevout.n].nValue;
+        bnCentSecond += uint256(nValueIn) * (nTxTime - prevblock.nTime);
+    }
+
+    uint256 bnCoinDay = bnCentSecond / COIN / (24 * 60 * 60);
+    LogPrintf("coin age bnCoinDay=%s\n", bnCoinDay.ToString().c_str());
+    nCoinAge = bnCoinDay.GetCompact();
+    return true;
 }
 
 bool MoneyRange(CAmount nValueOut)
@@ -2547,7 +2599,7 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
         const CTransaction& tx = block.vtx[i];
 
         /** UNDO ZEROCOIN DATABASING
-         * note we only undo zerocoin databasing in the following statement, value to and from Kabberry
+         * note we only undo zerocoin databasing in the following statement, value to and from PrimeStone
          * addresses should still be handled by the typical bitcoin based undo code
          * */
         if (tx.ContainsZerocoins()) {
@@ -2692,7 +2744,7 @@ static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck()
 {
-    RenameThread("kabberry-scriptch");
+    RenameThread("primestone-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -2759,7 +2811,7 @@ void RecalculatezPSCSpent()
     }
 }
 
-bool RecalculateKabberrySupply(int nHeightStart)
+bool RecalculatePrimeStoneSupply(int nHeightStart)
 {
     if (nHeightStart > chainActive.Height())
         return false;
@@ -2831,7 +2883,7 @@ bool RecalculateKabberrySupply(int nHeightStart)
 
 bool ReindexAccumulators(list<uint256>& listMissingCheckpoints, string& strError)
 {
-    // Kabberry: recalculate Accumulator Checkpoints that failed to database properly
+    // PrimeStone: recalculate Accumulator Checkpoints that failed to database properly
     if (!listMissingCheckpoints.empty()) {
         uiInterface.ShowProgress(_("Calculating missing accumulators..."), 0);
         LogPrintf("%s : finding missing checkpoints\n", __func__);
@@ -3138,7 +3190,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (pindex->nHeight == Params().Zerocoin_Block_RecalculateAccumulators() + 1) {
         RecalculatezPSCMinted();
         RecalculatezPSCSpent();
-        RecalculateKabberrySupply(Params().Zerocoin_StartHeight());
+        RecalculatePrimeStoneSupply(Params().Zerocoin_StartHeight());
     }
 
     //Track zPSC money supply in the block index
@@ -3353,7 +3405,7 @@ void static UpdateTip(CBlockIndex* pindexNew)
     chainActive.SetTip(pindexNew);
 
 	#ifdef ENABLE_WALLET
-    // If turned on AutoZeromint will automatically convert Kabberry to zPSC
+    // If turned on AutoZeromint will automatically convert PrimeStone to zPSC
     if (pwalletMain && pwalletMain->isZeromintEnabled())
         pwalletMain->AutoZeromint();
 	#endif // ENABLE_WALLET
@@ -3936,7 +3988,7 @@ CBlockIndex* AddToBlockIndex(const CBlock& block)
         pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
         pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
         if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
-            LogPrintf("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
+            LogPrintf("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, boost::lexical_cast<std::string>(nStakeModifier));
     }
     pindexNew->nChainWork = (pindexNew->pprev ? pindexNew->pprev->nChainWork : 0) + GetBlockProof(*pindexNew);
     pindexNew->RaiseValidity(BLOCK_VALID_TREE);
@@ -4198,7 +4250,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 nHeight = (*mi).second->nHeight + 1;
         }
 
-        // Kabberry
+        // PrimeStone
         // It is entierly possible that we don't have enough data and this could fail
         // (i.e. the block could indeed be valid). Store the block for later consideration
         // but issue an initial reject message.
@@ -5880,7 +5932,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return false;
         }
 
-        // Kabberry: We use certain sporks during IBD, so check to see if they are
+        // PrimeStone: We use certain sporks during IBD, so check to see if they are
         // available. If not, ask the first peer connected for them.
         bool fMissingSporks = !pSporkDB->SporkExists(SPORK_14_NEW_PROTOCOL_ENFORCEMENT) &&
                               !pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&
@@ -5905,7 +5957,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (!vRecv.empty())
             vRecv >> addrFrom >> nNonce;
         if (!vRecv.empty()) {
-            vRecv >> LIMITED_STRING(pfrom->strSubVer, MAX_SUBVERSION_LENGTH);
+            vRecv >> LIMITED_STRING(pfrom->strSubVer, 256);
             pfrom->cleanSubVer = SanitizeString(pfrom->strSubVer);
         }
         if (!vRecv.empty())
@@ -6237,7 +6289,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                     return true;
                 }
 
-                std::string strMessage = tx.GetHash().ToString() + std::to_string(sigTime);
+                std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTime);
 
                 std::string errorMessage = "";
                 if (!obfuScationSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, errorMessage)) {

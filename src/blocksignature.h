@@ -1,10 +1,10 @@
 // Copyright (c) 2017 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef Kabberry_BLOCKSIGNATURE_H
-#define Kabberry_BLOCKSIGNATURE_H
+#ifndef PrimeStone_BLOCKSIGNATURE_H
+#define PrimeStone_BLOCKSIGNATURE_H
 
 #include "key.h"
 #include "primitives/block.h"
@@ -14,4 +14,4 @@ bool SignBlockWithKey(CBlock& block, const CKey& key);
 bool SignBlock(CBlock& block, const CKeyStore& keystore);
 bool CheckBlockSignature(const CBlock& block);
 
-#endif //Kabberry_BLOCKSIGNATURE_H
+#endif //PrimeStone_BLOCKSIGNATURE_H

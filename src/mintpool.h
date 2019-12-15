@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef Kabberry_MINTPOOL_H
-#define Kabberry_MINTPOOL_H
+#ifndef PrimeStone_MINTPOOL_H
+#define PrimeStone_MINTPOOL_H
 
 #include <map>
 #include <list>
@@ -51,4 +51,4 @@ public:
 };
 
 
-#endif //Kabberry_MINTPOOL_H
+#endif //PrimeStone_MINTPOOL_H

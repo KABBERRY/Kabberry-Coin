@@ -1,6 +1,6 @@
 // Copyright (c) 2014-2016 The Dash developers
 // Copyright (c) 2016-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,6 +14,7 @@
 #include "sync.h"
 #include "sporkdb.h"
 #include "util.h"
+#include <boost/lexical_cast.hpp>
 
 using namespace std;
 using namespace boost;
@@ -26,7 +27,7 @@ CSporkManager sporkManager;
 std::map<uint256, CSporkMessage> mapSporks;
 std::map<int, CSporkMessage> mapSporksActive;
 
-// Kabberry: on startup load spork values from previous session if they exist in the sporkDB
+// PrimeStone: on startup load spork values from previous session if they exist in the sporkDB
 void LoadSporksFromDB()
 {
     for (int i = SPORK_START; i <= SPORK_END; ++i) {
@@ -103,7 +104,7 @@ void ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
         mapSporksActive[spork.nSporkID] = spork;
         sporkManager.Relay(spork);
 
-        // Kabberry: add to spork database.
+        // PrimeStone: add to spork database.
         pSporkDB->WriteSpork(spork.nSporkID, spork);
     }
     if (strCommand == "getsporks") {
@@ -186,7 +187,7 @@ void ReprocessBlocks(int nBlocks)
 bool CSporkManager::CheckSignature(CSporkMessage& spork, bool fCheckSigner)
 {
     //note: need to investigate why this is failing
-    std::string strMessage = std::to_string(spork.nSporkID) + std::to_string(spork.nValue) + std::to_string(spork.nTimeSigned);
+    std::string strMessage = boost::lexical_cast<std::string>(spork.nSporkID) + boost::lexical_cast<std::string>(spork.nValue) + boost::lexical_cast<std::string>(spork.nTimeSigned);
     CPubKey pubkeynew(ParseHex(Params().SporkKey()));
     std::string errorMessage = "";
 
@@ -206,7 +207,7 @@ bool CSporkManager::CheckSignature(CSporkMessage& spork, bool fCheckSigner)
 
 bool CSporkManager::Sign(CSporkMessage& spork)
 {
-    std::string strMessage = std::to_string(spork.nSporkID) + std::to_string(spork.nValue) + std::to_string(spork.nTimeSigned);
+    std::string strMessage = boost::lexical_cast<std::string>(spork.nSporkID) + boost::lexical_cast<std::string>(spork.nValue) + boost::lexical_cast<std::string>(spork.nTimeSigned);
 
     CKey key2;
     CPubKey pubkey2;

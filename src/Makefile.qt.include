@@ -2,43 +2,43 @@
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-bin_PROGRAMS += qt/kabberry-qt
+bin_PROGRAMS += qt/primestone-qt
 EXTRA_LIBRARIES += qt/libbitcoinqt.a
 
-# kabberry qt core #
+# primestone qt core #
 QT_TS = \
-  qt/locale/kabberry_bg.ts \
-  qt/locale/kabberry_ca.ts \
-  qt/locale/kabberry_cs.ts \
-  qt/locale/kabberry_da.ts \
-  qt/locale/kabberry_de.ts \
-  qt/locale/kabberry_en.ts \
-  qt/locale/kabberry_en_US.ts \
-  qt/locale/kabberry_eo.ts \
-  qt/locale/kabberry_es.ts \
-  qt/locale/kabberry_es_ES.ts \
-  qt/locale/kabberry_fi.ts \
-  qt/locale/kabberry_fr_FR.ts \
-  qt/locale/kabberry_hi_IN.ts \
-  qt/locale/kabberry_hr.ts \
-  qt/locale/kabberry_hr_HR.ts \
-  qt/locale/kabberry_it.ts \
-  qt/locale/kabberry_ja.ts \
-  qt/locale/kabberry_ko_KR.ts \
-  qt/locale/kabberry_lt_LT.ts \
-  qt/locale/kabberry_nl.ts \
-  qt/locale/kabberry_pl.ts \
-  qt/locale/kabberry_pt.ts \
-  qt/locale/kabberry_pt_BR.ts \
-  qt/locale/kabberry_ro_RO.ts \
-  qt/locale/kabberry_ru.ts \
-  qt/locale/kabberry_sk.ts \
-  qt/locale/kabberry_sv.ts \
-  qt/locale/kabberry_tr.ts \
-  qt/locale/kabberry_uk.ts \
-  qt/locale/kabberry_vi.ts \
-  qt/locale/kabberry_zh_CN.ts \
-  qt/locale/kabberry_zh_TW.ts
+  qt/locale/primestone_bg.ts \
+  qt/locale/primestone_ca.ts \
+  qt/locale/primestone_cs.ts \
+  qt/locale/primestone_da.ts \
+  qt/locale/primestone_de.ts \
+  qt/locale/primestone_en.ts \
+  qt/locale/primestone_en_US.ts \
+  qt/locale/primestone_eo.ts \
+  qt/locale/primestone_es.ts \
+  qt/locale/primestone_es_ES.ts \
+  qt/locale/primestone_fi.ts \
+  qt/locale/primestone_fr_FR.ts \
+  qt/locale/primestone_hi_IN.ts \
+  qt/locale/primestone_hr.ts \
+  qt/locale/primestone_hr_HR.ts \
+  qt/locale/primestone_it.ts \
+  qt/locale/primestone_ja.ts \
+  qt/locale/primestone_ko_KR.ts \
+  qt/locale/primestone_lt_LT.ts \
+  qt/locale/primestone_nl.ts \
+  qt/locale/primestone_pl.ts \
+  qt/locale/primestone_pt.ts \
+  qt/locale/primestone_pt_BR.ts \
+  qt/locale/primestone_ro_RO.ts \
+  qt/locale/primestone_ru.ts \
+  qt/locale/primestone_sk.ts \
+  qt/locale/primestone_sv.ts \
+  qt/locale/primestone_tr.ts \
+  qt/locale/primestone_uk.ts \
+  qt/locale/primestone_vi.ts \
+  qt/locale/primestone_zh_CN.ts \
+  qt/locale/primestone_zh_TW.ts
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
@@ -125,16 +125,16 @@ BITCOIN_MM = \
   qt/macnotificationhandler.mm
 
 QT_MOC = \
-  qt/kabberry.moc \
+  qt/primestone.moc \
   qt/bitcoinamountfield.moc \
   qt/intro.moc \
   qt/overviewpage.moc \
   qt/rpcconsole.moc
 
-QT_QRC_CPP = qt/qrc_kabberry.cpp
-QT_QRC = qt/kabberry.qrc
-QT_QRC_LOCALE_CPP = qt/qrc_kabberry_locale.cpp
-QT_QRC_LOCALE = qt/kabberry_locale.qrc
+QT_QRC_CPP = qt/qrc_primestone.cpp
+QT_QRC = qt/primestone.qrc
+QT_QRC_LOCALE_CPP = qt/qrc_primestone_locale.cpp
+QT_QRC_LOCALE = qt/primestone_locale.qrc
 
 PROTOBUF_CC = qt/paymentrequest.pb.cc
 PROTOBUF_H = qt/paymentrequest.pb.h
@@ -339,7 +339,7 @@ RES_IMAGES = \
   qt/res/images/about.png \
   qt/res/images/splash.png \
   qt/res/images/splash_testnet.png \
-  qt/res/images/kabberry_logo_horizontal.png \
+  qt/res/images/primestone_logo_horizontal.png \
   qt/res/images/downArrow_dark.png \
   qt/res/images/downArrow_small_dark.png \
   qt/res/images/downArrow_small.png \
@@ -361,7 +361,7 @@ RES_CSS = \
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
-BITCOIN_RC = qt/res/kabberry-qt-res.rc
+BITCOIN_RC = qt/res/primestone-qt-res.rc
 
 BITCOIN_QT_INCLUDES = -I$(builddir)/qt -I$(srcdir)/qt -I$(srcdir)/qt/forms \
   -I$(builddir)/qt/forms
@@ -383,72 +383,72 @@ QT_FORMS_H=$(join $(dir $(QT_FORMS_UI)),$(addprefix ui_, $(notdir $(QT_FORMS_UI:
 # Most files will depend on the forms and moc files as includes. Generate them
 # before anything else.
 $(QT_MOC): $(QT_FORMS_H)
-$(qt_libbitcoinqt_a_OBJECTS) $(qt_kabberry_qt_OBJECTS) : | $(QT_MOC)
+$(qt_libbitcoinqt_a_OBJECTS) $(qt_primestone_qt_OBJECTS) : | $(QT_MOC)
 
 #Generating these with a half-written protobuf header leads to wacky results.
 #This makes sure it's done.
 $(QT_MOC): $(PROTOBUF_H)
 $(QT_MOC_CPP): $(PROTOBUF_H)
 
-# kabberry-qt binary #
-qt_kabberry_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
+# primestone-qt binary #
+qt_primestone_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
-qt_kabberry_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_primestone_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 qt_bitcoin_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_kabberry_qt_SOURCES = qt/kabberry.cpp
+qt_primestone_qt_SOURCES = qt/primestone.cpp
 if TARGET_DARWIN
-  qt_kabberry_qt_SOURCES += $(BITCOIN_MM)
+  qt_primestone_qt_SOURCES += $(BITCOIN_MM)
 endif
 if TARGET_WINDOWS
-  qt_kabberry_qt_SOURCES += $(BITCOIN_RC)
+  qt_primestone_qt_SOURCES += $(BITCOIN_RC)
 endif
-qt_kabberry_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER)
+qt_primestone_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER)
 if ENABLE_WALLET
-qt_kabberry_qt_LDADD += $(LIBBITCOIN_WALLET)
+qt_primestone_qt_LDADD += $(LIBBITCOIN_WALLET)
 endif
 if ENABLE_ZMQ
-qt_kabberry_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+qt_primestone_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
-qt_kabberry_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBBITCOIN_ZEROCOIN) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
+qt_primestone_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBBITCOIN_ZEROCOIN) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
   $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
   $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
-qt_kabberry_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-qt_kabberry_qt_LIBTOOLFLAGS = --tag CXX
+qt_primestone_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+qt_primestone_qt_LIBTOOLFLAGS = --tag CXX
 
 #locale/foo.ts -> locale/foo.qm
 QT_QM=$(QT_TS:.ts=.qm)
 
 SECONDARY: $(QT_QM)
 
-$(srcdir)/qt/kabberrystrings.cpp: $(libbitcoin_server_a_SOURCES) $(libbitcoin_wallet_a_SOURCES) $(libbitcoin_common_a_SOURCES) $(libbitcoin_zmq_a_SOURCES) $(libbitcoin_util_a_SOURCES)
+$(srcdir)/qt/primestonestrings.cpp: $(libbitcoin_server_a_SOURCES) $(libbitcoin_wallet_a_SOURCES) $(libbitcoin_common_a_SOURCES) $(libbitcoin_zmq_a_SOURCES) $(libbitcoin_util_a_SOURCES)
 	@test -n $(XGETTEXT) || echo "xgettext is required for updating translations"
 	$(AM_V_GEN) cd $(srcdir); XGETTEXT=$(XGETTEXT) PACKAGE_NAME="$(PACKAGE_NAME)" $(PYTHON) ../share/qt/extract_strings_qt.py $^
 
-translate: $(srcdir)/qt/kabberrystrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
+translate: $(srcdir)/qt/primestonestrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
 	@test -n $(LUPDATE) || echo "lupdate is required for updating translations"
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/kabberry_en.ts
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/primestone_en.ts
 
 $(QT_QRC_LOCALE_CPP): $(QT_QRC_LOCALE) $(QT_QM)
 	@test -f $(RCC)
 	@cp -f $< $(@D)/temp_$(<F)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name kabberry_locale $(@D)/temp_$(<F) | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name primestone_locale $(@D)/temp_$(<F) | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 	@rm $(@D)/temp_$(<F)
 
 $(QT_QRC_CPP): $(QT_QRC) $(QT_FORMS_H) $(RES_ICONS) $(RES_IMAGES) $(RES_CSS) $(RES_MOVIES) $(PROTOBUF_H)
 	@test -f $(RCC)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name kabberry $< | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) -name primestone $< | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 
-CLEAN_QT = $(nodist_qt_libbitcoinqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_kabberry_locale.qrc
+CLEAN_QT = $(nodist_qt_libbitcoinqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_primestone_locale.qrc
 
 CLEANFILES += $(CLEAN_QT)
 
-kabberry_qt_clean: FORCE
-	rm -f $(CLEAN_QT) $(qt_libbitcoinqt_a_OBJECTS) $(qt_kabberry_qt_OBJECTS) qt/kabberry-qt$(EXEEXT) $(LIBBITCOINQT)
+primestone_qt_clean: FORCE
+	rm -f $(CLEAN_QT) $(qt_libbitcoinqt_a_OBJECTS) $(qt_primestone_qt_OBJECTS) qt/primestone-qt$(EXEEXT) $(LIBBITCOINQT)
 
-kabberry_qt : qt/kabberry-qt$(EXEEXT)
+primestone_qt : qt/primestone-qt$(EXEEXT)
 
 ui_%.h: %.ui
 	@test -f $(UIC)

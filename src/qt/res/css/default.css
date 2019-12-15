@@ -868,12 +868,12 @@ WalletFrame {
     border:0;
     }
     
-    /* About Kabberry Dialog */
-    QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About Kabberry Contents */
+    /* About PrimeStone Dialog */
+    QDialog#AboutDialog QLabel#label, QDialog#AboutDialog QLabel#copyrightLabel, QDialog#AboutDialog QLabel#label_2 { /* About PrimeStone Contents */
     margin-left:10px;
     }
     
-    QDialog#AboutDialog QLabel#label_2 { /* Margin for About Kabberry text */
+    QDialog#AboutDialog QLabel#label_2 { /* Margin for About PrimeStone text */
     margin-right:10px;
     }
     
@@ -900,11 +900,11 @@ WalletFrame {
     
     QLabel#labelOverviewHeaderRight {
     qproperty-alignment: 'AlignVCenter | AlignRight';
-    background-image: url(':/images/kabberry_logo_horizontal');
+    background-image: url(':/images/primestone_logo_horizontal');
     background-repeat: no-repeat;
     }
     
-    QWidget .QFrame#frame_Header { /* Header with Page-Title and Kabberry-image */
+    QWidget .QFrame#frame_Header { /* Header with Page-Title and PrimeStone-image */
     min-width:400px;
     background-color:transparent;
     }
