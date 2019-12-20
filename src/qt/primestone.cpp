@@ -507,8 +507,8 @@ int main(int argc, char* argv[])
 // Do not refer to data directory yet, this can be overridden by Intro::pickDataDirectory
 
 /// 2. Basic Qt initialization (not dependent on parameters or configuration)
-    Q_INIT_RESOURCE(kabberry_locale);
-    Q_INIT_RESOURCE(kabberry);
+    Q_INIT_RESOURCE(primestone_locale);
+    Q_INIT_RESOURCE(primestone);
 
     BitcoinApplication app(argc, argv);
 #if QT_VERSION > 0x050100
