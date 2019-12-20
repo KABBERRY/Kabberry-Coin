@@ -96,7 +96,7 @@ https://kabberry.com
 <br>EXCHANGES
 
 <br>Crex24
-<br>https://crex24.com/pl/exchange/PSC-BTC
+<br>https://crex24.com/pl/exchange/KKC-BTC
 <br>Graviex
 <br>https://graviex.net/markets/pscbtc
 <br>BiteBTC
