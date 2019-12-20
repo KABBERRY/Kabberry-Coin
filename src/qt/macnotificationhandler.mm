@@ -15,7 +15,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"io.primestone.PrimeStone-Qt";
+        return @"io.kabberry.Kabberry-Qt";
     } else {
         return [self __bundleIdentifier];
     }
