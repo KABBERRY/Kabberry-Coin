@@ -167,7 +167,7 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
-void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBalance, QString& sKabberryPercentage, QString& szPSCPercentage)
+void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBalance, QString& sPrimeStonePercentage, QString& szPSCPercentage)
 {
     int nPrecision = 2;
     double dzPercentage = 0.0;
@@ -187,7 +187,7 @@ void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBala
     double dPercentage = 100.0 - dzPercentage;
     
     szPSCPercentage = "(" + QLocale(QLocale::system()).toString(dzPercentage, 'f', nPrecision) + " %)";
-    sKabberryPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
+    sPrimeStonePercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
     
 }
 
@@ -273,7 +273,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     manager->get(QNetworkRequest(QUrl("https://api.coingecko.com/api/v3/coins/primestone?localization=false")));
   
     // Percentage labels
-    ui->labelKabberryPercent->setText(sPercentage);
+    ui->labelPrimeStonePercent->setText(sPercentage);
     ui->labelzPSCPercent->setText(szPercentage);
 
     // Adjust bubble-help according to AutoMint settings
@@ -294,24 +294,24 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     bool showSumAvailable = settingShowAllBalances || sumTotalBalance != availableTotalBalance;
     ui->labelBalanceTextz->setVisible(showSumAvailable);
     ui->labelBalancez->setVisible(showSumAvailable);
-    bool showKabberryAvailable = settingShowAllBalances || pivAvailableBalance != nTotalBalance;
-    bool showWatchOnlyKabberryAvailable = watchOnlyBalance != nTotalWatchBalance;
-    bool showKabberryPending = settingShowAllBalances || unconfirmedBalance != 0;
-    bool showWatchOnlyKabberryPending = watchUnconfBalance != 0;
-    bool showKabberryLocked = settingShowAllBalances || nLockedBalance != 0;
-    bool showWatchOnlyKabberryLocked = nWatchOnlyLockedBalance != 0;
+    bool showPrimeStoneAvailable = settingShowAllBalances || pivAvailableBalance != nTotalBalance;
+    bool showWatchOnlyPrimeStoneAvailable = watchOnlyBalance != nTotalWatchBalance;
+    bool showPrimeStonePending = settingShowAllBalances || unconfirmedBalance != 0;
+    bool showWatchOnlyPrimeStonePending = watchUnconfBalance != 0;
+    bool showPrimeStoneLocked = settingShowAllBalances || nLockedBalance != 0;
+    bool showWatchOnlyPrimeStoneLocked = nWatchOnlyLockedBalance != 0;
     bool showImmature = settingShowAllBalances || immatureBalance != 0;
     bool showWatchOnlyImmature = watchImmatureBalance != 0;
     bool showWatchOnly = nTotalWatchBalance != 0;
-    ui->labelBalance->setVisible(showKabberryAvailable || showWatchOnlyKabberryAvailable);
-    ui->labelBalanceText->setVisible(showKabberryAvailable || showWatchOnlyKabberryAvailable);
-    ui->labelWatchAvailable->setVisible(showKabberryAvailable && showWatchOnly);
-    ui->labelUnconfirmed->setVisible(showKabberryPending || showWatchOnlyKabberryPending);
-    ui->labelPendingText->setVisible(showKabberryPending || showWatchOnlyKabberryPending);
-    ui->labelWatchPending->setVisible(showKabberryPending && showWatchOnly);
-    ui->labelLockedBalance->setVisible(showKabberryLocked || showWatchOnlyKabberryLocked);
-    ui->labelLockedBalanceText->setVisible(showKabberryLocked || showWatchOnlyKabberryLocked);
-    ui->labelWatchLocked->setVisible(showKabberryLocked && showWatchOnly);
+    ui->labelBalance->setVisible(showPrimeStoneAvailable || showWatchOnlyPrimeStoneAvailable);
+    ui->labelBalanceText->setVisible(showPrimeStoneAvailable || showWatchOnlyPrimeStoneAvailable);
+    ui->labelWatchAvailable->setVisible(showPrimeStoneAvailable && showWatchOnly);
+    ui->labelUnconfirmed->setVisible(showPrimeStonePending || showWatchOnlyPrimeStonePending);
+    ui->labelPendingText->setVisible(showPrimeStonePending || showWatchOnlyPrimeStonePending);
+    ui->labelWatchPending->setVisible(showPrimeStonePending && showWatchOnly);
+    ui->labelLockedBalance->setVisible(showPrimeStoneLocked || showWatchOnlyPrimeStoneLocked);
+    ui->labelLockedBalanceText->setVisible(showPrimeStoneLocked || showWatchOnlyPrimeStoneLocked);
+    ui->labelWatchLocked->setVisible(showPrimeStoneLocked && showWatchOnly);
     ui->labelImmature->setVisible(showImmature || showWatchOnlyImmature); // for symmetry reasons also show immature label when the watch-only one is shown
     ui->labelImmatureText->setVisible(showImmature || showWatchOnlyImmature);
     ui->labelWatchImmature->setVisible(showImmature && showWatchOnly); // show watch-only immature balance
@@ -325,7 +325,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelzBalanceImmature->setVisible(showzPSCImmature);
     ui->labelzBalanceImmatureText->setVisible(showzPSCImmature);
     bool showPercentages = false;//! (zerocoinBalance == 0 && nTotalBalance == 0);
-    ui->labelKabberryPercent->setVisible(showPercentages);
+    ui->labelPrimeStonePercent->setVisible(showPercentages);
     ui->labelzPSCPercent->setVisible(showPercentages);
 
 

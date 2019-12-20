@@ -185,7 +185,7 @@
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Kabberry Official Website</string>
+                 <string>PrimeStone Official Website</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="officialWebsiteButton">
@@ -378,7 +378,7 @@ background-repeat: none;
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Kabberry Coinmarketcap</string>
+                 <string>PrimeStone Coinmarketcap</string>
                 </property>
                </widget>
               </widget>
@@ -401,7 +401,7 @@ background-repeat: none;
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Kabberry Discord Channel</string>
+                 <string>PrimeStone Discord Channel</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="DiscordButton">
@@ -476,7 +476,7 @@ background-repeat: none;
                  </rect>
                 </property>
                 <property name="text">
-                 <string>Kabberry Github</string>
+                 <string>PrimeStone Github</string>
                 </property>
                </widget>
               </widget>

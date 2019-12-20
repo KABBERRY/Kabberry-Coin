@@ -205,7 +205,7 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
-                 <string>Kabberry Official Website</string>
+                 <string>PrimeStone Official Website</string>
                 </property>
                 <property name="icon">
                  <iconset>
@@ -382,7 +382,7 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
-                 <string>Kabberry Coinmarketcap</string>
+                 <string>PrimeStone Coinmarketcap</string>
                 </property>
                 <property name="icon">
                  <iconset>
@@ -435,7 +435,7 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
-                 <string>Kabberry Discord Channel</string>
+                 <string>PrimeStone Discord Channel</string>
                 </property>
                 <property name="icon">
                  <iconset>
@@ -488,7 +488,7 @@ background-repeat: none;
 }</string>
                 </property>
                 <property name="text">
-                 <string>Kabberry Github</string>
+                 <string>PrimeStone Github</string>
                 </property>
                 <property name="icon">
                  <iconset>
