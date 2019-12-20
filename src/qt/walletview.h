@@ -133,7 +133,7 @@ public slots:
     /** Show progress dialog e.g. for rescan */
     void showProgress(const QString& title, int nProgress);
 
-    /** Update selected PrimeStone amount from transactionview */
+    /** Update selected Kabberry amount from transactionview */
     void trxAmount(QString amount);
 
 signals:

@@ -39,7 +39,7 @@ public:
         Encrypt,        /** Encrypt unencrypted wallet */
         ToggleLock,     /** Toggle wallet lock state */
         ChangePass,     /** Change passphrase */
-        Send_PrimeStone,       /** Send PrimeStone */
+        Send_PrimeStone,       /** Send Kabberry */
         Send_zPSC,      /** Send zPSC */
         Mint_zPSC,      /** Mint zPSC */
         BIP_38,         /** BIP38 menu */
