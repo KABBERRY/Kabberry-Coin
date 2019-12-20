@@ -73,7 +73,7 @@ If you want to build the windows installer with `make deploy` you need [NSIS](ht
 
 Acquire the source in the usual way:
 
-    git clone https://github.com/KABBERRY/Kabberry-Coin.git
+    git clone https://github.com/Primestonecoin/PrimeStone.git
     cd PrimeStone
 
 ## Building for 64-bit Windows
@@ -138,7 +138,7 @@ executables to a directory on the Windows drive in the same directory structure
 as they appear in the release `.zip` archive. This can be done in the following
 way. This will install to `c:\workspace\bitcoin`, for example:
 
-    make install DESTDIR=/mnt/c/workspace/kabberry
+    make install DESTDIR=/mnt/c/workspace/primestone
 
 You can also create an installer using:
 

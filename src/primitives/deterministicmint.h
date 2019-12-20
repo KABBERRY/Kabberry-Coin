@@ -1,10 +1,10 @@
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef Kabberry_DETERMINISTICMINT_H
-#define Kabberry_DETERMINISTICMINT_H
+#ifndef PrimeStone_DETERMINISTICMINT_H
+#define PrimeStone_DETERMINISTICMINT_H
 
 #include <libzerocoin/Denominations.h>
 #include <uint256.h>
@@ -65,4 +65,4 @@ public:
     };
 };
 
-#endif //Kabberry_DETERMINISTICMINT_H
+#endif //PrimeStone_DETERMINISTICMINT_H

@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef Kabberry_zPSCWALLET_H
-#define Kabberry_zPSCWALLET_H
+#ifndef PrimeStone_zPSCWALLET_H
+#define PrimeStone_zPSCWALLET_H
 
 #include <map>
 #include "libzerocoin/Coin.h"
@@ -46,4 +46,4 @@ private:
     uint512 GetZerocoinSeed(uint32_t n);
 };
 
-#endif //Kabberry_zPSCWALLET_H
+#endif //PrimeStone_zPSCWALLET_H

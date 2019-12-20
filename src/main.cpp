@@ -2,7 +2,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -53,7 +53,7 @@ using namespace std;
 using namespace libzerocoin;
 
 #if defined(NDEBUG)
-#error "Kabberry cannot be compiled without assertions."
+#error "PrimeStone cannot be compiled without assertions."
 #endif
 
 /**
@@ -83,7 +83,6 @@ bool fAlerts = DEFAULT_ALERTS;
 
 unsigned int nStakeMinAge = 60 * 60;
 int64_t nReserveBalance = 0;
-bool fCLTVHasMajority = false;
 
 /** Fees smaller than this (in upiv) are considered zero fee (for relaying and mining)
  * We are ~100 times smaller then bitcoin now (2015-06-23), set minRelayTxFee only 10 times higher
@@ -1517,11 +1516,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
-        int flags = STANDARD_SCRIPT_VERIFY_FLAGS;
-		
-        if (fCLTVHasMajority)
-			flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
-		if (!CheckInputs(tx, state, view, true, flags, true)) {
+        if (!CheckInputs(tx, state, view, true, STANDARD_SCRIPT_VERIFY_FLAGS, true)) {
             return error("AcceptToMemoryPool: : ConnectInputs failed %s", hash.ToString());
         }
 
@@ -1534,11 +1529,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         // There is a similar check in CreateNewBlock() to prevent creating
         // invalid blocks, however allowing such transactions into the mempool
         // can be exploited as a DoS attack.
-        flags = MANDATORY_SCRIPT_VERIFY_FLAGS;
-		
-		if (fCLTVHasMajority)
-			flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
-		if (!CheckInputs(tx, state, view, true, flags, true)) {
+        if (!CheckInputs(tx, state, view, true, MANDATORY_SCRIPT_VERIFY_FLAGS, true)) {
             return error("AcceptToMemoryPool: : BUG! PLEASE REPORT THIS! ConnectInputs failed against MANDATORY but not STANDARD flags %s", hash.ToString());
         }
 
@@ -1726,11 +1717,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
-        int flags = STANDARD_SCRIPT_VERIFY_FLAGS;
-		
-		if (fCLTVHasMajority)
-			flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
-		if (!CheckInputs(tx, state, view, false, flags, true)) {
+        if (!CheckInputs(tx, state, view, false, STANDARD_SCRIPT_VERIFY_FLAGS, true)) {
             return error("AcceptableInputs: : ConnectInputs failed %s", hash.ToString());
         }
 
@@ -2599,7 +2586,7 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
         const CTransaction& tx = block.vtx[i];
 
         /** UNDO ZEROCOIN DATABASING
-         * note we only undo zerocoin databasing in the following statement, value to and from Kabberry
+         * note we only undo zerocoin databasing in the following statement, value to and from PrimeStone
          * addresses should still be handled by the typical bitcoin based undo code
          * */
         if (tx.ContainsZerocoins()) {
@@ -2694,9 +2681,6 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
 
     // move best block pointer to prevout block
     view.SetBestBlock(pindex->pprev->GetBlockHash());
-	
-	// Check if supermajority for CLTV has changed.
-	fCLTVHasMajority = CBlockIndex::IsSuperMajority(5, chainActive.Tip(), Params().EnforceBlockUpgradeMajority());
 
     if (!fVerifyingBlocks) {
         //if block is an accumulator checkpoint block, remove checkpoint and checksums from db
@@ -2744,7 +2728,7 @@ static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck()
 {
-    RenameThread("kabberry-scriptch");
+    RenameThread("primestone-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -2811,7 +2795,7 @@ void RecalculatezPSCSpent()
     }
 }
 
-bool RecalculateKabberrySupply(int nHeightStart)
+bool RecalculatePrimeStoneSupply(int nHeightStart)
 {
     if (nHeightStart > chainActive.Height())
         return false;
@@ -2883,7 +2867,7 @@ bool RecalculateKabberrySupply(int nHeightStart)
 
 bool ReindexAccumulators(list<uint256>& listMissingCheckpoints, string& strError)
 {
-    // Kabberry: recalculate Accumulator Checkpoints that failed to database properly
+    // PrimeStone: recalculate Accumulator Checkpoints that failed to database properly
     if (!listMissingCheckpoints.empty()) {
         uiInterface.ShowProgress(_("Calculating missing accumulators..."), 0);
         LogPrintf("%s : finding missing checkpoints\n", __func__);
@@ -3167,9 +3151,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
             std::vector<CScriptCheck> vChecks;
             unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_DERSIG;
-			if (fCLTVHasMajority)
-				flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
-			
             if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL))
                 return false;
             control.Add(vChecks);
@@ -3190,7 +3171,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (pindex->nHeight == Params().Zerocoin_Block_RecalculateAccumulators() + 1) {
         RecalculatezPSCMinted();
         RecalculatezPSCSpent();
-        RecalculateKabberrySupply(Params().Zerocoin_StartHeight());
+        RecalculatePrimeStoneSupply(Params().Zerocoin_StartHeight());
     }
 
     //Track zPSC money supply in the block index
@@ -3319,12 +3300,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             mapZerocoinspends.erase(it);
     }
 
-    // If CLTV hasn't been activated check for a supermajority upon accepting new block.
-    if (!fCLTVHasMajority && CBlockIndex::IsSuperMajority(5, chainActive.Tip(), Params().EnforceBlockUpgradeMajority())) {
-		fCLTVHasMajority = true;
-		LogPrintf("CHECKLOCKTIMEVERIFY achieved supermajority! Transactions that use CLTV will now be verified.\n");
-	}
-	
     return true;
 }
 
@@ -3374,9 +3349,6 @@ bool static FlushStateToDisk(CValidationState& state, FlushStateMode mode)
                 }
                 setDirtyBlockIndex.erase(it++);
             }
-			
-            pblocktree->WriteFlag("CLTVHasMajority", fCLTVHasMajority);
-			
             pblocktree->Sync();
             // Finally flush the chainstate (which may refer to block index entries).
             if (!pcoinsTip->Flush())
@@ -3405,7 +3377,7 @@ void static UpdateTip(CBlockIndex* pindexNew)
     chainActive.SetTip(pindexNew);
 
 	#ifdef ENABLE_WALLET
-    // If turned on AutoZeromint will automatically convert Kabberry to zPSC
+    // If turned on AutoZeromint will automatically convert PrimeStone to zPSC
     if (pwalletMain && pwalletMain->isZeromintEnabled())
         pwalletMain->AutoZeromint();
 	#endif // ENABLE_WALLET
@@ -4250,7 +4222,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 nHeight = (*mi).second->nHeight + 1;
         }
 
-        // Kabberry
+        // PrimeStone
         // It is entierly possible that we don't have enough data and this could fail
         // (i.e. the block could indeed be valid). Store the block for later consideration
         // but issue an initial reject message.
@@ -4369,12 +4341,6 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     if (block.nVersion < 3 && CBlockIndex::IsSuperMajority(3, pindexPrev, Params().RejectBlockOutdatedMajority())) {
         return state.Invalid(error("%s : rejected nVersion=2 block", __func__),
             REJECT_OBSOLETE, "bad-version");
-    }
-
-    // Reject block.nVersion=4 blocks when 95% (75% on testnet) of the network has upgraded:
-    if (block.nVersion < 5 && CBlockIndex::IsSuperMajority(5, pindexPrev, Params().RejectBlockOutdatedMajority())) {
-        return state.Invalid(error("%s : rejected nVersion=4 block", __func__),
-                             REJECT_OBSOLETE, "bad-version");
     }
 
     return true;
@@ -5932,7 +5898,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
             return false;
         }
 
-        // Kabberry: We use certain sporks during IBD, so check to see if they are
+        // PrimeStone: We use certain sporks during IBD, so check to see if they are
         // available. If not, ask the first peer connected for them.
         bool fMissingSporks = !pSporkDB->SporkExists(SPORK_14_NEW_PROTOCOL_ENFORCEMENT) &&
                               !pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&

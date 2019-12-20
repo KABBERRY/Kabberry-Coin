@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -165,32 +165,32 @@ bool CzPSCStake::MarkSpent(CWallet *pwallet, const uint256& txid)
     return true;
 }
 
-//!Kabberry Stake
-bool CKabberryStake::SetInput(CTransaction txPrev, unsigned int n)
+//!PrimeStone Stake
+bool CPrimeStoneStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
     this->nPosition = n;
     return true;
 }
 
-bool CKabberryStake::GetTxFrom(CTransaction& tx)
+bool CPrimeStoneStake::GetTxFrom(CTransaction& tx)
 {
     tx = txFrom;
     return true;
 }
 
-bool CKabberryStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CPrimeStoneStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     txIn = CTxIn(txFrom.GetHash(), nPosition);
     return true;
 }
 
-CAmount CKabberryStake::GetValue()
+CAmount CPrimeStoneStake::GetValue()
 {
     return txFrom.vout[nPosition].nValue;
 }
 
-bool CKabberryStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+bool CPrimeStoneStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
 {
     vector<valtype> vSolutions;
     txnouttype whichType;
@@ -225,7 +225,7 @@ bool CKabberryStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmoun
     return true;
 }
 
-bool CKabberryStake::GetModifier(uint64_t& nStakeModifier)
+bool CPrimeStoneStake::GetModifier(uint64_t& nStakeModifier)
 {
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
@@ -239,16 +239,16 @@ bool CKabberryStake::GetModifier(uint64_t& nStakeModifier)
     return true;
 }
 
-CDataStream CKabberryStake::GetUniqueness()
+CDataStream CPrimeStoneStake::GetUniqueness()
 {
-    //The unique identifier for a Kabberry stake is the outpoint
+    //The unique identifier for a PrimeStone stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
     ss << nPosition << txFrom.GetHash();
     return ss;
 }
 
 //The block that the UTXO was added to the chain
-CBlockIndex* CKabberryStake::GetIndexFrom()
+CBlockIndex* CPrimeStoneStake::GetIndexFrom()
 {
     uint256 hashBlock = 0;
     CTransaction tx;

@@ -7,7 +7,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/kabberry-config.h"
+#include "config/primestone-config.h"
 #endif
 
 #include "init.h"
@@ -197,7 +197,7 @@ void PrepareShutdown()
     /// for example if the data directory was found to be locked.
     /// Be sure that anything that writes files or flushes caches only does this if the respective
     /// module was initialized.
-    RenameThread("kabberry-shutoff");
+    RenameThread("primestone-shutoff");
     mempool.AddTransactionsUpdated(1);
     StopHTTPRPC();
     StopREST();
@@ -483,7 +483,7 @@ std::string HelpMessage(HelpMessageMode mode)
         strUsage += HelpMessageOpt("-stopafterblockimport", strprintf(_("Stop running after importing blocks from disk (default: %u)"), 0));
         strUsage += HelpMessageOpt("-sporkkey=<privkey>", _("Enable spork administration functionality with the appropriate private key."));
     }
-    string debugCategories = "addrman, alert, bench, coindb, db, lock, rand, rpc, selectcoins, tor, mempool, net, proxy, http, libevent, kabberry, (obfuscation, swiftx, masternode, mnpayments, mnbudget, zero)"; // Don't translate these and qt below
+    string debugCategories = "addrman, alert, bench, coindb, db, lock, rand, rpc, selectcoins, tor, mempool, net, proxy, http, libevent, primestone, (obfuscation, swiftx, masternode, mnpayments, mnbudget, zero)"; // Don't translate these and qt below
     if (mode == HMM_BITCOIN_QT)
         debugCategories += ", qt";
     strUsage += HelpMessageOpt("-debug=<category>", strprintf(_("Output debugging information (default: %u, supplying <category> is optional)"), 0) + ". " +
@@ -517,8 +517,8 @@ std::string HelpMessage(HelpMessageMode mode)
 
 #ifdef ENABLE_WALLET
     strUsage += HelpMessageGroup(_("Staking options:"));
-    strUsage += HelpMessageOpt("-kabberrystake=<n>", strprintf(_("Enable staking functionality (0-1, default: %u)"), 1));
-    strUsage += HelpMessageOpt("-kabberrystake=<n>", strprintf(_("Enable or disable staking functionality for Kabberry inputs (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-primestonestake=<n>", strprintf(_("Enable staking functionality (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-primestonestake=<n>", strprintf(_("Enable or disable staking functionality for Kabberry inputs (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-zPSCstake=<n>", strprintf(_("Enable or disable staking functionality for zPSC inputs (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-reservebalance=<amt>", _("Keep the specified amount available for spending at all times (default: 0)"));
     if (GetBoolArg("-help-debug", false)) {
@@ -545,7 +545,7 @@ std::string HelpMessage(HelpMessageMode mode)
 #endif // ENABLE_WALLET
     strUsage += HelpMessageOpt("-reindexzerocoin=<n>", strprintf(_("Delete all zerocoin spends and mints that have been recorded to the blockchain database and reindex them (0-1, default: %u)"), 0));
 
-//    strUsage += "  -anonymizekabberryamount=<n>     " + strprintf(_("Keep N Kabberry anonymized (default: %u)"), 0) + "\n";
+//    strUsage += "  -anonymizeprimestoneamount=<n>     " + strprintf(_("Keep N Kabberry anonymized (default: %u)"), 0) + "\n";
 //    strUsage += "  -liquidityprovider=<n>       " + strprintf(_("Provide liquidity to Obfuscation by infrequently mixing coins on a continual basis (0-100, default: %u, 1=very frequent, high fees, 100=very infrequent, low fees)"), 0) + "\n";
 
     strUsage += HelpMessageGroup(_("SwiftX options:"));
@@ -637,7 +637,7 @@ struct CImportingNow {
 
 void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
 {
-    RenameThread("kabberry-loadblk");
+    RenameThread("primestone-loadblk");
 
     // -reindex
     if (fReindex) {
@@ -727,7 +727,7 @@ bool AppInitServers(boost::thread_group& threadGroup)
     return true;
 }
 
-/** Initialize kabberry.
+/** Initialize Kabberry.
  *  @pre Parameters should be parsed and config file should be read.
  */
 bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
@@ -919,8 +919,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     bool fDisableWallet = GetBoolArg("-disablewallet", false);
     if (fDisableWallet) {
 #endif
-        if (SoftSetBoolArg("-kabberrystake", false))
-            LogPrintf("AppInit2 : parameter interaction: wallet functionality not enabled -> setting -kabberrystake=0\n");
+        if (SoftSetBoolArg("-primestonestake", false))
+            LogPrintf("AppInit2 : parameter interaction: wallet functionality not enabled -> setting -primestonestake=0\n");
 #ifdef ENABLE_WALLET
     }
 #endif
@@ -1412,12 +1412,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                 pcoinsdbview = new CCoinsViewDB(nCoinDBCache, false, fReindex);
                 pcoinscatcher = new CCoinsViewErrorCatcher(pcoinsdbview);
                 pcoinsTip = new CCoinsViewCache(pcoinscatcher);
-				
-				bool fIsActiveCLTV;
-				if (!pblocktree->ReadFlag("CLTVHasMajority", fIsActiveCLTV))
-					fCLTVHasMajority = false;
-				else
-					fCLTVHasMajority = fIsActiveCLTV;
 
                 if (fReindex)
                     pblocktree->WriteReindexing(true);
@@ -1473,7 +1467,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                         RecalculatezPSCMinted();
                         RecalculatezPSCSpent();
                     }
-                    RecalculateKabberrySupply(1);
+                    RecalculatePrimeStoneSupply(1);
                 }
 
                 // Force recalculation of accumulators.
@@ -1837,7 +1831,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     }
 
 // XX42 Remove/refactor code below. Until then provide safe defaults
-    nAnonymizeKabberryAmount = 2;
+    nAnonymizePrimeStoneAmount = 2;
 
 //    nLiquidityProvider = GetArg("-liquidityprovider", 0); //0-100
 //    if (nLiquidityProvider != 0) {
@@ -1846,9 +1840,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 //        nZeromintPercentage = 99999;
 //    }
 //
-//    nAnonymizeKabberryAmount = GetArg("-anonymizekabberryamount", 0);
-//    if (nAnonymizeKabberryAmount > 999999) nAnonymizeKabberryAmount = 999999;
-//    if (nAnonymizeKabberryAmount < 2) nAnonymizeKabberryAmount = 2;
+//    nAnonymizePrimeStoneAmount = GetArg("-anonymizeprimestoneamount", 0);
+//    if (nAnonymizePrimeStoneAmount > 999999) nAnonymizePrimeStoneAmount = 999999;
+//    if (nAnonymizePrimeStoneAmount < 2) nAnonymizePrimeStoneAmount = 2;
 
     fEnableSwiftTX = GetBoolArg("-enableswifttx", fEnableSwiftTX);
     nSwiftTXDepth = GetArg("-swifttxdepth", nSwiftTXDepth);
@@ -1862,7 +1856,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     LogPrintf("fLiteMode %d\n", fLiteMode);
     LogPrintf("nSwiftTXDepth %d\n", nSwiftTXDepth);
-    LogPrintf("Anonymize Kabberry Amount %d\n", nAnonymizeKabberryAmount);
+    LogPrintf("Anonymize Kabberry Amount %d\n", nAnonymizePrimeStoneAmount);
     LogPrintf("Budget Mode %s\n", strBudgetMode.c_str());
 
     /* Denominations

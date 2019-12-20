@@ -7,7 +7,7 @@
 ///
 /// \copyright  Copyright 2013 Ian Miers, Christina Garman and Matthew Green
 /// \license    This project is released under the MIT license.
-// Copyright (c) 2017 The Kabberry developers
+// Copyright (c) 2017 The PrimeStone developers
 
 #ifndef PARAMGENERATION_H_
 #define PARAMGENERATION_H_
@@ -35,7 +35,6 @@ void calculateGroupParamLengths(uint32_t maxPLen, uint32_t securityLevel,
 
 // Prototypes
 bool                primalityTestByTrialDivision(uint32_t candidate);
-  
 uint256             calculateSeed(CBigNum modulus, std::string auxString, uint32_t securityLevel, std::string groupName);
 uint256             calculateGeneratorSeed(uint256 seed, uint256 pSeed, uint256 qSeed, std::string label, uint32_t index, uint32_t count);
 

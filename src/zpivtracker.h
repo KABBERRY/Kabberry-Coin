@@ -1,10 +1,10 @@
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2019 The PrimeStone developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef Kabberry_zPSCTRACKER_H
-#define Kabberry_zPSCTRACKER_H
+#ifndef PrimeStone_zPSCTRACKER_H
+#define PrimeStone_zPSCTRACKER_H
 
 #include "primitives/zerocoin.h"
 #include <list>
@@ -49,4 +49,4 @@ public:
     void Clear();
 };
 
-#endif //Kabberry_zPSCTRACKER_H
+#endif //PrimeStone_zPSCTRACKER_H
