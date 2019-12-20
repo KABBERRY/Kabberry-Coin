@@ -59,17 +59,17 @@ void PrivacyDialog::setModel(WalletModel* walletModel)
 
 void PrivacyDialog::on_officialWebsiteButton_clicked()
 {
-    QString link = "https://primestone.global/";
+    QString link = "https://kabberry.com";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_mnVPSButton_clicked()
 {
-    QString link = "https://primestone.global/wp-content/uploads/2019/02/MasterNode_VPS.pdf";
+    QString link = "#";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_mnWindowsButton_clicked()
 {
-    QString link = "https://primestone.global/wp-content/uploads/2019/02/MasterNode_WIN.pdf";
+    QString link = "#";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_coinmarketcapButton_clicked()
@@ -84,7 +84,7 @@ void PrivacyDialog::on_DiscordButton_clicked()
 }
 void PrivacyDialog::on_GithubButton_clicked()
 {
-    QString link = "https://github.com/Primestonecoin";
+    QString link = "https://github.com/KABBERRY";
     QDesktopServices::openUrl(QUrl(link));
 }
 

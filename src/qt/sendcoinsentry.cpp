@@ -31,9 +31,9 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
 
 
-    // normal primestone address field
+    // normal kabberry address field
     GUIUtil::setupAddressWidget(ui->payTo, this);
-    // just a label for displaying primestone address(es)
+    // just a label for displaying kabberry address(es)
     ui->payTo_is->setFont(GUIUtil::bitcoinAddressFont());
 
     // Connect signals
