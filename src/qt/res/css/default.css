@@ -952,7 +952,7 @@ WalletFrame {
     /* min-height:30px; */
     }
     
-    QWidget .QFrame#frame_Balances .QLabel#label_5 { /* PSC Balances Label */
+    QWidget .QFrame#frame_Balances .QLabel#label_5 { /* KKC Balances Label */
     qproperty-alignment: 'AlignVCenter | AlignLeft';
     min-width:160px;
     background-color:transparent;
@@ -1208,7 +1208,7 @@ WalletFrame {
     font-size:13px;
     }
     
-    QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalancez { /* Available PSC Balance */
+    QWidget .QFrame#frame_CombinedBalances .QLabel#labelBalancez { /* Available KKC Balance */
     qproperty-alignment: 'AlignVCenter | AlignLeft';
     font-size:13px;
     font-weight:bold;
