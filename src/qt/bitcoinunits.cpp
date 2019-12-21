@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The PSC developers
+// Copyright (c) 2018-2019 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,18 +20,18 @@ BitcoinUnits::BitcoinUnits(QObject* parent) : QAbstractListModel(parent),
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(PSC);
-    unitlist.append(mPSC);
-    unitlist.append(uPSC);
+    unitlist.append(KKC);
+    unitlist.append(mKKC);
+    unitlist.append(uKKC);
     return unitlist;
 }
 
 bool BitcoinUnits::valid(int unit)
 {
     switch (unit) {
-    case PSC:
-    case mPSC:
-    case uPSC:
+    case KKC:
+    case mKKC:
+    case uKKC:
         return true;
     default:
         return false;
@@ -41,12 +41,12 @@ bool BitcoinUnits::valid(int unit)
 QString BitcoinUnits::id(int unit)
 {
     switch (unit) {
-    case PSC:
-        return QString("PSC");
-    case mPSC:
-        return QString("mPSC");
-    case uPSC:
-        return QString::fromUtf8("uPSC");
+    case KKC:
+        return QString("KKC");
+    case mKKC:
+        return QString("mKKC");
+    case uKKC:
+        return QString::fromUtf8("uKKC");
     default:
         return QString("???");
     }
@@ -56,23 +56,23 @@ QString BitcoinUnits::name(int unit)
 {
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         switch (unit) {
-        case PSC:
-            return QString("PSC");
-        case mPSC:
-            return QString("mPSC");
-        case uPSC:
-            return QString::fromUtf8("μPSC");
+        case KKC:
+            return QString("KKC");
+        case mKKC:
+            return QString("mKKC");
+        case uKKC:
+            return QString::fromUtf8("μKKC");
         default:
             return QString("???");
         }
     } else {
         switch (unit) {
-        case PSC:
-            return QString("tPSC");
-        case mPSC:
-            return QString("mtPSC");
-        case uPSC:
-            return QString::fromUtf8("μtPSC");
+        case KKC:
+            return QString("tKKC");
+        case mKKC:
+            return QString("mtKKC");
+        case uKKC:
+            return QString::fromUtf8("μtKKC");
         default:
             return QString("???");
         }
@@ -83,23 +83,23 @@ QString BitcoinUnits::description(int unit)
 {
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         switch (unit) {
-        case PSC:
-            return QString("PSC");
-        case mPSC:
-            return QString("Milli-PSC (1 / 1" THIN_SP_UTF8 "000)");
-        case uPSC:
-            return QString("Micro-PSC (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+        case KKC:
+            return QString("KKC");
+        case mKKC:
+            return QString("Milli-KKC (1 / 1" THIN_SP_UTF8 "000)");
+        case uKKC:
+            return QString("Micro-KKC (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
         default:
             return QString("???");
         }
     } else {
         switch (unit) {
-        case PSC:
-            return QString("TestPSCs");
-        case mPSC:
-            return QString("Milli-TestPSC (1 / 1" THIN_SP_UTF8 "000)");
-        case uPSC:
-            return QString("Micro-TestPSC (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+        case KKC:
+            return QString("TestKKCs");
+        case mKKC:
+            return QString("Milli-TestKKC (1 / 1" THIN_SP_UTF8 "000)");
+        case uKKC:
+            return QString("Micro-TestKKC (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
         default:
             return QString("???");
         }
@@ -109,11 +109,11 @@ QString BitcoinUnits::description(int unit)
 qint64 BitcoinUnits::factor(int unit)
 {
     switch (unit) {
-    case PSC:
+    case KKC:
         return 100000000;
-    case mPSC:
+    case mKKC:
         return 100000;
-    case uPSC:
+    case uKKC:
         return 100;
     default:
         return 100000000;
@@ -123,11 +123,11 @@ qint64 BitcoinUnits::factor(int unit)
 int BitcoinUnits::decimals(int unit)
 {
     switch (unit) {
-    case PSC:
+    case KKC:
         return 8;
-    case mPSC:
+    case mKKC:
         return 5;
-    case uPSC:
+    case uKKC:
         return 2;
     default:
         return 0;
