@@ -9,7 +9,6 @@
 #include "script_error.h"
 #include "primitives/transaction.h"
 
-#include <atomic>
 #include <vector>
 #include <stdint.h>
 #include <string>
@@ -19,7 +18,6 @@ class CScript;
 class CTransaction;
 class uint256;
 
-extern std::atomic<bool> fCLTVHasMajority; // Keep track of whether CLTV feature has reached supermajority consensus.
 
 /** Signature hash types/flags */
 enum
