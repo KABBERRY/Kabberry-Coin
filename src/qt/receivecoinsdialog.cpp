@@ -32,7 +32,6 @@ ReceiveCoinsDialog::ReceiveCoinsDialog(QWidget* parent) : QDialog(parent, Qt::Wi
 #ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
     ui->clearButton->setIcon(QIcon());
     ui->receiveButton->setIcon(QIcon());
-    ui->receivingAddressesButton->setIcon(QIcon());
     ui->showRequestButton->setIcon(QIcon());
     ui->removeRequestButton->setIcon(QIcon());
 #endif
@@ -85,12 +84,6 @@ void ReceiveCoinsDialog::setModel(WalletModel* model)
             SLOT(recentRequestsView_selectionChanged(QItemSelection, QItemSelection)));
         // Last 2 columns are set by the columnResizingFixer, when the table geometry is ready.
         columnResizingFixer = new GUIUtil::TableViewLastColumnResizingFixer(tableView, AMOUNT_MINIMUM_COLUMN_WIDTH, DATE_COLUMN_WIDTH);
-
-        // Init address field
-        address = getAddress();
-        ui->reqAddress->setText(address);
-
-        connect(model, SIGNAL(notifyReceiveAddressChanged()), this, SLOT(receiveAddressUsed()));
     }
 }
 
@@ -102,8 +95,6 @@ ReceiveCoinsDialog::~ReceiveCoinsDialog()
 void ReceiveCoinsDialog::clear()
 {
     ui->reqAmount->clear();
-    address = getAddress();
-    ui->reqAddress->setText(address);
     ui->reqLabel->setText("");
     ui->reqMessage->setText("");
     ui->reuseAddress->setChecked(false);
@@ -127,34 +118,29 @@ void ReceiveCoinsDialog::updateDisplayUnit()
     }
 }
 
-QString ReceiveCoinsDialog::getAddress(QString label)
-{
-    if (ui->reuseAddress->isChecked()) {
-        /* Choose existing receiving address */
-        AddressBookPage dlg(AddressBookPage::ForSelection, AddressBookPage::ReceivingTab, this);
-        dlg.setModel(model->getAddressTableModel());
-        if (dlg.exec()) {
-            return dlg.getReturnValue();
-        } else {
-            return "";
-        }
-    } else {
-        /* Generate new receiving address */
-        return model->getAddressTableModel()->addRow(AddressTableModel::Receive, label, "");
-    }
-}
-
 void ReceiveCoinsDialog::on_receiveButton_clicked()
 {
     if (!model || !model->getOptionsModel() || !model->getAddressTableModel() || !model->getRecentRequestsTableModel())
         return;
 
+    QString address;
     QString label = ui->reqLabel->text();
-    address = getAddress(label);
-    if (address.isEmpty())
-        return;
-    if (ui->reuseAddress->isChecked() && label.isEmpty()) {
-        label = model->getAddressTableModel()->labelForAddress(address);
+    if (ui->reuseAddress->isChecked()) {
+        /* Choose existing receiving address */
+        AddressBookPage dlg(AddressBookPage::ForSelection, AddressBookPage::ReceivingTab, this);
+        dlg.setModel(model->getAddressTableModel());
+        if (dlg.exec()) {
+            address = dlg.getReturnValue();
+            if (label.isEmpty()) /* If no label provided, use the previously used label */
+            {
+                label = model->getAddressTableModel()->labelForAddress(address);
+            }
+        } else {
+            return;
+        }
+    } else {
+        /* Generate new receiving address */
+        address = model->getAddressTableModel()->addRow(AddressTableModel::Receive, label, "");
     }
     SendCoinsRecipient info(address, label,
         ui->reqAmount->value(), ui->reqMessage->text());
@@ -167,15 +153,6 @@ void ReceiveCoinsDialog::on_receiveButton_clicked()
 
     /* Store request for later reference */
     model->getRecentRequestsTableModel()->addNewRequest(info);
-}
-
-void ReceiveCoinsDialog::on_receivingAddressesButton_clicked()
-{
-    if (!model)
-        return;
-    AddressBookPage dlg(AddressBookPage::ForEditing, AddressBookPage::ReceivingTab, this);
-    dlg.setModel(model->getAddressTableModel());
-    dlg.exec();
 }
 
 void ReceiveCoinsDialog::on_recentRequestsView_doubleClicked(const QModelIndex& index)
@@ -287,11 +264,4 @@ void ReceiveCoinsDialog::copyAmount()
 void ReceiveCoinsDialog::copyAddress()
 {
     copyColumnToClipboard(RecentRequestsTableModel::Address);
-}
-
-void ReceiveCoinsDialog::receiveAddressUsed()
-{
-    if (model && model->isUsed(CBitcoinAddress(address.toStdString()))) {
-        clear();
-    }
 }
