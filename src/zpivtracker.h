@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PrimeStone_zPSCTRACKER_H
-#define PrimeStone_zPSCTRACKER_H
+#ifndef Kabberry_zPSCTRACKER_H
+#define Kabberry_zPSCTRACKER_H
 
 #include "primitives/zerocoin.h"
 #include <list>
@@ -49,4 +49,4 @@ public:
     void Clear();
 };
 
-#endif //PrimeStone_zPSCTRACKER_H
+#endif //Kabberry_zPSCTRACKER_H

@@ -6,7 +6,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/primestone-config.h"
+#include "config/kabberry-config.h"
 #endif
 
 #include "bitcoingui.h"

@@ -8,7 +8,7 @@
 #else
 #define UNUSED
 #endif
-static const char UNUSED *primestone_strings[] = {
+static const char UNUSED *kabberry_strings[] = {
 QT_TRANSLATE_NOOP("kabberry-core", " mints deleted\n"),
 QT_TRANSLATE_NOOP("kabberry-core", " mints updated, "),
 QT_TRANSLATE_NOOP("kabberry-core", " unconfirmed transactions removed\n"),

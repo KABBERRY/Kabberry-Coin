@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -165,32 +165,32 @@ bool CzPSCStake::MarkSpent(CWallet *pwallet, const uint256& txid)
     return true;
 }
 
-//!PrimeStone Stake
-bool CPrimeStoneStake::SetInput(CTransaction txPrev, unsigned int n)
+//!Kabberry Stake
+bool CKabberryStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
     this->nPosition = n;
     return true;
 }
 
-bool CPrimeStoneStake::GetTxFrom(CTransaction& tx)
+bool CKabberryStake::GetTxFrom(CTransaction& tx)
 {
     tx = txFrom;
     return true;
 }
 
-bool CPrimeStoneStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CKabberryStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     txIn = CTxIn(txFrom.GetHash(), nPosition);
     return true;
 }
 
-CAmount CPrimeStoneStake::GetValue()
+CAmount CKabberryStake::GetValue()
 {
     return txFrom.vout[nPosition].nValue;
 }
 
-bool CPrimeStoneStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+bool CKabberryStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
 {
     vector<valtype> vSolutions;
     txnouttype whichType;
@@ -225,7 +225,7 @@ bool CPrimeStoneStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmo
     return true;
 }
 
-bool CPrimeStoneStake::GetModifier(uint64_t& nStakeModifier)
+bool CKabberryStake::GetModifier(uint64_t& nStakeModifier)
 {
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
@@ -239,16 +239,16 @@ bool CPrimeStoneStake::GetModifier(uint64_t& nStakeModifier)
     return true;
 }
 
-CDataStream CPrimeStoneStake::GetUniqueness()
+CDataStream CKabberryStake::GetUniqueness()
 {
-    //The unique identifier for a PrimeStone stake is the outpoint
+    //The unique identifier for a Kabberry stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
     ss << nPosition << txFrom.GetHash();
     return ss;
 }
 
 //The block that the UTXO was added to the chain
-CBlockIndex* CPrimeStoneStake::GetIndexFrom()
+CBlockIndex* CKabberryStake::GetIndexFrom()
 {
     uint256 hashBlock = 0;
     CTransaction tx;

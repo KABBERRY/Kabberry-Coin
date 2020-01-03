@@ -1,6 +1,6 @@
 [Protocol]
-exec=primestone-qt '%u'
-protocol=primestone
+exec=kabberry-qt '%u'
+protocol=kabberry
 input=none
 output=none
 helper=true

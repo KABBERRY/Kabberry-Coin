@@ -30,10 +30,10 @@
        <item>
         <widget class="QCheckBox" name="bitcoinAtStartup">
          <property name="toolTip">
-          <string>Automatically start PrimeStone after logging in to the system.</string>
+          <string>Automatically start Kabberry after logging in to the system.</string>
          </property>
          <property name="text">
-          <string>&amp;Start PrimeStone on system login</string>
+          <string>&amp;Start Kabberry on system login</string>
          </property>
         </widget>
        </item>
@@ -133,7 +133,7 @@
        <item>
         <widget class="QCheckBox" name="checkBoxZeromintEnable">
          <property name="toolTip">
-          <string>Enable automatic minting of PrimeStone units to zPSC</string>
+          <string>Enable automatic minting of Kabberry units to zPSC</string>
          </property>
          <property name="layoutDirection">
           <enum>Qt::LeftToRight</enum>
@@ -148,7 +148,7 @@
          <item>
           <widget class="QLabel" name="percentage_label">
            <property name="toolTip">
-            <string>Percentage of incoming PrimeStone which get automatically converted to zPSC via Zerocoin Protocol (min: 10%)</string>
+            <string>Percentage of incoming Kabberry which get automatically converted to zPSC via Zerocoin Protocol (min: 10%)</string>
            </property>
            <property name="text">
             <string>Percentage of autominted zPSC</string>
@@ -181,7 +181,7 @@
             </size>
            </property>
            <property name="toolTip">
-            <string>Wait with automatic conversion to Zerocoin until enough PrimeStone for this denomination is available</string>
+            <string>Wait with automatic conversion to Zerocoin until enough Kabberry for this denomination is available</string>
            </property>
            <property name="text">
             <string>Preferred Automint zPSC Denomination</string>
@@ -197,7 +197,7 @@
             </size>
            </property>
            <property name="toolTip">
-            <string>Wait with automatic conversion to Zerocoin until enough PrimeStone for this denomination is available</string>
+            <string>Wait with automatic conversion to Zerocoin until enough Kabberry for this denomination is available</string>
            </property>
            <property name="maxVisibleItems">
             <number>9</number>
@@ -299,7 +299,7 @@
        <item>
         <widget class="QCheckBox" name="mapPortUpnp">
          <property name="toolTip">
-          <string>Automatically open the PrimeStone client port on the router. This only works when your router supports UPnP and it is enabled.</string>
+          <string>Automatically open the Kabberry client port on the router. This only works when your router supports UPnP and it is enabled.</string>
          </property>
          <property name="text">
           <string>Map port using &amp;UPnP</string>
@@ -319,7 +319,7 @@
        <item>
         <widget class="QCheckBox" name="connectSocks">
          <property name="toolTip">
-          <string>Connect to the PrimeStone network through a SOCKS5 proxy.</string>
+          <string>Connect to the Kabberry network through a SOCKS5 proxy.</string>
          </property>
          <property name="text">
           <string>&amp;Connect through SOCKS5 proxy (default proxy):</string>
@@ -485,7 +485,7 @@
          <item>
           <widget class="QValueComboBox" name="lang">
            <property name="toolTip">
-            <string>The user interface language can be set here. This setting will take effect after restarting PrimeStone.</string>
+            <string>The user interface language can be set here. This setting will take effect after restarting Kabberry.</string>
            </property>
           </widget>
          </item>
@@ -507,7 +507,7 @@
          </property>
          <property name="text">
           <string>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/primestone-project/primestone-project-translations</string>
+https://www.transifex.com/kabberry-project/kabberry-project-translations</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>

@@ -1,11 +1,11 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/primestone-config.h"
+#include "config/kabberry-config.h"
 #endif
 
 #include <cstring>

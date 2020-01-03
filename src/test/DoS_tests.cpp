@@ -106,7 +106,7 @@ BOOST_AUTO_TEST_CASE(DoS_bantime)
     BOOST_CHECK(!CNode::IsBanned(addr));
 }
 
-CTransaction RanPrimeStonerphan()
+CTransaction RanKabberryrphan()
 {
     std::map<uint256, COrphanTx>::iterator it;
     it = mapOrphanTransactions.lower_bound(GetRandHash());
@@ -140,7 +140,7 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
     // ... and 50 that depend on other orphans:
     for (int i = 0; i < 50; i++)
     {
-        CTransaction txPrev = RanPrimeStonerphan();
+        CTransaction txPrev = RanKabberryrphan();
 
         CMutableTransaction tx;
         tx.vin.resize(1);
@@ -157,7 +157,7 @@ BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
     // This really-big orphan should be ignored:
     for (int i = 0; i < 10; i++)
     {
-        CTransaction txPrev = RanPrimeStonerphan();
+        CTransaction txPrev = RanKabberryrphan();
 
         CMutableTransaction tx;
         tx.vout.resize(1);

@@ -1,31 +1,31 @@
 #!/bin/bash
 #
-#  primestoned The PrimeStone server.
+#  kabberryd The Kabberry server.
 #
 #
 # chkconfig: 345 80 20
-# description: primestoned
-# processname: primestoned
+# description: kabberryd
+# processname: kabberryd
 #
 
 # Source function library.
 . /etc/init.d/functions
 
-# you can override defaults in /etc/sysconfig/primestoned, see below
-if [ -f /etc/sysconfig/primestoned ]; then
-        . /etc/sysconfig/primestoned
+# you can override defaults in /etc/sysconfig/kabberryd, see below
+if [ -f /etc/sysconfig/kabberryd ]; then
+        . /etc/sysconfig/kabberryd
 fi
 
 RETVAL=0
 
-prog=primestoned
-# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/primestoned
-lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/primestoned}
+prog=kabberryd
+# you can override the lockfile via BITCOIND_LOCKFILE in /etc/sysconfig/kabberryd
+lockfile=${BITCOIND_LOCKFILE-/var/lock/subsys/kabberryd}
 
-# primestoned defaults to /usr/bin/primestoned, override with BITCOIND_BIN
-bitcoind=${BITCOIND_BIN-/usr/bin/primestoned}
+# kabberryd defaults to /usr/bin/kabberryd, override with BITCOIND_BIN
+bitcoind=${BITCOIND_BIN-/usr/bin/kabberryd}
 
-# primestoned opts default to -disablewallet, override with BITCOIND_OPTS
+# kabberryd opts default to -disablewallet, override with BITCOIND_OPTS
 bitcoind_opts=${BITCOIND_OPTS}
 
 start() {

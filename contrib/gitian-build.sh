@@ -17,7 +17,7 @@ osx=true
 SIGNER=
 VERSION=
 commit=false
-url=https://github.com/primestone-project/primestone
+url=https://github.com/KABBERRY/Kabberry-Coin
 proc=2
 mem=2000
 lxc=true
@@ -31,7 +31,7 @@ commitFiles=true
 read -d '' usage <<- EOF
 Usage: $scriptName [-c|u|v|b|s|B|o|h|j|m|] signer version
 
-Run this script from the directory containing the primestone, gitian-builder, gitian.sigs, and primestone-detached-sigs.
+Run this script from the directory containing the kabberry, gitian-builder, gitian.sigs, and kabberry-detached-sigs.
 
 Arguments:
 signer          GPG signer to sign each build assert file
@@ -39,7 +39,7 @@ version		Version number, commit, or branch to build. If building a commit or bra
 
 Options:
 -c|--commit	Indicate that the version argument is for a commit or branch
--u|--url	Specify the URL of the repository. Default is https://github.com/primestone-project/primestone
+-u|--url	Specify the URL of the repository. Default is https://github.com/KABBERRY/Kabberry-Coin
 -v|--verify 	Verify the gitian build
 -b|--build	Do a gitian build
 -s|--sign	Make signed binaries for Windows and Mac OSX
@@ -237,9 +237,9 @@ echo ${COMMIT}
 if [[ $setup = true ]]
 then
     sudo apt-get install ruby apache2 git apt-cacher-ng python-vm-builder qemu-kvm qemu-utils
-    git clone https://github.com/primestone-project/gitian.sigs.git
-    git clone https://github.com/primestone-project/primestone-detached-sigs.git
-    git clone https://github.com/devrandom/gitian-builder.git
+    git clone https://github.com/KABBERRY/Kabberry-Coin/gitian.sigs.git
+    git clone https://github.com/KABBERRY/Kabberry-Coin/kabberry-detached-sigs.git
+    git clone https://github.com/KABBERRY/Kabberry-Coin/gitian-builder.git
     pushd ./gitian-builder
     if [[ -n "$USE_LXC" ]]
     then
@@ -252,7 +252,7 @@ then
 fi
 
 # Set up build
-pushd ./primestone
+pushd ./kabberry
 git fetch
 git checkout ${COMMIT}
 popd
@@ -261,7 +261,7 @@ popd
 if [[ $build = true ]]
 then
 	# Make output folder
-	mkdir -p ./primestone-binaries/${VERSION}
+	mkdir -p ./kabberry-binaries/${VERSION}
 
 	# Build Dependencies
 	echo ""
@@ -271,7 +271,7 @@ then
 	mkdir -p inputs
 	wget -N -P inputs $osslPatchUrl
 	wget -N -P inputs $osslTarUrl
-	make -C ../primestone/depends download SOURCES_PATH=`pwd`/cache/common
+	make -C ../kabberry/depends download SOURCES_PATH=`pwd`/cache/common
 
 	# Linux
 	if [[ $linux = true ]]
@@ -279,9 +279,9 @@ then
             echo ""
 	    echo "Compiling ${VERSION} Linux"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit primestone=${COMMIT} --url primestone=${url} ../primestone/contrib/gitian-descriptors/gitian-linux.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../primestone/contrib/gitian-descriptors/gitian-linux.yml
-	    mv build/out/primestone-*.tar.gz build/out/src/primestone-*.tar.gz ../primestone-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit kabberry=${COMMIT} --url kabberry=${url} ../kabberry/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../kabberry/contrib/gitian-descriptors/gitian-linux.yml
+	    mv build/out/kabberry-*.tar.gz build/out/src/kabberry-*.tar.gz ../kabberry-binaries/${VERSION}
 	fi
 	# Windows
 	if [[ $windows = true ]]
@@ -289,10 +289,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit primestone=${COMMIT} --url primestone=${url} ../primestone/contrib/gitian-descriptors/gitian-win.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../primestone/contrib/gitian-descriptors/gitian-win.yml
-	    mv build/out/primestone-*-win-unsigned.tar.gz inputs/primestone-win-unsigned.tar.gz
-	    mv build/out/primestone-*.zip build/out/primestone-*.exe ../primestone-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit kabberry=${COMMIT} --url kabberry=${url} ../kabberry/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../kabberry/contrib/gitian-descriptors/gitian-win.yml
+	    mv build/out/kabberry-*-win-unsigned.tar.gz inputs/kabberry-win-unsigned.tar.gz
+	    mv build/out/kabberry-*.zip build/out/kabberry-*.exe ../kabberry-binaries/${VERSION}
 	fi
 	# Mac OSX
 	if [[ $osx = true ]]
@@ -300,10 +300,10 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit primestone=${COMMIT} --url primestone=${url} ../primestone/contrib/gitian-descriptors/gitian-osx.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../primestone/contrib/gitian-descriptors/gitian-osx.yml
-	    mv build/out/primestone-*-osx-unsigned.tar.gz inputs/primestone-osx-unsigned.tar.gz
-	    mv build/out/primestone-*.tar.gz build/out/primestone-*.dmg ../primestone-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit kabberry=${COMMIT} --url kabberry=${url} ../kabberry/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../kabberry/contrib/gitian-descriptors/gitian-osx.yml
+	    mv build/out/kabberry-*-osx-unsigned.tar.gz inputs/kabberry-osx-unsigned.tar.gz
+	    mv build/out/kabberry-*.tar.gz build/out/kabberry-*.dmg ../kabberry-binaries/${VERSION}
 	fi
 	# AArch64
 	if [[ $aarch64 = true ]]
@@ -311,9 +311,9 @@ then
 	    echo ""
 	    echo "Compiling ${VERSION} AArch64"
 	    echo ""
-	    ./bin/gbuild -j ${proc} -m ${mem} --commit primestone=${COMMIT} --url primestone=${url} ../primestone/contrib/gitian-descriptors/gitian-aarch64.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-aarch64 --destination ../gitian.sigs/ ../primestone/contrib/gitian-descriptors/gitian-aarch64.yml
-	    mv build/out/primestone-*.tar.gz build/out/src/primestone-*.tar.gz ../primestone-binaries/${VERSION}
+	    ./bin/gbuild -j ${proc} -m ${mem} --commit kabberry=${COMMIT} --url kabberry=${url} ../kabberry/contrib/gitian-descriptors/gitian-aarch64.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-aarch64 --destination ../gitian.sigs/ ../kabberry/contrib/gitian-descriptors/gitian-aarch64.yml
+	    mv build/out/kabberry-*.tar.gz build/out/src/kabberry-*.tar.gz ../kabberry-binaries/${VERSION}
 	popd
 
         if [[ $commitFiles = true ]]
@@ -340,32 +340,32 @@ then
 	echo ""
 	echo "Verifying v${VERSION} Linux"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../primestone/contrib/gitian-descriptors/gitian-linux.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-linux ../kabberry/contrib/gitian-descriptors/gitian-linux.yml
 	# Windows
 	echo ""
 	echo "Verifying v${VERSION} Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../primestone/contrib/gitian-descriptors/gitian-win.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-unsigned ../kabberry/contrib/gitian-descriptors/gitian-win.yml
 	# Mac OSX
 	echo ""
 	echo "Verifying v${VERSION} Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../primestone/contrib/gitian-descriptors/gitian-osx.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-unsigned ../kabberry/contrib/gitian-descriptors/gitian-osx.yml
 	# AArch64
 	echo ""
 	echo "Verifying v${VERSION} AArch64"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-aarch64 ../primestone/contrib/gitian-descriptors/gitian-aarch64.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-aarch64 ../kabberry/contrib/gitian-descriptors/gitian-aarch64.yml
 	# Signed Windows
 	echo ""
 	echo "Verifying v${VERSION} Signed Windows"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../primestone/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../kabberry/contrib/gitian-descriptors/gitian-osx-signer.yml
 	# Signed Mac OSX
 	echo ""
 	echo "Verifying v${VERSION} Signed Mac OSX"
 	echo ""
-	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../primestone/contrib/gitian-descriptors/gitian-osx-signer.yml
+	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../kabberry/contrib/gitian-descriptors/gitian-osx-signer.yml
 	popd
 fi
 
@@ -380,10 +380,10 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Windows"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} ../primestone/contrib/gitian-descriptors/gitian-win-signer.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../primestone/contrib/gitian-descriptors/gitian-win-signer.yml
-	    mv build/out/primestone-*win64-setup.exe ../primestone-binaries/${VERSION}
-	    mv build/out/primestone-*win32-setup.exe ../primestone-binaries/${VERSION}
+	    ./bin/gbuild -i --commit signature=${COMMIT} ../kabberry/contrib/gitian-descriptors/gitian-win-signer.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../kabberry/contrib/gitian-descriptors/gitian-win-signer.yml
+	    mv build/out/kabberry-*win64-setup.exe ../kabberry-binaries/${VERSION}
+	    mv build/out/kabberry-*win32-setup.exe ../kabberry-binaries/${VERSION}
 	fi
 	# Sign Mac OSX
 	if [[ $osx = true ]]
@@ -391,9 +391,9 @@ then
 	    echo ""
 	    echo "Signing ${VERSION} Mac OSX"
 	    echo ""
-	    ./bin/gbuild -i --commit signature=${COMMIT} ../primestone/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../primestone/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    mv build/out/primestone-osx-signed.dmg ../primestone-binaries/${VERSION}/primestone-${VERSION}-osx.dmg
+	    ./bin/gbuild -i --commit signature=${COMMIT} ../kabberry/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../kabberry/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    mv build/out/kabberry-osx-signed.dmg ../kabberry-binaries/${VERSION}/kabberry-${VERSION}-osx.dmg
 	fi
 	popd
 

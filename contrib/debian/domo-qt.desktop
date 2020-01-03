@@ -1,12 +1,12 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=PrimeStone
-Comment=PrimeStone P2P Cryptocurrency
-Comment[fr]=PrimeStone, monnaie virtuelle cryptographique pair à pair
-Comment[tr]=PrimeStone, eşten eşe kriptografik sanal para birimi
-Exec=primestone-qt %u
+Name=Kabberry
+Comment=Kabberry P2P Cryptocurrency
+Comment[fr]=Kabberry, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Kabberry, eşten eşe kriptografik sanal para birimi
+Exec=kabberry-qt %u
 Terminal=false
 Type=Application
-Icon=primestone128
-MimeType=x-scheme-handler/primestone;
+Icon=kabberry128
+MimeType=x-scheme-handler/kabberry;
 Categories=Office;Finance;

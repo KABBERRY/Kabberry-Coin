@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PrimeStone_ACCUMULATORMAP_H
-#define PrimeStone_ACCUMULATORMAP_H
+#ifndef Kabberry_ACCUMULATORMAP_H
+#define Kabberry_ACCUMULATORMAP_H
 
 #include "libzerocoin/Accumulator.h"
 #include "libzerocoin/Coin.h"
@@ -26,4 +26,4 @@ public:
     void Reset();
     void Reset(libzerocoin::ZerocoinParams* params2);
 };
-#endif //PrimeStone_ACCUMULATORMAP_H
+#endif //Kabberry_ACCUMULATORMAP_H

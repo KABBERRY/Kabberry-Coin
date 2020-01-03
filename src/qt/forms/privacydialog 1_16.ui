@@ -504,7 +504,7 @@ background-repeat: none;
   </layout>
  </widget>
  <resources>
-  <include location="../primestone.qrc"/>
+  <include location="../kabberry.qrc"/>
  </resources>
  <connections/>
 </ui>

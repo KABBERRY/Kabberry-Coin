@@ -17,7 +17,7 @@
   <string>APPL</string>
 
   <key>CFBundleGetInfoString</key>
-  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, 2014-@COPYRIGHT_YEAR@ The Dash Core developers, 2015-@COPYRIGHT_YEAR@ The PIVX Core developers, @COPYRIGHT_YEAR@ The PrimeStone developers</string>
+  <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@, Copyright © 2009-@COPYRIGHT_YEAR@ The Bitcoin Core developers, 2014-@COPYRIGHT_YEAR@ The Dash Core developers, 2015-@COPYRIGHT_YEAR@ The PIVX Core developers, @COPYRIGHT_YEAR@ The Kabberry developers</string>
 
   <key>CFBundleShortVersionString</key>
   <string>@CLIENT_VERSION_MAJOR@.@CLIENT_VERSION_MINOR@.@CLIENT_VERSION_REVISION@</string>
@@ -29,16 +29,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>PrimeStone-Qt</string>
+  <string>Kabberry-Qt</string>
   
   <key>CFBundleName</key>
-  <string>PrimeStone-Qt</string>
+  <string>Kabberry-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>io.primestone.PrimeStone-Qt</string>
+  <string>io.kabberry.Kabberry-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -46,10 +46,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>io.primestone.PrimeStonePayment</string>
+      <string>io.kabberry.KabberryPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>primestone</string>
+        <string>kabberry</string>
       </array>
     </dict>
   </array>
@@ -58,9 +58,9 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>io.primestone.paymentrequest</string>
+      <string>io.kabberry.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>PrimeStone payment request</string>
+      <string>Kabberry payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>
@@ -68,10 +68,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-primestone-payment-request</string>
+        <string>application/x-kabberry-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>primestonepaymentrequest</string>
+          <string>kabberrypaymentrequest</string>
         </array>
       </dict>
     </dict>
@@ -84,7 +84,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>io.primestone.paymentrequest</string>
+        <string>io.kabberry.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

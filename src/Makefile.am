@@ -65,15 +65,15 @@ noinst_PROGRAMS =
 TESTS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += primestoned
+  bin_PROGRAMS += kabberryd
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += primestone-cli primestone-tx
+  bin_PROGRAMS += kabberry-cli kabberry-tx
 endif
 
 .PHONY: FORCE
-# PrimeStone #
+# Kabberry #
 BITCOIN_CORE_H = \
   activemasternode.h \
   accumulators.h \
@@ -191,7 +191,7 @@ obj/build.h: FORCE
 	  "$(abs_top_srcdir)"
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between primestoned and primestone-qt
+# server: shared between kabberryd and kabberry-qt
 libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
@@ -239,7 +239,7 @@ libbitcoin_zmq_a_SOURCES = \
   zmq/zmqpublishnotifier.cpp
 endif
 
-# wallet: shared between primestoned and primestone-qt, but only linked
+# wallet: shared between kabberryd and kabberry-qt, but only linked
 # when wallet enabled
 libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
@@ -334,7 +334,7 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/Params.cpp \
   libzerocoin/SerialNumberSignatureOfKnowledge.cpp
 
-# common: shared between primestoned, and primestone-qt and non-server tools
+# common: shared between kabberryd, and kabberry-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
@@ -398,7 +398,7 @@ libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 AM_LDFLAGS += $(COMPAT_LDFLAGS)
 endif
 
-# cli: shared between primestone-cli and primestone-qt
+# cli: shared between kabberry-cli and kabberry-qt
 libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
@@ -408,16 +408,16 @@ libbitcoin_cli_a_SOURCES = \
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
-# primestoned binary #
-primestoned_SOURCES = primestoned.cpp
-primestoned_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-primestoned_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-primestoned_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# kabberryd binary #
+kabberryd_SOURCES = kabberryd.cpp
+kabberryd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+kabberryd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+kabberryd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-primestoned_SOURCES += primestoned-res.rc
+kabberryd_SOURCES += kabberryd-res.rc
 endif
-primestoned_LDADD = \
+kabberryd_LDADD = \
   $(LIBBITCOIN_SERVER) \
   $(LIBBITCOIN_COMMON) \
   $(LIBUNIVALUE) \
@@ -431,38 +431,38 @@ primestoned_LDADD = \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
-primestoned_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
+kabberryd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(ZMQ_LIBS)
 
-# primestone-cli binary #
-primestone_cli_SOURCES = primestone-cli.cpp
-primestone_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-primestone_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-primestone_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# kabberry-cli binary #
+kabberry_cli_SOURCES = kabberry-cli.cpp
+kabberry_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
+kabberry_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+kabberry_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-primestone_cli_SOURCES += primestone-cli-res.rc
+kabberry_cli_SOURCES += kabberry-cli-res.rc
 endif
 
-primestone_cli_LDADD = \
+kabberry_cli_LDADD = \
   $(LIBBITCOIN_CLI) \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO)
 
-primestone_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+kabberry_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
-# primestone-tx binary #
-primestone_tx_SOURCES = primestone-tx.cpp
-primestone_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-primestone_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-primestone_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# kabberry-tx binary #
+kabberry_tx_SOURCES = kabberry-tx.cpp
+kabberry_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+kabberry_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+kabberry_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-primestone_tx_SOURCES += primestone-tx-res.rc
+kabberry_tx_SOURCES += kabberry-tx-res.rc
 endif
 
-primestone_tx_LDADD = \
+kabberry_tx_LDADD = \
   $(LIBUNIVALUE) \
   $(LIBBITCOIN_COMMON) \
   $(LIBBITCOIN_ZEROCOIN) \
@@ -470,7 +470,7 @@ primestone_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1)
 
-primestone_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+kabberry_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
 # bitcoinconsensus library #

@@ -1,5 +1,5 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -74,7 +74,7 @@ void PrivacyDialog::on_mnWindowsButton_clicked()
 }
 void PrivacyDialog::on_coinmarketcapButton_clicked()
 {
-    QString link = "https://coinmarketcap.com/currencies/primestone";
+    QString link = "https://coinmarketcap.com/currencies/kabberry";
     QDesktopServices::openUrl(QUrl(link));
 }
 void PrivacyDialog::on_DiscordButton_clicked()

@@ -1,6 +1,6 @@
 // Copyright (c) 2014-2016 The Dash Developers
 // Copyright (c) 2016-2017 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -86,8 +86,8 @@ void ObfuscationConfig::configure(bool enabled, int coins, int rounds)
     QSettings settings;
 
     settings.setValue("nObfuscationRounds", rounds);
-    settings.setValue("nAnonymizePrimeStoneAmount", coins);
+    settings.setValue("nAnonymizeKabberryAmount", coins);
 
     nZeromintPercentage = rounds;
-    nAnonymizePrimeStoneAmount = coins;
+    nAnonymizeKabberryAmount = coins;
 }

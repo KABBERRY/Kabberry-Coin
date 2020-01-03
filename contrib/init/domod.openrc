@@ -2,24 +2,24 @@
 
 # backward compatibility for existing gentoo layout
 #
-if [ -d "/var/lib/primestone/.primestone" ]; then
-	BITCOIND_DEFAULT_DATADIR="/var/lib/primestone/.primestone"
+if [ -d "/var/lib/kabberry/.kabberry" ]; then
+	BITCOIND_DEFAULT_DATADIR="/var/lib/kabberry/.kabberry"
 else
-	BITCOIND_DEFAULT_DATADIR="/var/lib/primestoned"
+	BITCOIND_DEFAULT_DATADIR="/var/lib/kabberryd"
 fi
 
-BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/primestone/primestone.conf}
-BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/primestoned}
-BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/primestoned.pid}
+BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/kabberry/kabberry.conf}
+BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/kabberryd}
+BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/kabberryd.pid}
 BITCOIND_DATADIR=${BITCOIND_DATADIR:-${BITCOIND_DEFAULT_DATADIR}}
-BITCOIND_USER=${BITCOIND_USER:-primestone}
-BITCOIND_GROUP=${BITCOIND_GROUP:-primestone}
-BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/primestoned}
+BITCOIND_USER=${BITCOIND_USER:-kabberry}
+BITCOIND_GROUP=${BITCOIND_GROUP:-kabberry}
+BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/kabberryd}
 
-name="PrimeStone Daemon"
-description="PrimeStone crypto-currency p2p network daemon"
+name="Kabberry Daemon"
+description="Kabberry crypto-currency p2p network daemon"
 
-command="/usr/bin/primestoned"
+command="/usr/bin/kabberryd"
 command_args="-pid=\"${BITCOIND_PIDFILE}\" \
 		-conf=\"${BITCOIND_CONFIGFILE}\" \
 		-datadir=\"${BITCOIND_DATADIR}\" \
@@ -65,7 +65,7 @@ checkconfig()
 {
 	if ! grep -qs '^rpcpassword=' "${BITCOIND_CONFIGFILE}" ; then
 		eerror ""
-		eerror "ERROR: You must set a secure rpcpassword to run primestoned."
+		eerror "ERROR: You must set a secure rpcpassword to run kabberryd."
 		eerror "The setting must appear in ${BITCOIND_CONFIGFILE}"
 		eerror ""
 		eerror "This password is security critical to securing wallets "
@@ -78,7 +78,7 @@ checkconfig()
 		eerror "It is also recommended that you also set alertnotify so you are "
 		eerror "notified of problems:"
 		eerror ""
-		eerror "ie: alertnotify=echo %%s | mail -s \"PrimeStone Alert\"" \
+		eerror "ie: alertnotify=echo %%s | mail -s \"Kabberry Alert\"" \
 			"admin@foo.com"
 		eerror ""
 		return 1

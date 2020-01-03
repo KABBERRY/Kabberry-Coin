@@ -1,19 +1,19 @@
-.TH PrimeStone.CONF "5" "January 2011" "primestone.conf 3.19"
+.TH Kabberry.CONF "5" "January 2011" "kabberry.conf 3.19"
 .SH NAME
-primestone.conf \- primestone configuration file
+kabberry.conf \- kabberry configuration file
 .SH SYNOPSIS
 All command-line options (except for '\-conf') may be specified in a configuration file, and all configuration file options may also be specified on the command line. Command-line options override values set in the configuration file.
 .TP
 The configuration file is a list of 'setting=value' pairs, one per line, with optional comments starting with the '#' character.
 .TP
-The configuration file is not automatically created; you can create it using your favorite plain-text editor. By default, primestoned(1) will look for a file named primestone.conf(5) in the primestone data directory, but both the data directory and the configuration file path may be changed using the '\-datadir' and '\-conf' command-line arguments.
+The configuration file is not automatically created; you can create it using your favorite plain-text editor. By default, kabberryd(1) will look for a file named kabberry.conf(5) in the kabberry data directory, but both the data directory and the configuration file path may be changed using the '\-datadir' and '\-conf' command-line arguments.
 .SH LOCATION
-primestone.conf should be located in $HOME/.primestone
+kabberry.conf should be located in $HOME/.kabberry
 .SH NETWORK-RELATED SETTINGS
 .TP
 .TP
 \fBtestnet=\fR[\fI'1'\fR|\fI'0'\fR]
-Enable or disable run on the test network instead of the real *primestone* network.
+Enable or disable run on the test network instead of the real *kabberry* network.
 .TP
 \fBproxy=\fR\fI'127.0.0.1:9050'\fR
 Connect via a socks4 proxy.
@@ -29,7 +29,7 @@ Maximum number of inbound+outbound connections.
 .SH JSON-RPC OPTIONS
 .TP
 \fBserver=\fR[\fI'1'\fR|\fI'0'\fR]
-Tells *primestone* to accept or not accept JSON-RPC commands.
+Tells *kabberry* to accept or not accept JSON-RPC commands.
 .TP
 \fBrpcuser=\fR\fI'username'\fR
 You must set *rpcuser* to secure the JSON-RPC api.
@@ -44,21 +44,21 @@ By default, only RPC connections from localhost are allowed. Specify as many *rp
 Listen for RPC connections on this TCP port.
 .TP
 \fBrpcconnect=\fR\fI'127.0.0.1'\fR
-You can use *primestone* or *primestoned(1)* to send commands to *primestone*/*primestoned(1)* running on another host using this option.
+You can use *kabberry* or *kabberryd(1)* to send commands to *kabberry*/*kabberryd(1)* running on another host using this option.
 .TP
 .SH MISCELLANEOUS OPTIONS
 .TP
 \fBgen=\fR[\fI'0'\fR|\fI'1'\fR]
-Enable or disable attempt to generate PrimeStones.
+Enable or disable attempt to generate Kabberrys.
 .TP
 \fB4way=\fR[\fI'0'\fR|\fI'1'\fR]
-Enable or disable use SSE instructions to try to generate PrimeStones faster.
+Enable or disable use SSE instructions to try to generate Kabberrys faster.
 .TP
 \fBkeypool=\fR\fI'100'\fR
 Pre-generate this many public/private key pairs, so wallet backups will be valid for both prior transactions and several dozen future transactions.
 .TP
 \fBpaytxfee=\fR\fI'0.00'\fR
-Pay an optional transaction fee every time you send PrimeStones. Transactions with fees are more likely than free transactions to be included in generated blocks, so may be validated sooner.
+Pay an optional transaction fee every time you send Kabberrys. Transactions with fees are more likely than free transactions to be included in generated blocks, so may be validated sooner.
 .TP
 \fBallowreceivebyip=\fR\fI'1'\fR
 Allow direct connections for the 'pay via IP address' feature.
@@ -66,12 +66,12 @@ Allow direct connections for the 'pay via IP address' feature.
 .SH USER INTERFACE OPTIONS
 .TP
 \fBmin=\fR[\fI'0'\fR|\fI'1'\fR]
-Enable or disable start primestoned minimized.
+Enable or disable start kabberryd minimized.
 .TP
 \fBminimizetotray=\fR[\fI'0'\fR|\fI'1'\fR]
 Enable or disable minimize to the system tray.
 .SH "SEE ALSO"
-primestoned(1)
+kabberryd(1)
 .SH AUTHOR
 This manual page was written by Micah Anderson <micah@debian.org> for the Debian system (but may be used by others). Permission is granted to copy, distribute and/or modify this document under the terms of the GNU General Public License, Version 3 or any later version published by the Free Software Foundation.
 

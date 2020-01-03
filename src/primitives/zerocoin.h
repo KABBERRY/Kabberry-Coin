@@ -1,10 +1,10 @@
 // Copyright (c) 2017-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PrimeStone_ZEROCOIN_H
-#define PrimeStone_ZEROCOIN_H
+#ifndef Kabberry_ZEROCOIN_H
+#define Kabberry_ZEROCOIN_H
 
 #include <amount.h>
 #include <limits.h>
@@ -248,4 +248,4 @@ public:
     int GetNeededSpends();
 };
 
-#endif //PrimeStone_ZEROCOIN_H
+#endif //Kabberry_ZEROCOIN_H

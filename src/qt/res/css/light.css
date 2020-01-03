@@ -900,7 +900,7 @@ WalletFrame {
     
     QLabel#labelOverviewHeaderRight {
     qproperty-alignment: 'AlignVCenter | AlignRight';
-    background-image: url(':/images/primestone_logo_horizontal');
+    background-image: url(':/images/kabberry_logo_horizontal');
     background-repeat: no-repeat;
     }
     

@@ -7,6 +7,6 @@ Comment[tr]=Kabberry, eşten eşe kriptografik sanal para birimi
 Exec=kabberry-qt %u
 Terminal=false
 Type=Application
-Icon=primestone128
+Icon=kabberry128
 MimeType=x-scheme-handler/kabberry;
 Categories=Office;Finance;
