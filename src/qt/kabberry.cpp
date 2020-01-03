@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018-2019 The Kabberry developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -236,7 +236,7 @@ private:
     void startThread();
 };
 
-#include "primestone.moc"
+#include "kabberry.moc"
 
 BitcoinCore::BitcoinCore() : QObject()
 {
@@ -507,8 +507,8 @@ int main(int argc, char* argv[])
 // Do not refer to data directory yet, this can be overridden by Intro::pickDataDirectory
 
 /// 2. Basic Qt initialization (not dependent on parameters or configuration)
-    Q_INIT_RESOURCE(primestone_locale);
-    Q_INIT_RESOURCE(primestone);
+    Q_INIT_RESOURCE(kabberry_locale);
+    Q_INIT_RESOURCE(kabberry);
 
     BitcoinApplication app(argc, argv);
 #if QT_VERSION > 0x050100
