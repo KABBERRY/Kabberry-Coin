@@ -487,5 +487,6 @@ void OverviewPage::syncRequestFinished(QNetworkReply *reply)
 
 void OverviewPage::hideOrphans(bool fHide)
 {
-    filter->setHideOrphans(fHide);
+    if (filter)
+        filter->setHideOrphans(fHide);
 }
