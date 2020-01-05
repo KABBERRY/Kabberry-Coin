@@ -258,7 +258,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelTotalz->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, sumTotalBalance, false, BitcoinUnits::separatorAlways));
 
 // hcs Get Price From Gecko
-    /*$.ajax({url: 'https://api.coingecko.com/api/v3/coins/kabberry?localization=false', success: function(coin_price){
+    /*$.ajax({url: 'https://api.coingecko.com/api/v3/coins/primestone?localization=false', success: function(coin_price){
             
              ui->labelPricez->setText((coin_price.market_data.current_price.usd.toFixed(8)));
 
@@ -270,7 +270,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     connect(manager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(syncRequestFinished(QNetworkReply*)));
 
-    manager->get(QNetworkRequest(QUrl("https://api.coingecko.com/api/v3/coins/kabberry?localization=false")));
+    manager->get(QNetworkRequest(QUrl("https://api.coingecko.com/api/v3/coins/primestone?localization=false")));
   
     // Percentage labels
     ui->labelKabberryPercent->setText(sPercentage);
