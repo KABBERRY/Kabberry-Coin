@@ -18,6 +18,16 @@ namespace Ui {
 class zPSCControlDialog;
 }
 
+class CzPSCControlWidgetItem : public QTreeWidgetItem
+{
+public:
+    explicit CzPSCControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CzPSCControlWidgetItem(int type = Type) : QTreeWidgetItem(type) {}
+    explicit CzPSCControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+
+    bool operator<(const QTreeWidgetItem &other) const;
+};
+
 class zPSCControlDialog : public QDialog
 {
     Q_OBJECT
@@ -48,6 +58,7 @@ private:
         COLUMN_CONFIRMATIONS,
         COLUMN_ISSPENDABLE
     };
+    friend class CzPSCControlWidgetItem;
 
 private slots:
     void updateSelection(QTreeWidgetItem* item, int column);
