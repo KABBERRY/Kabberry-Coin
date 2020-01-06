@@ -1693,6 +1693,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         //Inititalize zPSCWallet
         uiInterface.InitMessage(_("Syncing zPSC wallet..."));
 
+        pwalletMain->InitAutoConvertAddresses();
+		
         bool fEnablezPSCBackups = GetBoolArg("-backupzPSC", true);
         pwalletMain->setzPSCAutoBackups(fEnablezPSCBackups);
 
