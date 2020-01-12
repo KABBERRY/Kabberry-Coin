@@ -6,6 +6,7 @@
 
 #include "sync.h"
 
+#include <memory>
 #include <set>
 
 #include "util.h"
@@ -49,8 +50,6 @@ struct CLockLocation {
     {
         return mutexName + "  " + sourceFile + ":" + itostr(sourceLine) + (fTry ? " (TRY)" : "");
     }
-
-    std::string MutexName() const { return mutexName; }
 
 private:
     bool fTry;
@@ -104,7 +103,7 @@ static void potential_deadlock_detected(const std::pair<void*, void*>& mismatch,
     }
 }
 
-static void push_lock(void* c, const CLockLocation& locklocation, bool fTry)
+static void push_lock(void* c, const CLockLocation& locklocation)
 {
     std::lock_guard<std::mutex> lock(lockdata.dd_mutex);
 
@@ -133,7 +132,7 @@ static void pop_lock()
 
 void EnterCritical(const char* pszName, const char* pszFile, int nLine, void* cs, bool fTry)
 {
-    push_lock(cs, CLockLocation(pszName, pszFile, nLine, fTry), fTry);
+    push_lock(cs, CLockLocation(pszName, pszFile, nLine, fTry));
 }
 
 void LeaveCritical()
@@ -165,7 +164,7 @@ void DeleteLock(void* cs)
         return;
     }
     std::lock_guard<std::mutex> lock(lockdata.dd_mutex);
-    std::pair<void*, void*> item = std::make_pair(cs, (void*)0);
+    std::pair<void*, void*> item = std::make_pair(cs, nullptr);
     LockOrders::iterator it = lockdata.lockorders.lower_bound(item);
     while (it != lockdata.lockorders.end() && it->first.first == cs) {
         std::pair<void*, void*> invitem = std::make_pair(it->first.second, it->first.first);
