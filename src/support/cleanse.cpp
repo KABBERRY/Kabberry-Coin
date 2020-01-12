@@ -26,7 +26,7 @@
  * BoringSSL (LICENSE: ISC)
  */
 
-void OPENSSL_cleanse(void *ptr, size_t len)
+void memory_cleanse(void *ptr, size_t len)
 {
     std::memset(ptr, 0, len);
 
