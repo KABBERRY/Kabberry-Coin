@@ -1881,14 +1881,14 @@ int64_t GetBlockValue(int nHeight)
         nSubsidy = 30 * COIN;
     } else if (nHeight <= 350000 && nHeight > 250000) {
         nSubsidy = 15 * COIN;
-    } else if (nHeight <= 1000000 && nHeight > 350000) {
+    } else if (nHeight <= 580000 && nHeight > 350000) {
         nSubsidy = 10 * COIN;
-    } else if (nHeight <= 4993760 && nHeight > 1000000) {
+    } else if (nHeight <= 753000 && nHeight > 580000) {
         nSubsidy = 5 * COIN;
-    } else if (nHeight <= 8441600 && nHeight > 4993760) {
-        nSubsidy = 3 * COIN;
-    } else if (nHeight <= 12945600 && nHeight > 8441600) {
-        nSubsidy = 2 * COIN;
+    } else if (nHeight <= 1000000 && nHeight > 753000) {
+        nSubsidy = 2.5 * COIN;
+    } else if (nHeight <= 2500000 && nHeight > 1000000) {
+        nSubsidy = 1.25 * COIN;
     } else {
         nSubsidy = 1 * COIN;
     }
@@ -2175,9 +2175,11 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
     } else if (nHeight <= 192960 && nHeight > 40320) {
         ret = blockValue * 0.35; 
     } else if (nHeight <= 250000 && nHeight > 192960) {
-        ret = blockValue * 0.275; 
+        ret = blockValue * 0.275;
+    } else if (nHeight <= 580000 && nHeight > 250000) {
+		ret = blockValue * 0.65;
     } else {
-        ret = blockValue * 0.65; // 65% Masternode,  35% PoS
+        ret = blockValue * 0.8; // 80% Masternode,  20% PoS
     }
     return ret;
 }
@@ -2876,7 +2878,7 @@ bool ReindexAccumulators(list<uint256>& listMissingCheckpoints, string& strError
     return true;
 }
 
-bool UpdatezPSCSupply(const CBlock& block, CBlockIndex* pindex)
+bool UpdatezPSCSupply(const CBlock& block, CBlockIndex* pindex, bool fJustCheck)
 {
     std::list<CZerocoinMint> listMints;
     bool fFilterInvalid = pindex->nHeight >= Params().Zerocoin_Block_RecalculateAccumulators();
@@ -2901,7 +2903,7 @@ bool UpdatezPSCSupply(const CBlock& block, CBlockIndex* pindex)
             pindex->mapZerocoinSupply.at(denom)++;
 
             //Remove any of our own mints from the mintpool
-            if (pwalletMain) {
+            if (!fJustCheck && pwalletMain) {
                 if (pwalletMain->IsMyMint(m.GetValue())) {
                     pwalletMain->UpdateMint(m.GetValue(), pindex->nHeight, m.GetTxHash(), m.GetDenomination());
 
@@ -3145,7 +3147,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     }
 
     //Track zPSC money supply in the block index
-    if (!UpdatezPSCSupply(block, pindex))
+    if (!UpdatezPSCSupply(block, pindex, fJustCheck))
         return state.DoS(100, error("%s: Failed to calculate new zPSC supply for block=%s height=%d", __func__, block.GetHash().GetHex(), pindex->nHeight), REJECT_INVALID);
 
     // track money supply and mint amount info
@@ -3206,13 +3208,15 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     }
 
     //Record zPSC serials
-    set<uint256> setAddedTx;
-    for (pair<CoinSpend, uint256> pSpend : vSpends) {
-        // Send signal to wallet if this is ours
-        if (pwalletMain) {
+    if (pwalletMain) {
+        std::set<uint256> setAddedTx;
+        for (std::pair<CoinSpend, uint256> pSpend : vSpends) {
+            // Send signal to wallet if this is ours
             if (pwalletMain->IsMyZerocoinSpend(pSpend.first.getCoinSerialNumber())) {
-                LogPrintf("%s: %s detected zerocoinspend in transaction %s \n", __func__, pSpend.first.getCoinSerialNumber().GetHex(), pSpend.second.GetHex());
-                pwalletMain->NotifyZerocoinChanged(pwalletMain, pSpend.first.getCoinSerialNumber().GetHex(), "Used", CT_UPDATED);
+                LogPrintf("%s: %s detected zerocoinspend in transaction %s \n", __func__,
+                          pSpend.first.getCoinSerialNumber().GetHex(), pSpend.second.GetHex());
+                pwalletMain->NotifyZerocoinChanged(pwalletMain, pSpend.first.getCoinSerialNumber().GetHex(), "Used",
+                                                   CT_UPDATED);
 
                 //Don't add the same tx multiple times
                 if (setAddedTx.count(pSpend.second))
