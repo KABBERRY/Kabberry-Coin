@@ -29,7 +29,6 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/exceptions.hpp>
-#include <boost/thread/condition_variable.hpp> // for boost::thread_interrupted
 
 //Kabberry only features
 
@@ -43,7 +42,6 @@ extern int nPreferredDenom;
 extern int nAnonymizeKabberryAmount;
 extern int nLiquidityProvider;
 extern bool fEnableZeromint;
-extern bool fEnableAutoConvert;
 extern int64_t enforceMasternodePaymentsTime;
 extern std::string strMasterNodeAddr;
 extern int keysLoaded;

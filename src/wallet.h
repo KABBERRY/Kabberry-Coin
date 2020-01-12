@@ -223,7 +223,6 @@ public:
     bool SetMintUnspent(const CBigNum& bnSerial);
     bool UpdateMint(const CBigNum& bnValue, const int& nHeight, const uint256& txid, const libzerocoin::CoinDenomination& denom);
     string GetUniqueWalletBackupName(bool fzPSCAuto) const;
-    void InitAutoConvertAddresses();
 
 
     /** Zerocin entry changed.
@@ -240,8 +239,6 @@ public:
     mutable CCriticalSection cs_wallet;
 
     CzPSCWallet* zwalletMain;
-
-    std::set<CBitcoinAddress> setAutoConvertAddresses;
 
     bool fFileBacked;
     bool fWalletUnlockAnonymizeOnly;
@@ -342,7 +339,7 @@ public:
 
     bool isZeromintEnabled()
     {
-        return fEnableZeromint || fEnableAutoConvert;
+        return fEnableZeromint;
     }
 
     void setzPSCAutoBackups(bool fEnabled)
@@ -409,7 +406,6 @@ public:
     //  keystore implementation
     // Generate a new key
     CPubKey GenerateNewKey();
-    CBitcoinAddress GenerateNewAutoMintKey();
 
     //! Adds a key to the store, and saves it to disk.
     bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey);
@@ -514,8 +510,6 @@ public:
     bool MultiSend();
     void AutoCombineDust();
     void AutoZeromint();
-    void AutoZeromintForAddress();
-    void CreateAutoMintTransaction(const CAmount& nMintAmount, CCoinControl* coinControl = nullptr);
 
     static CFeeRate minTxFee;
     static CAmount GetMinimumFee(unsigned int nTxBytes, unsigned int nConfirmTarget, const CTxMemPool& pool);

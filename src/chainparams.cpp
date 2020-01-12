@@ -133,9 +133,9 @@ public:
         bnProofOfWorkLimit = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         nSubsidyHalvingInterval = 259000;
         nMaxReorganizationDepth = 100;
-        nEnforceBlockUpgradeMajority = 5040; // 75%
-        nRejectBlockOutdatedMajority = 6384; // 95%
-        nToCheckBlockUpgradeMajority = 6720; // Approximate expected amount of blocks in 7 days (960*7)
+        nEnforceBlockUpgradeMajority = 720;
+        nRejectBlockOutdatedMajority = 912;
+        nToCheckBlockUpgradeMajority = 960;
         nMinerThreads = 0;
         nTargetTimespan = 1 * 60; // Kabberry: 1 day
         nTargetSpacing = 1.5 * 60;  // Kabberry: 1.5 minute
@@ -155,8 +155,8 @@ public:
         nBlockFirstFraudulent = 1999999999; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 1999999999; //Last valid accumulator checkpoint
         nBlockEnforceInvalidUTXO = 1999999999; //Start enforcing the invalid UTXO's
-        nInvalidAmountFiltered = 1*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
-        nBlockZerocoinV2 = 530000; //!> The block that zerocoin v2 becomes active - roughly Tuesday, May 8, 2018 4:00:00 AM GMT
+        nInvalidAmountFiltered = 268200*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
+        nBlockZerocoinV2 = 580000; //!> The block that zerocoin v2 becomes active - roughly Tuesday, May 8, 2018 4:00:00 AM GMT
         nEnforceNewSporkKey = 1575115200; //!> Sporks signed after (GMT): November 30, 2019 12:00:00 PM GMT must use the new spork key
         nRejectOldSporkKey = 1577707200; //!> Fully reject old spork key after (GMT):  December 30, 2019 12:00:00 PM
 
@@ -264,9 +264,9 @@ public:
         pchMessageStart[3] = 0xba;
         vAlertPubKey = ParseHex("000010e83b2703ccf322f7dbd62dd5855ac7c10bd055814ce121ba32607d573b8810c02c0582aed05b4deb9c4b77b26d92428c61256cd42774babea0a073b2ed0c9");
         nDefaultPort = 41994;
-        nEnforceBlockUpgradeMajority = 4320; // 75%
-        nRejectBlockOutdatedMajority = 5472; // 95%
-        nToCheckBlockUpgradeMajority = 5760; // 4 days
+        nEnforceBlockUpgradeMajority = 51;
+        nRejectBlockOutdatedMajority = 75;
+        nToCheckBlockUpgradeMajority = 100;
         nMinerThreads = 0;
         nTargetTimespan = 1 * 60; // Kabberry: 1 day
         nTargetSpacing = 1 * 30;  // Kabberry: 1 minute

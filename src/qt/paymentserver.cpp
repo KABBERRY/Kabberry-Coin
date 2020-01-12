@@ -19,6 +19,7 @@
 
 #include <cstdlib>
 
+#include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
 
 #include <QApplication>

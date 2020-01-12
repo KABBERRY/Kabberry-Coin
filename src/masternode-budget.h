@@ -368,8 +368,8 @@ public:
         return true;
     }
 
-    // Verify and vote on finalized budget
-    void CheckAndVote();
+    //check to see if we should vote on this
+    void AutoCheck();
     //total kabberry paid out by this budget
     CAmount GetTotalPayout();
     //vote on this finalized budget as a masternode
@@ -525,7 +525,7 @@ public:
 
     void CleanAndRemove(bool fSignatureCheck);
 
-    uint256 GetHash() const
+    uint256 GetHash()
     {
         CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
         ss << strProposalName;
