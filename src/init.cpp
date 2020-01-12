@@ -1693,6 +1693,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         //Inititalize zPSCWallet
         uiInterface.InitMessage(_("Syncing zPSC wallet..."));
 
+        pwalletMain->InitAutoConvertAddresses();
+		
         bool fEnablezPSCBackups = GetBoolArg("-backupzPSC", true);
         pwalletMain->setzPSCAutoBackups(fEnablezPSCBackups);
 
@@ -1876,10 +1878,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     LogPrintf("Budget Mode %s\n", strBudgetMode.c_str());
 
     /* Denominations
-
        A note about convertability. Within Obfuscation pools, each denomination
        is convertable to another.
-
        For example:
        1Kabberry+1000 == (.1Kabberry+100)*10
        10Kabberry+10000 == (1Kabberry+1000)*10
