@@ -6,8 +6,6 @@
 #ifndef BITCOIN_ALLOCATORS_H
 #define BITCOIN_ALLOCATORS_H
 
-#include "support/cleanse.h"
-
 #include <map>
 #include <string.h>
 #include <string>
@@ -16,6 +14,7 @@
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/once.hpp>
 
+#include <openssl/crypto.h> // for OPENSSL_cleanse()
 
 /**
  * Thread-safe class to keep track of locked (ie, non-swappable) memory pages.
