@@ -1428,12 +1428,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                 pcoinsdbview = new CCoinsViewDB(nCoinDBCache, false, fReindex);
                 pcoinscatcher = new CCoinsViewErrorCatcher(pcoinsdbview);
                 pcoinsTip = new CCoinsViewCache(pcoinscatcher);
-				
-                bool fIsActiveCLTV;
-                if (!pblocktree->ReadFlag("CLTVHasMajority", fIsActiveCLTV))
-                    fCLTVHasMajority = false;
-                else
-                    fCLTVHasMajority = fIsActiveCLTV;
 
                 if (fReindex)
                     pblocktree->WriteReindexing(true);
@@ -1882,10 +1876,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     LogPrintf("Budget Mode %s\n", strBudgetMode.c_str());
 
     /* Denominations
-
        A note about convertability. Within Obfuscation pools, each denomination
        is convertable to another.
-
        For example:
        1Kabberry+1000 == (.1Kabberry+100)*10
        10Kabberry+10000 == (1Kabberry+1000)*10
