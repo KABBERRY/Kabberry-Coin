@@ -18,15 +18,15 @@ https://kabberry.com
 <br>GITHUB
 <br>https://github.com/KABBERRY
 
-<br>Kabberry WALLETS 2.3
+<br>Kabberry WALLETS 2.6
 
-<br> Windows wallet 2.3 64bit
+<br> Windows wallet 2.6 64bit
 <br> https://github.com/Kabberrycoin/Kabberry/releases/download/v2.3.0/kabberry_windows_x64.zip
-<br> Windows wallet 2.3 32bit
+<br> Windows wallet 2.6 32bit
 <br> https://github.com/Kabberrycoin/Kabberry/releases/download/v2.3.0/kabberry_windows_x86.zip
-<br> Linux wallet 2.3 (Ubuntu 18.04)
+<br> Linux wallet 2.6 (Ubuntu 18.04)
 <br> https://github.com/Kabberrycoin/Kabberry/releases/download/v2.3.0/kabberry_linux.zip
-<br> Linux wallet 2.3 (Ubuntu 16.04)
+<br> Linux wallet 2.6 (Ubuntu 16.04)
 <br> https://github.com/Kabberrycoin/Kabberry/releases/download/v2.3.0/kabberry_ubuntu_16.zip
 
 <br>Kabberry MASTERNODE SETUP MANUALS
