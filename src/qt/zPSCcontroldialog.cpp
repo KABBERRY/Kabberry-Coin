@@ -51,6 +51,7 @@ void zPSCControlDialog::setModel(WalletModel *model)
     updateList();
 }
 
+
 //Update the tree widget
 void zPSCControlDialog::updateList()
 {
@@ -73,9 +74,9 @@ void zPSCControlDialog::updateList()
         itemDenom->setData(COLUMN_DENOMINATION, Qt::UserRole, QVariant((qlonglong) denom));
     }
 
-    // select all unused coins - including not mature. Update status of coins too.
+    // select all unused coins - including not mature and mismatching seed. Update status of coins too.
     std::set<CMintMeta> set;
-    model->listZerocoinMints(set, true, false, true);
+    model->listZerocoinMints(set, true, false, true, true);
     this->setMints = set;
 
     //populate rows with mint info
@@ -115,7 +116,7 @@ void zPSCControlDialog::updateList()
             isMature = mint.nHeight < mapMaturityHeight.at(denom);
 
         // disable selecting this mint if it is not spendable - also display a reason why
-        bool fSpendable = isMature && nConfirmations >= Params().Zerocoin_MintRequiredConfirmations();
+        bool fSpendable = isMature && nConfirmations >= Params().Zerocoin_MintRequiredConfirmations() && mint.isSeedCorrect;
         if(!fSpendable) {
             itemMint->setDisabled(true);
             itemMint->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
@@ -127,6 +128,8 @@ void zPSCControlDialog::updateList()
             string strReason = "";
             if(nConfirmations < Params().Zerocoin_MintRequiredConfirmations())
                 strReason = strprintf("Needs %d more confirmations", Params().Zerocoin_MintRequiredConfirmations() - nConfirmations);
+            else if (!mint.isSeedCorrect)
+                strReason = "The zPSC seed used to mint this zPSC is not the same as currently hold in the wallet";
             else
                 strReason = strprintf("Needs %d more mints added to network", Params().Zerocoin_RequiredAccumulation());
 
@@ -176,7 +179,7 @@ void zPSCControlDialog::updateLabels()
     ui->labelQuantity_int->setText(QString::number(setSelectedMints.size()));
 
     //update PrivacyDialog labels
-//    privacyDialog->setzPSCControlLabels(nAmount, setSelectedMints.size());
+    privacyDialog->setzPSCControlLabels(nAmount, setSelectedMints.size());
 }
 
 std::vector<CMintMeta> zPSCControlDialog::GetSelectedMints()

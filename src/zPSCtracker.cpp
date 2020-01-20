@@ -291,6 +291,8 @@ void CzPSCTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchi
     meta.denom = dMint.GetDenomination();
     meta.isArchived = isArchived;
     meta.isDeterministic = true;
+    CzPSCWallet zPSCWallet(strWalletFile);
+    meta.isSeedCorrect = zPSCWallet.CheckSeed(dMint);
     mapSerialHashes[meta.hashSerial] = meta;
 
     if (isNew)
@@ -311,6 +313,7 @@ void CzPSCTracker::Add(const CZerocoinMint& mint, bool isNew, bool isArchived)
     meta.denom = mint.GetDenomination();
     meta.isArchived = isArchived;
     meta.isDeterministic = false;
+    meta.isSeedCorrect = true;
     mapSerialHashes[meta.hashSerial] = meta;
 
     if (isNew)
@@ -433,7 +436,6 @@ bool CzPSCTracker::UpdateStatusInternal(const std::set<uint256>& setMempool, CMi
 std::set<CMintMeta> CzPSCTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, bool fUpdateStatus, bool fWrongSeed)
 {
     CWalletDB walletdb(strWalletFile);
-    CzPSCWallet zPSCWallet(strWalletFile);
     if (fUpdateStatus) {
         std::list<CZerocoinMint> listMintsDB = walletdb.ListMintedCoins();
         for (auto& mint : listMintsDB)
@@ -442,11 +444,9 @@ std::set<CMintMeta> CzPSCTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, 
 
         std::list<CDeterministicMint> listDeterministicDB = walletdb.ListDeterministicMints();
         for (auto& dMint : listDeterministicDB) {
-            if (!fWrongSeed && !zPSCWallet.CheckSeed(dMint)) 
-                continue;
             Add(dMint);
         }
-        LogPrint("zero", "%s: added %d dzpiv from DB\n", __func__, listDeterministicDB.size());
+        LogPrint("zero", "%s: added %d dzPSC from DB\n", __func__, listDeterministicDB.size());
     }
 
     std::vector<CMintMeta> vOverWrite;
@@ -484,6 +484,9 @@ std::set<CMintMeta> CzPSCTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, 
             if (mint.nHeight >= mapMaturity.at(mint.denom))
                 continue;
         }
+
+        if (!fWrongSeed && !mint.isSeedCorrect)
+            continue;
 
         setMints.insert(mint);
     }

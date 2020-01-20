@@ -26,7 +26,8 @@ struct CMintMeta
     bool isUsed;
     bool isArchived;
     bool isDeterministic;
-
+    bool isSeedCorrect;
+	
     bool operator <(const CMintMeta& a) const;
 };
 
