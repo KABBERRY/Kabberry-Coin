@@ -278,8 +278,9 @@ bool CzPSCTracker::UpdateState(const CMintMeta& meta)
     return true;
 }
 
-void CzPSCTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchived)
+void CzPSCTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchived, CzPSCWallet* zPSCWallet)
 {
+    bool iszPSCWalletInitialized = (NULL != zPSCWallet);
     CMintMeta meta;
     meta.hashPubcoin = dMint.GetPubcoinHash();
     meta.nHeight = dMint.GetHeight();
@@ -291,8 +292,11 @@ void CzPSCTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchi
     meta.denom = dMint.GetDenomination();
     meta.isArchived = isArchived;
     meta.isDeterministic = true;
-    CzPSCWallet zPSCWallet(strWalletFile);
-    meta.isSeedCorrect = zPSCWallet.CheckSeed(dMint);
+    if (! iszPSCWalletInitialized)
+        zPSCWallet = new CzPSCWallet(strWalletFile);
+    meta.isSeedCorrect = zPSCWallet->CheckSeed(dMint);
+    if (! iszPSCWalletInitialized)
+        delete zPSCWallet;
     mapSerialHashes[meta.hashSerial] = meta;
 
     if (isNew)
@@ -443,9 +447,12 @@ std::set<CMintMeta> CzPSCTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, 
         LogPrint("zero", "%s: added %d zerocoinmints from DB\n", __func__, listMintsDB.size());
 
         std::list<CDeterministicMint> listDeterministicDB = walletdb.ListDeterministicMints();
+
+        CzPSCWallet* zPSCWallet = new CzPSCWallet(strWalletFile);
         for (auto& dMint : listDeterministicDB) {
-            Add(dMint);
+            Add(dMint, false, false, zPSCWallet);
         }
+        delete zPSCWallet;
         LogPrint("zero", "%s: added %d dzPSC from DB\n", __func__, listDeterministicDB.size());
     }
 
