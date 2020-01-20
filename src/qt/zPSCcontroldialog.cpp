@@ -179,7 +179,7 @@ void zPSCControlDialog::updateLabels()
     ui->labelQuantity_int->setText(QString::number(setSelectedMints.size()));
 
     //update PrivacyDialog labels
-    privacyDialog->setzPSCControlLabels(nAmount, setSelectedMints.size());
+    //privacyDialog->setzPSCControlLabels(nAmount, setSelectedMints.size());
 }
 
 std::vector<CMintMeta> zPSCControlDialog::GetSelectedMints()
