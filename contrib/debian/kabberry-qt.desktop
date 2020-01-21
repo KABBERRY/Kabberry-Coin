@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Kabberry
+Comment=Kabberry P2P Cryptocurrency
+Comment[fr]=Kabberry, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Kabberry, eşten eşe kriptografik sanal para birimi
+Exec=kabberry-qt %u
+Terminal=false
+Type=Application
+Icon=kabberry128
+MimeType=x-scheme-handler/kabberry;
+Categories=Office;Finance;

@@ -9,12 +9,11 @@
 #define BITCOIN_BIGNUM_H
 
 #if defined HAVE_CONFIG_H
-#include "config/kabberry-config.h"
+#include "kabberry-config.h"
 #endif
 
 #include <stdexcept>
 #include <vector>
-#include <limits.h>
 #if defined(USE_NUM_GMP)
 #include <gmp.h>
 #endif
