@@ -8,11 +8,8 @@ TEST_BINARY=test/test_kabberry$(EXEEXT)
 
 JSON_TEST_FILES = \
   test/data/script_valid.json \
-  test/data/base58_keys_valid.json \
   test/data/sig_canonical.json \
   test/data/sig_noncanonical.json \
-  test/data/base58_encode_decode.json \
-  test/data/base58_keys_invalid.json \
   test/data/script_invalid.json \
   test/data/tx_invalid.json \
   test/data/tx_valid.json \
@@ -34,7 +31,6 @@ BITCOIN_TESTS =\
   test/libzerocoin_tests.cpp \
   test/allocator_tests.cpp \
   test/base32_tests.cpp \
-  test/base58_tests.cpp \
   test/base64_tests.cpp \
   test/budget_tests.cpp \
   test/checkblock_tests.cpp \

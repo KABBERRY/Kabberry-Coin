@@ -272,4 +272,3 @@ BOOST_AUTO_TEST_CASE(base58_keys_invalid)
 
 
 BOOST_AUTO_TEST_SUITE_END()
-
