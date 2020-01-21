@@ -39,33 +39,33 @@ OSX_QT_TRANSLATIONS = da,de,es,hu,ru,uk,zh_CN,zh_TW
 
 DIST_DOCS = $(wildcard doc/*.md) $(wildcard doc/release-notes/*.md)
 DIST_CONTRIB = $(top_srcdir)/contrib/kabberry-cli.bash-completion \
-			$(top_srcdir)/contrib/kabberry-tx.bash-completion \
-			$(top_srcdir)/contrib/kabberryd.bash-completion \
-			$(top_srcdir)/contrib/init \
-			$(top_srcdir)/contrib/install_db4.sh
+	       $(top_srcdir)/contrib/kabberry-tx.bash-completion \
+	       $(top_srcdir)/contrib/kabberryd.bash-completion \
+           $(top_srcdir)/contrib/init \
+           $(top_srcdir)/contrib/install_db4.sh
 
 DIST_SHARE = \
-			$(top_srcdir)/share/genbuild.sh \
-			$(top_srcdir)/share/rpcauth
+           $(top_srcdir)/share/genbuild.sh \
+           $(top_srcdir)/share/rpcauth
 
 BIN_CHECKS=$(top_srcdir)/contrib/devtools/symbol-check.py \
-			$(top_srcdir)/contrib/devtools/security-check.py
+           $(top_srcdir)/contrib/devtools/security-check.py
 
 WINDOWS_PACKAGING = $(top_srcdir)/share/pixmaps/bitcoin.ico \
-	$(top_srcdir)/share/pixmaps/nsis-header.bmp \
-	$(top_srcdir)/share/pixmaps/nsis-wizard.bmp \
-	$(top_srcdir)/doc/README_windows.txt
+  $(top_srcdir)/share/pixmaps/nsis-header.bmp \
+  $(top_srcdir)/share/pixmaps/nsis-wizard.bmp \
+  $(top_srcdir)/doc/README_windows.txt
 
 OSX_PACKAGING = $(OSX_DEPLOY_SCRIPT) $(OSX_FANCY_PLIST) $(OSX_INSTALLER_ICONS) \
-	$(top_srcdir)/contrib/macdeploy/$(OSX_BACKGROUND_SVG) \
-	$(OSX_DSSTORE_GEN) \
-	$(top_srcdir)/contrib/macdeploy/detached-sig-apply.sh \
-	$(top_srcdir)/contrib/macdeploy/detached-sig-create.sh
+  $(top_srcdir)/contrib/macdeploy/$(OSX_BACKGROUND_SVG) \
+  $(OSX_DSSTORE_GEN) \
+  $(top_srcdir)/contrib/macdeploy/detached-sig-apply.sh \
+  $(top_srcdir)/contrib/macdeploy/detached-sig-create.sh
 
 COVERAGE_INFO = baseline.info \
-	test_kabberry_filtered.info total_coverage.info \
-	baseline_filtered.info functional_test.info functional_test_filtered.info \
-	test_kabberry_coverage.info test_kabberry.info
+  test_kabberry_filtered.info total_coverage.info \
+  baseline_filtered.info functional_test.info functional_test_filtered.info \
+  test_kabberry_coverage.info test_kabberry.info
 
 dist-hook:
 	-$(GIT) archive --format=tar HEAD -- src/clientversion.cpp | $(AMTAR) -C $(top_distdir) -xf -
@@ -104,8 +104,8 @@ $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings:
 	echo '{	CFBundleDisplayName = "$(PACKAGE_NAME)"; CFBundleName = "$(PACKAGE_NAME)"; }' > $@
 
 OSX_APP_BUILT=$(OSX_APP)/Contents/PkgInfo $(OSX_APP)/Contents/Resources/empty.lproj \
-	$(OSX_APP)/Contents/Resources/bitcoin.icns $(OSX_APP)/Contents/Info.plist \
-	$(OSX_APP)/Contents/MacOS/Kabberry-Qt $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings
+  $(OSX_APP)/Contents/Resources/bitcoin.icns $(OSX_APP)/Contents/Info.plist \
+  $(OSX_APP)/Contents/MacOS/Kabberry-Qt $(OSX_APP)/Contents/Resources/Base.lproj/InfoPlist.strings
 
 osx_volname:
 	echo $(OSX_VOLNAME) >$@
@@ -219,26 +219,26 @@ dist_noinst_SCRIPTS = autogen.sh
 EXTRA_DIST = $(DIST_SHARE) qa/pull-tester/rpc-tests.sh qa/pull-tester/run-bitcoin-cli qa/rpc-tests $(DIST_CONTRIB) $(DIST_DOCS) $(WINDOWS_PACKAGING) $(OSX_PACKAGING) $(BIN_CHECKS)
 
 EXTRA_DIST += \
-		test/util/bitcoin-util-test.py \
-		test/util/data/bitcoin-util-test.json \
-		test/util/data/blanktxv1.hex \
-		test/util/data/blanktxv1.json \
-		test/util/data/tt-delin1-out.hex \
-		test/util/data/tt-delin1-out.json \
-		test/util/data/tt-delout1-out.hex \
-		test/util/data/tt-delout1-out.json \
-		test/util/data/tt-locktime317000-out.hex \
-		test/util/data/tt-locktime317000-out.json \
-		test/util/data/tx394b54bb.hex \
-		test/util/data/txcreate1.hex \
-		test/util/data/txcreate1.json \
-		test/util/data/txcreate2.hex \
-		test/util/data/txcreate2.json \
-		test/util/data/txcreatescript1.hex \
-		test/util/data/txcreatescript1.json \
-		test/util/data/txcreatesign.hex \
-		test/util/data/txcreatesign.json \
-		test/util/rpcauth-test.py
+    test/util/bitcoin-util-test.py \
+    test/util/data/bitcoin-util-test.json \
+    test/util/data/blanktxv1.hex \
+    test/util/data/blanktxv1.json \
+    test/util/data/tt-delin1-out.hex \
+    test/util/data/tt-delin1-out.json \
+    test/util/data/tt-delout1-out.hex \
+    test/util/data/tt-delout1-out.json \
+    test/util/data/tt-locktime317000-out.hex \
+    test/util/data/tt-locktime317000-out.json \
+    test/util/data/tx394b54bb.hex \
+    test/util/data/txcreate1.hex \
+    test/util/data/txcreate1.json \
+    test/util/data/txcreate2.hex \
+    test/util/data/txcreate2.json \
+    test/util/data/txcreatescript1.hex \
+    test/util/data/txcreatescript1.json \
+    test/util/data/txcreatesign.hex \
+    test/util/data/txcreatesign.json \
+    test/util/rpcauth-test.py
 
 CLEANFILES = $(OSX_DMG) $(BITCOIN_WIN_INSTALLER)
 
