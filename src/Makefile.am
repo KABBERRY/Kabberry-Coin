@@ -49,14 +49,14 @@ $(LIBSECP256K1): $(wildcard secp256k1/src/*.h) $(wildcard secp256k1/src/*.c) $(w
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
 # But to build the less dependent modules first, we manually select their order here:
 EXTRA_LIBRARIES += \
-  $(LIBBITCOIN_CRYPTO) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_COMMON) \
-  $(LIBBITCOIN_ZEROCOIN) \
-  $(LIBBITCOIN_SERVER) \
-  $(LIBBITCOIN_CLI) \
-  $(LIBBITCOIN_WALLET) \
-  $(LIBBITCOIN_ZMQ)
+	$(LIBBITCOIN_CRYPTO) \
+	$(LIBBITCOIN_UTIL) \
+	$(LIBBITCOIN_COMMON) \
+	$(LIBBITCOIN_ZEROCOIN) \
+	$(LIBBITCOIN_SERVER) \
+	$(LIBBITCOIN_CLI) \
+	$(LIBBITCOIN_WALLET) \
+	$(LIBBITCOIN_ZMQ)
 
 lib_LTLIBRARIES = $(LIBBITCOINCONSENSUS)
 
@@ -66,67 +66,67 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += kabberryd
+	bin_PROGRAMS += kabberryd
 endif
 
 if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += kabberry-cli kabberry-tx
+	bin_PROGRAMS += kabberry-cli kabberry-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
 # Kabberry #
 BITCOIN_CORE_H = \
-  activemasternode.h \
-  accumulators.h \
-  accumulatorcheckpoints.h \
-  accumulatorcheckpoints.json.h \
-  accumulatormap.h \
-  addrman.h \
-  alert.h \
-  allocators.h \
-  amount.h \
-  base58.h \
-  bip38.h \
-  bloom.h \
-  blocksignature.h \
-  chain.h \
-  chainparams.h \
-  chainparamsbase.h \
-  chainparamsseeds.h \
-  checkpoints.h \
-  checkqueue.h \
-  clientversion.h \
-  coincontrol.h \
-  coins.h \
-  compat.h \
-  compat/byteswap.h \
-  compat/endian.h \
-  compat/sanity.h \
-  compressor.h \
-  primitives/block.h \
-  primitives/deterministicmint.h \
-  primitives/transaction.h \
-  primitives/zerocoin.h \
-  core_io.h \
-  crypter.h \
-  denomination_functions.h \
-  obfuscation.h \
-  obfuscation-relay.h \
-  db.h \
-  hash.h \
-  httprpc.h \
-  httpserver.h \
-  init.h \
-  invalid.h \
-  invalid_outpoints.json.h \
-  invalid_serials.json.h \
-  kernel.h \
-  swifttx.h \
-  key.h \
-  keystore.h \
-  leveldbwrapper.h \
-  limitedmap.h \
-  main.h \
+	activemasternode.h \
+	accumulators.h \
+	accumulatorcheckpoints.h \
+	accumulatorcheckpoints.json.h \
+	accumulatormap.h \
+	addrman.h \
+	alert.h \
+	allocators.h \
+	amount.h \
+	base58.h \
+	bip38.h \
+	bloom.h \
+	blocksignature.h \
+	chain.h \
+	chainparams.h \
+	chainparamsbase.h \
+	chainparamsseeds.h \
+	checkpoints.h \
+	checkqueue.h \
+	clientversion.h \
+	coincontrol.h \
+	coins.h \
+	compat.h \
+	compat/byteswap.h \
+	compat/endian.h \
+	compat/sanity.h \
+	compressor.h \
+	primitives/block.h \
+	primitives/deterministicmint.h \
+	primitives/transaction.h \
+	primitives/zerocoin.h \
+	core_io.h \
+	crypter.h \
+	denomination_functions.h \
+	obfuscation.h \
+	obfuscation-relay.h \
+	db.h \
+	hash.h \
+	httprpc.h \
+	httpserver.h \
+	init.h \
+	invalid.h \
+	invalid_outpoints.json.h \
+	invalid_serials.json.h \
+	kernel.h \
+	swifttx.h \
+	key.h \
+	keystore.h \
+	leveldbwrapper.h \
+	limitedmap.h \
+	main.h \
   masternode.h \
   masternode-payments.h \
   masternode-budget.h \
