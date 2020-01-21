@@ -417,7 +417,7 @@
                        <item row="4" column="0">
                         <widget class="QLabel" name="labelUSDPriceTextz">
                          <property name="text">
-                          <string>1 PSC:</string>
+                          <string>1 KKC:</string>
                          </property>
                         </widget>
                        </item>
@@ -433,7 +433,7 @@
                          <cursorShape>IBeamCursor</cursorShape>
                          </property>
                          <property name="toolTip">
-                          <string>Cost of 1 PSC coin</string>
+                          <string>Cost of 1 KKC coin</string>
                          </property>
                          <property name="text">
                           <string>0.01</string>
