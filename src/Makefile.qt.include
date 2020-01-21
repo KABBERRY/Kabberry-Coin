@@ -272,7 +272,7 @@ RES_ICONS = \
   qt/res/icons/yesvote.png \
   qt/res/icons/novote.png
 
-BITCOIN_QT_CPP = \
+BITCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
   qt/bitcoinaddressvalidator.cpp \
   qt/bitcoinamountfield.cpp \
@@ -297,12 +297,9 @@ BITCOIN_QT_CPP = \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
 
-if TARGET_WINDOWS
-BITCOIN_QT_CPP += qt/winshutdownmonitor.cpp
-endif
+BITCOIN_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
 
-if ENABLE_WALLET
-BITCOIN_QT_CPP += \
+BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
@@ -339,6 +336,12 @@ BITCOIN_QT_CPP += \
   qt/walletview.cpp \
   qt/zPSCcontroldialog.cpp
 
+BITCOIN_QT_CPP = $(BITCOIN_QT_BASE_CPP)
+if TARGET_WINDOWS
+BITCOIN_QT_CPP += $(BITCOIN_QT_WINDOWS_CPP)
+endif
+if ENABLE_WALLET
+BITCOIN_QT_CPP += $(BITCOIN_QT_WALLET_CPP)
 endif
 
 RES_IMAGES = \
@@ -360,6 +363,7 @@ RES_IMAGES = \
   qt/res/images/light/walletFrame.png \
   qt/res/images/light/walletFrame_bg.png \
   qt/res/images/light/walletBar.png
+  qt/res/images/walletFrame_bg.png
 
 RES_CSS = \
   qt/res/css/light.css \
@@ -400,7 +404,6 @@ $(QT_MOC_CPP): $(PROTOBUF_H)
 qt_kabberry_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
 qt_kabberry_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
-qt_bitcoin_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
 qt_kabberry_qt_SOURCES = qt/kabberry.cpp
 if TARGET_DARWIN
@@ -411,7 +414,7 @@ if TARGET_WINDOWS
 endif
 qt_kabberry_qt_LDADD = qt/libbitcoinqt.a $(LIBBITCOIN_SERVER)
 if ENABLE_WALLET
-qt_kabberry_qt_LDADD += $(LIBBITCOIN_WALLET)
+qt_kabberry_qt_LDADD += $(LIBBITCOIN_UTIL) $(LIBBITCOIN_WALLET)
 endif
 if ENABLE_ZMQ
 qt_kabberry_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
@@ -420,7 +423,7 @@ qt_kabberry_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL
   $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
   $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
 qt_kabberry_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-qt_kabberry_qt_LIBTOOLFLAGS = --tag CXX
+qt_kabberry_qt_LIBTOOLFLAGS = $(AM_LIBTOOLFLAGS) --tag CXX
 
 #locale/foo.ts -> locale/foo.qm
 QT_QM=$(QT_TS:.ts=.qm)
@@ -431,7 +434,7 @@ $(srcdir)/qt/kabberrystrings.cpp: $(libbitcoin_server_a_SOURCES) $(libbitcoin_wa
 	@test -n $(XGETTEXT) || echo "xgettext is required for updating translations"
 	$(AM_V_GEN) cd $(srcdir); XGETTEXT=$(XGETTEXT) PACKAGE_NAME="$(PACKAGE_NAME)" $(PYTHON) ../share/qt/extract_strings_qt.py $^
 
-translate: $(srcdir)/qt/kabberrystrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
+translate: $(srcdir)/qt/kabberrystrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_BASE_CPP) qt/kabberry.cpp $(BITCOIN_QT_WINDOWS_CPP) $(BITCOIN_QT_WALLET_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
 	@test -n $(LUPDATE) || echo "lupdate is required for updating translations"
 	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -locations relative -no-obsolete -ts $(srcdir)/qt/locale/kabberry_en.ts
 
