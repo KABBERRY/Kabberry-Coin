@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2017 The Bitcoin Core developers
-// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -24,7 +24,7 @@
 #define DO_STRINGIZE(X) #X
 
 //! Copyright string used in Windows .rc files
-#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The Bitcoin Core Developers, 2014-" STRINGIZE(COPYRIGHT_YEAR) " The Dash Core Developers, 2015-" STRINGIZE(COPYRIGHT_YEAR) " The PIVX Core Developers, " STRINGIZE(COPYRIGHT_YEAR) " The Kabberry Developers"
+#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The Bitcoin Core Developers, 2014-" STRINGIZE(COPYRIGHT_YEAR) " The Dash Core Developers, 2015-" STRINGIZE(COPYRIGHT_YEAR) " The Kabberry Core Developers"
 
 /**
  * kabberryd-res.rc includes this file, but it cannot cope with real c++ code.
@@ -50,6 +50,9 @@ extern const std::string CLIENT_DATE;
 
 std::string FormatFullVersion();
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments);
+
+// Returns a friendly formatted version string to show in the UI
+std::string FormatVersionFriendly();
 
 #endif // WINDRES_PREPROC
 

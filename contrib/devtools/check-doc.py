@@ -6,6 +6,7 @@
 '''
 This checks if all command line args are documented.
 Return value is 0 to indicate no error.
+
 Author: @MarcoFalke
 '''
 
@@ -21,7 +22,7 @@ CMD_GREP_DOCS = r"egrep -r -I 'HelpMessageOpt\(\"\-[^\"=]+?(=|\")' {}".format(CM
 REGEX_ARG = re.compile(r'(?:map(?:Multi)?Args(?:\.count\(|\[)|Get(?:Bool)?Arg\()\"(\-[^\"]+?)\"')
 REGEX_DOC = re.compile(r'HelpMessageOpt\(\"(\-[^\"=]+?)(?:=|\")')
 # list unsupported, deprecated and duplicate args as they need no documentation
-SET_DOC_OPTIONAL = set(['-rpcssl', '-benchmark', '-h', '-help', '-socks', '-tor', '-debugnet', '-whitelistalwaysrelay', '-prematurewitness', '-walletprematurewitness', '-promiscuousmempoolflags', '-blockminsize', '-sendfreetransactions', '-checklevel', '-liquidityprovider', '-anonymizepivxamount'])
+SET_DOC_OPTIONAL = set(['-rpcssl', '-benchmark', '-h', '-help', '-socks', '-tor', '-debugnet', '-whitelistalwaysrelay', '-prematurewitness', '-walletprematurewitness', '-promiscuousmempoolflags', '-blockminsize', '-sendfreetransactions', '-checklevel', '-liquidityprovider', '-anonymizekabberryamount'])
 
 def main():
     used = check_output(CMD_GREP_ARGS, shell=True, universal_newlines=True)

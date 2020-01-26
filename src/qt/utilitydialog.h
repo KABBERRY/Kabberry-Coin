@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -9,8 +9,8 @@
 
 #include <QDialog>
 #include <QObject>
+#include <QMainWindow>
 
-class BitcoinGUI;
 class ClientModel;
 
 namespace Ui
@@ -33,9 +33,6 @@ public:
 private:
     Ui::HelpMessageDialog* ui;
     QString text;
-
-private slots:
-    void on_okButton_accepted();
 };
 
 
@@ -46,7 +43,7 @@ class ShutdownWindow : public QWidget
 
 public:
     ShutdownWindow(QWidget* parent = 0, Qt::WindowFlags f = 0);
-    static void showShutdownWindow(BitcoinGUI* window);
+    static void showShutdownWindow(QMainWindow* window);
 
 protected:
     void closeEvent(QCloseEvent* event);

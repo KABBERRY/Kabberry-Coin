@@ -1,0 +1,8 @@
+/usr/bin/kabberry-cli		--	gen_context(system_u:object_r:kabberry_exec_t,s0)
+/usr/sbin/kabberryd		--	gen_context(system_u:object_r:kabberry_exec_t,s0)
+/usr/lib(64)?/kabberry/kabberryd		--	gen_context(system_u:object_r:kabberry_exec_t,s0)
+
+/etc/kabberry(/.*)?		gen_context(system_u:object_r:kabberry_conf_t,s0)
+/var/lib/kabberry(/.*)?		gen_context(system_u:object_r:kabberry_var_lib_t,s0)
+
+(/var)?/run/kabberryd(/.*)?   gen_context(system_u:object_r:kabberry_var_run_t,s0)

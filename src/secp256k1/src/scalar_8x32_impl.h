@@ -672,7 +672,7 @@ static void secp256k1_scalar_sqr(secp256k1_scalar *r, const secp256k1_scalar *a)
     secp256k1_scalar_reduce_512(r, l);
 }
 
-#ifdef USE_ENKabberryRPHISM
+#ifdef USE_ENDOMORPHISM
 static void secp256k1_scalar_split_128(secp256k1_scalar *r1, secp256k1_scalar *r2, const secp256k1_scalar *a) {
     r1->d[0] = a->d[0];
     r1->d[1] = a->d[1];

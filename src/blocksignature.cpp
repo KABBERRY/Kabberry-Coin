@@ -1,11 +1,11 @@
-// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "blocksignature.h"
 #include "main.h"
-#include "zPSCchain.h"
+#include "skkcchain.h"
 
 bool SignBlockWithKey(CBlock& block, const CKey& key)
 {
@@ -23,8 +23,10 @@ bool GetKeyIDFromUTXO(const CTxOut& txout, CKeyID& keyID)
         return false;
     if (whichType == TX_PUBKEY) {
         keyID = CPubKey(vSolutions[0]).GetID();
-    } else if (whichType == TX_PUBKEYHASH) {
+    } else if (whichType == TX_PUBKEYHASH || whichType == TX_COLDSTAKE) {
         keyID = CKeyID(uint160(vSolutions[0]));
+    } else {
+        return false;
     }
 
     return true;
@@ -63,13 +65,13 @@ bool CheckBlockSignature(const CBlock& block)
     if (block.vchBlockSig.empty())
         return error("%s: vchBlockSig is empty!", __func__);
 
-    /** Each block is signed by the private key of the input that is staked. This can be either zPSC or normal UTXO
-     *  zPSC: Each zPSC has a keypair associated with it. The serial number is a hash of the public key.
+    /** Each block is signed by the private key of the input that is staked. This can be either sKKC or normal UTXO
+     *  sKKC: Each sKKC has a keypair associated with it. The serial number is a hash of the public key.
      *  UTXO: The public key that signs must match the public key associated with the first utxo of the coinstake tx.
      */
     CPubKey pubkey;
-    bool fzPSCStake = block.vtx[1].IsZerocoinSpend();
-    if (fzPSCStake) {
+    bool fsKKCStake = block.vtx[1].vin[0].IsZerocoinSpend();
+    if (fsKKCStake) {
         libzerocoin::CoinSpend spend = TxInToZerocoinSpend(block.vtx[1].vin[0]);
         pubkey = spend.getPubKey();
     } else {
@@ -81,6 +83,12 @@ bool CheckBlockSignature(const CBlock& block)
         if (whichType == TX_PUBKEY || whichType == TX_PUBKEYHASH) {
             valtype& vchPubKey = vSolutions[0];
             pubkey = CPubKey(vchPubKey);
+        } else if (whichType == TX_COLDSTAKE) {
+            // pick the public key from the P2CS input
+            const CTxIn& txin = block.vtx[1].vin[0];
+            int start = 1 + (int) *txin.scriptSig.begin(); // skip sig
+            start += 1 + (int) *(txin.scriptSig.begin()+start); // skip flag
+            pubkey = CPubKey(txin.scriptSig.begin()+start+1, txin.scriptSig.end());
         }
     }
 

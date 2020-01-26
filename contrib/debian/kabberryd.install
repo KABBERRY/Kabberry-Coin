@@ -1,2 +1,3 @@
 usr/local/bin/kabberryd usr/bin
 usr/local/bin/kabberry-cli usr/bin
+debian/examples/kabberry.conf etc/kabberry

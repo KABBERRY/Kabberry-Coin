@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2018 The PIVX developers
-// Copyright (c) 2018 The Kabberry developers
+// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -50,7 +50,9 @@
 #include <QDateTime>
 #include <QDesktopServices>
 #include <QDesktopWidget>
-#include <QDoubleValidator>
+#include <QRegExp>
+#include <QRegularExpression>
+#include <QRegularExpressionValidator>
 #include <QFileDialog>
 #include <QFont>
 #include <QLineEdit>
@@ -59,6 +61,7 @@
 #include <QThread>
 #include <QUrlQuery>
 #include <QMouseEvent>
+
 
 #if BOOST_FILESYSTEM_VERSION >= 3
 static boost::filesystem::detail::utf8_codecvt_facet utf8;
@@ -74,13 +77,18 @@ extern double NSAppKitVersionNumber;
 #endif
 #endif
 
-#define URI_SCHEME "PSC"
+#define URI_SCHEME "kabberry"
 
 namespace GUIUtil
 {
 QString dateTimeStr(const QDateTime& date)
 {
     return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm");
+}
+
+QString dateTimeStrWithSeconds(const QDateTime& date)
+{
+    return date.date().toString(Qt::SystemLocaleShortDate) + QString(" ") + date.toString("hh:mm:ss");
 }
 
 QString dateTimeStr(qint64 nTime)
@@ -95,6 +103,37 @@ QFont bitcoinAddressFont()
     return font;
 }
 
+/**
+ * Parse a string into a number of base monetary units and
+ * return validity.
+ * @note Must return 0 if !valid.
+ */
+CAmount parseValue(const QString& text, int displayUnit, bool* valid_out)
+{
+    CAmount val = 0;
+    bool valid = BitcoinUnits::parse(displayUnit, text, &val);
+    if (valid) {
+        if (val < 0 || val > BitcoinUnits::maxMoney())
+            valid = false;
+    }
+    if (valid_out)
+        *valid_out = valid;
+    return valid ? val : 0;
+}
+
+QString formatBalance(CAmount amount, int nDisplayUnit, bool issKKC){
+    return (amount == 0) ? ("0.00 " + BitcoinUnits::name(nDisplayUnit, issKKC)) : BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, amount, false, BitcoinUnits::separatorAlways, true, issKKC);
+}
+
+bool requestUnlock(WalletModel* walletModel, AskPassphraseDialog::Context context, bool relock){
+    // Request unlock if wallet was locked or unlocked for mixing:
+    WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
+    if (encStatus == walletModel->Locked) {
+        return WalletModel::UnlockContext(walletModel->requestUnlock(context, relock)).isValid();
+    }
+    return true;
+}
+
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
 {
     parent->setFocusProxy(widget);
@@ -102,23 +141,29 @@ void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
     widget->setFont(bitcoinAddressFont());
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a KKC address (e.g. %1)").arg("D7VFR83SQbiezrW72hjcWJtcfip5krte2Z"));
+    widget->setPlaceholderText(QObject::tr("Enter Kabberry address (e.g. %1)").arg("D7VFR83SQbiezrW72hjcWJtcfip5krte2Z"));
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
     widget->setCheckValidator(new BitcoinAddressCheckValidator(parent));
 }
 
 void setupAmountWidget(QLineEdit* widget, QWidget* parent)
 {
-    QDoubleValidator* amountValidator = new QDoubleValidator(parent);
-    amountValidator->setDecimals(8);
-    amountValidator->setBottom(0.0);
-    widget->setValidator(amountValidator);
-    widget->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    QRegularExpression rx("^(\\d{0,8})((\\.|,)\\d{1,8})?$");
+    QValidator *validator = new QRegularExpressionValidator(rx, widget);
+    widget->setValidator(validator);
+}
+
+void updateWidgetTextAndCursorPosition(QLineEdit* widget, const QString& str)
+{
+    const int cpos = widget->cursorPosition();
+    widget->setText(str);
+    if (cpos > str.size()) return;
+    widget->setCursorPosition(cpos);
 }
 
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
 {
-    // return if URI is not valid or is no KKC: URI
+    // return if URI is not valid or is no Kabberry: URI
     if (!uri.isValid() || uri.scheme() != QString(URI_SCHEME))
         return false;
 
@@ -133,7 +178,7 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
     QUrlQuery uriQuery(uri);
     QList<QPair<QString, QString> > items = uriQuery.queryItems();
     for (QList<QPair<QString, QString> >::iterator i = items.begin(); i != items.end(); i++)
-	{
+    {
         bool fShouldReturnFalse = false;
         if (i->first.startsWith("req-")) {
             i->first.remove(0, 4);
@@ -167,9 +212,9 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out)
 {
-    // Convert KKC:// to KKC:
+    // Convert kabberry:// to kabberry:
     //
-    //    Cannot handle this later, because KKC:// will cause Qt to see the part after // as host,
+    //    Cannot handle this later, because kabberry:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
     if (uri.startsWith(URI_SCHEME "://", Qt::CaseInsensitive)) {
         uri.replace(0, std::strlen(URI_SCHEME) + 3, URI_SCHEME ":");
@@ -258,9 +303,9 @@ QString getSaveFileName(QWidget* parent, const QString& caption, const QString& 
     if (dir.isEmpty()) // Default to user documents location
     {
         myDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    } 
-	else 
-	{
+    }
+    else
+    {
         myDir = dir;
     }
     /* Directly convert path to native OS path separators */
@@ -298,9 +343,9 @@ QString getOpenFileName(QWidget* parent, const QString& caption, const QString& 
     if (dir.isEmpty()) // Default to user documents location
     {
         myDir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-    } 
-	else
-		{
+    }
+    else
+    {
         myDir = dir;
     }
     /* Directly convert path to native OS path separators */
@@ -339,40 +384,44 @@ bool isObscured(QWidget* w)
     return !(checkPoint(QPoint(0, 0), w) && checkPoint(QPoint(w->width() - 1, 0), w) && checkPoint(QPoint(0, w->height() - 1), w) && checkPoint(QPoint(w->width() - 1, w->height() - 1), w) && checkPoint(QPoint(w->width() / 2, w->height() / 2), w));
 }
 
-void openDebugLogfile()
+bool openDebugLogfile()
 {
     boost::filesystem::path pathDebug = GetDataDir() / "debug.log";
 
     /* Open debug.log with the associated application */
     if (boost::filesystem::exists(pathDebug))
-        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathDebug)));
+        return QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathDebug)));
+    return false;
 }
 
-void openConfigfile()
+bool openConfigfile()
 {
     boost::filesystem::path pathConfig = GetConfigFile();
 
     /* Open kabberry.conf with the associated application */
     if (boost::filesystem::exists(pathConfig))
-        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
+        return QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
+    return false;
 }
 
-void openMNConfigfile()
+bool openMNConfigfile()
 {
     boost::filesystem::path pathConfig = GetMasternodeConfigFile();
 
     /* Open masternode.conf with the associated application */
     if (boost::filesystem::exists(pathConfig))
-        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
+        return QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
+    return false;
 }
 
-void showBackups()
+bool showBackups()
 {
     boost::filesystem::path pathBackups = GetDataDir() / "backups";
 
     /* Open folder with default browser */
     if (boost::filesystem::exists(pathBackups))
-        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathBackups)));
+        return QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathBackups)));
+    return false;
 }
 
 void SubstituteFonts(const QString& language)
@@ -570,12 +619,12 @@ bool DHMSTableWidgetItem::operator<(QTableWidgetItem const& item) const
 #ifdef WIN32
 boost::filesystem::path static StartupShortcutPath()
 {
-    return GetSpecialFolderPath(CSIDL_STARTUP) / "PSC.lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / "Kabberry.lnk";
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for PSC.lnk
+    // check for Kabberry.lnk
     return boost::filesystem::exists(StartupShortcutPath());
 }
 
@@ -649,7 +698,7 @@ boost::filesystem::path static GetAutostartDir()
 
 boost::filesystem::path static GetAutostartFilePath()
 {
-    return GetAutostartDir() / "PSC.desktop";
+    return GetAutostartDir() / "kabberry.desktop";
 }
 
 bool GetStartOnSystemStartup()
@@ -685,10 +734,10 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         boost::filesystem::ofstream optionFile(GetAutostartFilePath(), std::ios_base::out | std::ios_base::trunc);
         if (!optionFile.good())
             return false;
-        // Write a PSC.desktop file to the autostart directory:
+        // Write a kabberry.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
-        optionFile << "Name=PSC\n";
+        optionFile << "Name=Kabberry\n";
         optionFile << "Exec=" << pszExePath << " -min\n";
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -709,7 +758,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
 {
-    // loop through the list of startup items and try to find the PSC app
+    // loop through the list of startup items and try to find the kabberry app
     CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(list, NULL);
     for (int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
@@ -754,7 +803,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
 
     if (fAutoStart && !foundItem) {
-        // add PSC app to startup item list
+        // add kabberry app to startup item list
         LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, NULL, NULL, bitcoinAppUrl, NULL, NULL);
     } else if (!fAutoStart && foundItem) {
         // remove item
@@ -796,17 +845,13 @@ void restoreWindowGeometry(const QString& strSetting, const QSize& defaultSize, 
     parent->move(pos);
 }
 
-// Return name of current UI-theme or default theme if no theme was found
-
-QString getThemeName()
+// Check whether a theme is not build-in
+bool isExternal(QString theme)
 {
-    QSettings settings;
-    QString theme = settings.value("theme", "").toString();
+    if (theme.isEmpty())
+        return false;
 
-    if(!theme.isEmpty()){
-        return theme;
-    }
-    return QString("default");  
+    return (theme.operator!=("default") && theme.operator!=("default-dark"));
 }
 
 // Open CSS when configured
@@ -817,19 +862,28 @@ QString loadStyleSheet()
     QString cssName;
     QString theme = settings.value("theme", "").toString();
 
+    if (isExternal(theme)) {
+        // External CSS
+        settings.setValue("fCSSexternal", true);
+        boost::filesystem::path pathAddr = GetDataDir() / "themes/";
+        cssName = pathAddr.string().c_str() + theme + "/css/theme.css";
+    } else {
+        // Build-in CSS
+        settings.setValue("fCSSexternal", false);
         if (!theme.isEmpty()) {
             cssName = QString(":/css/") + theme;
         } else {
             cssName = QString(":/css/default");
             settings.setValue("theme", "default");
         }
+    }
 
     QFile qFile(cssName);
     if (qFile.open(QFile::ReadOnly)) {
         styleSheet = QLatin1String(qFile.readAll());
     }
 
-return styleSheet;
+    return styleSheet;
 }
 
 void setClipboard(const QString& str)

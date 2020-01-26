@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -8,6 +8,7 @@
 #define BITCOIN_QT_GUIUTIL_H
 
 #include "amount.h"
+#include "askpassphrasedialog.h"
 
 #include <QEvent>
 #include <QHeaderView>
@@ -38,14 +39,27 @@ namespace GUIUtil
 {
 // Create human-readable string from date
 QString dateTimeStr(const QDateTime& datetime);
+QString dateTimeStrWithSeconds(const QDateTime& date);
 QString dateTimeStr(qint64 nTime);
 
 // Render Kabberry addresses in monospace font
 QFont bitcoinAddressFont();
 
+// Parse string into a CAmount value
+CAmount parseValue(const QString& text, int displayUnit, bool* valid_out = 0);
+
+// Format an amount
+QString formatBalance(CAmount amount, int nDisplayUnit = 0, bool issKKC = false);
+
+// Request wallet unlock
+bool requestUnlock(WalletModel* walletModel, AskPassphraseDialog::Context context, bool relock);
+
 // Set up widgets for address and amounts
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent);
 void setupAmountWidget(QLineEdit* widget, QWidget* parent);
+
+// Update the cursor of the widget after a text change
+void updateWidgetTextAndCursorPosition(QLineEdit* widget, const QString& str);
 
 // Parse "kabberry:" URI into recipient object, return true on successful parsing
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out);
@@ -111,16 +125,16 @@ Qt::ConnectionType blockingGUIThreadConnection();
 bool isObscured(QWidget* w);
 
 // Open debug.log
-void openDebugLogfile();
+bool openDebugLogfile();
 
 // Open kabberry.conf
-void openConfigfile();
+bool openConfigfile();
 
 // Open masternode.conf
-void openMNConfigfile();
+bool openMNConfigfile();
 
 // Browse backup folder
-void showBackups();
+bool showBackups();
 
 // Replace invalid default fonts with known good ones
 void SubstituteFonts(const QString& language);

@@ -1,4 +1,4 @@
-// Copyright (c) 2018 The PIVX developers
+// Copyright (c) 2018-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -7,6 +7,7 @@
 #include "ui_governancepage.h"
 
 #include "activemasternode.h"
+#include "chainparams.h"
 #include "clientmodel.h"
 #include "masternode-budget.h"
 #include "masternode-sync.h"
@@ -15,6 +16,7 @@
 #include "utilmoneystr.h"
 #include "walletmodel.h"
 #include "askpassphrasedialog.h"
+#include "proposalframe.h"
 
 #include <QMessageBox>
 #include <QString>
@@ -31,7 +33,7 @@ GovernancePage::GovernancePage(QWidget* parent) : QWidget(parent),
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(updateProposalList()));
     timer->start(100000);
-
+    fLockUpdating = false;
 }
 
 
@@ -50,197 +52,98 @@ void GovernancePage::setWalletModel(WalletModel* model)
     this->walletModel = model;
 }
 
-void GovernancePage::SendVote(std::string strHash, int nVote)
+void GovernancePage::lockUpdating(bool lock)
 {
-    uint256 hash = uint256(strHash);
-    int failed = 0, success = 0;
-    std::string mnresult;
-    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
-        std::string errorMessage;
-        std::vector<unsigned char> vchMasterNodeSignature;
-        std::string strMasterNodeSignMessage;
-
-        CPubKey pubKeyCollateralAddress;
-        CKey keyCollateralAddress;
-        CPubKey pubKeyMasternode;
-        CKey keyMasternode;
-
-        if (!obfuScationSigner.SetKey(mne.getPrivKey(), errorMessage, keyMasternode, pubKeyMasternode)) {
-            mnresult += mne.getAlias() + ": " + "Masternode signing error, could not set key correctly: " + errorMessage + "<br />";
-            failed++;
-            continue;
-        }
-
-        CMasternode* pmn = mnodeman.Find(pubKeyMasternode);
-        if (pmn == NULL) {
-            mnresult += mne.getAlias() + ": " + "Can't find masternode by pubkey" + "<br />";
-            failed++;
-            continue;
-        }
-
-        CBudgetVote vote(pmn->vin, hash, nVote);
-        if (!vote.Sign(keyMasternode, pubKeyMasternode)) {
-            mnresult += mne.getAlias() + ": " + "Failure to sign" + "<br />";
-            failed++;
-            continue;
-        }
-
-        std::string strError = "";
-        if (budget.UpdateProposal(vote, NULL, strError)) {
-            budget.mapSeenMasternodeBudgetVotes.insert(make_pair(vote.GetHash(), vote));
-            vote.Relay();
-            mnresult += mne.getAlias() + ": " + "Success!" + "<br />";
-            success++;
-        } else {
-            mnresult += mne.getAlias() + ": " + "Failed!" + "<br />";
-            failed++;
-        }
-
-    }
-
-    if (success > 0) updateProposalList(true);
-
-    QString strMessage = QString("Successfully voted with %1 masternode(s), failed with %2").arg(success).arg(failed);
-    strMessage += "<br /><br /><hr />";
-    strMessage += QString::fromStdString(mnresult);
-    QMessageBox::information(this, tr("Vote Results"), strMessage, QMessageBox::Ok, QMessageBox::Ok);
-
+    fLockUpdating = lock;
 }
 
-void GovernancePage::updateProposalList(bool fForce)
+struct sortProposalsByVotes
 {
-    int nCountMyMasternodes = masternodeConfig.getCount();
-    std::vector<CBudgetProposal*> winningProps = budget.GetAllProposals();
-    int nGridRow = 0, nGridCol = 0;
-    for (CBudgetProposal* pbudgetProposal : winningProps) {
+    bool operator() (const CBudgetProposal* left, const CBudgetProposal* right)
+    {
+        if (left != right)
+            return (left->GetYeas() - left->GetNays() > right->GetYeas() - right->GetNays());
+        return (left->nFeeTXHash > right->nFeeTXHash);
+    }
+};
+
+void GovernancePage::updateProposalList()
+{
+    if (fLockUpdating) return;
+
+    QLayoutItem* child;
+    while ((child = ui->proposalGrid->takeAt(0)) != 0) {
+        if (child->widget() != 0)
+        {
+            delete child->widget();
+        }
+        delete child;
+    }
+
+    std::vector<CBudgetProposal*> allotedProposals = budget.GetBudget();
+    CAmount nTotalAllotted = 0;
+    std::vector<CBudgetProposal*> proposalsList = budget.GetAllProposals();
+    std::sort (proposalsList.begin(), proposalsList.end(), sortProposalsByVotes());
+    int nRow = 0;
+    CBlockIndex* pindexPrev;
+    {
+        LOCK(cs_main);
+        pindexPrev = chainActive.Tip();
+    }
+    if (!pindexPrev) return;
+    int nBlockStart = pindexPrev->nHeight - pindexPrev->nHeight % Params().GetBudgetCycleBlocks() + Params().GetBudgetCycleBlocks();
+    int nBlocksLeft = nBlockStart - pindexPrev->nHeight;
+    int nBlockEnd = nBlockStart + Params().GetBudgetCycleBlocks() - 1;
+    int mnCount = mnodeman.CountEnabled(ActiveProtocol());
+
+    for (CBudgetProposal* pbudgetProposal : proposalsList) {
         if (!pbudgetProposal->fValid) continue;
         if (pbudgetProposal->GetRemainingPaymentCount() < 1) continue;
-        QFrame* proposalFrame = new QFrame();
-        proposalFrame->setObjectName(QStringLiteral("proposalFrame"));
+
+        ProposalFrame* proposalFrame = new ProposalFrame();
+        proposalFrame->setWalletModel(walletModel);
+        proposalFrame->setProposal(pbudgetProposal);
+        proposalFrame->setGovernancePage(this);
+
+        if (std::find(allotedProposals.begin(), allotedProposals.end(), pbudgetProposal) != allotedProposals.end()) {
+            nTotalAllotted += pbudgetProposal->GetAllotted();
+            proposalFrame->setObjectName(QStringLiteral("proposalFramePassing"));
+        } else if (!pbudgetProposal->IsEstablished()) {
+            proposalFrame->setObjectName(QStringLiteral("proposalFrameNotEstablished"));
+        } else if (pbudgetProposal->IsPassing(pindexPrev, nBlockStart, nBlockEnd, mnCount)) {
+            proposalFrame->setObjectName(QStringLiteral("proposalFramePassingUnfunded"));
+        } else {
+            proposalFrame->setObjectName(QStringLiteral("proposalFrame"));
+        }
         proposalFrame->setFrameShape(QFrame::StyledPanel);
 
-        QVBoxLayout* proposalItem = new QVBoxLayout(proposalFrame);
-        proposalItem->setSpacing(0);
-        proposalItem->setObjectName(QStringLiteral("proposalItem"));
-
-        QHBoxLayout* proposalInfo = new QHBoxLayout();
-        proposalInfo->setSpacing(0);
-        proposalInfo->setObjectName(QStringLiteral("proposalInfo"));
-
-        QLabel* strProposalHash = new QLabel();
-        strProposalHash->setObjectName(QStringLiteral("strProposalHash"));
-        strProposalHash->setText(QString::fromStdString(pbudgetProposal->GetHash().ToString()));
-        strProposalHash->setVisible(false);
-        QLabel* strProposalName = new QLabel();
-        strProposalName->setObjectName(QStringLiteral("strProposalName"));
-        strProposalName->setText(QString::fromStdString(pbudgetProposal->GetName()));
-        QLabel* strMonthlyPayout = new QLabel();
-        strMonthlyPayout->setObjectName(QStringLiteral("strMonthlyPayout"));
-        strMonthlyPayout->setText(QString::fromStdString(FormatMoney(pbudgetProposal->GetAmount())));
-        strMonthlyPayout->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-
-        proposalInfo->addWidget(strProposalName);
-        proposalInfo->addWidget(strProposalHash);
-        proposalInfo->addStretch();
-        proposalInfo->addWidget(strMonthlyPayout);
-        proposalItem->addLayout(proposalInfo);
-
-        QLabel* strProposalURL = new QLabel();
-        strProposalURL->setObjectName(QStringLiteral("strProposalURL"));
-        QString strURL = QString::fromStdString(pbudgetProposal->GetURL());
-        strProposalURL->setText("<a href=\"" + strURL + "\">" + strURL + "</a>");
-        strProposalURL->setTextFormat(Qt::RichText);
-        strProposalURL->setTextInteractionFlags(Qt::TextBrowserInteraction);
-        strProposalURL->setOpenExternalLinks(true);
-        proposalItem->addWidget(strProposalURL);
-
-        QHBoxLayout* proposalVotes = new QHBoxLayout();
-
-        QToolButton* yesButton = new QToolButton();
-        yesButton->setIcon(QIcon(":/icons/yesvote"));
-        if (nCountMyMasternodes < 0)
-            yesButton->setEnabled(false);
-        connect(yesButton, &QPushButton::clicked, this, [this]{ voteButton_clicked(1); });
-        QLabel* labelYesVotes = new QLabel();
-        labelYesVotes->setText(tr("Yes:"));
-        QLabel* yesVotes = new QLabel();
-        yesVotes->setText(QString::number(pbudgetProposal->GetYeas()));
-
-        QToolButton* noButton = new QToolButton();
-        noButton->setIcon(QIcon(":/icons/novote"));
-        if (nCountMyMasternodes < 0)
-            noButton->setEnabled(false);
-        connect(noButton, &QPushButton::clicked, this, [this]{ voteButton_clicked(2); });
-        QLabel* labelNoVotes = new QLabel();
-        labelNoVotes->setText(tr("No:"));
-        QLabel* noVotes = new QLabel();
-        noVotes->setText(QString::number(pbudgetProposal->GetNays()));
-
-        proposalVotes->addWidget(yesButton);
-        proposalVotes->addWidget(labelYesVotes);
-        proposalVotes->addWidget(yesVotes);
-        proposalVotes->addStretch();
-        proposalVotes->addWidget(labelNoVotes);
-        proposalVotes->addWidget(noVotes);
-        proposalVotes->addWidget(noButton);
-        proposalItem->addLayout(proposalVotes);
-
+        if (extendedProposal == pbudgetProposal)
+            proposalFrame->extend();
         proposalFrame->setMaximumHeight(150);
-        ui->proposalGrid->addWidget(proposalFrame, nGridRow, nGridCol);
+        ui->proposalGrid->addWidget(proposalFrame, nRow);
 
-        if (nGridCol == 1 ) {
-            ++nGridRow;
-            nGridCol = -1;
-        }
-        ++nGridCol;
+        ++nRow;
     }
+
+    ui->next_superblock_value->setText(QString::number(nBlockStart));
+    ui->blocks_before_super_value->setText(QString::number(nBlocksLeft));
+    ui->time_before_super_value->setText(QString::number(nBlocksLeft/60/24));
+    ui->alloted_budget_value->setText(QString::number(nTotalAllotted/COIN));
+    ui->unallocated_budget_value->setText(QString::number((budget.GetTotalBudget(pindexPrev->nHeight) - nTotalAllotted)/COIN));
+    ui->masternode_count_value->setText(QString::number(mnodeman.CountEnabled(ActiveProtocol())));
 }
 
-void GovernancePage::voteButton_clicked(int nVote)
+void GovernancePage::setExtendedProposal(CBudgetProposal* proposal)
 {
-    if (!walletModel) return;
-
-    // Request unlock if wallet was locked or unlocked for mixing:
-    WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
-    if (encStatus == walletModel->Locked) {
-        WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::UI_Vote, true));
-        if (!ctx.isValid()) {
-            // Unlock wallet was cancelled
-            QMessageBox::warning(this, tr("Wallet Locked"), tr("You must unlock your wallet to vote."), QMessageBox::Ok, QMessageBox::Ok);
-            return;
-        }
-    }
-
-    // Find out which frame's button was clicked
-    QWidget *buttonWidget = qobject_cast<QWidget*>(sender());
-    if(!buttonWidget)return;
-    QFrame* frame = qobject_cast<QFrame*>(buttonWidget->parentWidget());
-    if(!frame)return;
-
-    // Extract the values we want
-    QLabel *strProposalName = frame->findChild<QLabel *>("strProposalName");
-    QLabel *strProposalHash = frame->findChild<QLabel *>("strProposalHash");
-    QLabel *strProposalURL = frame->findChild<QLabel *>("strProposalURL");
-
-    // Display message box
-    QString questionString = tr("Do you want to vote %1 on").arg(nVote == 1 ? "yes" : "no") + " " + strProposalName->text() + " ";
-    questionString += tr("using all your masternodes?");
-    questionString += "<br /><br />";
-    questionString += tr("Proposal Hash:") + " " + strProposalHash->text() + "<br />";
-    questionString += tr("Proposal URL:") + " " + strProposalURL->text();
-    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm Vote"),
-        questionString,
-        QMessageBox::Yes | QMessageBox::Cancel,
-        QMessageBox::Cancel);
-
-    if (retval != QMessageBox::Yes) {
-        return;
-    }
-
-    SendVote(strProposalHash->text().toStdString(), nVote);
+    bool update = false;
+    if (extendedProposal != proposal)
+        update = true;
+    extendedProposal = proposal;
+    if (update)
+        updateProposalList();
 }
 
 void GovernancePage::on_UpdateButton_clicked()
 {
-    updateProposalList(true);
+    updateProposalList();
 }

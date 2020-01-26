@@ -10,11 +10,11 @@
 
 namespace libzerocoin {
     enum SpendType : uint8_t {
-        SPEND, // Used for a typical spend transaction, zPSC should be unusable after
+        SPEND, // Used for a typical spend transaction, sKKC should be unusable after
         STAKE, // Used for a spend that occurs as a stake
-        MN_COLLATERAL, // Used when proving ownership of zPSC that will be used for masternodes (future)
+        MN_COLLATERAL, // Used when proving ownership of sKKC that will be used for masternodes (future)
         SIGN_MESSAGE // Used to sign messages that do not belong above (future)
     };
 }
 
-#endif //Kabberry_SPENDTYPE_H
+#endif //kABBERRY_SPENDTYPE_H

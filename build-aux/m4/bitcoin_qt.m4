@@ -68,6 +68,7 @@ AC_DEFUN([BITCOIN_QT_INIT],[
   AC_ARG_WITH([qt-libdir],[AS_HELP_STRING([--with-qt-libdir=LIB_DIR],[specify qt lib path (overridden by pkgconfig)])], [qt_lib_path=$withval], [])
   AC_ARG_WITH([qt-plugindir],[AS_HELP_STRING([--with-qt-plugindir=PLUGIN_DIR],[specify qt plugin path (overridden by pkgconfig)])], [qt_plugin_path=$withval], [])
   AC_ARG_WITH([qt-translationdir],[AS_HELP_STRING([--with-qt-translationdir=PLUGIN_DIR],[specify qt translation path (overridden by pkgconfig)])], [qt_translation_path=$withval], [])
+  AC_ARG_WITH([qt-svgdir],[AS_HELP_STRING([--with-qt-svgdir=PLUGIN_DIR],[specify qt svg path (overridden by pkgconfig)])], [qt_svg_path=$withval], [])
   AC_ARG_WITH([qt-bindir],[AS_HELP_STRING([--with-qt-bindir=BIN_DIR],[specify qt bin path])], [qt_bin_path=$withval], [])
 
   AC_ARG_WITH([qtdbus],
@@ -110,9 +111,9 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   BITCOIN_QT_CHECK([
   TEMP_CPPFLAGS=$CPPFLAGS
   TEMP_CXXFLAGS=$CXXFLAGS
-  CPPFLAGS="$QT_INCLUDES $CPPFLAGS"
+  CPPFLAGS="$QT_INCLUDES $QT_SVG_INCLUDES $CPPFLAGS"
   CXXFLAGS="$PIC_FLAGS $CXXFLAGS"
-    _BITCOIN_QT_IS_STATIC
+  _BITCOIN_QT_IS_STATIC
   if test "x$bitcoin_cv_static_qt" = xyes; then
     _BITCOIN_QT_FIND_STATIC_PLUGINS
     AC_DEFINE(QT_STATICPLUGIN, 1, [Define this symbol if qt plugins are static])
@@ -136,6 +137,8 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
     fi
     _BITCOIN_QT_CHECK_STATIC_PLUGINS([Q_IMPORT_PLUGIN(QMinimalIntegrationPlugin)],[-lqminimal])
     AC_DEFINE(QT_QPA_PLATFORM_MINIMAL, 1, [Define this symbol if the minimal qt platform exists])
+    _BITCOIN_QT_CHECK_STATIC_PLUGINS([Q_IMPORT_PLUGIN(QSvgPlugin)],[-lqsvg])
+    _BITCOIN_QT_CHECK_STATIC_PLUGINS([Q_IMPORT_PLUGIN(QSvgIconPlugin)],[-lqsvgicon])
     if test "x$TARGET_OS" = xwindows; then
       _BITCOIN_QT_CHECK_STATIC_PLUGINS([Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)],[-lqwindows])
       AC_DEFINE(QT_QPA_PLATFORM_WINDOWS, 1, [Define this symbol if the qt platform is windows])
@@ -252,6 +255,8 @@ AC_DEFUN([BITCOIN_QT_CONFIGURE],[
   AC_SUBST(QT_INCLUDES)
   AC_SUBST(QT_LIBS)
   AC_SUBST(QT_LDFLAGS)
+  AC_SUBST(QT_SVG_INCLUDES)
+  AC_SUBST(QT_SVG_LIBS)
   AC_SUBST(QT_DBUS_INCLUDES)
   AC_SUBST(QT_DBUS_LIBS)
   AC_SUBST(QT_TEST_INCLUDES)
@@ -276,13 +281,34 @@ AC_DEFUN([_BITCOIN_QT_CHECK_QT5],[
       #endif
     ]],
     [[
-      #if QT_VERSION < 0x050000
+      #if QT_VERSION < 0x050000 || QT_VERSION_MAJOR < 5
       choke
       #endif
     ]])],
     [bitcoin_cv_qt5=yes],
     [bitcoin_cv_qt5=no])
 ])])
+
+dnl Internal. Check if the included version of Qt is greater than Qt58.
+dnl Requires: INCLUDES must be populated as necessary.
+dnl Output: bitcoin_cv_qt5=yes|no
+AC_DEFUN([_BITCOIN_QT_CHECK_QT58],[
+  AC_CACHE_CHECK(for > Qt 5.7, bitcoin_cv_qt58,[
+  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+      #include <QtCore/qconfig.h>
+      #ifndef QT_VERSION
+      #  include <QtCore/qglobal.h>
+      #endif
+    ]],
+    [[
+      #if QT_VERSION_MINOR < 8
+      choke
+      #endif
+    ]])],
+    [bitcoin_cv_qt58=yes],
+    [bitcoin_cv_qt58=no])
+])])
+
 
 dnl Internal. Check if the linked version of Qt was built as static libs.
 dnl Requires: Qt5.
@@ -291,20 +317,20 @@ dnl Output: bitcoin_cv_static_qt=yes|no
 dnl Output: Defines QT_STATICPLUGIN if plugins are static.
 AC_DEFUN([_BITCOIN_QT_IS_STATIC],[
   AC_CACHE_CHECK(for static Qt, bitcoin_cv_static_qt,[
-  AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-      #include <QtCore/qconfig.h>
-      #ifndef QT_VERSION
-      #  include <QtCore/qglobal.h>
-      #endif
-    ]],
-    [[
-      #if !defined(QT_STATIC)
-      choke
-      #endif
-    ]])],
-    [bitcoin_cv_static_qt=yes],
-    [bitcoin_cv_static_qt=no])
-  ])
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QtCore/qconfig.h>
+        #ifndef QT_VERSION OR QT_VERSION_STR
+        #  include <QtCore/qglobal.h>
+        #endif
+      ]],
+      [[
+        #if !defined(QT_STATIC)
+        choke
+        #endif
+      ]])],
+      [bitcoin_cv_static_qt=yes],
+      [bitcoin_cv_static_qt=no])
+    ])
   if test "x$bitcoin_cv_static_qt" = xyes; then
     AC_DEFINE(QT_STATICPLUGIN, 1, [Define this symbol for static Qt plugins])
   fi
@@ -334,46 +360,67 @@ dnl Inputs: qt_plugin_path. optional.
 dnl Outputs: QT_LIBS is appended
 AC_DEFUN([_BITCOIN_QT_FIND_STATIC_PLUGINS],[
     if test "x$qt_plugin_path" != x; then
-      QT_LIBS="$QT_LIBS -L$qt_plugin_path/platforms"
+      QT_LIBS="$QT_LIBS -L$qt_plugin_path/platforms -L$qt_plugin_path/imageformats -L$qt_plugin_path/iconengines"
       if test -d "$qt_plugin_path/accessible"; then
         QT_LIBS="$QT_LIBS -L$qt_plugin_path/accessible"
-      fi  
-    fi
-   if test "x$use_pkgconfig" = xyes; then
-   : dnl
-   m4_ifdef([PKG_CHECK_MODULES],[
-     PKG_CHECK_MODULES([QTPLATFORM], [Qt5PlatformSupport], [QT_LIBS="$QTPLATFORM_LIBS $QT_LIBS"])
-     if test "x$TARGET_OS" = xlinux; then
-       PKG_CHECK_MODULES([X11XCB], [x11-xcb], [QT_LIBS="$X11XCB_LIBS $QT_LIBS"])
-       if ${PKG_CONFIG} --exists "Qt5Core >= 5.5" 2>/dev/null; then
-         PKG_CHECK_MODULES([QTXCBQPA], [Qt5XcbQpa], [QT_LIBS="$QTXCBQPA_LIBS $QT_LIBS"])	 
+      fi
+     if test "x$use_pkgconfig" = xyes; then
+     : dnl
+     m4_ifdef([PKG_CHECK_MODULES],[
+       if test x$bitcoin_cv_qt58 = xno; then
+         PKG_CHECK_MODULES([QTPLATFORM], [Qt5PlatformSupport], [QT_LIBS="$QTPLATFORM_LIBS $QT_LIBS"])
+       else
+         PKG_CHECK_MODULES([QTFONTDATABASE], [Qt5FontDatabaseSupport], [QT_LIBS="-lQt5FontDatabaseSupport $QT_LIBS"])
+         PKG_CHECK_MODULES([QTEVENTDISPATCHER], [Qt5EventDispatcherSupport], [QT_LIBS="-lQt5EventDispatcherSupport $QT_LIBS"])
+         PKG_CHECK_MODULES([QTTHEME], [Qt5ThemeSupport], [QT_LIBS="-lQt5ThemeSupport $QT_LIBS"])
+         PKG_CHECK_MODULES([QTDEVICEDISCOVERY], [Qt5DeviceDiscoverySupport], [QT_LIBS="-lQt5DeviceDiscoverySupport $QT_LIBS"])
+         PKG_CHECK_MODULES([QTACCESSIBILITY], [Qt5AccessibilitySupport], [QT_LIBS="-lQt5AccessibilitySupport $QT_LIBS"])
+         PKG_CHECK_MODULES([QTFB], [Qt5FbSupport], [QT_LIBS="-lQt5FbSupport $QT_LIBS"])
+                fi
+       if test "x$TARGET_OS" = xlinux; then
+         PKG_CHECK_MODULES([X11XCB], [x11-xcb], [QT_LIBS="$X11XCB_LIBS $QT_LIBS"])
+         if ${PKG_CONFIG} --exists "Qt5Core >= 5.5" 2>/dev/null; then
+           PKG_CHECK_MODULES([QTXCBQPA], [Qt5XcbQpa], [QT_LIBS="$QTXCBQPA_LIBS $QT_LIBS"])
+         fi
+       elif test "x$TARGET_OS" = xdarwin; then
+         PKG_CHECK_MODULES([QTCLIPBOARD], [Qt5ClipboardSupport], [QT_LIBS="-lQt5ClipboardSupport $QT_LIBS"])
+         PKG_CHECK_MODULES([QTGRAPHICS], [Qt5GraphicsSupport], [QT_LIBS="-lQt5GraphicsSupport $QT_LIBS"])
+         PKG_CHECK_MODULES([QTCGL], [Qt5CglSupport], [QT_LIBS="-lQt5CglSupport $QT_LIBS"])
        fi
-     elif test "x$TARGET_OS" = xdarwin; then
-       PKG_CHECK_MODULES([QTPRINT], [Qt5PrintSupport], [QT_LIBS="$QTPRINT_LIBS $QT_LIBS"])
-     fi
-   ])
-   else
-     if test "x$TARGET_OS" = xwindows; then
-       AC_CACHE_CHECK(for Qt >= 5.6, bitcoin_cv_need_platformsupport,[
-         AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-             #include <QtCore/qconfig.h>
-             #ifndef QT_VERSION
-             #  include <QtCore/qglobal.h>
-             #endif
-           ]],
-           [[
-             #if QT_VERSION < 0x050600
-             choke
-             #endif
-           ]])],
-         [bitcoin_cv_need_platformsupport=yes],
-         [bitcoin_cv_need_platformsupport=no])
-       ])
-       if test "x$bitcoin_cv_need_platformsupport" = xyes; then
-         BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}PlatformSupport],[main],,BITCOIN_QT_FAIL(lib${QT_LIB_PREFIX}PlatformSupport not found)))  
+     ])
+     else
+       if test "x$TARGET_OS" = xwindows; then
+         AC_CACHE_CHECK(for Qt >= 5.6, bitcoin_cv_need_platformsupport,[
+           AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+               #include <QtCore/qconfig.h>
+               #ifndef QT_VERSION
+               #  include <QtCore/qglobal.h>
+               #endif
+             ]],
+             [[
+               #if QT_VERSION < 0x050600 || QT_VERSION_MINOR < 6
+               choke
+               #endif
+             ]])],
+           [bitcoin_cv_need_platformsupport=yes],
+           [bitcoin_cv_need_platformsupport=no])
+         ])
+         if test "x$bitcoin_cv_need_platformsupport" = xyes; then
+           if test x$bitcoin_cv_qt58 = xno; then
+             BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}PlatformSupport],[main],,BITCOIN_QT_FAIL(lib$QT_LIB_PREFIXPlatformSupport not found)))
+           else
+             BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}FontDatabaseSupport],[main],,BITCOIN_QT_FAIL(lib$QT_LIB_PREFIXFontDatabaseSupport not found)))
+             BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}EventDispatcherSupport],[main],,BITCOIN_QT_FAIL(lib$QT_LIB_PREFIXEventDispatcherSupport not found)))
+             BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}ThemeSupport],[main],,BITCOIN_QT_FAIL(lib$QT_LIB_PREFIXThemeSupport not found)))
+             BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}FbSupport],[main],,BITCOIN_QT_FAIL(lib$QT_LIB_PREFIXFbSupport not found)))
+             BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}DeviceDiscoverySupport],[main],,BITCOIN_QT_FAIL(lib$QT_LIB_PREFIXDeviceDiscoverySupport not found)))
+             BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}AccessibilitySupport],[main],,BITCOIN_QT_FAIL(lib$QT_LIB_PREFIXAccessibilitySupport not found)))
+             QT_LIBS="$QT_LIBS -lversion -ldwmapi -luxtheme"
+           fi
+         fi
        fi
      fi
-  fi
+   fi
 ])
 
 dnl Internal. Find Qt libraries using pkg-config.
@@ -394,6 +441,12 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITH_PKGCONFIG],[
         have_qt=no
         BITCOIN_QT_FAIL([Qt dependencies not found])
       fi
+    ])
+    BITCOIN_QT_CHECK([
+      PKG_CHECK_MODULES([QT_SVG], [${QT_LIB_PREFIX}Svg], [QT_SVG_INCLUDES="$QT_SVG_CFLAGS"; QT_LIBS="$QT_LIBS $QT_SVG_LIBS"],, BITCOIN_QT_FAIL([QtSvg not found]))
+    ])
+    BITCOIN_QT_CHECK([
+      PKG_CHECK_MODULES([QT_CONCURRENT], [${QT_LIB_PREFIX}Concurrent], [QT_INCLUDES="$QT_INCLUDES $QT_CONCURRENT_CFLAGS"; QT_LIBS="$QT_LIBS $QT_CONCURRENT_LIBS"],, BITCOIN_QT_FAIL([QtConcurrent not found]))
     ])
     BITCOIN_QT_CHECK([
       PKG_CHECK_MODULES([QT_TEST], [${QT_LIB_PREFIX}Test], [QT_TEST_INCLUDES="$QT_TEST_CFLAGS"; have_qt_test=yes], [have_qt_test=no])
@@ -418,7 +471,7 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   TEMP_LIBS="$LIBS"
   BITCOIN_QT_CHECK([
     if test "x$qt_include_path" != x; then
-      QT_INCLUDES="-I$qt_include_path -I$qt_include_path/QtCore -I$qt_include_path/QtGui -I$qt_include_path/QtWidgets -I$qt_include_path/QtNetwork -I$qt_include_path/QtTest -I$qt_include_path/QtDBus"
+      QT_INCLUDES="-I$qt_include_path -I$qt_include_path/QtCore -I$qt_include_path/QtGui -I$qt_include_path/QtWidgets -I$qt_include_path/QtNetwork -I$qt_include_path/QtTest -I$qt_include_path/QtDBus -I$qt_include_path/QtConcurrent -I$qt_include_path/QtSvg -I$qt_include_path/QtCharts"
       CPPFLAGS="$QT_INCLUDES $CPPFLAGS"
     fi
   ])
@@ -426,10 +479,12 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   BITCOIN_QT_CHECK([AC_CHECK_HEADER([QtPlugin],,BITCOIN_QT_FAIL(QtCore headers missing))])
   BITCOIN_QT_CHECK([AC_CHECK_HEADER([QApplication],, BITCOIN_QT_FAIL(QtGui headers missing))])
   BITCOIN_QT_CHECK([AC_CHECK_HEADER([QLocalSocket],, BITCOIN_QT_FAIL(QtNetwork headers missing))])
+  BITCOIN_QT_CHECK([AC_CHECK_HEADER([QtConcurrent],, BITCOIN_QT_FAIL(QtConcurrent headers missing))])
 
   BITCOIN_QT_CHECK([
     if test "x$bitcoin_qt_want_version" = xauto; then
       _BITCOIN_QT_CHECK_QT5
+      _BITCOIN_QT_CHECK_QT58
     fi
     QT_LIB_PREFIX=Qt5
   ])
@@ -446,18 +501,32 @@ AC_DEFUN([_BITCOIN_QT_FIND_LIBS_WITHOUT_PKGCONFIG],[
   ])
 
   BITCOIN_QT_CHECK(AC_CHECK_LIB([z] ,[main],,AC_MSG_WARN([zlib not found. Assuming qt has it built-in])))
-  BITCOIN_QT_CHECK(AC_SEARCH_LIBS([png_error] ,[qtpng png],,AC_MSG_WARN([libpng not found. Assuming qt has it built-in])))
   BITCOIN_QT_CHECK(AC_SEARCH_LIBS([jpeg_create_decompress] ,[qtjpeg jpeg],,AC_MSG_WARN([libjpeg not found. Assuming qt has it built-in])))
-  BITCOIN_QT_CHECK(AC_SEARCH_LIBS([pcre16_exec], [qtpcre pcre16],,AC_MSG_WARN([libpcre16 not found. Assuming qt has it built-in])))
-  BITCOIN_QT_CHECK(AC_SEARCH_LIBS([hb_ot_tags_from_script] ,[qtharfbuzzng harfbuzz],,AC_MSG_WARN([libharfbuzz not found. Assuming qt has it built-in or support is disabled])))
+  if test x$bitcoin_cv_qt58 = xno; then
+    BITCOIN_QT_CHECK(AC_SEARCH_LIBS([png_error] ,[qtpng png],,AC_MSG_WARN([libpng not found. Assuming qt has it built-in])))
+    BITCOIN_QT_CHECK(AC_SEARCH_LIBS([pcre16_exec], [qtpcre pcre16],,AC_MSG_WARN([libpcre16 not found. Assuming qt has it built-in])))
+  else
+    BITCOIN_QT_CHECK(AC_SEARCH_LIBS([png_error] ,[qtlibpng png],,AC_MSG_WARN([libpng not found. Assuming qt has it built-in])))
+    BITCOIN_QT_CHECK(AC_SEARCH_LIBS([pcre2_match_16], [qtpcre2 libqtpcre2],,AC_MSG_WARN([libqtpcre2 not found. Assuming qt has it built-in])))
+  fi
+  BITCOIN_QT_CHECK(AC_SEARCH_LIBS([hb_ot_tags_from_script] ,[qtharfbuzzng qtharfbuzz harfbuzz],,AC_MSG_WARN([libharfbuzz not found. Assuming qt has it built-in or support is disabled])))
   BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Core]   ,[main],,BITCOIN_QT_FAIL(lib${QT_LIB_PREFIX}Core not found)))
   BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Gui]    ,[main],,BITCOIN_QT_FAIL(lib${QT_LIB_PREFIX}Gui not found)))
   BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Network],[main],,BITCOIN_QT_FAIL(lib${QT_LIB_PREFIX}Network not found)))
   BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Widgets],[main],,BITCOIN_QT_FAIL(lib${QT_LIB_PREFIX}Widgets not found)))
+  BITCOIN_QT_CHECK(AC_CHECK_LIB([${QT_LIB_PREFIX}Concurrent],[main],,BITCOIN_QT_FAIL(lib${QT_LIB_PREFIX}Concurrent not found)))
   QT_LIBS="$LIBS"
   LIBS="$TEMP_LIBS"
 
   BITCOIN_QT_CHECK([
+    LIBS=
+    if test "x$qt_lib_path" != x; then
+      LIBS="-L$qt_lib_path"
+    fi
+    AC_CHECK_LIB([${QT_LIB_PREFIX}Svg],       [main],, BITCOIN_QT_FAIL(lib${QT_LIB_PREFIX}Svg not found))
+    AC_CHECK_HEADER([QtSvg],, BITCOIN_QT_FAIL(lib${QT_LIB_PREFIX}Svg not found))
+    QT_LIBS="$QT_LIBS $LIBS"
+    QT_SVG_LIBS="$LIBS"
     LIBS=
     if test "x$qt_lib_path" != x; then
       LIBS="-L$qt_lib_path"

@@ -1,5 +1,5 @@
 // Copyright (c) 2012-2017 The Bitcoin Core developers
-// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2016-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -14,7 +14,7 @@
  * for both kabberryd and kabberry-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Kabberry");
+const std::string CLIENT_NAME("Kabberry Core");
 
 /**
  * Client version number
@@ -46,8 +46,8 @@ const std::string CLIENT_NAME("Kabberry");
 //! git will put "#define GIT_ARCHIVE 1" on the next line inside archives. 
 #define GIT_ARCHIVE 1
 #ifdef GIT_ARCHIVE
-#define GIT_COMMIT_ID "d2e880bc2117ab9fdd9f697d2cbe3dd12fa71c02"
-#define GIT_COMMIT_DATE "Tue, 14 Jan 2020 01:19:58 +0100"
+#define GIT_COMMIT_ID "a293072cdb5d81900a45a79874ded1b1ea7e3d85"
+#define GIT_COMMIT_DATE "Thu, 23 Jan 2020 10:21:18 +0100"
 #endif
 
 #define BUILD_DESC_WITH_SUFFIX(maj, min, rev, build, suffix) \
@@ -91,6 +91,11 @@ static std::string FormatVersion(int nVersion)
 std::string FormatFullVersion()
 {
     return CLIENT_BUILD;
+}
+
+std::string FormatVersionFriendly()
+{
+    return FormatVersion(CLIENT_VERSION);
 }
 
 /** 

@@ -1,2 +1,2 @@
-debian/manpages/kabberryd.1
-debian/manpages/kabberry.conf.5
+doc/man/kabberryd.1
+doc/man/kabberry-cli.1

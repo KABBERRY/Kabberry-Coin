@@ -1,7 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2011-2013 The PPCoin developers
+// Copyright (c) 2013-2014 The NovaCoin Developers
+// Copyright (c) 2014-2018 The BlackCoin Developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -21,7 +24,8 @@
 #include "pow.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
-#include "primitives/zerocoin.h"
+#include "skkc/zerocoin.h"
+#include "skkc/skkcmodule.h"
 #include "script/script.h"
 #include "script/sigcache.h"
 #include "script/standard.h"
@@ -83,8 +87,6 @@ static const unsigned int MAX_BLOCKFILE_SIZE = 0x8000000; // 128 MiB
 static const unsigned int BLOCKFILE_CHUNK_SIZE = 0x1000000; // 16 MiB
 /** The pre-allocation chunk size for rev?????.dat files (since 0.8) */
 static const unsigned int UNDOFILE_CHUNK_SIZE = 0x100000; // 1 MiB
-/** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
-static const int COINBASE_MATURITY = 100;
 /** Maximum number of script-checking threads allowed */
 static const int MAX_SCRIPTCHECK_THREADS = 16;
 /** -par default (number of script-checking threads, 0 = auto) */
@@ -108,11 +110,14 @@ static const unsigned int MAX_REJECT_MESSAGE_LENGTH = 111;
 
 /** Enable bloom filter */
  static const bool DEFAULT_PEERBLOOMFILTERS = true;
- 
+
+/** If the tip is older than this (in seconds), the node is considered to be in initial block download. */
+static const int64_t DEFAULT_MAX_TIP_AGE = 24 * 60 * 60;
+
 /** Default for -blockspamfilter, use header spam filter */
 static const bool DEFAULT_BLOCK_SPAM_FILTER = true;
 /** Default for -blockspamfiltermaxsize, maximum size of the list of indexes in the block spam filter */
-static const unsigned int DEFAULT_BLOCK_SPAM_FILTER_MAX_SIZE = COINBASE_MATURITY;
+static const unsigned int DEFAULT_BLOCK_SPAM_FILTER_MAX_SIZE = 100;
 /** Default for -blockspamfiltermaxavg, maximum average size of an index occurrence in the block spam filter */
 static const unsigned int DEFAULT_BLOCK_SPAM_FILTER_MAX_AVG = 10;
 
@@ -139,8 +144,12 @@ extern uint64_t nLastBlockTx;
 extern uint64_t nLastBlockSize;
 extern const std::string strMessageMagic;
 extern int64_t nTimeBestReceived;
-extern CWaitableCriticalSection csBestBlock;
-extern CConditionVariable cvBlockChange;
+
+// Best block section
+extern CWaitableCriticalSection g_best_block_mutex;
+extern std::condition_variable g_best_block_cv;
+extern uint256 g_best_block;
+
 extern bool fImporting;
 extern bool fReindex;
 extern int nScriptCheckThreads;
@@ -150,19 +159,15 @@ extern bool fCheckBlockIndex;
 extern unsigned int nCoinCacheSize;
 extern CFeeRate minRelayTxFee;
 extern bool fAlerts;
+extern int64_t nMaxTipAge;
 extern bool fVerifyingBlocks;
 
 extern bool fLargeWorkForkFound;
 extern bool fLargeWorkInvalidChainFound;
 
-extern unsigned int nStakeMinAge;
-extern int64_t nLastCoinStakeSearchInterval;
-extern int64_t nLastCoinStakeSearchTime;
 extern int64_t nReserveBalance;
 
 extern std::map<uint256, int64_t> mapRejectedBlocks;
-extern std::map<unsigned int, unsigned int> mapHashedBlocks;
-extern std::set<std::pair<COutPoint, unsigned int> > setStakeSeen;
 extern std::map<uint256, int64_t> mapZerocoinspends; //txid, time received
 
 /** Best header we've seen so far (used for getheaders queries' starting points). */
@@ -223,17 +228,18 @@ bool IsInitialBlockDownload();
 /** Format a string that describes several potential problems detected by the core */
 std::string GetWarnings(std::string strFor);
 /** Retrieve a transaction (from memory pool, or from disk, if possible) */
-bool GetTransaction(const uint256& hash, CTransaction& tx, uint256& hashBlock, bool fAllowSlow = false);
+bool GetTransaction(const uint256& hash, CTransaction& tx, uint256& hashBlock, bool fAllowSlow = false, CBlockIndex* blockIndex = nullptr);
+/** Retrieve an output (from memory pool, or from disk, if possible) */
+bool GetOutput(const uint256& hash, unsigned int index, CValidationState& state, CTxOut& out);
 /** Find the best known block, and make it the tip of the block chain */
 
 // ***TODO***
 double ConvertBitsToDouble(unsigned int nBits);
-int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount, bool iszPSCStake);
+int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount, bool issKKCStake);
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock, bool fProofOfStake);
 
 bool ActivateBestChain(CValidationState& state, CBlock* pblock = NULL, bool fAlreadyChecked = false);
 CAmount GetBlockValue(int nHeight);
-int64_t GetDevFundPayment(int nHeight, int64_t blockValue);
 
 /** Create a new block index entry for a given block hash */
 CBlockIndex* InsertBlockIndex(uint256 hash);
@@ -253,7 +259,6 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransaction& tx, bool fLimitFree, bool* pfMissingInputs, bool fRejectInsaneFee = false, bool isDSTX = false);
 
 int GetInputAge(CTxIn& vin);
-int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
 int GetIXConfirmations(uint256 nTXHash);
 
 struct CNodeStateStats {
@@ -342,20 +347,28 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
 void UpdateCoins(const CTransaction& tx, CValidationState& state, CCoinsViewCache& inputs, CTxUndo& txundo, int nHeight);
 
 /** Context-independent validity checks */
-bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fRejectBadUTXO, CValidationState& state);
+bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fRejectBadUTXO, CValidationState& state, bool fFakeSerialAttack = false, bool fColdStakingActive=false);
 bool CheckZerocoinMint(const uint256& txHash, const CTxOut& txout, CValidationState& state, bool fCheckOnly = false);
-bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidationState& state);
-bool ContextualCheckZerocoinSpend(const CTransaction& tx, const libzerocoin::CoinSpend& spend, CBlockIndex* pindex, const uint256& hashBlock);
-bool ContextualCheckZerocoinSpendNoSerialCheck(const CTransaction& tx, const libzerocoin::CoinSpend& spend, CBlockIndex* pindex, const uint256& hashBlock);
+bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidationState& state, bool fFakeSerialAttack = false);
+bool ContextualCheckZerocoinSpend(const CTransaction& tx, const libzerocoin::CoinSpend* spend, CBlockIndex* pindex, const uint256& hashBlock);
+bool ContextualCheckZerocoinSpendNoSerialCheck(const CTransaction& tx, const libzerocoin::CoinSpend* spend, CBlockIndex* pindex, const uint256& hashBlock);
 bool IsTransactionInChain(const uint256& txId, int& nHeightTx, CTransaction& tx);
 bool IsTransactionInChain(const uint256& txId, int& nHeightTx);
 bool IsBlockHashInChain(const uint256& hashBlock);
-bool ValidOutPoint(const COutPoint out, int nHeight);
-void RecalculatezPSCSpent();
-void RecalculatezPSCMinted();
-bool RecalculateKabberrySupply(int nHeightStart);
-bool ReindexAccumulators(list<uint256>& listMissingCheckpoints, string& strError);
+bool ValidOutPoint(const COutPoint& out, int nHeight);
+void AddWrappedSerialsInflation();
+void RecalculatesKKCSpent();
+void RecalculatesKKCMinted();
+bool RecalculateKKCSupply(int nHeightStart);
+bool ReindexAccumulators(std::list<uint256>& listMissingCheckpoints, std::string& strError);
 
+// Fake Serial attack Range
+bool isBlockBetweenFakeSerialAttackRange(int nHeight);
+
+// Public coin spend
+bool CheckPublicCoinSpendEnforced(int blockHeight, bool isPublicSpend);
+int CurrentPublicCoinSpendVersion();
+bool CheckPublicCoinSpendVersion(int version);
 
 /**
  * Check if transaction will be final in the next block to be created.
@@ -442,7 +455,8 @@ bool ReadBlockFromDisk(CBlock& block, const CBlockIndex* pindex);
 bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex, CCoinsViewCache& coins, bool* pfClean = NULL);
 
 /** Reprocess a number of blocks to try and get on the correct chain again **/
-bool DisconnectBlocksAndReprocess(int blocks);
+bool DisconnectBlocks(int nBlocks);
+void ReprocessBlocks(int nBlocks);
 
 /** Apply the effects of this block (with given index) on the UTXO set represented by coins */
 bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pindex, CCoinsViewCache& coins, bool fJustCheck, bool fAlreadyChecked = false);

@@ -1,110 +1,59 @@
-# Kabberry
-Kabberry Core
-https://kabberry.com
+kabberry Core integration/staging repository
+=====================================
 
+[![Build Status](https://travis-ci.org/kabberry-Project/kabberry.svg?branch=master)](https://travis-ci.org/kabberry-Project/kabberry) [![GitHub version](https://badge.fury.io/gh/kabberry-Project%2Fkabberry.svg)](https://badge.fury.io/gh/kabberry-Project%2Fkabberry)
 
+kabberry is an open source crypto-currency focused on fast private transactions using the Zerocoin protocol, with low transaction fees & environmental footprint.  It utilizes the first ever anonymous proof of stake protocol, called zPoS, combined with regular PoS and masternodes for securing its network. zPoS incentivises using the privacy features available in kabberry by granting a higher block reward for zPoS over regular PoS and masternodes. In practice kabberry has between 4 to 10 times higher use of it's privacy features in comparison to other coins that combine public and private transactions. This is thanks to innovations like zPoS and integrating the Zerocoin protocol into light/mobile wallets, allowing for a complete and lightweight privacy protocol that can be used on the go. As well as security improvements like [deterministic generation of sKKC for easy backups.](https://www.reddit.com/r/kabberry/comments/8gbjf7/how_to_use_deterministic_zerocoin_generation/)
+The goal of kabberry is to achieve a decentralized sustainable crypto currency with near instant full-time private transactions, fair governance and community intelligence.
+- Anonymized transactions & consensus using the [_Zerocoin Protocol_](http://www.kabberry.org/skkc) and [zPoS](https://kabberry.org/zpos/).
+- light/mobile wallet privacy using the [Zerocoin Light Node Protocol](https://kabberry.org/wp-content/uploads/2018/11/Zerocoin_Light_Node_Protocol.pdf)
+- Fast transactions featuring guaranteed zero confirmation transactions, we call it _SwiftX_.
+- Decentralized blockchain voting utilizing Masternode technology to form a DAO. The blockchain will distribute monthly treasury funds based on successful proposals submitted by the community and voted on by the DAO.
 
-<br>For setup PSC Masternode on Ubuntu 16.04 and 18.04 with IPv4 you need start script:
+More information at [kabberry.org](http://www.kabberry.org) Visit our ANN thread at [BitcoinTalk](http://www.bitcointalk.org/index.php?topic=1262920)
 
-<br>apt-get update -y && cd ~/ && sudo apt-get install curl -y && bash <(curl -s https://raw.githubusercontent.com/Kabberrycoin/MN-Script-IPv4/master/prime_IPv4.sh) | tee ~/prime_masternode_installation.log
+### Coin Specs
+<table>
+<tr><td>Algo</td><td>Quark</td></tr>
+<tr><td>Block Time</td><td>60 Seconds</td></tr>
+<tr><td>Difficulty Retargeting</td><td>Every Block</td></tr>
+<tr><td>Max Coin Supply (PoW Phase)</td><td>43,199,500 KKC</td></tr>
+<tr><td>Max Coin Supply (PoS Phase)</td><td>Infinite</td></tr>
+<tr><td>Premine</td><td>60,000 KKC*</td></tr>
+</table>
 
-<br>For setup PSC Masternode on Ubuntu 16.04 and 18.04 with IPv6 you need start script:
+*60,000 KKC Premine was burned in block [279917](http://www.presstab.pw/phpexplorer/kabberry/block.php?blockhash=206d9cfe859798a0b0898ab00d7300be94de0f5469bb446cecb41c3e173a57e0)
 
-<br>apt-get update -y && cd ~/ && sudo apt-get install curl -y && bash <(curl -s https://raw.githubusercontent.com/Kabberrycoin/MN-Script-IPv6/master/prime_IPv6.sh) | tee ~/prime_masternode_installation.log
+### Reward Distribution
 
+<table>
+<th colspan=4>Genesis Block</th>
+<tr><th>Block Height</th><th>Reward Amount</th><th>Notes</th></tr>
+<tr><td>1</td><td>60,000 KKC</td><td>Initial Pre-mine, burnt in block <a href="http://www.presstab.pw/phpexplorer/kabberry/block.php?blockhash=206d9cfe859798a0b0898ab00d7300be94de0f5469bb446cecb41c3e173a57e0">279917</a></td></tr>
+</table>
 
-<br>BLOCK EXPLORER
-<br>http://explorer.kabberry.com
-<br>GITHUB
-<br>https://github.com/KABBERRY
+### PoW Rewards Breakdown
 
-<br>Kabberry WALLETS 2.6
+<table>
+<th>Block Height</th><th>Masternodes</th><th>Miner</th><th>Budget</th>
+<tr><td>2-43200</td><td>20% (50 KKC)</td><td>80% (200 KKC)</td><td>N/A</td></tr>
+<tr><td>43201-151200</td><td>20% (50 KKC)</td><td>70% (200 KKC)</td><td>10% (25 KKC)</td></tr>
+<tr><td>151201-259200</td><td>45% (22.5 KKC)</td><td>45% (22.5 KKC)</td><td>10% (5 KKC)</td></tr>
+</table>
 
-<br> Windows wallet 2.6 64bit
-<br> https://github.com/Kabberrycoin/Kabberry/releases/download/v2.3.0/kabberry_windows_x64.zip
-<br> Windows wallet 2.6 32bit
-<br> https://github.com/Kabberrycoin/Kabberry/releases/download/v2.3.0/kabberry_windows_x86.zip
-<br> Linux wallet 2.6 (Ubuntu 18.04)
-<br> https://github.com/Kabberrycoin/Kabberry/releases/download/v2.3.0/kabberry_linux.zip
-<br> Linux wallet 2.6 (Ubuntu 16.04)
-<br> https://github.com/Kabberrycoin/Kabberry/releases/download/v2.3.0/kabberry_ubuntu_16.zip
+### PoS Rewards Breakdown
 
-<br>Kabberry MASTERNODE SETUP MANUALS
-
-<br>Masternode SETUP (windows) 1.3-2.3 version
-<br>http://scripts.kabberry.com/MasterNode_WIN_ENG.pdf
-<br>Masternode CLEAR SETUP 1.3-2.3 version (VPS)
-<br>http://scripts.kabberry.com/Masternode_SETUP_VPS_1.3.pdf
-
-<br>MASTERNODE HOSTING & SHARED NODE SERVICES
-
-<br>Node hosting service Nodehub
-<br>https://nodehub.io/
-<br>Node hosting service Pecunia platform
-<br>https://pecuniaplatform.io/
-<br>Shared node and hosting sevice ihostmn
-<br>https://ihostmn.com/
-<br>Shared node and PoS sevice 4stake
-<br>https://www.4stake.com/
-<br>Node hosting service Hostmasternode
-<br>http://p.hostmasternode.com/
-
-<br>COIN INFO
-
-<br>Whitepaper
-<br>https://kabberry.com/wp-content/uploads/2018/06/Kabberry-WhitePaper.pdf
-<br>Documentation
-<br>https://kabberry.com/documentation/
-<br>Coinmarketcap
-<br>https://coinmarketcap.com/currencies/kabberry
-<br>MNROI
-<br>https://www.mnroi.info/coin/PSC
-<br>Masternodes.online
-<br>https://masternodes.online/currencies/PSC
-<br>Cryptorank
-<br>https://cryptorank.io/currencies/kabberry/price-chart
-<br>Cheddur
-<br>https://www.cheddur.com/coins/kabberry
-<br>Coingecko
-<br>https://www.coingecko.com/en/coins/kabberry
-<br>Coinpaprika
-<br>https://coinpaprika.com/coin/psc-kabberry
-<br>Walletinvestor
-<br>https://walletinvestor.com/forecast/kabberry-prediction
-<br>Blockfolio
-<br>https://blockfolio.com/
-
-<br>SOCIAL
-
-<br>Discord
-<br>https://discord.gg/D6KeMSA
-<br>Twitter
-<br>https://twitter.com/Kabberry2
-<br>Telegram
-<br>https://t.me/Kabberry_Coin
-<br>Instagram
-<br>https://www.instagram.com/kabberryglobal
-<br>Facebook
-<br>https://www.facebook.com/Kabberry.Global
-<br>Reddit
-<br>https://www.reddit.com/r/Kabberry/
-<br>Bitcointalk
-<br>https://bitcointalk.org/index.php?topic=2963836
-<br>Bitcoin.pl
-<br>https://forum.bitcoin.pl/viewtopic.php?t=29619
-
-<br>EXCHANGES
-
-<br>Crex24
-<br>https://crex24.com/pl/exchange/KKC-BTC
-<br>Graviex
-<br>https://graviex.net/markets/pscbtc
-<br>BiteBTC
-<br>https://bitebtc.com/trade/psc_btc
-<br>Altilly
-<br>https://www.altilly.com/market/PSC_BTC
-<br>Cryptaldash
-<br>https://exchange.cryptaldash.com/
-<br>Bitbibe
-<br>https://dex.bitbibe.io/PSCBTC
-
+<table>
+<th>Phase</th><th>Block Height</th><th>Reward</th><th>Masternodes & Stakers</th><th>Budget</th>
+<tr><td>Phase 0</td><td>259201-302399</td><td>50 KKC</td><td>90% (45 KKC)</td><td>10% (5 KKC)</td></tr>
+<tr><td>Phase 1</td><td>302400-345599</td><td>45 KKC</td><td>90% (40.5 KKC)</td><td>10% (4.5 KKC)</td></tr>
+<tr><td>Phase 2</td><td>345600-388799</td><td>40 KKC</td><td>90% (36 KKC)</td><td>10% (4 KKC)</td></tr>
+<tr><td>Phase 3</td><td>388800-431999</td><td>35 KKC</td><td>90% (31.5 KKC)</td><td>10% (3.5 KKC)</td></tr>
+<tr><td>Phase 4</td><td>432000-475199</td><td>30 KKC</td><td>90% (27 KKC)</td><td>10% (3 KKC)</td></tr>
+<tr><td>Phase 5</td><td>475200-518399</td><td>25 KKC</td><td>90% (22.5 KKC)</td><td>10% (2.5 KKC)</td></tr>
+<tr><td>Phase 6</td><td>518400-561599</td><td>20 KKC</td><td>90% (18 KKC)</td><td>10% (2 KKC)</td></tr>
+<tr><td>Phase 7</td><td>561600-604799</td><td>15 KKC</td><td>90% (13.5 KKC)</td><td>10% (1.5 KKC)</td></tr>
+<tr><td>Phase 8</td><td>604800-647999</td><td>10 KKC</td><td>90% (9 KKC)</td><td>10% (1 KKC)</td></tr>
+<tr><td>Phase 9</td><td>648000-1154203</td><td>5 KKC</td><td>90% (4.5 KKC)</td><td>10% (0.5 KKC)</td></tr>
+<tr><td>Phase X</td><td>1154203-∞</td><td>6 KKC</td><td>84% (5 KKC/sKKC)</td><td>16% (1 KKC)</td></tr>
+</table>

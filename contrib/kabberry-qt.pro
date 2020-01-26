@@ -658,3 +658,6 @@ TRANSLATIONS += src/qt/locale/kabberry_bg.ts \
                 src/qt/locale/kabberry_vi.ts \
                 src/qt/locale/kabberry_zh_CN.ts \
                 src/qt/locale/kabberry_zh_TW.ts
+
+DISTFILES += \
+    README.md

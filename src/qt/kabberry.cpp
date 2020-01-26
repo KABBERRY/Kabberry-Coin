@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -9,7 +9,7 @@
 #include "config/kabberry-config.h"
 #endif
 
-#include "bitcoingui.h"
+#include "qt/kabberry/kabberrygui.h"
 
 #include "clientmodel.h"
 #include "guiconstants.h"
@@ -18,7 +18,8 @@
 #include "net.h"
 #include "networkstyle.h"
 #include "optionsmodel.h"
-#include "splashscreen.h"
+#include "qt/kabberry/splash.h"
+#include "qt/kabberry/welcomecontentwidget.h"
 #include "utilitydialog.h"
 #include "winshutdownmonitor.h"
 
@@ -31,11 +32,11 @@
 #include "init.h"
 #include "main.h"
 #include "rpc/server.h"
-#include "ui_interface.h"
+#include "guiinterface.h"
 #include "util.h"
 
 #ifdef ENABLE_WALLET
-#include "wallet.h"
+#include "wallet/wallet.h"
 #endif
 
 #include <stdint.h>
@@ -66,6 +67,8 @@ Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
 #elif defined(QT_QPA_PLATFORM_COCOA)
 Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #endif
+Q_IMPORT_PLUGIN(QSvgPlugin);
+Q_IMPORT_PLUGIN(QSvgIconPlugin);
 #endif
 
 // Declare meta types used for QMetaObject::invokeMethod
@@ -146,8 +149,7 @@ void DebugMessageHandler(QtMsgType type, const QMessageLogContext& context, cons
     LogPrint(category, "GUI: %s\n", msg.toStdString());
 }
 
-
-/** Class encapsulating Kabberry startup and shutdown.
+/** Class encapsulating Kabberry Core startup and shutdown.
  * Allows running startup and shutdown in a different thread from the UI thread.
  */
 class BitcoinCore : public QObject
@@ -167,12 +169,11 @@ signals:
     void runawayException(const QString& message);
 
 private:
-
     /// Flag indicating a restart
     bool execute_restart;
 
     /// Pass fatal exception message to UI thread
-    void handleRunawayException(std::exception* e);
+    void handleRunawayException(const std::exception* e);
 };
 
 /** Main Kabberry application object */
@@ -194,6 +195,9 @@ public:
     /// Create splash screen
     void createSplashScreen(const NetworkStyle* networkStyle);
 
+    /// Create tutorial screen
+    bool createTutorialScreen();
+
     /// Request core initialization
     void requestInitialize();
     /// Request core shutdown
@@ -202,7 +206,7 @@ public:
     /// Get process return value
     int getReturnValue() { return returnValue; }
 
-    /// Get window identifier of QMainWindow (BitcoinGUI)
+    /// Get window identifier of QMainWindow (KabberryGUI)
     WId getMainWinId() const;
 
 public slots:
@@ -210,6 +214,7 @@ public slots:
     void shutdownResult(int retval);
     /// Handle runaway exceptions. Shows a message box with the problem and quits the program.
     void handleRunawayException(const QString& message);
+    void updateTranslation();
 
 signals:
     void requestedInitialize();
@@ -222,13 +227,14 @@ private:
     QThread* coreThread;
     OptionsModel* optionsModel;
     ClientModel* clientModel;
-    BitcoinGUI* window;
+    KabberryGUI* window;
     QTimer* pollShutdownTimer;
 #ifdef ENABLE_WALLET
     PaymentServer* paymentServer;
     WalletModel* walletModel;
 #endif
     int returnValue;
+    QTranslator qtTranslatorBase, qtTranslator, translatorBase, translator;
 
     void startThread();
 };
@@ -239,7 +245,7 @@ BitcoinCore::BitcoinCore() : QObject()
 {
 }
 
-void BitcoinCore::handleRunawayException(std::exception* e)
+void BitcoinCore::handleRunawayException(const std::exception* e)
 {
     PrintExceptionContinue(e, "Runaway exception");
     emit runawayException(QString::fromStdString(strMiscWarning));
@@ -253,7 +259,7 @@ void BitcoinCore::initialize()
         qDebug() << __func__ << ": Running AppInit2 in thread";
         int rv = AppInit2();
         emit initializeResult(rv);
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         handleRunawayException(&e);
     } catch (...) {
         handleRunawayException(NULL);
@@ -274,7 +280,7 @@ void BitcoinCore::restart(QStringList args)
             QProcess::startDetached(QApplication::applicationFilePath(), args);
             qDebug() << __func__ << ": Restart initiated...";
             QApplication::quit();
-        } catch (std::exception& e) {
+        } catch (const std::exception& e) {
             handleRunawayException(&e);
         } catch (...) {
             handleRunawayException(NULL);
@@ -290,7 +296,7 @@ void BitcoinCore::shutdown()
         Shutdown();
         qDebug() << __func__ << ": Shutdown finished";
         emit shutdownResult(1);
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         handleRunawayException(&e);
     } catch (...) {
         handleRunawayException(NULL);
@@ -351,7 +357,7 @@ void BitcoinApplication::createOptionsModel()
 
 void BitcoinApplication::createWindow(const NetworkStyle* networkStyle)
 {
-    window = new BitcoinGUI(networkStyle, 0);
+    window = new KabberryGUI(networkStyle, 0);
 
     pollShutdownTimer = new QTimer(window);
     connect(pollShutdownTimer, SIGNAL(timeout()), window, SLOT(detectShutdown()));
@@ -360,12 +366,31 @@ void BitcoinApplication::createWindow(const NetworkStyle* networkStyle)
 
 void BitcoinApplication::createSplashScreen(const NetworkStyle* networkStyle)
 {
-    SplashScreen* splash = new SplashScreen(0, networkStyle);
+    Splash* splash = new Splash(0, networkStyle);
     // We don't hold a direct pointer to the splash screen after creation, so use
     // Qt::WA_DeleteOnClose to make sure that the window will be deleted eventually.
     splash->setAttribute(Qt::WA_DeleteOnClose);
     splash->show();
     connect(this, SIGNAL(splashFinished(QWidget*)), splash, SLOT(slotFinish(QWidget*)));
+}
+
+bool BitcoinApplication::createTutorialScreen()
+{
+    WelcomeContentWidget* widget = new WelcomeContentWidget();
+
+    connect(widget, &WelcomeContentWidget::onLanguageSelected, [this](){
+        updateTranslation();
+    });
+
+    widget->exec();
+    bool ret = widget->isOk;
+    widget->deleteLater();
+    return ret;
+}
+
+void BitcoinApplication::updateTranslation(){
+    // Re-initialize translations after change them
+    initTranslations(this->qtTranslatorBase, this->qtTranslator, this->translatorBase, this->translator);
 }
 
 void BitcoinApplication::startThread()
@@ -438,8 +463,8 @@ void BitcoinApplication::initializeResult(int retval)
         if (pwalletMain) {
             walletModel = new WalletModel(pwalletMain, optionsModel);
 
-            window->addWallet(BitcoinGUI::DEFAULT_WALLET, walletModel);
-            window->setCurrentWallet(BitcoinGUI::DEFAULT_WALLET);
+            window->addWallet(KabberryGUI::DEFAULT_WALLET, walletModel);
+            window->setCurrentWallet(KabberryGUI::DEFAULT_WALLET);
 
             connect(walletModel, SIGNAL(coinsSent(CWallet*, SendCoinsRecipient, QByteArray)),
                 paymentServer, SLOT(fetchPaymentACK(CWallet*, const SendCoinsRecipient&, QByteArray)));
@@ -478,7 +503,7 @@ void BitcoinApplication::shutdownResult(int retval)
 
 void BitcoinApplication::handleRunawayException(const QString& message)
 {
-    QMessageBox::critical(0, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. Kabberry can no longer continue safely and will quit.") + QString("\n\n") + message);
+    QMessageBox::critical(0, "Runaway exception", KabberryGUI::tr("A fatal error occurred. Kabberry can no longer continue safely and will quit.") + QString("\n\n") + message);
     ::exit(1);
 }
 
@@ -505,7 +530,6 @@ int main(int argc, char* argv[])
     Q_INIT_RESOURCE(kabberry_locale);
     Q_INIT_RESOURCE(kabberry);
 
-    BitcoinApplication app(argc, argv);
 #if QT_VERSION > 0x050100
     // Generate high-dpi pixmaps
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -516,6 +540,7 @@ int main(int argc, char* argv[])
 #ifdef Q_OS_MAC
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
+    BitcoinApplication app(argc, argv);
 
     // Register meta types used for QMetaObject::invokeMethod
     qRegisterMetaType<bool*>();
@@ -533,21 +558,9 @@ int main(int argc, char* argv[])
 
     /// 4. Initialization of translations, so that intro dialog is in user's language
     // Now that QSettings are accessible, initialize translations
-    QTranslator qtTranslatorBase, qtTranslator, translatorBase, translator;
-    initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
+    //initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
+    app.updateTranslation();
     uiInterface.Translate.connect(Translate);
-    
-#ifdef Q_OS_MAC
-#if __clang_major__ < 4
-    QString s = QSysInfo::kernelVersion();
-    std::string ver_info = s.toStdString();
-    // ver_info will be like 17.2.0 for High Sierra. Check if true and exit if build via cross-compile
-    if (ver_info[0] == '1' && ver_info[1] == '7') {
-        QMessageBox::critical(0, "Unsupported", BitcoinGUI::tr("High Sierra not supported with this build") + QString("\n\n"));
-        ::exit(1);
-    }
-#endif
-#endif
 
     // Show help message immediately after parsing command-line options (for "-lang") and setting locale,
     // but before showing splash screen.
@@ -565,14 +578,14 @@ int main(int argc, char* argv[])
     /// 6. Determine availability of data directory and parse kabberry.conf
     /// - Do not call GetDataDir(true) before this step finishes
     if (!boost::filesystem::is_directory(GetDataDir(false))) {
-        QMessageBox::critical(0, QObject::tr("Kabberry"),
+        QMessageBox::critical(0, QObject::tr("Kabberry Core"),
             QObject::tr("Error: Specified data directory \"%1\" does not exist.").arg(QString::fromStdString(mapArgs["-datadir"])));
         return 1;
     }
     try {
         ReadConfigFile(mapArgs, mapMultiArgs);
-    } catch (std::exception& e) {
-        QMessageBox::critical(0, QObject::tr("Kabberry"),
+    } catch (const std::exception& e) {
+        QMessageBox::critical(0, QObject::tr("Kabberry Core"),
             QObject::tr("Error: Cannot parse configuration file: %1. Only use key=value syntax.").arg(e.what()));
         return 0;
     }
@@ -585,7 +598,7 @@ int main(int argc, char* argv[])
 
     // Check for -testnet or -regtest parameter (Params() calls are only valid after this clause)
     if (!SelectParamsFromCommandLine()) {
-        QMessageBox::critical(0, QObject::tr("Kabberry"), QObject::tr("Error: Invalid combination of -regtest and -testnet."));
+        QMessageBox::critical(0, QObject::tr("Kabberry Core"), QObject::tr("Error: Invalid combination of -regtest and -testnet."));
         return 1;
     }
 #ifdef ENABLE_WALLET
@@ -598,13 +611,13 @@ int main(int argc, char* argv[])
     // Allow for separate UI settings for testnets
     QApplication::setApplicationName(networkStyle->getAppName());
     // Re-initialize translations after changing application name (language in network-specific settings can be different)
-    initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
+    app.updateTranslation();
 
 #ifdef ENABLE_WALLET
     /// 7a. parse masternode.conf
-    string strErr;
+    std::string strErr;
     if (!masternodeConfig.read(strErr)) {
-        QMessageBox::critical(0, QObject::tr("Kabberry"),
+        QMessageBox::critical(0, QObject::tr("Kabberry Core"),
             QObject::tr("Error reading masternode configuration file: %1").arg(strErr.c_str()));
         return 0;
     }
@@ -638,6 +651,27 @@ int main(int argc, char* argv[])
     // Subscribe to global signals from core
     uiInterface.InitMessage.connect(InitMessage);
 
+    bool ret = true;
+#ifdef ENABLE_WALLET
+    // Check if the wallet exists or need to be created
+    std::string strWalletFile = GetArg("-wallet", "wallet.dat");
+    std::string strDataDir = GetDataDir().string();
+    // Wallet file must be a plain filename without a directory
+    if (strWalletFile != boost::filesystem::basename(strWalletFile) + boost::filesystem::extension(strWalletFile)){
+        throw std::runtime_error(strprintf(_("Wallet %s resides outside data directory %s"), strWalletFile, strDataDir));
+    }
+
+    boost::filesystem::path pathBootstrap = GetDataDir() / strWalletFile;
+    if (!boost::filesystem::exists(pathBootstrap)) {
+        // wallet doesn't exist, popup tutorial screen.
+        ret = app.createTutorialScreen();
+    }
+#endif
+    if(!ret){
+        // wallet not loaded.
+        return 0;
+    }
+
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min", false))
         app.createSplashScreen(networkStyle.data());
 
@@ -645,12 +679,12 @@ int main(int argc, char* argv[])
         app.createWindow(networkStyle.data());
         app.requestInitialize();
 #if defined(Q_OS_WIN)
-        WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("Kabberry didn't yet exit safely..."), (HWND)app.getMainWinId());
+        WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("Kabberry Core didn't yet exit safely..."), (HWND)app.getMainWinId());
 #endif
         app.exec();
         app.requestShutdown();
         app.exec();
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         PrintExceptionContinue(&e, "Runaway exception");
         app.handleRunawayException(QString::fromStdString(strMiscWarning));
     } catch (...) {

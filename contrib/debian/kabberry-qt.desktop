@@ -1,7 +1,7 @@
 [Desktop Entry]
-Encoding=UTF-8
+Version=1.0
 Name=Kabberry
-Comment=Kabberry P2P Cryptocurrency
+Comment=Kabberry Cryptocurrency
 Comment[fr]=Kabberry, monnaie virtuelle cryptographique pair à pair
 Comment[tr]=Kabberry, eşten eşe kriptografik sanal para birimi
 Exec=kabberry-qt %u
@@ -10,3 +10,4 @@ Type=Application
 Icon=kabberry128
 MimeType=x-scheme-handler/kabberry;
 Categories=Office;Finance;
+StartupWMClass=Kabberry-qt

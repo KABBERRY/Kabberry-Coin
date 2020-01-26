@@ -22,7 +22,7 @@ Developer Notes
     - [Threads](#threads)
     - [Ignoring IDE/editor files](#ignoring-ideeditor-files)
 - [Development guidelines](#development-guidelines)
-    - [General Bitcoin Core](#general-bitcoin-core)
+    - [General Kabberry Core](#general-kabberry-core)
     - [Wallet](#wallet)
     - [General C++](#general-c)
     - [C++ data structures](#c-data-structures)
@@ -34,8 +34,9 @@ Developer Notes
     - [Source code organization](#source-code-organization)
     - [GUI](#gui)
     - [Subtrees](#subtrees)
-    - [Git and GitHub tips](#git-and-github-tips)
+    - [Upgrading LevelDB](#upgrading-leveldb)
     - [Scripted diffs](#scripted-diffs)
+    - [Git and GitHub tips](#git-and-github-tips)
     - [Release notes](#release-notes)
     - [RPC interface guidelines](#rpc-interface-guidelines)
 
@@ -49,8 +50,6 @@ and the result is not very consistent. However, we're now trying to converge to
 a single style, which is specified below. When writing patches, favor the new
 style over attempting to mimic the surrounding style, except for move-only
 commits.
-
-Do not submit patches solely to modify the style of existing code.
 
 Coding Style (C++)
 ------------------
@@ -73,10 +72,6 @@ tool to clean up patches automatically before submission.
 - **Symbol naming conventions**. These are preferred in new code, but are not
 required when doing so would need changes to significant pieces of existing
 code.
-  - Variable (including function arguments) and namespace names are all lowercase, and may use `_` to
-    separate words (snake_case).
-    - Class member variables have a `m_` prefix.
-    - Global variables have a `g_` prefix.
   - Constant names are all uppercase, and use `_` to separate words.
   - Class names, function names and method names are UpperCamelCase
     (PascalCase). Do not prefix class names with `C`.
@@ -130,7 +125,7 @@ Refer to [/test/functional/README.md#style-guidelines](/test/functional/README.m
 Coding Style (Doxygen-compatible comments)
 ------------------------------------------
 
-Bitcoin Core uses [Doxygen](http://www.doxygen.nl/) to generate its official documentation.
+Kabberry Core uses [Doxygen](http://www.doxygen.nl/) to generate its official documentation.
 
 Use Doxygen-compatible comment blocks for functions, methods, and fields.
 
@@ -192,7 +187,7 @@ Documentation can be generated with `make docs` and cleaned up with `make clean-
 
 Before running `make docs`, you will need to install dependencies `doxygen` and `dot`. For example, on MacOS via Homebrew:
 ```
-brew install doxygen --with-graphviz
+brew install doxygen
 ```
 
 Development tips and tricks
@@ -220,7 +215,7 @@ to see it.
 
 ### Testnet and Regtest modes
 
-Run with the `-testnet` option to run with "play bitcoins" on the test network, if you
+Run with the `-testnet` option to run with "play KKCs (tKKC)" on the test network, if you
 are testing multi-machine code that needs to operate across the internet.
 
 If you are testing something that can run on one machine, run with the `-regtest` option.
@@ -229,7 +224,7 @@ that run in `-regtest` mode.
 
 ### DEBUG_LOCKORDER
 
-Bitcoin Core is a multi-threaded application, and deadlocks or other
+Kabberry Core is a multi-threaded application, and deadlocks or other
 multi-threading bugs can be very difficult to track down. The `--enable-debug`
 configure option adds `-DDEBUG_LOCKORDER` to the compiler flags. This inserts
 run-time checks to keep track of which locks are held, and adds warnings to the
@@ -239,15 +234,15 @@ debug.log file if inconsistencies are detected.
 
 Valgrind is a programming tool for memory debugging, memory leak detection, and
 profiling. The repo contains a Valgrind suppressions file
-([`valgrind.supp`](https://github.com/bitcoin/bitcoin/blob/master/contrib/valgrind.supp))
+([`valgrind.supp`](https://github.com/kabberry-project/kabberry/blob/master/contrib/valgrind.supp))
 which includes known Valgrind warnings in our dependencies that cannot be fixed
 in-tree. Example use:
 
 ```shell
-$ valgrind --suppressions=contrib/valgrind.supp src/test/test_bitcoin
+$ valgrind --suppressions=contrib/valgrind.supp src/test/test_kabberry
 $ valgrind --suppressions=contrib/valgrind.supp --leak-check=full \
-      --show-leak-kinds=all src/test/test_bitcoin --log_level=test_suite
-$ valgrind -v --leak-check=full src/bitcoind -printtoconsole
+      --show-leak-kinds=all src/test/test_kabberry --log_level=test_suite
+$ valgrind -v --leak-check=full src/kabberryd -printtoconsole
 ```
 
 ### Compiling for test coverage
@@ -263,104 +258,8 @@ To enable LCOV report generation during test runs:
 make
 make cov
 
-# A coverage report will now be accessible at `./test_bitcoin.coverage/index.html`.
+# A coverage report will now be accessible at `./test_kabberry.coverage/index.html`.
 ```
-
-### Performance profiling with perf
-
-Profiling is a good way to get a precise idea of where time is being spent in
-code. One tool for doing profiling on Linux platforms is called
-[`perf`](http://www.brendangregg.com/perf.html), and has been integrated into
-the functional test framework. Perf can observe a running process and sample
-(at some frequency) where its execution is.
-
-Perf installation is contingent on which kernel version you're running; see
-[this StackExchange
-thread](https://askubuntu.com/questions/50145/how-to-install-perf-monitoring-tool)
-for specific instructions.
-
-Certain kernel parameters may need to be set for perf to be able to inspect the
-running process' stack.
-
-```sh
-$ sudo sysctl -w kernel.perf_event_paranoid=-1
-$ sudo sysctl -w kernel.kptr_restrict=0
-```
-
-Make sure you [understand the security
-trade-offs](https://lwn.net/Articles/420403/) of setting these kernel
-parameters.
-
-To profile a running bitcoind process for 60 seconds, you could use an
-invocation of `perf record` like this:
-
-```sh
-$ perf record \
-    -g --call-graph dwarf --per-thread -F 140 \
-    -p `pgrep bitcoind` -- sleep 60
-```
-
-You could then analyze the results by running
-
-```sh
-perf report --stdio | c++filt | less
-```
-
-or using a graphical tool like [Hotspot](https://github.com/KDAB/hotspot).
-
-See the functional test documentation for how to invoke perf within tests.
-
-
-**Sanitizers**
-
-Bitcoin Core can be compiled with various "sanitizers" enabled, which add
-instrumentation for issues regarding things like memory safety, thread race
-conditions, or undefined behavior. This is controlled with the
-`--with-sanitizers` configure flag, which should be a comma separated list of
-sanitizers to enable. The sanitizer list should correspond to supported
-`-fsanitize=` options in your compiler. These sanitizers have runtime overhead,
-so they are most useful when testing changes or producing debugging builds.
-
-Some examples:
-
-```bash
-# Enable both the address sanitizer and the undefined behavior sanitizer
-./configure --with-sanitizers=address,undefined
-
-# Enable the thread sanitizer
-./configure --with-sanitizers=thread
-```
-
-If you are compiling with GCC you will typically need to install corresponding
-"san" libraries to actually compile with these flags, e.g. libasan for the
-address sanitizer, libtsan for the thread sanitizer, and libubsan for the
-undefined sanitizer. If you are missing required libraries, the configure script
-will fail with a linker error when testing the sanitizer flags.
-
-The test suite should pass cleanly with the `thread` and `undefined` sanitizers,
-but there are a number of known problems when using the `address` sanitizer. The
-address sanitizer is known to fail in
-[sha256_sse4::Transform](/src/crypto/sha256_sse4.cpp) which makes it unusable
-unless you also use `--disable-asm` when running configure. We would like to fix
-sanitizer issues, so please send pull requests if you can fix any errors found
-by the address sanitizer (or any other sanitizer).
-
-Not all sanitizer options can be enabled at the same time, e.g. trying to build
-with `--with-sanitizers=address,thread` will fail in the configure script as
-these sanitizers are mutually incompatible. Refer to your compiler manual to
-learn more about these options and which sanitizers are supported by your
-compiler.
-
-Additional resources:
-
- * [AddressSanitizer](https://clang.llvm.org/docs/AddressSanitizer.html)
- * [LeakSanitizer](https://clang.llvm.org/docs/LeakSanitizer.html)
- * [MemorySanitizer](https://clang.llvm.org/docs/MemorySanitizer.html)
- * [ThreadSanitizer](https://clang.llvm.org/docs/ThreadSanitizer.html)
- * [UndefinedBehaviorSanitizer](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html)
- * [GCC Instrumentation Options](https://gcc.gnu.org/onlinedocs/gcc/Instrumentation-Options.html)
- * [Google Sanitizers Wiki](https://github.com/google/sanitizers/wiki)
- * [Issue #12691: Enable -fsanitize flags in Travis](https://github.com/bitcoin/bitcoin/issues/12691)
 
 Locking/mutex usage notes
 -------------------------
@@ -376,7 +275,7 @@ reported in the debug.log file.
 
 Re-architecting the core code so there are better-defined interfaces
 between the various components is a goal, with any necessary locking
-done by the components (e.g. see the self-contained `CBasicKeyStore` class
+done by the components (e.g. see the self-contained `CKeyStore` class
 and its `cs_KeyStore` lock for example).
 
 Threads
@@ -402,7 +301,11 @@ Threads
 
 - DumpAddresses : Dumps IP addresses of nodes to peers.dat.
 
+- ThreadFlushWalletDB : Close the wallet.dat file if it hasn't been used in 500ms.
+
 - ThreadRPCServer : Remote procedure call handler, listens on port 8332 for connections and services them.
+
+- BitcoinMiner : Generates KKCs (if wallet is enabled).
 
 - Shutdown : Does an orderly shutdown of everything.
 
@@ -412,7 +315,7 @@ Ignoring IDE/editor files
 In closed-source environments in which everyone uses the same IDE it is common
 to add temporary files it produces to the project-wide `.gitignore` file.
 
-However, in open source software such as Bitcoin Core, where everyone uses
+However, in open source software such as Kabberry Core, where everyone uses
 their own editors/IDE/tools, it is less common. Only you know what files your
 editor produces and this may change from version to version. The canonical way
 to do this is thus to create your local gitignore. Add this to `~/.gitconfig`:
@@ -442,9 +345,9 @@ Development guidelines
 ============================
 
 A few non-style-related recommendations for developers, as well as points to
-pay attention to for reviewers of Bitcoin Core code.
+pay attention to for reviewers of Kabberry Core code.
 
-General Bitcoin Core
+General Kabberry Core
 ----------------------
 
 - New features should be exposed on RPC first, then can be made available in the GUI
@@ -478,6 +381,14 @@ Wallet
 General C++
 -------------
 
+For general C++ guidelines, you may refer to the [C++ Core
+Guidelines](https://isocpp.github.io/CppCoreGuidelines/).
+
+Common misconceptions are clarified in those sections:
+
+- Passing (non-)fundamental types in the [C++ Core
+  Guideline](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rf-conventional)
+
 - Assertions should not have side-effects
 
   - *Rationale*: Even though the source code is set to refuse to compile
@@ -494,11 +405,6 @@ General C++
   `unique_ptr` for allocations in a function.
 
   - *Rationale*: This avoids memory and resource leaks, and ensures exception safety
-
-- Use `MakeUnique()` to construct objects owned by `unique_ptr`s
-
-  - *Rationale*: `MakeUnique` is concise and ensures exception safety in complex expressions.
-    `MakeUnique` is a temporary project local implementation of `std::make_unique` (C++14).
 
 C++ data structures
 --------------------
@@ -602,7 +508,7 @@ Strings and formatting
 
 - For `strprintf`, `LogPrint`, `LogPrintf` formatting characters don't need size specifiers
 
-  - *Rationale*: Bitcoin Core uses tinyformat, which is type safe. Leave them out to avoid confusion
+  - *Rationale*: Kabberry Core uses tinyformat, which is type safe. Leave them out to avoid confusion
 
 Variable names
 --------------
@@ -620,8 +526,8 @@ class AddressBookPage
     Mode m_mode;
 }
 
-AddressBookPage::AddressBookPage(Mode _mode) :
-      m_mode(_mode)
+AddressBookPage::AddressBookPage(Mode _mode)
+    : m_mode(_mode)
 ...
 ```
 
@@ -633,8 +539,8 @@ Threads and synchronization
 ----------------------------
 
 - Build and run tests with `-DDEBUG_LOCKORDER` to verify that no potential
-  deadlocks are introduced. As of 0.12, this is defined by default when
-  configuring with `--enable-debug`
+  deadlocks are introduced. This is defined by default when configuring
+  with `--enable-debug`
 
 - When using `LOCK`/`TRY_LOCK` be aware that the lock exists in the context of
   the current scope, so surround the statement and the code that needs the lock
@@ -724,14 +630,6 @@ namespace {
 
   - *Rationale*: Avoids confusion about the namespace context
 
-- Use `#include <primitives/transaction.h>` bracket syntax instead of
-  `#include "primitives/transactions.h"` quote syntax.
-
-  - *Rationale*: Bracket syntax is less ambiguous because the preprocessor
-    searches a fixed list of include directories without taking location of the
-    source file into account. This allows quoted includes to stand out more when
-    the location of the source file actually is relevant.
-
 - Use include guards to avoid the problem of double inclusion. The header file
   `foo/bar.h` should use the include guard identifier `BITCOIN_FOO_BAR_H`, e.g.
 
@@ -751,19 +649,6 @@ GUI
     should not interact with the user. That's where View classes come in. The converse also
     holds: try to not directly access core data structures from Views.
 
-- Avoid adding slow or blocking code in the GUI thread. In particular do not
-  add new `interfaces::Node` and `interfaces::Wallet` method calls, even if they
-  may be fast now, in case they are changed to lock or communicate across
-  processes in the future.
-
-  Prefer to offload work from the GUI thread to worker threads (see
-  `RPCExecutor` in console code as an example) or take other steps (see
-  https://doc.qt.io/archives/qq/qq27-responsive-guis.html) to keep the GUI
-  responsive.
-
-  - *Rationale*: Blocking the GUI thread can increase latency, and lead to
-    hangs and deadlocks.
-
 Subtrees
 ----------
 
@@ -774,7 +659,7 @@ directly upstream without being PRed directly against the project.  They will be
 subtree merge.
 
 Others are external projects without a tight relationship with our project.  Changes to these should also
-be sent upstream but bugfixes may also be prudent to PR against Bitcoin Core so that they can be integrated
+be sent upstream but bugfixes may also be prudent to PR against Kabberry Core so that they can be integrated
 quickly.  Cosmetic changes should be purely taken upstream.
 
 There is a tool in `test/lint/git-subtree-check.sh` to check a subtree directory for consistency with
@@ -791,9 +676,6 @@ Current subtrees include:
 - src/libsecp256k1
   - Upstream at https://github.com/bitcoin-core/secp256k1/ ; actively maintained by Core contributors.
 
-- src/crypto/ctaes
-  - Upstream at https://github.com/bitcoin-core/ctaes ; actively maintained by Core contributors.
-
 - src/univalue
   - Upstream at https://github.com/bitcoin-core/univalue ; actively maintained by Core contributors, deviates from upstream https://github.com/jgarzik/univalue
 
@@ -807,7 +689,7 @@ you must be aware of.
 
 In most configurations we use the default LevelDB value for `max_open_files`,
 which is 1000 at the time of this writing. If LevelDB actually uses this many
-file descriptors it will cause problems with Bitcoin's `select()` loop, because
+file descriptors it will cause problems with Kabberry's `select()` loop, because
 it may cause new sockets to be created where the fd value is >= 1024. For this
 reason, on 64-bit Unix systems we rely on an internal LevelDB optimization that
 uses `mmap()` + `close()` to open table files without actually retaining
@@ -818,7 +700,7 @@ In addition to reviewing the upstream changes in `env_posix.cc`, you can use `ls
 check this. For example, on Linux this command will show open `.ldb` file counts:
 
 ```bash
-$ lsof -p $(pidof bitcoind) |\
+$ lsof -p $(pidof kabberryd) |\
     awk 'BEGIN { fd=0; mem=0; } /ldb$/ { if ($4 == "mem") mem++; else fd++ } END { printf "mem = %s, fd = %s\n", mem, fd}'
 mem = 119, fd = 0
 ```
@@ -872,6 +754,54 @@ test/lint/commit-script-check.sh origin/master..HEAD
 ```
 
 Commit [`bb81e173`](https://github.com/bitcoin/bitcoin/commit/bb81e173) is an example of a scripted-diff.
+
+Git and GitHub tips
+-------------
+
+- For resolving merge/rebase conflicts, it can be useful to enable diff3 style using
+  `git config merge.conflictstyle diff3`. Instead of
+
+        <<<
+        yours
+        ===
+        theirs
+        >>>
+
+  you will see
+
+        <<<
+        yours
+        |||
+        original
+        ===
+        theirs
+        >>>
+
+  This may make it much clearer what caused the conflict. In this style, you can often just look
+  at what changed between *original* and *theirs*, and mechanically apply that to *yours* (or the other way around).
+
+- When reviewing patches which change indentation in C++ files, use `git diff -w` and `git show -w`. This makes
+  the diff algorithm ignore whitespace changes. This feature is also available on github.com, by adding `?w=1`
+  at the end of any URL which shows a diff.
+
+- When reviewing patches that change symbol names in many places, use `git diff --word-diff`. This will instead
+  of showing the patch as deleted/added *lines*, show deleted/added *words*.
+
+- When reviewing patches that move code around, try using
+  `git diff --patience commit~:old/file.cpp commit:new/file/name.cpp`, and ignoring everything except the
+  moved body of code which should show up as neither `+` or `-` lines. In case it was not a pure move, this may
+  even work when combined with the `-w` or `--word-diff` options described above.
+
+- When looking at other's pull requests, it may make sense to add the following section to your `.git/config`
+  file:
+
+        [remote "upstream-pull"]
+                fetch = +refs/pull/*:refs/remotes/upstream-pull/*
+                url = git@github.com:Kabberry-Project/Kabberry.git
+
+  This will add an `upstream-pull` remote to your git repository, which can be fetched using `git fetch --all`
+  or `git fetch upstream-pull`. Afterwards, you can use `upstream-pull/NUMBER/head` in arguments to `git show`,
+  `git checkout` and anywhere a commit id would be acceptable to see the changes from pull request NUMBER.
 
 Release notes
 -------------
@@ -928,7 +858,7 @@ A few guidelines for introducing and reviewing new RPC interfaces:
 - Try not to overload methods on argument type. E.g. don't make `getblock(true)` and `getblock("hash")`
   do different things.
 
-  - *Rationale*: This is impossible to use with `bitcoin-cli`, and can be surprising to users.
+  - *Rationale*: This is impossible to use with `kabberry-cli`, and can be surprising to users.
 
   - *Exception*: Some RPC calls can take both an `int` and `bool`, most notably when a bool was switched
     to a multi-value, or due to other historical reasons. **Always** have false map to 0 and
@@ -947,13 +877,12 @@ A few guidelines for introducing and reviewing new RPC interfaces:
 
 - Add every non-string RPC argument `(method, idx, name)` to the table `vRPCConvertParams` in `rpc/client.cpp`.
 
-  - *Rationale*: `bitcoin-cli` and the GUI debug console use this table to determine how to
+  - *Rationale*: `kabberry-cli` and the GUI debug console use this table to determine how to
     convert a plaintext command line to JSON. If the types don't match, the method can be unusable
     from there.
 
 - A RPC method must either be a wallet method or a non-wallet method. Do not
-  introduce new methods such as `signrawtransaction` that differ in behavior
-  based on presence of a wallet.
+  introduce new methods that differ in behavior based on presence of a wallet.
 
   - *Rationale*: as well as complicating the implementation and interfering
     with the introduction of multi-wallet, wallet and non-wallet code should be
@@ -963,19 +892,6 @@ A few guidelines for introducing and reviewing new RPC interfaces:
 
   - *Rationale*: If a RPC response is not a JSON object then it is harder to avoid API breakage if
     new data in the response is needed.
-
-- Wallet RPCs call BlockUntilSyncedToCurrentChain to maintain consistency with
-  `getblockchaininfo`'s state immediately prior to the call's execution. Wallet
-  RPCs whose behavior does *not* depend on the current chainstate may omit this
-  call.
-
-  - *Rationale*: In previous versions of Bitcoin Core, the wallet was always
-    in-sync with the chainstate (by virtue of them all being updated in the
-    same cs_main lock). In order to maintain the behavior that wallet RPCs
-    return results as of at least the highest best-known block an RPC
-    client may be aware of prior to entering a wallet RPC call, we must block
-    until the wallet is caught up to the chainstate as of the RPC call's entry.
-    This also makes the API much easier for RPC clients to reason about.
 
 - Be aware of RPC method aliases and generally avoid registering the same
   callback function pointer for different RPCs.

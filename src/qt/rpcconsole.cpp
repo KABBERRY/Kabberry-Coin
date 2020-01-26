@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -19,10 +19,8 @@
 #include "rpc/server.h"
 #include "util.h"
 #ifdef ENABLE_WALLET
-#include "wallet.h"
+#include "wallet/wallet.h"
 #endif // ENABLE_WALLET
-
-#include <openssl/crypto.h>
 
 #include <univalue.h>
 
@@ -240,17 +238,17 @@ void RPCExecutor::request(const QString& command)
             strPrint = result.write(2);
 
         emit reply(RPCConsole::CMD_REPLY, QString::fromStdString(strPrint));
-    } catch (UniValue& objError) {
+    } catch (const UniValue& objError) {
         try // Nice formatting for standard-format error
         {
             int code = find_value(objError, "code").get_int();
             std::string message = find_value(objError, "message").get_str();
             emit reply(RPCConsole::CMD_ERROR, QString::fromStdString(message) + " (code " + QString::number(code) + ")");
-        } catch (std::runtime_error&) // raised when converting to invalid type, i.e. missing code or message
+        } catch (const std::runtime_error&) // raised when converting to invalid type, i.e. missing code or message
         {                             // Show raw JSON object
             emit reply(RPCConsole::CMD_ERROR, QString::fromStdString(objError.write()));
         }
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         emit reply(RPCConsole::CMD_ERROR, QString("Error: ") + QString::fromStdString(e.what()));
     }
 }
@@ -287,10 +285,9 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHi
     connect(ui->btn_resync, SIGNAL(clicked()), this, SLOT(walletResync()));
 
     // set library version labels
-    ui->openSSLVersion->setText(SSLeay_version(SSLEAY_VERSION));
 #ifdef ENABLE_WALLET
     std::string strPathCustom = GetArg("-backuppath", "");
-    std::string strzPSCPathCustom = GetArg("-zPSCbackuppath", "");
+    std::string strsKKCPathCustom = GetArg("-skkcbackuppath", "");
     int nCustomBackupThreshold = GetArg("-custombackupthreshold", DEFAULT_CUSTOMBACKUPTHRESHOLD);
 
     if(!strPathCustom.empty()) {
@@ -299,13 +296,13 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHi
         ui->wallet_custombackuppath->show();
     }
 
-    if(!strzPSCPathCustom.empty()) {
-        ui->wallet_customzPSCbackuppath->setText(QString::fromStdString(strzPSCPathCustom));
-        ui->wallet_customzPSCbackuppath_label->setVisible(true);
-        ui->wallet_customzPSCbackuppath->setVisible(true);
+    if(!strsKKCPathCustom.empty()) {
+        ui->wallet_customskkcbackuppath->setText(QString::fromStdString(strsKKCPathCustom));
+        ui->wallet_customskkcbackuppath_label->setVisible(true);
+        ui->wallet_customskkcbackuppath->setVisible(true);
     }
 
-    if((!strPathCustom.empty() || !strzPSCPathCustom.empty()) && nCustomBackupThreshold > 0) {
+    if((!strPathCustom.empty() || !strsKKCPathCustom.empty()) && nCustomBackupThreshold > 0) {
         ui->wallet_custombackupthreshold->setText(QString::fromStdString(std::to_string(nCustomBackupThreshold)));
         ui->wallet_custombackupthreshold_label->setVisible(true);
         ui->wallet_custombackupthreshold->setVisible(true);
@@ -641,7 +638,7 @@ void RPCConsole::clear()
     QString clsKey = "Ctrl-L";
 #endif
 
-    message(CMD_REPLY, (tr("Welcome to the 	Kabberry RPC console.") + "<br>" +
+    message(CMD_REPLY, (tr("Welcome to the Kabberry RPC console.") + "<br>" +
                         tr("Use up and down arrows to navigate history, and %1 to clear screen.").arg("<b>"+clsKey+"</b>") + "<br>" +
                         tr("Type <b>help</b> for an overview of available commands.") +
                         "<br><span class=\"secwarning\"><br>" +

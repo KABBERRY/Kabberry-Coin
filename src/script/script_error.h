@@ -1,5 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2018-2019 The PIVX developers
+// Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -24,6 +26,7 @@ typedef enum ScriptError_t
     /* Failed verify operations */
     SCRIPT_ERR_VERIFY,
     SCRIPT_ERR_EQUALVERIFY,
+    SCRIPT_ERR_CHECKCOLDSTAKEVERIFY,
     SCRIPT_ERR_CHECKMULTISIGVERIFY,
     SCRIPT_ERR_CHECKSIGVERIFY,
     SCRIPT_ERR_NUMEQUALVERIFY,
@@ -38,7 +41,7 @@ typedef enum ScriptError_t
     /* OP_CHECKLOCKTIMEVERIFY */
     SCRIPT_ERR_NEGATIVE_LOCKTIME,
     SCRIPT_ERR_UNSATISFIED_LOCKTIME,
-	
+
     /* BIP62 */
     SCRIPT_ERR_SIG_HASHTYPE,
     SCRIPT_ERR_SIG_DER,

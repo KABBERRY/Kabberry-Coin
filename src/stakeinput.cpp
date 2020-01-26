@@ -1,28 +1,28 @@
-// Copyright (c) 2017-2018 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "accumulators.h"
+#include "skkc/accumulators.h"
 #include "chain.h"
-#include "primitives/deterministicmint.h"
+#include "skkc/deterministicmint.h"
 #include "main.h"
 #include "stakeinput.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
-CzPSCStake::CzPSCStake(const libzerocoin::CoinSpend& spend)
+CsKKCStake::CsKKCStake(const libzerocoin::CoinSpend& spend)
 {
     this->nChecksum = spend.getAccumulatorChecksum();
     this->denom = spend.getDenomination();
     uint256 nSerial = spend.getCoinSerialNumber().getuint256();
     this->hashSerial = Hash(nSerial.begin(), nSerial.end());
-    this->pindexFrom = nullptr;
     fMint = false;
 }
 
-int CzPSCStake::GetChecksumHeightFromMint()
+int CsKKCStake::GetChecksumHeightFromMint()
 {
     int nHeightChecksum = chainActive.Height() - Params().Zerocoin_RequiredStakeDepth();
+    nHeightChecksum = std::min(nHeightChecksum, Params().Zerocoin_Block_Last_Checkpoint());
 
     //Need to return the first occurance of this checksum in order for the validation process to identify a specific
     //block height
@@ -31,20 +31,20 @@ int CzPSCStake::GetChecksumHeightFromMint()
     return GetChecksumHeight(nChecksum, denom);
 }
 
-int CzPSCStake::GetChecksumHeightFromSpend()
+int CsKKCStake::GetChecksumHeightFromSpend()
 {
     return GetChecksumHeight(nChecksum, denom);
 }
 
-uint32_t CzPSCStake::GetChecksum()
+uint32_t CsKKCStake::GetChecksum()
 {
     return nChecksum;
 }
 
-// The zPSC block index is the first appearance of the accumulator checksum that was used in the spend
+// The sKKC block index is the first appearance of the accumulator checksum that was used in the spend
 // note that this also means when staking that this checksum should be from a block that is beyond 60 minutes old and
 // 100 blocks deep.
-CBlockIndex* CzPSCStake::GetIndexFrom()
+CBlockIndex* CsKKCStake::GetIndexFrom()
 {
     if (pindexFrom)
         return pindexFrom;
@@ -66,41 +66,49 @@ CBlockIndex* CzPSCStake::GetIndexFrom()
     return pindexFrom;
 }
 
-CAmount CzPSCStake::GetValue()
+CAmount CsKKCStake::GetValue()
 {
     return denom * COIN;
 }
 
 //Use the first accumulator checkpoint that occurs 60 minutes after the block being staked from
-bool CzPSCStake::GetModifier(uint64_t& nStakeModifier)
+// In case of regtest, next accumulator of 60 blocks after the block being staked from
+bool CsKKCStake::GetModifier(uint64_t& nStakeModifier)
 {
     CBlockIndex* pindex = GetIndexFrom();
     if (!pindex)
-        return false;
+        return error("%s: failed to get index from", __func__);
+
+    if(Params().IsRegTestNet()) {
+        // Stake modifier is fixed for now, move it to 60 blocks after this pindex in the future..
+        nStakeModifier = pindexFrom->nStakeModifier;
+        return true;
+    }
 
     int64_t nTimeBlockFrom = pindex->GetBlockTime();
-    while (true) {
-        if (pindex->GetBlockTime() - nTimeBlockFrom > 60*60) {
+    // sKKC staking is disabled long before block v7 (and checkpoint is not included in blocks since v7)
+    // just return false for now. !TODO: refactor/remove this method
+    while (pindex && pindex->nHeight + 1 <= std::min(chainActive.Height(), Params().Zerocoin_Block_Last_Checkpoint()-1)) {
+        if (pindex->GetBlockTime() - nTimeBlockFrom > 60 * 60) {
             nStakeModifier = pindex->nAccumulatorCheckpoint.Get64();
             return true;
         }
 
-        if (pindex->nHeight + 1 <= chainActive.Height())
-            pindex = chainActive.Next(pindex);
-        else
-            return false;
+        pindex = chainActive.Next(pindex);
     }
+
+    return false;
 }
 
-CDataStream CzPSCStake::GetUniqueness()
+CDataStream CsKKCStake::GetUniqueness()
 {
-    //The unique identifier for a zPSC is a hash of the serial
+    //The unique identifier for a sKKC is a hash of the serial
     CDataStream ss(SER_GETHASH, 0);
     ss << hashSerial;
     return ss;
 }
 
-bool CzPSCStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CsKKCStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     CBlockIndex* pindexCheckpoint = GetIndexFrom();
     if (!pindexCheckpoint)
@@ -113,33 +121,32 @@ bool CzPSCStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
     if (libzerocoin::ExtractVersionFromSerial(mint.GetSerialNumber()) < 2)
         return error("%s: serial extract is less than v2", __func__);
 
-    int nSecurityLevel = 100;
     CZerocoinSpendReceipt receipt;
-    if (!pwallet->MintToTxIn(mint, nSecurityLevel, hashTxOut, txIn, receipt, libzerocoin::SpendType::STAKE, GetIndexFrom()))
-        return error("%s\n", receipt.GetStatusMessage());
+    if (!pwallet->MintToTxIn(mint, hashTxOut, txIn, receipt, libzerocoin::SpendType::STAKE, pindexCheckpoint))
+        return error("%s", receipt.GetStatusMessage());
 
     return true;
 }
 
-bool CzPSCStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+bool CsKKCStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
 {
-    //Create an output returning the zPSC that was staked
+    //Create an output returning the sKKC that was staked
     CTxOut outReward;
     libzerocoin::CoinDenomination denomStaked = libzerocoin::AmountToZerocoinDenomination(this->GetValue());
     CDeterministicMint dMint;
-    if (!pwallet->CreatezPSCOutPut(denomStaked, outReward, dMint))
-        return error("%s: failed to create zPSC output", __func__);
+    if (!pwallet->CreatesKKCOutPut(denomStaked, outReward, dMint))
+        return error("%s: failed to create sKKC output", __func__);
     vout.emplace_back(outReward);
 
     //Add new staked denom to our wallet
     if (!pwallet->DatabaseMint(dMint))
-        return error("%s: failed to database the staked zPSC", __func__);
+        return error("%s: failed to database the staked sKKC", __func__);
 
     for (unsigned int i = 0; i < 3; i++) {
         CTxOut out;
         CDeterministicMint dMintReward;
-        if (!pwallet->CreatezPSCOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
-            return error("%s: failed to create zPSC output", __func__);
+        if (!pwallet->CreatesKKCOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
+            return error("%s: failed to create sKKC output", __func__);
         vout.emplace_back(out);
 
         if (!pwallet->DatabaseMint(dMintReward))
@@ -149,107 +156,123 @@ bool CzPSCStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nT
     return true;
 }
 
-bool CzPSCStake::GetTxFrom(CTransaction& tx)
+bool CsKKCStake::GetTxFrom(CTransaction& tx)
 {
     return false;
 }
 
-bool CzPSCStake::MarkSpent(CWallet *pwallet, const uint256& txid)
+bool CsKKCStake::MarkSpent(CWallet *pwallet, const uint256& txid)
 {
-    CzPSCTracker* zPSCTracker = pwallet->zPSCTracker.get();
+    CsKKCTracker* skkcTracker = pwallet->skkcTracker.get();
     CMintMeta meta;
-    if (!zPSCTracker->GetMetaFromStakeHash(hashSerial, meta))
+    if (!skkcTracker->GetMetaFromStakeHash(hashSerial, meta))
         return error("%s: tracker does not have serialhash", __func__);
 
-    zPSCTracker->SetPubcoinUsed(meta.hashPubcoin, txid);
+    skkcTracker->SetPubcoinUsed(meta.hashPubcoin, txid);
     return true;
 }
 
-//!Kabberry Stake
-bool CKabberryStake::SetInput(CTransaction txPrev, unsigned int n)
+//!KKC Stake
+bool CKKCStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
     this->nPosition = n;
     return true;
 }
 
-bool CKabberryStake::GetTxFrom(CTransaction& tx)
+bool CKKCStake::GetTxFrom(CTransaction& tx)
 {
     tx = txFrom;
     return true;
 }
 
-bool CKabberryStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CKKCStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     txIn = CTxIn(txFrom.GetHash(), nPosition);
     return true;
 }
 
-CAmount CKabberryStake::GetValue()
+CAmount CKKCStake::GetValue()
 {
     return txFrom.vout[nPosition].nValue;
 }
 
-bool CKabberryStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+bool CKKCStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
 {
-    vector<valtype> vSolutions;
+    std::vector<valtype> vSolutions;
     txnouttype whichType;
     CScript scriptPubKeyKernel = txFrom.vout[nPosition].scriptPubKey;
-    if (!Solver(scriptPubKeyKernel, whichType, vSolutions)) {
-        LogPrintf("CreateCoinStake : failed to parse kernel\n");
-        return false;
-    }
+    if (!Solver(scriptPubKeyKernel, whichType, vSolutions))
+        return error("%s: failed to parse kernel", __func__);
 
-    if (whichType != TX_PUBKEY && whichType != TX_PUBKEYHASH)
-        return false; // only support pay to public key and pay to address
+    if (whichType != TX_PUBKEY && whichType != TX_PUBKEYHASH && whichType != TX_COLDSTAKE)
+        return error("%s: type=%d (%s) not supported for scriptPubKeyKernel", __func__, whichType, GetTxnOutputType(whichType));
 
     CScript scriptPubKey;
-    if (whichType == TX_PUBKEYHASH) // pay to address type
-    {
-        //convert to pay to public key type
-        CKey key;
-        CKeyID keyID = CKeyID(uint160(vSolutions[0]));
-        if (!pwallet->GetKey(keyID, key))
-            return false;
+    CKey key;
+    if (whichType == TX_PUBKEYHASH) {
+        // if P2PKH check that we have the input private key
+        if (!pwallet->GetKey(CKeyID(uint160(vSolutions[0])), key))
+            return error("%s: Unable to get staking private key", __func__);
 
+        // convert to P2PK inputs
         scriptPubKey << key.GetPubKey() << OP_CHECKSIG;
-    } else
+
+    } else {
+        // if P2CS, check that we have the coldstaking private key
+        if ( whichType == TX_COLDSTAKE && !pwallet->GetKey(CKeyID(uint160(vSolutions[0])), key) )
+            return error("%s: Unable to get cold staking private key", __func__);
+
+        // keep the same script
         scriptPubKey = scriptPubKeyKernel;
+    }
 
     vout.emplace_back(CTxOut(0, scriptPubKey));
 
     // Calculate if we need to split the output
-    if (nTotal / 2 > (CAmount)(pwallet->nStakeSplitThreshold * COIN))
-        vout.emplace_back(CTxOut(0, scriptPubKey));
+    int nSplit = nTotal / (static_cast<CAmount>(pwallet->nStakeSplitThreshold * COIN));
+    if (nSplit > 1) {
+        // if nTotal is twice or more of the threshold; create more outputs
+        int txSizeMax = MAX_STANDARD_TX_SIZE >> 11; // limit splits to <10% of the max TX size (/2048)
+        if (nSplit > txSizeMax)
+            nSplit = txSizeMax;
+        for (int i = nSplit; i > 1; i--) {
+            LogPrintf("%s: StakeSplit: nTotal = %d; adding output %d of %d\n", __func__, nTotal, (nSplit-i)+2, nSplit);
+            vout.emplace_back(CTxOut(0, scriptPubKey));
+        }
+    }
 
     return true;
 }
 
-bool CKabberryStake::GetModifier(uint64_t& nStakeModifier)
+bool CKKCStake::GetModifier(uint64_t& nStakeModifier)
 {
-    int nStakeModifierHeight = 0;
-    int64_t nStakeModifierTime = 0;
-    GetIndexFrom();
-    if (!pindexFrom)
-        return error("%s: failed to get index from", __func__);
-
-    if (!GetKernelStakeModifier(pindexFrom->GetBlockHash(), nStakeModifier, nStakeModifierHeight, nStakeModifierTime, false))
-        return error("CheckStakeKernelHash(): failed to get kernel stake modifier \n");
-
+    if (this->nStakeModifier == 0) {
+        // look for the modifier
+        GetIndexFrom();
+        if (!pindexFrom)
+            return error("%s: failed to get index from", __func__);
+        // TODO: This method must be removed from here in the short terms.. it's a call to an static method in kernel.cpp when this class method is only called from kernel.cpp, no comments..
+        if (!GetKernelStakeModifier(pindexFrom->GetBlockHash(), this->nStakeModifier, this->nStakeModifierHeight, this->nStakeModifierTime, false))
+            return error("CheckStakeKernelHash(): failed to get kernel stake modifier");
+    }
+    nStakeModifier = this->nStakeModifier;
     return true;
 }
 
-CDataStream CKabberryStake::GetUniqueness()
+CDataStream CKKCStake::GetUniqueness()
 {
-    //The unique identifier for a Kabberry stake is the outpoint
+    //The unique identifier for a KKC stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
     ss << nPosition << txFrom.GetHash();
     return ss;
 }
 
 //The block that the UTXO was added to the chain
-CBlockIndex* CKabberryStake::GetIndexFrom()
+CBlockIndex* CKKCStake::GetIndexFrom()
 {
+    if (pindexFrom)
+        return pindexFrom;
     uint256 hashBlock = 0;
     CTransaction tx;
     if (GetTransaction(txFrom.GetHash(), tx, hashBlock, true)) {
