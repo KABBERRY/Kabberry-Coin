@@ -29,14 +29,14 @@ More information at [kabberry.org](http://www.kabberry.org) Visit our ANN thread
 <table>
 <th colspan=4>Genesis Block</th>
 <tr><th>Block Height</th><th>Reward Amount</th><th>Notes</th></tr>
-<tr><td>1</td><td>60,000 KKC</td><td>Initial Pre-mine, burnt in block <a href="http://www.presstab.pw/phpexplorer/kabberry/block.php?blockhash=206d9cfe859798a0b0898ab00d7300be94de0f5469bb446cecb41c3e173a57e0">279917</a></td></tr>
+<tr><td>1</td><td>7,500,000 KKC</td><td>Pre-mine - used for swap</td></tr>
 </table>
 
 ### PoW Rewards Breakdown
 
 <table>
 <th>Block Height</th><th>Masternodes</th><th>Miner</th><th>Budget</th>
-<tr><td>2-43200</td><td>20% (50 KKC)</td><td>80% (200 KKC)</td><td>N/A</td></tr>
+<tr><td>2-13440</td><td>20% (50 KKC)</td><td>80% (200 KKC)</td><td>N/A</td></tr>
 <tr><td>43201-151200</td><td>20% (50 KKC)</td><td>70% (200 KKC)</td><td>10% (25 KKC)</td></tr>
 <tr><td>151201-259200</td><td>45% (22.5 KKC)</td><td>45% (22.5 KKC)</td><td>10% (5 KKC)</td></tr>
 </table>
