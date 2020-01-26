@@ -50,5 +50,5 @@ More information at [kabberry.com](https://kabberry.com) Visit our ANN thread at
 <tr><td>Phase 5</td><td>580001-753000</td><td>5 KKC</td><td>80% (4 KKC)</td><td>20% (1 KKC)</td></tr>
 <tr><td>Phase 6</td><td>753001-1000000</td><td>2.5 KKC</td><td>80% (2 KKC)</td><td>20% (0.5 KKC)</td></tr>
 <tr><td>Phase 7</td><td>1000001-2500000</td><td>1.25 KKC</td><td>80% (1 KKC)</td><td>20% (0.25 KKC)</td></tr>
-<tr><td>Phase 8</td><td>2500001-∞</td><td>1 KKC</td><td>80% (0.8 KKC/sKKC)</td><td>20% (0.2 KKC)</td></tr>
+<tr><td>Phase 8</td><td>2500001-∞</td><td>1 KKC</td><td>80% (0.8 KKC)</td><td>20% (0.2 KKC)</td></tr>
 </table>
