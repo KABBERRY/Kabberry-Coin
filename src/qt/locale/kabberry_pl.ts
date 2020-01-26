@@ -2236,7 +2236,7 @@ Adres: %4
     </message>
     <message>
         <source>Use up and down arrows to navigate history, and %1 to clear screen.</source>
-        <translation>Użyj strzałek w górę iw dół, aby poruszać się po historii, a %1, aby wyczyścić ekran.</translation>
+        <translation>Użyj strzałek w górę i w dół, aby poruszać się po historii, a %1, aby wyczyścić ekran.</translation>
     </message>
     <message>
         <source>Type &lt;b&gt;help&lt;/b&gt; for an overview of available commands.</source>
@@ -2244,7 +2244,7 @@ Adres: %4
     </message>
     <message>
         <source>WARNING: Scammers have been active, telling users to type commands here, stealing their wallet contents. Do not use this console without fully understanding the ramifications of a command.</source>
-        <translation>OSTRZEŻENIE: Scamery były aktywne, mówiąc użytkownikom, aby wpisywali tutaj polecenia, kradnąc ich zawartość portfela. Nie używaj tej konsoli bez pełnego zrozumienia konsekwencji polecenia.</translation>
+        <translation>OSTRZEŻENIE: Scamerzy byli aktywni, mówiąc użytkownikom, aby wpisywali tutaj polecenia, kradnąc ich zawartość portfela. Nie używaj tej konsoli bez pełnego zrozumienia konsekwencji polecenia.</translation>
     </message>
     <message>
         <source>%1 B</source>
