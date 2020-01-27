@@ -46,8 +46,8 @@ const std::string CLIENT_NAME("Kabberry Core");
 //! git will put "#define GIT_ARCHIVE 1" on the next line inside archives. 
 #define GIT_ARCHIVE 1
 #ifdef GIT_ARCHIVE
-#define GIT_COMMIT_ID "a293072cdb5d81900a45a79874ded1b1ea7e3d85"
-#define GIT_COMMIT_DATE "Thu, 23 Jan 2020 10:21:18 +0100"
+#define GIT_COMMIT_ID "$Format:%H$"
+#define GIT_COMMIT_DATE "$Format:%cD$"
 #endif
 
 #define BUILD_DESC_WITH_SUFFIX(maj, min, rev, build, suffix) \
