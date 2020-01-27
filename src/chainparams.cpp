@@ -167,11 +167,11 @@ public:
         bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         nSubsidyHalvingInterval = 259000;
         nMaxReorganizationDepth = 100;
-        nEnforceBlockUpgradeMajority = 5040; // 75%
-        nRejectBlockOutdatedMajority = 6384; // 95%
-        nToCheckBlockUpgradeMajority = 6720; // Approximate expected amount of blocks in 7 days (960*7)
+        nEnforceBlockUpgradeMajority = 7560; // 75%
+        nRejectBlockOutdatedMajority = 9576; // 95%
+        nToCheckBlockUpgradeMajority = 10080; // Approximate expected amount of blocks in 7 days (960*7)
         nMinerThreads = 0;
-        nTargetSpacing = 1.5 * 60;  // Kabberry: 1.5 minute
+        nTargetSpacing = 1 * 60;  // Kabberry: 1 minute
         nTargetTimespan = 40 * 60;                      // 40 minutes
         nTimeSlotLength = 15;                           // 15 seconds
         nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
@@ -278,7 +278,7 @@ public:
         fHeadersFirstSyncingActive = false;
 
         nPoolMaxTransactions = 3;
-        nBudgetCycleBlocks = 28800; //!< Amount of blocks in a months period of time (using 1.5 minutes per) = (40*24*30)
+        nBudgetCycleBlocks = 43200; //!< Amount of blocks in a months period of time (using 1 minutes per) = (60*24*30)
         strSporkPubKey = "041c900e457f6a33af917f5b4d4a810a259439252059d26dca8fac84137841223c78f8fa7e4259ec35ee641f7bfe0a440736f4730d63a4d26077868328de16b63c";
         strSporkPubKeyOld = "04e2be89e67bde8af162843518cecbb6ad9b58ec99021221d61df591f7ea531e2086d5202d39c0b88198366e7cbe80b185b6409c7410aa6827ad4429f5ce1005d0";
         strObfuscationPoolDummyAddress = "D87q2gC9j6nNrnzCsg4aY6bHMLsT9nUhEw";
