@@ -222,7 +222,7 @@
                       <enum>Qt::NoFocus</enum>
                      </property>
                      <property name="text">
-                      <string>3) Kabberry privacy? What is Zerocoin (sKKC)?</string>
+                      <string>3) Kabberry privacy? What is sKKC?</string>
                      </property>
                      <property name="checkable">
                       <bool>true</bool>
@@ -627,14 +627,7 @@
                            Kabberry is a form of digital online money using blockchain technology
                            that can be easily transferred globally, instantly, and with near
                            zero fees.  Kabberry incorporates market leading security &amp;
-                           privacy and is also the first PoS (Proof of Stake) Cryptocurrency
-                           to implement ZeroCoin(sKKC) and Zerocoin staking.
-                           &lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;
-                           Kabberry utilizes a Proof of Stake (PoS) consensus system algorithm,
-                           allowing all owners of Kabberry to participate in earning block rewards
-                           while securing the network with full node wallets, as well as to
-                           run Masternodes to create and vote on proposals.
-                           &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+                           privacy.;
                          </string>
                         </property>
                         <property name="alignment">
@@ -800,7 +793,7 @@
                       <item>
                        <widget class="QLabel" name="labelSubtitle3">
                         <property name="text">
-                         <string>Kabberry privacy? What is Zerocoin (sKKC)?</string>
+                         <string>Kabberry privacy? What is sKKC?</string>
                         </property>
                         <property name="wordWrap">
                          <bool>true</bool>
@@ -830,10 +823,7 @@
                            &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;
                            sKKC is an optional privacy-centric method of coin mixing on the
                            Kabberry blockchain. Basically all your transactions cannot be tracked
-                           on to any block explorer. You can read more about the technicals in the
-                           &lt;a style='color: #b088ff' href='https://Kabberry.org/skkc/'&gt;
-                           &quot;Kabberry Zerocoin (sKKC) Technical Paper&quot;&lt;/a&gt;.
-                           &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
+                           on to any block explorer.
                          </string>
                         </property>
                         <property name="alignment">
@@ -1031,11 +1021,6 @@
                            your kabberry.conf file and add &lt;i&gt;enablezeromint=0&lt;/i&gt; Without the quotation
                            marks and restart your wallet to disable automint.&lt;/p&gt;
                            &lt;/p&gt;&lt;p align=&quot;justify&quot;&gt;
-                           You can read more about sKKC in the
-                           &lt;a style='color: #b088ff' href='https://kabberry.com/skkc/'&gt; &quot;Kabberry Zerocoin (sKKC) Technical Paper&quot;&lt;/a&gt;.
-                           If you would like to keep and stake your sKKC, please read the &quot;How do I stake&quot;
-                           section of the FAQ below.
-                           &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
                          </string>
                         </property>
                         <property name="alignment">
@@ -1346,12 +1331,8 @@
                          <string>
                            &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;justify&quot;&gt;
                            We have support channels in most of our official chat groups, for example
-                           &lt;a style='color: #b088ff' href='https://discord.Kabberry.org'&gt;
+                           &lt;a style='color: #b088ff' href='https://discord.gg/45KM5mW'&gt;
                            #support in our Discord&lt;/a&gt;.
-                           If you prefer to submit a ticket, One can be
-                           &lt;a style='color: #b088ff' href='https://Kabberry.freshdesk.com'&gt;
-                           our Freshdesk support site&lt;/a&gt;.
-                           &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
                          </string>
                         </property>
                         <property name="alignment">
