@@ -60,7 +60,7 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     (5000, uint256("000000313c1d849f6c6ae1cad1b10e5a2e56da6593c1ba658b7152b644b4cf91"))
     (10000, uint256("000000000003ca43cf16ab5d4ebdaccc6f0ee6108bfaa0b149e070208e1263ac"))
     (167000, uint256("cdeba371d09cbad641d135eb180d98de22c2aa5dda25625e791359daa60fc2f6"))
-    // (863787, uint256("5b2482eca24caf2a46bb22e0545db7b7037282733faa3a42ec20542509999a64"))
+    (560000, uint256("e2ca342dbe73671b62f8c4b48a0bafaebae28c7134c163d956ede7fd5c97be08"))
     // (863795, uint256("2ad866818c4866e0d555181daccc628056216c0db431f88a825e84ed4f469067"))
     // (863805, uint256("a755bd9a22b63c70d3db474f4b2b61a1f86c835b290a081bb3ec1ba2103eb4cb"))
     // (867733, uint256("03b26296bf693de5782c76843d2fb649cb66d4b05550c6a79c047ff7e1c3ae15"))
@@ -72,8 +72,8 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     ;
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1556513414, // * UNIX timestamp of last checkpoint block
-    200000,    // * total number of transactions between genesis and last checkpoint
+    1580092363, // * UNIX timestamp of last checkpoint block
+    1200000,    // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
 };
@@ -167,11 +167,11 @@ public:
         bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         nSubsidyHalvingInterval = 259000;
         nMaxReorganizationDepth = 100;
-        nEnforceBlockUpgradeMajority = 7560; // 75%
-        nRejectBlockOutdatedMajority = 9576; // 95%
-        nToCheckBlockUpgradeMajority = 10080; // Approximate expected amount of blocks in 7 days (960*7)
+        nEnforceBlockUpgradeMajority = 5040; // 75%
+        nRejectBlockOutdatedMajority = 6384; // 95%
+        nToCheckBlockUpgradeMajority = 6720; // Approximate expected amount of blocks in 7 days (960*7)
         nMinerThreads = 0;
-        nTargetSpacing = 1 * 60;  // Kabberry: 1 minute
+        nTargetSpacing = 1.5 * 60;  // Kabberry: 1.5 minute
         nTargetTimespan = 40 * 60;                      // 40 minutes
         nTimeSlotLength = 15;                           // 15 seconds
         nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
@@ -278,7 +278,7 @@ public:
         fHeadersFirstSyncingActive = false;
 
         nPoolMaxTransactions = 3;
-        nBudgetCycleBlocks = 43200; //!< Amount of blocks in a months period of time (using 1 minutes per) = (60*24*30)
+        nBudgetCycleBlocks = 28800; //!< Amount of blocks in a months period of time (using 1.5 minutes per) = (40*24*30)
         strSporkPubKey = "041c900e457f6a33af917f5b4d4a810a259439252059d26dca8fac84137841223c78f8fa7e4259ec35ee641f7bfe0a440736f4730d63a4d26077868328de16b63c";
         strSporkPubKeyOld = "04e2be89e67bde8af162843518cecbb6ad9b58ec99021221d61df591f7ea531e2086d5202d39c0b88198366e7cbe80b185b6409c7410aa6827ad4429f5ce1005d0";
         strObfuscationPoolDummyAddress = "D87q2gC9j6nNrnzCsg4aY6bHMLsT9nUhEw";
