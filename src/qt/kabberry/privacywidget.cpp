@@ -13,7 +13,6 @@
 #include "optionsmodel.h"
 #include "coincontroldialog.h"
 #include "coincontrol.h"
-#include "skkc/accumulators.h"
 
 #define DECORATION_SIZE 65
 #define NUM_ITEMS 3
@@ -361,7 +360,6 @@ void PrivacyWidget::updateDenomsSupply(){
     std::set<CMintMeta> vMints;
     walletModel->listZerocoinMints(vMints, true, false, true, true);
 
-    std::map<libzerocoin::CoinDenomination, int> mapMaturityHeights = GetMintMaturityHeight();
     for (auto& meta : vMints){
         // All denominations
         mapDenomBalances.at(meta.denom)++;
@@ -371,8 +369,6 @@ void PrivacyWidget::updateDenomsSupply(){
             mapUnconfirmed.at(meta.denom)++;
         } else {
             if (meta.denom == libzerocoin::CoinDenomination::ZQ_ERROR) {
-                mapImmature.at(meta.denom)++;
-            } else if (meta.nHeight >= mapMaturityHeights.at(meta.denom)) {
                 mapImmature.at(meta.denom)++;
             }
         }

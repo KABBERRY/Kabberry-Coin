@@ -44,7 +44,6 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include "validationinterface.h"
-#include "skkc/accumulatorcheckpoints.h"
 #include "skkcchain.h"
 
 #ifdef ENABLE_WALLET
@@ -81,7 +80,6 @@ int nWalletBackups = 10;
 #endif
 volatile bool fFeeEstimatesInitialized = false;
 volatile bool fRestartRequested = false; // true: restart false: shutdown
-extern std::list<uint256> listAccCheckpointsNoDB;
 
 #if ENABLE_ZMQ
 static CZMQNotificationInterface* pzmqNotificationInterface = NULL;
@@ -407,7 +405,6 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-pid=<file>", strprintf(_("Specify pid file (default: %s)"), "kabberryd.pid"));
 #endif
     strUsage += HelpMessageOpt("-reindex", _("Rebuild block chain index from current blk000??.dat files") + " " + _("on startup"));
-    strUsage += HelpMessageOpt("-reindexaccumulators", _("Reindex the accumulator database") + " " + _("on startup"));
     strUsage += HelpMessageOpt("-reindexmoneysupply", _("Reindex the KKC and sKKC money supply statistics") + " " + _("on startup"));
     strUsage += HelpMessageOpt("-resync", _("Delete blockchain folders and resync from scratch") + " " + _("on startup"));
 #if !defined(WIN32)
@@ -1400,9 +1397,6 @@ bool AppInit2()
 
     // ********************************************************* Step 7: load block chain
 
-    //Kabberry: Load Accumulator Checkpoints according to network (main/test/regtest)
-    assert(AccumulatorCheckpoints::LoadCheckpoints(Params().NetworkIDString()));
-
     fReindex = GetBoolArg("-reindex", false);
 
     // Create blocks directory if it doesn't already exist
@@ -1544,28 +1538,6 @@ bool AppInit2()
                     CAmount skkcSupplyCheckpoint = Params().GetSupplyBeforeFakeSerial() + GetWrapppedSerialInflationAmount();
                     if (pblockindex->GetZerocoinSupply() != skkcSupplyCheckpoint)
                         return InitError(strprintf("ZerocoinSupply Recalculation failed: %d vs %d", pblockindex->GetZerocoinSupply()/COIN , skkcSupplyCheckpoint/COIN));
-                }
-
-                // Force recalculation of accumulators.
-                if (GetBoolArg("-reindexaccumulators", false)) {
-                    if (chainHeight > Params().Zerocoin_Block_V2_Start()) {
-                        CBlockIndex *pindex = chainActive[Params().Zerocoin_Block_V2_Start()];
-                        while (pindex && pindex->nHeight < std::min(chainActive.Height(), Params().Zerocoin_Block_Last_Checkpoint()+1)) {
-                            if (!count(listAccCheckpointsNoDB.begin(), listAccCheckpointsNoDB.end(),
-                                       pindex->nAccumulatorCheckpoint))
-                                listAccCheckpointsNoDB.emplace_back(pindex->nAccumulatorCheckpoint);
-                            pindex = chainActive.Next(pindex);
-                        }
-                        // Kabberry: recalculate Accumulator Checkpoints that failed to database properly
-                        if (!listAccCheckpointsNoDB.empty()) {
-                            uiInterface.InitMessage(_("Calculating missing accumulators..."));
-                            LogPrintf("%s : finding missing checkpoints\n", __func__);
-
-                            std::string strError;
-                            if (!ReindexAccumulators(listAccCheckpointsNoDB, strError))
-                                return InitError(strError);
-                        }
-                    }
                 }
 
                 if (!fReindex) {

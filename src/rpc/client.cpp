@@ -158,8 +158,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"searchdskkc", 0},
         {"searchdskkc", 1},
         {"searchdskkc", 2},
-        {"getaccumulatorvalues", 0},
-        {"getaccumulatorwitness",2},
         {"getmintsvalues", 2},
         {"enableautomintaddress", 0},
         {"getblockindexstats", 0},
@@ -172,8 +170,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getserials", 1},
         {"getserials", 2},
         {"getfeeinfo", 0},
-        {"getchecksumblock", 1},
-        {"getchecksumblock", 2},
     };
 
 class CRPCConvertTable

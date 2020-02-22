@@ -360,7 +360,6 @@ void AddWrappedSerialsInflation();
 void RecalculatesKKCSpent();
 void RecalculatesKKCMinted();
 bool RecalculateKKCSupply(int nHeightStart);
-bool ReindexAccumulators(std::list<uint256>& listMissingCheckpoints, std::string& strError);
 
 // Fake Serial attack Range
 bool isBlockBetweenFakeSerialAttackRange(int nHeight);
