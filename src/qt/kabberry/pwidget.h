@@ -46,7 +46,7 @@ public:
 
     QString translate(const char *msg) override { return tr(msg); }
 
-Q_SIGNALS
+Q_SIGNALS:
     void message(const QString& title, const QString& body, unsigned int style, bool* ret = nullptr);
     void showHide(bool show);
     bool execDialog(QDialog *dialog, int xDiv = 3, int yDiv = 5);
