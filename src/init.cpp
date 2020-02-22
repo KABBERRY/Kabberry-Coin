@@ -15,7 +15,6 @@
 
 #include "init.h"
 
-#include "skkc/accumulators.h"
 #include "activemasternode.h"
 #include "addrman.h"
 #include "amount.h"
