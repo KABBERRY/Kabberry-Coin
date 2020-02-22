@@ -33,7 +33,7 @@ public:
     bool isOk = false;
     CMasternodeConfig::CMasternodeEntry* mnEntry = nullptr;
 
-private slots:
+private Q_SLOTS:
     void onNextClicked();
     void onBackClicked();
 private:
