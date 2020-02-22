@@ -27,7 +27,7 @@ public:
     void setRightIcon(QPixmap icon);
     void setActive(bool);
     void setChecked(bool checked);
-signals:
+Q_SIGNALS:
     void clicked();
 
 protected:

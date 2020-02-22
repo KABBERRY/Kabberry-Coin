@@ -46,12 +46,12 @@ public:
 
     QString translate(const char *msg) override { return tr(msg); }
 
-signals:
+Q_SIGNALS
     void message(const QString& title, const QString& body, unsigned int style, bool* ret = nullptr);
     void showHide(bool show);
     bool execDialog(QDialog *dialog, int xDiv = 3, int yDiv = 5);
 
-protected slots:
+protected Q_SLOTS:
     virtual void changeTheme(bool isLightTheme, QString &theme);
     void onChangeTheme(bool isLightTheme, QString &theme);
 
@@ -75,7 +75,7 @@ private:
     QSharedPointer<WorkerTask> task;
 
     void init();
-private slots:
+private Q_SLOTS:
     void errorString(QString, int);
 
 };

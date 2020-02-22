@@ -42,11 +42,11 @@ public:
     void setMapper();
     void showDebugConsole();
 
-signals:
+Q_SIGNALS:
     /** Get restart command-line parameters and handle restart */
     void handleRestart(QStringList args);
 
-private slots:
+private Q_SLOTS:
     // File
     void onFileClicked();
     void onBackupWalletClicked();

@@ -43,11 +43,11 @@ public:
     void loadClientModel() override;
     void loadWalletModel() override;
 
-signals:
+Q_SIGNALS:
     /** Signal raised when a URI was entered or dragged to the GUI */
     void receivedURI(const QString& uri);
 
-public slots:
+public Q_SLOTS:
     void onChangeAddressClicked();
     void onChangeCustomFeeClicked();
     void onCoinControlClicked();
@@ -59,7 +59,7 @@ public slots:
 protected:
     void resizeEvent(QResizeEvent *event) override;
 
-private slots:
+private Q_SLOTS:
     void onKKCSelected(bool _isKKC);
     void onSendClicked();
     void onContactsClicked(SendMultiRow* entry);

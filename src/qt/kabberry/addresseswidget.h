@@ -38,7 +38,7 @@ public:
     void loadWalletModel() override;
     void onNewContactClicked();
 
-private slots:
+private Q_SLOTS:
     void handleAddressClicked(const QModelIndex &index);
     void onStoreContactClicked();
     void onEditClicked();

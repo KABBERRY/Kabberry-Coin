@@ -21,7 +21,7 @@ public:
     explicit SettingsBackupWallet(KabberryGUI* _window, QWidget *parent = nullptr);
     ~SettingsBackupWallet();
 
-private slots:
+private Q_SLOTS:
     void backupWallet();
     void selectFileOutput();
     void changePassphrase();

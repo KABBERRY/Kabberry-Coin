@@ -22,7 +22,7 @@ public:
     explicit WalletPasswordDialog(QWidget *parent = nullptr);
     ~WalletPasswordDialog();
 
-private slots:
+private Q_SLOTS:
     void onWatchClicked();
 private:
     Ui::WalletPasswordDialog *ui;
