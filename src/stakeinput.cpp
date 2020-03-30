@@ -11,159 +11,7 @@
 #include "skkc/deterministicmint.h"
 #include "wallet/wallet.h"
 
-CsKKCStake::CsKKCStake(const libzerocoin::CoinSpend& spend)
-{
-    this->nChecksum = spend.getAccumulatorChecksum();
-    this->denom = spend.getDenomination();
-    uint256 nSerial = spend.getCoinSerialNumber().getuint256();
-    this->hashSerial = Hash(nSerial.begin(), nSerial.end());
-    fMint = false;
-}
 
-uint32_t CsKKCStake::GetChecksum()
-{
-    return nChecksum;
-}
-
-/*
- * LEGACY: Kept for IBD in order to verify zerocoin stakes occurred when zPoS was active
- * Find the first occurrence of a certain accumulator checksum.
-  * Return block index pointer or nullptr if not found
- */
- 
-CBlockIndex* CsKKCStake::GetIndexFrom()
-{
-    // First look in the legacy database
-
-    int nHeightChecksum = 0;
-    if (zerocoinDB->ReadAccChecksum(nChecksum, denom, nHeightChecksum)) {
-        return chainActive[nHeightChecksum];
-
-    }
-
-    // Not found. Scan the chain.
-	    CBlockIndex* pindex = chainActive[Params().Zerocoin_StartHeight()];
-    if (!pindex) return nullptr;
-    const int last_block = Params().Zerocoin_Block_Last_Checkpoint();
-    while (pindex && pindex->nHeight <= last_block) {
-        if (ParseAccChecksum(pindex->nAccumulatorCheckpoint, denom) == nChecksum) {
-            // Found. Save to database and return
-            zerocoinDB->WriteAccChecksum(nChecksum, denom, pindex->nHeight);
-            return pindex;
-        }
-        //Skip forward in groups of 10 blocks since checkpoints only change every 10 blocks
-        if (pindex->nHeight % 10 == 0) {
-            pindex = chainActive[pindex->nHeight + 10];
-            continue;
-        }
-        pindex = chainActive.Next(pindex);
-    }
-    return nullptr;
-}
-
-CAmount CsKKCStake::GetValue()
-{
-    return denom * COIN;
-}
-
-// Use the first accumulator checkpoint that occurs 60 minutes after the block being staked from
-bool CsKKCStake::GetModifier(uint64_t& nStakeModifier)
-{
-    CBlockIndex* pindex = GetIndexFrom();
-    if (!pindex)
-        return error("%s: failed to get index from", __func__);
-
-    if(Params().IsRegTestNet()) {
-        nStakeModifier = 0;
-        return true;
-    }
-
-    int64_t nTimeBlockFrom = pindex->GetBlockTime();
-    const int nHeightStop = std::min(chainActive.Height(), Params().Zerocoin_Block_Last_Checkpoint()-1);
-    while (pindex && pindex->nHeight + 1 <= nHeightStop) {
-        if (pindex->GetBlockTime() - nTimeBlockFrom > 60 * 60) {
-            nStakeModifier = pindex->nAccumulatorCheckpoint.Get64();
-            return true;
-        }
-        pindex = chainActive.Next(pindex);
-    }
-
-    return false;
-}
-
-CDataStream CsKKCStake::GetUniqueness()
-{
-    //The unique identifier for a sKKC is a hash of the serial
-    CDataStream ss(SER_GETHASH, 0);
-    ss << hashSerial;
-    return ss;
-}
-
-bool CsKKCStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
-{
-    CBlockIndex* pindexCheckpoint = GetIndexFrom();
-    if (!pindexCheckpoint)
-        return error("%s: failed to find checkpoint block index", __func__);
-
-    CZerocoinMint mint;
-    if (!pwallet->GetMintFromStakeHash(hashSerial, mint))
-        return error("%s: failed to fetch mint associated with serial hash %s", __func__, hashSerial.GetHex());
-
-    if (libzerocoin::ExtractVersionFromSerial(mint.GetSerialNumber()) < 2)
-        return error("%s: serial extract is less than v2", __func__);
-
-    CZerocoinSpendReceipt receipt;
-    if (!pwallet->MintToTxIn(mint, hashTxOut, txIn, receipt, libzerocoin::SpendType::STAKE, pindexCheckpoint))
-        return error("%s", receipt.GetStatusMessage());
-
-    return true;
-}
-
-bool CsKKCStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
-{
-    //Create an output returning the sKKC that was staked
-    CTxOut outReward;
-    libzerocoin::CoinDenomination denomStaked = libzerocoin::AmountToZerocoinDenomination(this->GetValue());
-    CDeterministicMint dMint;
-    if (!pwallet->CreatesKKCOutPut(denomStaked, outReward, dMint))
-        return error("%s: failed to create sKKC output", __func__);
-    vout.emplace_back(outReward);
-
-    //Add new staked denom to our wallet
-    if (!pwallet->DatabaseMint(dMint))
-        return error("%s: failed to database the staked sKKC", __func__);
-
-    for (unsigned int i = 0; i < 3; i++) {
-        CTxOut out;
-        CDeterministicMint dMintReward;
-        if (!pwallet->CreatesKKCOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
-            return error("%s: failed to create sKKC output", __func__);
-        vout.emplace_back(out);
-
-        if (!pwallet->DatabaseMint(dMintReward))
-            return error("%s: failed to database mint reward", __func__);
-    }
-
-    return true;
-}
-
-bool CsKKCStake::GetTxFrom(CTransaction& tx)
-{
-    return false;
-}
-
-bool CsKKCStake::MarkSpent(CWallet *pwallet, const uint256& txid)
-{
-    CsKKCTracker* skkcTracker = pwallet->skkcTracker.get();
-    CMintMeta meta;
-    if (!skkcTracker->GetMetaFromStakeHash(hashSerial, meta))
-        return error("%s: tracker does not have serialhash", __func__);
-
-    skkcTracker->SetPubcoinUsed(meta.hashPubcoin, txid);
-    return true;
-}
-
-//!KKC Stake
 bool CKKCStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
@@ -171,7 +19,7 @@ bool CKKCStake::SetInput(CTransaction txPrev, unsigned int n)
     return true;
 }
 
-bool CKKCStake::GetTxFrom(CTransaction& tx)
+bool CKKCStake::GetTxFrom(CTransaction& tx) const
 {
     tx = txFrom;
     return true;
@@ -236,22 +84,7 @@ bool CKKCStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmoun
     return true;
 }
 
-bool CKKCStake::GetModifier(uint64_t& nStakeModifier)
-{
-    if (this->nStakeModifier == 0) {
-        // look for the modifier
-        GetIndexFrom();
-        if (!pindexFrom)
-            return error("%s: failed to get index from", __func__);
-        // TODO: This method must be removed from here in the short terms.. it's a call to an static method in kernel.cpp when this class method is only called from kernel.cpp, no comments..
-        if (!GetKernelStakeModifier(pindexFrom->GetBlockHash(), this->nStakeModifier, this->nStakeModifierHeight, this->nStakeModifierTime, false))
-            return error("CheckStakeKernelHash(): failed to get kernel stake modifier");
-    }
-    nStakeModifier = this->nStakeModifier;
-    return true;
-}
-
-CDataStream CKKCStake::GetUniqueness()
+CDataStream CKKCStake::GetUniqueness() const
 {
     //The unique identifier for a KKC stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
