@@ -140,7 +140,7 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
         if (nPreviousBlockHeight < Params().Zerocoin_Block_V2_Start() ||
                 nPreviousBlockHeight > Params().Zerocoin_Block_Last_Checkpoint())
             return error("%s : sKKC stake block: height %d outside range", __func__, (nPreviousBlockHeight+1));
-        CLegacySkkcStake* sKKC = dynamic_cast<CLegacySkkcStake*>(stake.get());
+        CLegacysKKCStake* sKKC = dynamic_cast<CLegacysKKCStake*>(stake.get());
         if (!sKKC) return error("%s : dynamic_cast of stake ptr failed", __func__);
         // The checkpoint needs to be from 200 blocks ago
         const int cpHeight = nPreviousBlockHeight - Params().Zerocoin_RequiredStakeDepth();
