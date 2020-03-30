@@ -12,6 +12,7 @@
 #include "addressbook.h"
 #include "amount.h"
 #include "base58.h"
+#include "consensus/tx_verify.h"
 #include "crypter.h"
 #include "kernel.h"
 #include "key.h"
@@ -671,16 +672,9 @@ public:
      * >=1 : this many blocks deep in the main chain
      */
     int GetDepthInMainChain(const CBlockIndex*& pindexRet, bool enableIX = true) const;
-    int GetDepthInMainChain(bool enableIX = true) const
-    {
-        const CBlockIndex* pindexRet;
-        return GetDepthInMainChain(pindexRet, enableIX);
-    }
-    bool IsInMainChain() const
-    {
-        const CBlockIndex* pindexRet;
-        return GetDepthInMainChain(pindexRet, false) > 0;
-    }
+    int GetDepthInMainChain(bool enableIX = true) const;
+    bool IsInMainChain() const;
+    bool IsInMainChainImmature() const;
     int GetBlocksToMaturity() const;
     bool AcceptToMemoryPool(bool fLimitFree = true, bool fRejectInsaneFee = true, bool ignoreFees = false);
     int GetTransactionLockSignatures() const;

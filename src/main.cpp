@@ -19,6 +19,7 @@
 #include "checkpoints.h"
 #include "checkqueue.h"
 #include "consensus/merkle.h"
+#include "consensus/tx_verify.h"
 #include "consensus/validation.h"
 #include "init.h"
 #include "kernel.h"
@@ -790,23 +791,6 @@ bool IsStandardTx(const CTransaction& tx, std::string& reason)
     return true;
 }
 
-bool IsFinalTx(const CTransaction& tx, int nBlockHeight, int64_t nBlockTime)
-{
-    AssertLockHeld(cs_main);
-    // Time based nLockTime implemented in 0.1.6
-    if (tx.nLockTime == 0)
-        return true;
-    if (nBlockHeight == 0)
-        nBlockHeight = chainActive.Height();
-    if (nBlockTime == 0)
-        nBlockTime = GetAdjustedTime();
-    if ((int64_t)tx.nLockTime < ((int64_t)tx.nLockTime < LOCKTIME_THRESHOLD ? (int64_t)nBlockHeight : nBlockTime))
-        return true;
-    for (const CTxIn& txin : tx.vin)
-        if (!txin.IsFinal())
-            return false;
-    return true;
-}
 
 /**
  * Check transaction inputs to mitigate two
@@ -870,33 +854,6 @@ bool AreInputsStandard(const CTransaction& tx, const CCoinsViewCache& mapInputs)
     }
 
     return true;
-}
-
-unsigned int GetLegacySigOpCount(const CTransaction& tx)
-{
-    unsigned int nSigOps = 0;
-    for (const CTxIn& txin : tx.vin) {
-        nSigOps += txin.scriptSig.GetSigOpCount(false);
-    }
-    for (const CTxOut& txout : tx.vout) {
-        nSigOps += txout.scriptPubKey.GetSigOpCount(false);
-    }
-    return nSigOps;
-}
-
-unsigned int GetP2SHSigOpCount(const CTransaction& tx, const CCoinsViewCache& inputs)
-{
-    if (tx.IsCoinBase() || tx.HasZerocoinSpendInputs())
-        // a tx containing a zc spend can have only zc inputs
-        return 0;
-
-    unsigned int nSigOps = 0;
-    for (unsigned int i = 0; i < tx.vin.size(); i++) {
-        const CTxOut& prevout = inputs.GetOutputFor(tx.vin[i]);
-        if (prevout.scriptPubKey.IsPayToScriptHash())
-            nSigOps += prevout.scriptPubKey.GetSigOpCount(tx.vin[i].scriptSig);
-    }
-    return nSigOps;
 }
 
 int GetInputAge(CTxIn& vin)
@@ -1134,117 +1091,6 @@ bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidati
     }
 
     return fValidated;
-}
-
-bool CheckTransaction(const CTransaction& tx, bool fZerocoinActive, bool fRejectBadUTXO, CValidationState& state, bool fFakeSerialAttack, bool fColdStakingActive)
-{
-    // Basic checks that don't depend on any context
-    if (tx.vin.empty())
-        return state.DoS(10, error("CheckTransaction() : vin empty"),
-            REJECT_INVALID, "bad-txns-vin-empty");
-    if (tx.vout.empty())
-        return state.DoS(10, error("CheckTransaction() : vout empty"),
-            REJECT_INVALID, "bad-txns-vout-empty");
-
-    // Size limits
-    unsigned int nMaxSize = MAX_ZEROCOIN_TX_SIZE;
-
-    if (::GetSerializeSize(tx, SER_NETWORK, PROTOCOL_VERSION) > nMaxSize)
-        return state.DoS(100, error("CheckTransaction() : size limits failed"),
-            REJECT_INVALID, "bad-txns-oversize");
-
-    const CAmount minColdStakingAmount = Params().GetMinColdStakingAmount();
-
-    // Check for negative or overflow output values
-    CAmount nValueOut = 0;
-    for (const CTxOut& txout : tx.vout) {
-        if (txout.IsEmpty() && !tx.IsCoinBase() && !tx.IsCoinStake())
-            return state.DoS(100, error("CheckTransaction(): txout empty for user transaction"));
-        if (txout.nValue < 0)
-            return state.DoS(100, error("CheckTransaction() : txout.nValue negative"),
-                REJECT_INVALID, "bad-txns-vout-negative");
-        if (txout.nValue > MAX_MONEY_OUT)
-            return state.DoS(100, error("CheckTransaction() : txout.nValue too high"),
-                REJECT_INVALID, "bad-txns-vout-toolarge");
-        nValueOut += txout.nValue;
-        if (!MoneyRange(nValueOut))
-            return state.DoS(100, error("CheckTransaction() : txout total out of range"),
-                REJECT_INVALID, "bad-txns-txouttotal-toolarge");
-        if (fZerocoinActive && txout.IsZerocoinMint()) {
-            if(!CheckZerocoinMint(tx.GetHash(), txout, state, true))
-                return state.DoS(100, error("CheckTransaction() : invalid zerocoin mint"));
-        }
-        // check cold staking enforcement (for delegations) and value out
-        if (txout.scriptPubKey.IsPayToColdStaking()) {
-            if (!fColdStakingActive)
-                return state.DoS(10, error("%s: cold staking not active", __func__), REJECT_INVALID, "bad-txns-cold-stake");
-            if (txout.nValue < minColdStakingAmount)
-                return state.DoS(100, error("%s: dust amount (%d) not allowed for cold staking. Min amount: %d",
-                        __func__, txout.nValue, minColdStakingAmount), REJECT_INVALID, "bad-txns-cold-stake");
-        }
-    }
-
-    std::set<COutPoint> vInOutPoints;
-    std::set<CBigNum> vZerocoinSpendSerials;
-    int nZCSpendCount = 0;
-
-    for (const CTxIn& txin : tx.vin) {
-        // Check for duplicate inputs
-        if (vInOutPoints.count(txin.prevout))
-            return state.DoS(100, error("CheckTransaction() : duplicate inputs"), REJECT_INVALID, "bad-txns-inputs-duplicate");
-
-        //duplicate zcspend serials are checked in CheckZerocoinSpend()
-        if (!txin.IsZerocoinSpend()) {
-            vInOutPoints.insert(txin.prevout);
-        } else if (!txin.IsZerocoinPublicSpend()) {
-            nZCSpendCount++;
-        }
-    }
-
-    if (fZerocoinActive) {
-        if (nZCSpendCount > Params().Zerocoin_MaxSpendsPerTransaction())
-            return state.DoS(100, error("CheckTransaction() : there are more zerocoin spends than are allowed in one transaction"));
-
-        //require that a zerocoinspend only has inputs that are zerocoins
-        if (tx.HasZerocoinSpendInputs()) {
-            for (const CTxIn& in : tx.vin) {
-                if (!in.IsZerocoinSpend() && !in.IsZerocoinPublicSpend())
-                    return state.DoS(100,
-                                     error("CheckTransaction() : zerocoinspend contains inputs that are not zerocoins"));
-            }
-
-            // Do not require signature verification if this is initial sync and a block over 24 hours old
-            bool fVerifySignature = !IsInitialBlockDownload() && (GetTime() - chainActive.Tip()->GetBlockTime() < (60*60*24));
-            if (!CheckZerocoinSpend(tx, fVerifySignature, state, fFakeSerialAttack))
-                return state.DoS(100, error("CheckTransaction() : invalid zerocoin spend"));
-        }
-    }
-
-    if (tx.IsCoinBase()) {
-        if (tx.vin[0].scriptSig.size() < 2 || tx.vin[0].scriptSig.size() > 150)
-            return state.DoS(100, error("CheckTransaction() : coinbase script size=%d", tx.vin[0].scriptSig.size()),
-                REJECT_INVALID, "bad-cb-length");
-    } else if (fZerocoinActive && tx.HasZerocoinSpendInputs()) {
-        if (tx.vin.size() < 1)
-            return state.DoS(10, error("CheckTransaction() : Zerocoin Spend has less than allowed txin's"), REJECT_INVALID, "bad-zerocoinspend");
-        if (tx.HasZerocoinPublicSpendInputs()) {
-            // tx has public zerocoin spend inputs
-            if(static_cast<int>(tx.vin.size()) > Params().Zerocoin_MaxPublicSpendsPerTransaction())
-                return state.DoS(10, error("CheckTransaction() : Zerocoin Spend has more than allowed txin's"), REJECT_INVALID, "bad-zerocoinspend");
-        } else {
-            // tx has regular zerocoin spend inputs
-            if(static_cast<int>(tx.vin.size()) > Params().Zerocoin_MaxSpendsPerTransaction())
-                return state.DoS(10, error("CheckTransaction() : Zerocoin Spend has more than allowed txin's"), REJECT_INVALID, "bad-zerocoinspend");
-        }
-
-    } else {
-        for (const CTxIn& txin : tx.vin)
-            if (txin.prevout.IsNull() && (fZerocoinActive && !txin.IsZerocoinSpend()))
-                return state.DoS(10, error("CheckTransaction() : prevout is null"),
-                    REJECT_INVALID, "bad-txns-prevout-null");
-    }
-
-    return true;
 }
 
 bool CheckFinalTx(const CTransaction& tx, int flags)
@@ -3959,11 +3805,12 @@ static bool ActivateBestChainStep(CValidationState& state, CBlockIndex* pindexMo
  */
 bool ActivateBestChain(CValidationState& state, CBlock* pblock, bool fAlreadyChecked)
 {
-    CBlockIndex* pindexNewTip = NULL;
-    CBlockIndex* pindexMostWork = NULL;
+    CBlockIndex* pindexNewTip = nullptr;
+    CBlockIndex* pindexMostWork = nullptr;
     do {
         boost::this_thread::interruption_point();
 
+        const CBlockIndex *pindexFork;
         bool fInitialDownload;
         while (true) {
             TRY_LOCK(cs_main, lockMain);
@@ -3972,6 +3819,7 @@ bool ActivateBestChain(CValidationState& state, CBlock* pblock, bool fAlreadyChe
                 continue;
             }
 
+            CBlockIndex *pindexOldTip = chainActive.Tip();
             pindexMostWork = FindMostWorkChain();
 
             // Whether we have anything to do at all.
@@ -3982,34 +3830,42 @@ bool ActivateBestChain(CValidationState& state, CBlock* pblock, bool fAlreadyChe
                 return false;
 
             pindexNewTip = chainActive.Tip();
+            pindexFork = chainActive.FindFork(pindexOldTip);
             fInitialDownload = IsInitialBlockDownload();
             break;
         }
-        // When we reach this point, we switched to a new tip (stored in pindexNewTip).
 
         // Notifications/callbacks that can run without cs_main
-        if (!fInitialDownload) {
-            uint256 hashNewTip = pindexNewTip->GetBlockHash();
-            // Relay inventory, but don't relay old inventory during initial block download.
-            int nBlockEstimate = Checkpoints::GetTotalBlocksEstimate();
-            {
-                LOCK(cs_vNodes);
-                for (CNode* pnode : vNodes)
-                    if (chainActive.Height() > (pnode->nStartingHeight != -1 ? pnode->nStartingHeight - 2000 : nBlockEstimate))
-                        pnode->PushInventory(CInv(MSG_BLOCK, hashNewTip));
-            }
-            // Notify external listeners about the new tip.
-            // Note: uiInterface, should switch main signals.
-            uiInterface.NotifyBlockTip(hashNewTip);
-            GetMainSignals().UpdatedBlockTip(pindexNewTip);
+        // Always notify the UI if a new block tip was connected
+        if (pindexFork != pindexNewTip) {
 
-            unsigned size = 0;
-            if (pblock)
-                size = GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION);
-            // If the size is over 1 MB notify external listeners, and it is within the last 5 minutes
-            if (size > MAX_BLOCK_SIZE_LEGACY && pblock->GetBlockTime() > GetAdjustedTime() - 300) {
-                uiInterface.NotifyBlockSize(static_cast<int>(size), hashNewTip);
+            // Notify the UI
+            uiInterface.NotifyBlockTip(fInitialDownload, pindexNewTip);
+
+            // Notifications/callbacks that can run without cs_main
+            if (!fInitialDownload) {
+                uint256 hashNewTip = pindexNewTip->GetBlockHash();
+                // Relay inventory, but don't relay old inventory during initial block download.
+                int nBlockEstimate = Checkpoints::GetTotalBlocksEstimate();
+                {
+                    LOCK(cs_vNodes);
+                    for (CNode *pnode : vNodes)
+                        if (chainActive.Height() >
+                            (pnode->nStartingHeight != -1 ? pnode->nStartingHeight - 2000 : nBlockEstimate))
+                            pnode->PushInventory(CInv(MSG_BLOCK, hashNewTip));
+                }
+                // Notify external listeners about the new tip.
+                GetMainSignals().UpdatedBlockTip(pindexNewTip);
+
+                unsigned size = 0;
+                if (pblock)
+                    size = GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION);
+                // If the size is over 1 MB notify external listeners, and it is within the last 5 minutes
+                if (size > MAX_BLOCK_SIZE_LEGACY && pblock->GetBlockTime() > GetAdjustedTime() - 300) {
+                    uiInterface.NotifyBlockSize(static_cast<int>(size), hashNewTip);
+                }
             }
+
         }
     } while (pindexMostWork != chainActive.Tip());
     CheckBlockIndex();
