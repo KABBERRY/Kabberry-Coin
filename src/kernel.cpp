@@ -133,7 +133,7 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
         if (spend.getSpendType() != libzerocoin::SpendType::STAKE)
             return error("%s : spend is using the wrong SpendType (%d)", __func__, (int)spend.getSpendType());
 
-        stake = std::unique_ptr<CStakeInput>(new CLegacySkkcStake(spend));
+        stake = std::unique_ptr<CStakeInput>(new CLegacysKKCStake(spend));
 
         // zPoS contextual checks
         /* Only for IBD (between Zerocoin_Block_V2_Start and Zerocoin_Block_Last_Checkpoint) */
@@ -344,7 +344,7 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
     }
     CBlockIndex* pindexFrom = stake->GetIndexFrom();
     if (!pindexFrom) return error("%s : failed to get index from", __func__);
-    if (stake->IsSKKC()) {
+    if (stake->IssKKC()) {
         int64_t nTimeBlockFrom = pindexFrom->GetBlockTime();
         const int nHeightStop = std::min(chainActive.Height(), Params().Zerocoin_Block_Last_Checkpoint()-1);
         while (pindexFrom && pindexFrom->nHeight + 1 <= nHeightStop) {
