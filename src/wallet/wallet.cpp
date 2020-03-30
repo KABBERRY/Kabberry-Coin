@@ -2585,10 +2585,10 @@ bool CWallet::CreateCoinStake(
         return false;
     }
 
-    // Parse utxos into CKKCStakes
+    // Parse utxos into CPivStakes
     std::list<std::unique_ptr<CStakeInput> > listInputs;
     for (const COutput &out : vCoins) {
-        std::unique_ptr<CKKCStake> input(new CKKCStake());
+        std::unique_ptr<CPivStake> input(new CPivStake());
         input->SetInput((CTransaction) *out.tx, out.i);
         listInputs.emplace_back(std::move(input));
     }
@@ -2618,6 +2618,7 @@ bool CWallet::CreateCoinStake(
             LogPrintf("%s: ERROR - sPOS is disabled\n", __func__);
             continue;
         }
+
         nCredit = 0;
         uint256 hashProofOfStake = 0;
         nAttempts++;
@@ -2646,19 +2647,18 @@ bool CWallet::CreateCoinStake(
         txNew.vout.insert(txNew.vout.end(), vout.begin(), vout.end());
 
         CAmount nMinFee = 0;
-            // Set output amount
-            int outputs = txNew.vout.size() - 1;
-            CAmount nRemaining = nCredit - nMinFee;
-            if (outputs > 1) {
-                // Split the stake across the outputs
-                CAmount nShare = nRemaining / outputs;
-                for (int i = 1; i < outputs; i++) {
-                    // loop through all but the last one.
-                    txNew.vout[i].nValue = nShare;
-                    nRemaining -= nShare;
+        // Set output amount
+        int outputs = txNew.vout.size() - 1;
+        CAmount nRemaining = nCredit - nMinFee;
+        if (outputs > 1) {
+            // Split the stake across the outputs
+            CAmount nShare = nRemaining / outputs;
+            for (int i = 1; i < outputs; i++) {
+                // loop through all but the last one.
+                txNew.vout[i].nValue = nShare;
+                nRemaining -= nShare;
             }
         }
-
         // put the remaining on the last output (which all into the first if only one output)
         txNew.vout[outputs].nValue += nRemaining;
 
@@ -3966,7 +3966,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
             reservekey->ReturnKey();
     }
 
-    // Sign if these are kabberry outputs - NOTE that sKKC outputs are signed later in SoK
+    // Sign if these are KKC outputs - NOTE that sKKC outputs are signed later in SoK
     if (!isZCSpendChange) {
         int nIn = 0;
         for (const std::pair<const CWalletTx*, unsigned int>& coin : setCoins) {
@@ -4241,7 +4241,7 @@ bool CWallet::CreateZCPublicSpendTransaction(
 
             for (std::pair<CBitcoinAddress*,CAmount> pair : addressesTo){
                 CScript scriptZerocoinSpend = GetScriptForDestination(pair.first->Get());
-                //add output to kabberry address to the transaction (the actual primary spend taking place)
+                //add output to KKC address to the transaction (the actual primary spend taking place)
                 // TODO: check value?
                 CTxOut txOutZerocoinSpend(pair.second, scriptZerocoinSpend);
                 txNew.vout.push_back(txOutZerocoinSpend);
@@ -4284,9 +4284,9 @@ bool CWallet::CreateZCPublicSpendTransaction(
 
             //add all of the mints to the transaction as inputs
             std::vector<CTxIn> vin;
-                if (!MintsToInputVectorPublicSpend(mapSelectedMints, hashTxOut, vin, receipt,
-                                                   libzerocoin::SpendType::SPEND, pindexCheckpoint))
-                    return false;
+            if (!MintsToInputVectorPublicSpend(mapSelectedMints, hashTxOut, vin, receipt,
+                                               libzerocoin::SpendType::SPEND, pindexCheckpoint))
+                return false;
             txNew.vin = vin;
 
             // Limit size
