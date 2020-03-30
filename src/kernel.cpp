@@ -337,6 +337,7 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
     return hashChecksum.Get64();
 }
 
+bool GetOldStakeModifier(CStakeInput* stake, uint64_t& nStakeModifier)
 {
     if(Params().IsRegTestNet()) {
         nStakeModifier = 0;
