@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2013 The PPCoin developers
 // Copyright (c) 2013-2014 The NovaCoin Developers
 // Copyright (c) 2014-2018 The BlackCoin Developers
-// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2015-2020 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -23,7 +23,7 @@
 
 bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, const unsigned int nTimeTx, const bool fVerify, uint256& hashProofOfStakeRet) {
     // Grab the stake data
-	    CBlockIndex* pindexfrom = stake->GetIndexFrom();
+    CBlockIndex* pindexfrom = stake->GetIndexFrom();
     if (!pindexfrom) return error("%s : Failed to find the block index for stake origin", __func__);
     const CDataStream& ssUniqueID = stake->GetUniqueness();
     const unsigned int nTimeBlockFrom = pindexfrom->nTime;
@@ -116,8 +116,10 @@ bool CheckProofOfStake(const CBlock& block, uint256& hashProofOfStake, std::uniq
     if (!CheckStakeKernelHash(pindexPrev, block.nBits, stake.get(), nTxTime, hashProofOfStake, true))
         return error("%s : INFO: check kernel failed on coinstake %s, hashProof=%s", __func__,
                      tx.GetHash().GetHex(), hashProofOfStake.GetHex());
+
     return true;
 }
+
 // Initialize the stake input object
 bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, int nPreviousBlockHeight) {
     const CTransaction tx = block.vtx[1];
@@ -165,9 +167,9 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
             return error("%s : VerifyScript failed on coinstake %s %s", __func__, tx.GetHash().ToString(), strErr);
         }
 
-        CKKCStake* kkcInput = new CKKCStake();
-        kkcInput->SetInput(txPrev, txin.prevout.n);
-        stake = std::unique_ptr<CStakeInput>(kkcInput);
+        CPivStake* pivInput = new CPivStake();
+        pivInput->SetInput(txPrev, txin.prevout.n);
+        stake = std::unique_ptr<CStakeInput>(pivInput);
     }
     return true;
 }
@@ -362,7 +364,8 @@ bool GetOldStakeModifier(CStakeInput* stake, uint64_t& nStakeModifier)
 
     return true;
 }
-	// The stake modifier used to hash for a stake kernel is chosen as the stake
+
+// The stake modifier used to hash for a stake kernel is chosen as the stake
 // modifier about a selection interval later than the coin generating the kernel
 bool GetOldModifier(const uint256& hashBlockFrom, uint64_t& nStakeModifier)
 {
