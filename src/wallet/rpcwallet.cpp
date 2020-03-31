@@ -3571,10 +3571,6 @@ UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
 
 extern UniValue DosKKCSpend(const CAmount nAmount, std::vector<CZerocoinMint>& vMintsSelected, std::string address_str)
 {
-    // zerocoin mint / v2 spend is disabled. fMintChange should be false here. Double check
-    if (!Params().IsRegTestNet() && fMintChange)
-        throw JSONRPCError(RPC_WALLET_ERROR, "sKKC minting is DISABLED (except for regtest), cannot mint change");
-
     int64_t nTimeStart = GetTimeMillis();
     CBitcoinAddress address = CBitcoinAddress(); // Optional sending address. Dummy initialization here.
     CWalletTx wtx;
