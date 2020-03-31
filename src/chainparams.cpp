@@ -115,9 +115,9 @@ libzerocoin::ZerocoinParams* CChainParams::Zerocoin_Params(bool useModulusV1) co
 bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime,
         const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const
 {
-    // before stake modifier V2, the age required was 60 * 60 (1 hour). Not required for regtest
+    // before stake modifier V2, the age required was 60 * 60 (1 hour).
     if (!IsStakeModifierV2(contextHeight))
-        return NetworkID() == CBaseChainParams::REGTEST || (utxoFromBlockTime + nStakeMinAge <= contextTime);
+        return (utxoFromBlockTime + nStakeMinAge <= contextTime);
 
     // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
     return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
@@ -459,7 +459,7 @@ public:
         nBlockRecalculateAccumulators = 999999999; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 999999999; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 999999999; //Last valid accumulator checkpoint
-        nBlockStakeModifierlV2 = nLastPOWBlock + 1; // start with modifier V2 on testnet
+        nBlockStakeModifierlV2 = nLastPOWBlock + 1; // start with modifier V2 on regtest
         nBlockTimeProtocolV2 = 999999999;
 
         nMintRequiredConfirmations = 10;
@@ -470,7 +470,7 @@ public:
 
         // Blocks v7
         nBlockV7StartHeight = nBlockZerocoinV2;
-        nBlockLastAccumulatorCheckpoint = nBlockZerocoinV2-1; // no accumul. checkpoints check on regtest
+        nBlockLastAccumulatorCheckpoint = nBlockZerocoinV2+1; // no accumul. checkpoints check on regtest
 
         // New P2P messages signatures
         nBlockEnforceNewMessageSignatures = 1;
@@ -511,51 +511,7 @@ public:
 };
 static CRegTestParams regTestParams;
 
-/**
- * Unit test
- */
-class CUnitTestParams : public CMainParams, public CModifiableParams
-{
-public:
-    CUnitTestParams()
-    {
-        networkID = CBaseChainParams::UNITTEST;
-        strNetworkID = "unittest";
-        nDefaultPort = 51478;
-        vFixedSeeds.clear(); //! Unit test mode doesn't have any fixed seeds.
-        vSeeds.clear();      //! Unit test mode doesn't have any DNS seeds.
-
-        fMiningRequiresPeers = false;
-        fDefaultConsistencyChecks = true;
-        fAllowMinDifficultyBlocks = false;
-        fMineBlocksOnDemand = true;
-    }
-
-    const Checkpoints::CCheckpointData& Checkpoints() const
-    {
-        // UnitTest share the same checkpoints as MAIN
-        return data;
-    }
-
-    //! Published setters to allow changing values in unit test cases
-    virtual void setSubsidyHalvingInterval(int anSubsidyHalvingInterval) { nSubsidyHalvingInterval = anSubsidyHalvingInterval; }
-    virtual void setEnforceBlockUpgradeMajority(int anEnforceBlockUpgradeMajority) { nEnforceBlockUpgradeMajority = anEnforceBlockUpgradeMajority; }
-    virtual void setRejectBlockOutdatedMajority(int anRejectBlockOutdatedMajority) { nRejectBlockOutdatedMajority = anRejectBlockOutdatedMajority; }
-    virtual void setToCheckBlockUpgradeMajority(int anToCheckBlockUpgradeMajority) { nToCheckBlockUpgradeMajority = anToCheckBlockUpgradeMajority; }
-    virtual void setDefaultConsistencyChecks(bool afDefaultConsistencyChecks) { fDefaultConsistencyChecks = afDefaultConsistencyChecks; }
-    virtual void setAllowMinDifficultyBlocks(bool afAllowMinDifficultyBlocks) { fAllowMinDifficultyBlocks = afAllowMinDifficultyBlocks; }
-    virtual void setSkipProofOfWorkCheck(bool afSkipProofOfWorkCheck) { fSkipProofOfWorkCheck = afSkipProofOfWorkCheck; }
-};
-static CUnitTestParams unitTestParams;
-
 static CChainParams* pCurrentParams = 0;
-
-CModifiableParams* ModifiableParams()
-{
-    assert(pCurrentParams);
-    assert(pCurrentParams == &unitTestParams);
-    return (CModifiableParams*)&unitTestParams;
-}
 
 const CChainParams& Params()
 {
@@ -572,8 +528,6 @@ CChainParams& Params(CBaseChainParams::Network network)
         return testNetParams;
     case CBaseChainParams::REGTEST:
         return regTestParams;
-    case CBaseChainParams::UNITTEST:
-        return unitTestParams;
     default:
         assert(false && "Unimplemented network");
         return mainParams;

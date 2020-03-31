@@ -453,8 +453,6 @@ bool SendWidget::sendsKKC(QList<SendCoinsRecipient> recipients){
 
     if (walletModel->sendsKKC(
             vMintsSelected,
-            true,
-            true,
             receipt,
             outputs,
             changeAddress
