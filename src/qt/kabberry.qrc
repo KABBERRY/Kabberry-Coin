@@ -168,6 +168,8 @@
         <file alias="ic-check-box-liliac-indeterminate">kabberry/res/img/ic-check-box-liliac-indeterminate.svg</file>
         <file alias="ic-check-connect-off">kabberry/res/img/ic-check-connect-off.svg</file>
         <file alias="ic-check-connect">kabberry/res/img/ic-check-connect.svg</file>
+        <file alias="ic-check-tor-off">kabberry/res/img/ic-check-tor-off.svg</file>
+        <file alias="ic-check-tor">kabberry/res/img/ic-check-tor.svg</file>
         <file alias="ic-check-dark">kabberry/res/img/ic-check-dark.svg</file>
         <file alias="ic-check-liliac-on">kabberry/res/img/ic-check-liliac-on.svg</file>
         <file alias="ic-check-locked-off">kabberry/res/img/ic-check-locked-off.svg</file>
