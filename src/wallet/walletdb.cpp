@@ -848,7 +848,7 @@ DBErrors CWalletDB::ZapWalletTx(CWallet* pwallet, std::vector<CWalletTx>& vWtx)
 void ThreadFlushWalletDB(const std::string& strFile)
 {
     // Make this thread recognisable as the wallet flushing thread
-    RenameThread("kabberry-wallet");
+    util::ThreadRename("kabberry-wallet");
 
     static bool fOneThread;
     if (fOneThread)

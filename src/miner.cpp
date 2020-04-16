@@ -572,7 +572,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
 {
     LogPrintf("KabberryMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    RenameThread("kabberry-miner");
+    util::ThreadRename("kabberry-miner");
 
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
