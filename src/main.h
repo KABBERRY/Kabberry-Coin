@@ -291,8 +291,6 @@ bool IsTransactionInChain(const uint256& txId, int& nHeightTx);
 bool IsBlockHashInChain(const uint256& hashBlock);
 bool ValidOutPoint(const COutPoint& out, int nHeight);
 void AddWrappedSerialsInflation();
-void RecalculatesKKCSpent();
-void RecalculatesKKCMinted();
 bool RecalculateKKCSupply(int nHeightStart);
 
 // Fake Serial attack Range
