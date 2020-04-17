@@ -1,7 +1,7 @@
 // Copyright (c) 2011-2013 The PPCoin developers
 // Copyright (c) 2013-2014 The NovaCoin Developers
 // Copyright (c) 2014-2018 The BlackCoin Developers
-// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2015-2020 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -23,7 +23,7 @@
 
 bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, const unsigned int nTimeTx, const bool fVerify, uint256& hashProofOfStakeRet) {
     // Grab the stake data
-	    CBlockIndex* pindexfrom = stake->GetIndexFrom();
+    CBlockIndex* pindexfrom = stake->GetIndexFrom();
     if (!pindexfrom) return error("%s : Failed to find the block index for stake origin", __func__);
     const CDataStream& ssUniqueID = stake->GetUniqueness();
     const unsigned int nTimeBlockFrom = pindexfrom->nTime;
@@ -116,8 +116,10 @@ bool CheckProofOfStake(const CBlock& block, uint256& hashProofOfStake, std::uniq
     if (!CheckStakeKernelHash(pindexPrev, block.nBits, stake.get(), nTxTime, hashProofOfStake, true))
         return error("%s : INFO: check kernel failed on coinstake %s, hashProof=%s", __func__,
                      tx.GetHash().GetHex(), hashProofOfStake.GetHex());
+
     return true;
 }
+
 // Initialize the stake input object
 bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, int nPreviousBlockHeight) {
     const CTransaction tx = block.vtx[1];
@@ -133,14 +135,14 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
         if (spend.getSpendType() != libzerocoin::SpendType::STAKE)
             return error("%s : spend is using the wrong SpendType (%d)", __func__, (int)spend.getSpendType());
 
-        stake = std::unique_ptr<CStakeInput>(new CLegacySkkcStake(spend));
+        stake = std::unique_ptr<CStakeInput>(new CLegacysKKCStake(spend));
 
-        // zPoS contextual checks
+        // sPos contextual checks
         /* Only for IBD (between Zerocoin_Block_V2_Start and Zerocoin_Block_Last_Checkpoint) */
         if (nPreviousBlockHeight < Params().Zerocoin_Block_V2_Start() ||
                 nPreviousBlockHeight > Params().Zerocoin_Block_Last_Checkpoint())
             return error("%s : sKKC stake block: height %d outside range", __func__, (nPreviousBlockHeight+1));
-        CLegacySkkcStake* sKKC = dynamic_cast<CLegacySkkcStake*>(stake.get());
+        CLegacysKKCStake* sKKC = dynamic_cast<CLegacysKKCStake*>(stake.get());
         if (!sKKC) return error("%s : dynamic_cast of stake ptr failed", __func__);
         // The checkpoint needs to be from 200 blocks ago
         const int cpHeight = nPreviousBlockHeight - Params().Zerocoin_RequiredStakeDepth();
@@ -337,6 +339,7 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
     return hashChecksum.Get64();
 }
 
+bool GetOldStakeModifier(CStakeInput* stake, uint64_t& nStakeModifier)
 {
     if(Params().IsRegTestNet()) {
         nStakeModifier = 0;
@@ -361,7 +364,8 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
 
     return true;
 }
-	// The stake modifier used to hash for a stake kernel is chosen as the stake
+
+// The stake modifier used to hash for a stake kernel is chosen as the stake
 // modifier about a selection interval later than the coin generating the kernel
 bool GetOldModifier(const uint256& hashBlockFrom, uint64_t& nStakeModifier)
 {
