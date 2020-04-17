@@ -347,7 +347,7 @@ bool GetOldStakeModifier(CStakeInput* stake, uint64_t& nStakeModifier)
     }
     CBlockIndex* pindexFrom = stake->GetIndexFrom();
     if (!pindexFrom) return error("%s : failed to get index from", __func__);
-    if (stake->IsSKKC()) {
+    if (stake->IssKKC()) {
         int64_t nTimeBlockFrom = pindexFrom->GetBlockTime();
         const int nHeightStop = std::min(chainActive.Height(), Params().Zerocoin_Block_Last_Checkpoint()-1);
         while (pindexFrom && pindexFrom->nHeight + 1 <= nHeightStop) {
