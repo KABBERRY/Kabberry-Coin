@@ -134,35 +134,32 @@ UniValue generate(const UniValue& params, bool fHelp)
             + HelpExampleCli("generate", "11")
         );
 
-    if (!Params().IsRegTestNet())
+    if (!Params().MineBlocksOnDemand())
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "This method can only be used on regtest");
 
     const int nGenerate = params[0].get_int();
     int nHeightEnd = 0;
     int nHeight = 0;
+    CReserveKey reservekey(pwalletMain);
 
     {   // Don't keep cs_main locked
         LOCK(cs_main);
         nHeight = chainActive.Height();
         nHeightEnd = nHeight + nGenerate;
     }
-
-    const int last_pow_block = Params().LAST_POW_BLOCK();
-    bool fPoS = nHeight >= last_pow_block;
-    if (fPoS) {
-        // If we are in PoS, wallet must be unlocked.
-        EnsureWalletIsUnlocked();
-    }
-
-    UniValue blockHashes(UniValue::VARR);
-    CReserveKey reservekey(pwalletMain);
     unsigned int nExtraNonce = 0;
+    UniValue blockHashes(UniValue::VARR);
+
+    bool fPoS = false;
+    const int last_pow_block = Params().LAST_POW_BLOCK();
     while (nHeight < nHeightEnd && !ShutdownRequested())
     {
-        std::unique_ptr<CBlockTemplate> pblocktemplate(fPoS ?
-                                                       CreateNewBlock(CScript(), pwalletMain, fPoS) :
-                                                       CreateNewBlockWithKey(reservekey, pwalletMain));
-        if (!pblocktemplate.get()) break;
+        if (!fPoS) fPoS = (nHeight >= last_pow_block);
+        std::unique_ptr<CBlockTemplate> pblocktemplate(
+                fPoS ? CreateNewBlock(CScript(), pwalletMain, fPoS) : CreateNewBlockWithKey(reservekey, pwalletMain)
+                        );
+        if (!pblocktemplate.get())
+            throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't create new block");
         CBlock *pblock = &pblocktemplate->block;
 
         if(!fPoS) {
@@ -184,15 +181,7 @@ UniValue generate(const UniValue& params, bool fHelp)
 
         ++nHeight;
         blockHashes.push_back(pblock->GetHash().GetHex());
-
-        // Check PoS if needed.
-        if (!fPoS) fPoS = (nHeight >= last_pow_block);
     }
-
-    const int nGenerated = blockHashes.size();
-    if (nGenerated == 0 || (!fPoS && nGenerated < nGenerate))
-        throw JSONRPCError(RPC_INTERNAL_ERROR, "Couldn't create new blocks");
-
     return blockHashes;
 }
 
@@ -219,8 +208,8 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
     if (pwalletMain == NULL)
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found (disabled)");
 
-    if (Params().IsRegTestNet())
-        throw JSONRPCError(RPC_INVALID_REQUEST, "Use the generate method instead of setgenerate on this regtest");
+    if (Params().MineBlocksOnDemand())
+        throw JSONRPCError(RPC_INVALID_REQUEST, "Use the generate method instead of setgenerate on this network");
 
     bool fGenerate = true;
     if (params.size() > 0)

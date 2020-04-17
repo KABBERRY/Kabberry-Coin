@@ -15,5 +15,4 @@ contrib/devtools/logprint-scanner.py
 
 if [ "$TRAVIS_EVENT_TYPE" = "pull_request" ]; then
   contrib/devtools/lint-whitespace.sh
-  test/lint/lint-qt.sh
 fi

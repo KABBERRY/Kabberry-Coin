@@ -848,7 +848,7 @@ DBErrors CWalletDB::ZapWalletTx(CWallet* pwallet, std::vector<CWalletTx>& vWtx)
 void ThreadFlushWalletDB(const std::string& strFile)
 {
     // Make this thread recognisable as the wallet flushing thread
-    util::ThreadRename("kabberry-wallet");
+    RenameThread("kabberry-wallet");
 
     static bool fOneThread;
     if (fOneThread)
@@ -917,7 +917,7 @@ bool BackupWallet(const CWallet& wallet, const boost::filesystem::path& strDest,
         if(!pathWithFile.empty()) {
             if(!pathWithFile.has_extension()) {
                 pathCustom = pathWithFile;
-                pathWithFile /= wallet.GetUniqueWalletBackupName();
+                pathWithFile /= wallet.GetUniqueWalletBackupName(false);
             } else {
                 pathCustom = pathWithFile.parent_path();
             }

@@ -42,7 +42,6 @@
 #include "guiinterface.h"
 #include "util.h"
 #include "utilmoneystr.h"
-#include "util/threadnames.h"
 #include "validationinterface.h"
 #include "skkcchain.h"
 
@@ -197,7 +196,7 @@ void PrepareShutdown()
     /// for example if the data directory was found to be locked.
     /// Be sure that anything that writes files or flushes caches only does this if the respective
     /// module was initialized.
-    util::ThreadRename("kabberry-shutoff");
+    RenameThread("kabberry-shutoff");
     mempool.AddTransactionsUpdated(1);
     StopHTTPRPC();
     StopREST();
@@ -561,6 +560,10 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-budgetvotemode=<mode>", _("Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)"));
 
     strUsage += HelpMessageGroup(_("Zerocoin options:"));
+#ifdef ENABLE_WALLET
+    strUsage += HelpMessageOpt("-backupskkc=<n>", strprintf(_("Enable automatic wallet backups triggered after each sKKC minting (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-skkcbackuppath=<dir|file>", _("Specify custom backup path to add a copy of any automatic sKKC backup. If set as dir, every backup generates a timestamped file. If set as file, will rewrite to that file every backup. If backuppath is set as well, 4 backups will happen"));
+#endif // ENABLE_WALLET
     strUsage += HelpMessageOpt("-reindexzerocoin=<n>", strprintf(_("Delete all zerocoin spends and mints that have been recorded to the blockchain database and reindex them (0-1, default: %u)"), 0));
 
     strUsage += HelpMessageGroup(_("SwiftX options:"));
@@ -643,26 +646,6 @@ static void BlockSizeNotifyCallback(int size, const uint256& hashNewTip)
     boost::thread t(runCommand, strCmd); // thread runs free
 }
 
-////////////////////////////////////////////////////
-
-static bool fHaveGenesis = false;
-static std::mutex cs_GenesisWait;
-static std::condition_variable condvar_GenesisWait;
-
-static void BlockNotifyGenesisWait(bool, const CBlockIndex *pBlockIndex)
-{
-    if (pBlockIndex != nullptr) {
-        {
-            std::unique_lock<std::mutex> lock_GenesisWait(cs_GenesisWait);
-            fHaveGenesis = true;
-        }
-        condvar_GenesisWait.notify_all();
-    }
-}
-
-////////////////////////////////////////////////////
-
-
 struct CImportingNow {
     CImportingNow()
     {
@@ -679,7 +662,7 @@ struct CImportingNow {
 
 void ThreadImport(std::vector<boost::filesystem::path> vImportFiles)
 {
-    util::ThreadRename("kabberry-loadblk");
+    RenameThread("kabberry-loadblk");
 
     // -reindex
     if (fReindex) {
@@ -1547,8 +1530,20 @@ bool AppInit2()
 
                 // Recalculate money supply for blocks that are impacted by accounting issue after zerocoin activation
                 if (GetBoolArg("-reindexmoneysupply", false) || reindexZerocoin) {
+                    if (chainHeight > Params().Zerocoin_StartHeight()) {
+                        RecalculatesKKCMinted();
+                        RecalculatesKKCSpent();
+                    }
                     // Recalculate from the zerocoin activation or from scratch.
                     RecalculateKKCSupply(reindexZerocoin ? Params().Zerocoin_StartHeight() : 1);
+                }
+
+                // Check Recalculation result
+                if(Params().NetworkID() == CBaseChainParams::MAIN && chainHeight > Params().Zerocoin_Block_EndFakeSerial()) {
+                    CBlockIndex* pblockindex = chainActive[Params().Zerocoin_Block_EndFakeSerial() + 1];
+                    CAmount skkcSupplyCheckpoint = Params().GetSupplyBeforeFakeSerial() + GetWrapppedSerialInflationAmount();
+                    if (pblockindex->GetZerocoinSupply() != skkcSupplyCheckpoint)
+                        return InitError(strprintf("ZerocoinSupply Recalculation failed: %d vs %d", pblockindex->GetZerocoinSupply()/COIN , skkcSupplyCheckpoint/COIN));
                 }
 
                 if (!fReindex) {
@@ -1752,6 +1747,8 @@ bool AppInit2()
         //Inititalize sKKCWallet
         uiInterface.InitMessage(_("Syncing sKKC wallet..."));
 
+        bool fEnablesKKCBackups = GetBoolArg("-backupskkc", true);
+        pwalletMain->setsKKCAutoBackups(fEnablesKKCBackups);
 
         //Load zerocoin mint hashes to memory
         pwalletMain->skkcTracker->Init();
@@ -1762,17 +1759,6 @@ bool AppInit2()
     LogPrintf("No wallet compiled in!\n");
 #endif // !ENABLE_WALLET
     // ********************************************************* Step 9: import blocks
-
-    if (!CheckDiskSpace())
-        return false;
-
-    // Either install a handler to notify us when genesis activates, or set fHaveGenesis directly.
-    // No locking, as this happens before any background thread is started.
-    if (chainActive.Tip() == nullptr) {
-        uiInterface.NotifyBlockTip.connect(BlockNotifyGenesisWait);
-    } else {
-        fHaveGenesis = true;
-    }
 
     if (mapArgs.count("-blocknotify"))
         uiInterface.NotifyBlockTip.connect(BlockNotifyCallback);
@@ -1791,15 +1777,10 @@ bool AppInit2()
             vImportFiles.push_back(strFile);
     }
     threadGroup.create_thread(boost::bind(&ThreadImport, vImportFiles));
-
-    // Wait for genesis block to be processed
-    LogPrintf("Waiting for genesis block to be imported...\n");
-    {
-        std::unique_lock<std::mutex> lockG(cs_GenesisWait);
-        while (!fHaveGenesis) {
-            condvar_GenesisWait.wait(lockG);
-        }
-        uiInterface.NotifyBlockTip.disconnect(BlockNotifyGenesisWait);
+    if (chainActive.Tip() == NULL) {
+        LogPrintf("Waiting for genesis block to be imported...\n");
+        while (!fRequestShutdown && chainActive.Tip() == NULL)
+            MilliSleep(10);
     }
 
     // ********************************************************* Step 10: setup ObfuScation
@@ -1946,6 +1927,9 @@ bool AppInit2()
     }
 
     // ********************************************************* Step 11: start node
+
+    if (!CheckDiskSpace())
+        return false;
 
     if (!strErrors.str().empty())
         return InitError(strErrors.str());

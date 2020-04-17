@@ -2800,7 +2800,7 @@ UniValue setstakesplitthreshold(const UniValue& params, bool fHelp)
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
-            "1. value   (numeric, required) Threshold value between 1 and 999999 or 0 to disable stake-splitting\n"
+            "1. value   (numeric, required) Threshold value between 1 and 999999\n"
 
             "\nResult:\n"
             "{\n"
@@ -2814,9 +2814,6 @@ UniValue setstakesplitthreshold(const UniValue& params, bool fHelp)
     EnsureWalletIsUnlocked();
 
     uint64_t nStakeSplitThreshold = params[0].get_int();
-
-    if (nStakeSplitThreshold < 0)
-        throw std::runtime_error("Value out of range, min allowed is 0");
 
     if (nStakeSplitThreshold > 999999)
         throw std::runtime_error("Value out of range, max allowed is 999999");
@@ -3444,15 +3441,17 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
 
 UniValue spendzerocoin(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() > 2 || params.size() < 1)
+    if (fHelp || params.size() > 5 || params.size() < 3)
         throw std::runtime_error(
-            "spendzerocoin amount ( \"address\" )\n"
+            "spendzerocoin amount mintchange minimizechange ( \"address\" )\n"
             "\nSpend sKKC to a KKC address.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
             "1. amount          (numeric, required) Amount to spend.\n"
-            "2. \"address\"     (string, optional, default=change) Send to specified address or to a new change address.\n"
+            "2. mintchange      (boolean, required) Re-mint any leftover change.\n"
+            "3. minimizechange  (boolean, required) Try to minimize the returning change  [false]\n"
+            "4. \"address\"     (string, optional, default=change) Send to specified address or to a new change address.\n"
             "                       If there is change then an address is required\n"
 
             "\nResult:\n"
@@ -3479,8 +3478,8 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
             "}\n"
 
             "\nExamples\n" +
-            HelpExampleCli("spendzerocoin", "5000 \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\"") +
-            HelpExampleRpc("spendzerocoin", "5000 \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\""));
+            HelpExampleCli("spendzerocoin", "5000 false true \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\"") +
+            HelpExampleRpc("spendzerocoin", "5000 false true \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
@@ -3488,16 +3487,21 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_ERROR, "sKKC is currently disabled due to maintenance.");
 
     CAmount nAmount = AmountFromValue(params[0]);        // Spending amount
-    const std::string address_str = (params.size() > 1 ? params[1].get_str() : "");
+    const bool fMintChange = params[1].get_bool();       // Mint change to sKKC
+    const bool fMinimizeChange = params[2].get_bool();    // Minimize change
+    const std::string address_str = (params.size() > 3 ? params[3].get_str() : "");
+
+    if (!Params().IsRegTestNet() && fMintChange)
+        throw JSONRPCError(RPC_WALLET_ERROR, "sKKC minting is DISABLED (except for regtest), cannot mint change");
 
     std::vector<CZerocoinMint> vMintsSelected;
-    return DosKKCSpend(nAmount, vMintsSelected, address_str);
+    return DosKKCSpend(nAmount, fMintChange, fMinimizeChange, vMintsSelected, address_str);
 }
 
 
 UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() < 1 || params.size() > 2)
+    if (fHelp || params.size() < 1 || params.size() > 3)
         throw std::runtime_error(
             "spendzerocoinmints mints_list ( \"address\" ) \n"
             "\nSpend sKKC mints to a KKC address.\n" +
@@ -3568,12 +3572,16 @@ UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
         nAmount += mint.GetDenominationAsAmount();
     }
 
-    return DosKKCSpend(nAmount, vMintsSelected, address_str);
+    return DosKKCSpend(nAmount, false, true, vMintsSelected, address_str);
 }
 
 
-extern UniValue DosKKCSpend(const CAmount nAmount, std::vector<CZerocoinMint>& vMintsSelected, std::string address_str)
+extern UniValue DosKKCSpend(const CAmount nAmount, bool fMintChange, bool fMinimizeChange, std::vector<CZerocoinMint>& vMintsSelected, std::string address_str)
 {
+    // zerocoin mint / v2 spend is disabled. fMintChange should be false here. Double check
+    if (!Params().IsRegTestNet() && fMintChange)
+        throw JSONRPCError(RPC_WALLET_ERROR, "sKKC minting is DISABLED (except for regtest), cannot mint change");
+
     int64_t nTimeStart = GetTimeMillis();
     CBitcoinAddress address = CBitcoinAddress(); // Optional sending address. Dummy initialization here.
     CWalletTx wtx;
@@ -3589,7 +3597,7 @@ extern UniValue DosKKCSpend(const CAmount nAmount, std::vector<CZerocoinMint>& v
     }
 
     EnsureWalletIsUnlocked();
-    fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, outputs, nullptr);
+    fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, fMintChange, fMinimizeChange, outputs, nullptr);
 
     if (!fSuccess)
         throw JSONRPCError(RPC_WALLET_ERROR, receipt.GetStatusMessage());
@@ -4247,7 +4255,7 @@ UniValue searchdskkc(const UniValue& params, bool fHelp)
 
 UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() < 4 || params.size() > 6)
+    if (fHelp || params.size() < 4 || params.size() > 7)
         throw std::runtime_error(
             "spendrawzerocoin \"serialHex\" denom \"randomnessHex\" \"priv key\" ( \"address\" \"mintTxId\" )\n"
             "\nCreate and broadcast a TX spending the provided zericoin.\n"
@@ -4315,7 +4323,7 @@ UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
             CBlockIndex* pindex = chainActive.Tip();
             while (!found && pindex && pindex->nHeight >= Params().Zerocoin_StartHeight()) {
                 LogPrintf("%s : Checking block %d...\n", __func__, pindex->nHeight);
-
+                if (pindex->MintedDenomination(denom)) {
                     CBlock block;
                     if (!ReadBlockFromDisk(block, pindex))
                         throw JSONRPCError(RPC_INTERNAL_ERROR, "Unable to read block from disk");
@@ -4327,6 +4335,7 @@ UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
                             mint.SetTxHash(m.GetTxHash());
                             found = true;
                             break;
+                        }
                     }
                 }
                 pindex = pindex->pprev;
@@ -4337,6 +4346,6 @@ UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
     }
 
     std::vector<CZerocoinMint> vMintsSelected = {mint};
-    return DosKKCSpend(mint.GetDenominationAsAmount(), vMintsSelected, address_str);
+    return DosKKCSpend(mint.GetDenominationAsAmount(), false, true, vMintsSelected, address_str);
 }
 

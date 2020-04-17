@@ -176,21 +176,8 @@ bool WalletModel::isWalletLocked() const {
     return getEncryptionStatus() == Locked;
 }
 
-bool IsImportingOrReindexing() {
-    return fImporting || fReindex;
-}
-
 void WalletModel::pollBalanceChanged()
 {
-    // Wait a little bit more when the wallet is reindexing and/or importing, no need to lock cs_main so often.
-    if (IsImportingOrReindexing()) {
-        static uint8_t waitLonger = 0;
-        waitLonger++;
-        if (waitLonger < 10) // 10 seconds
-            return;
-        waitLonger = 0;
-    }
-
     // Get required locks upfront. This avoids the GUI from getting stuck on
     // periodical polls if the core is holding the locks for a longer time -
     // for example, during a wallet rescan.
@@ -201,12 +188,11 @@ void WalletModel::pollBalanceChanged()
     if (!lockWallet)
         return;
 
-    int chainHeight = chainActive.Height();
-    if (fForceCheckBalanceChanged || chainHeight != cachedNumBlocks) {
+    if (fForceCheckBalanceChanged || chainActive.Height() != cachedNumBlocks || cachedTxLocks != nCompleteTXLocks) {
         fForceCheckBalanceChanged = false;
 
         // Balance and number of transactions might have changed
-        cachedNumBlocks = chainHeight;
+        cachedNumBlocks = chainActive.Height();
 
         checkBalanceChanged();
         if (transactionTableModel) {
@@ -569,6 +555,8 @@ bool WalletModel::mintCoins(CAmount value, CCoinControl* coinControl ,std::strin
 bool WalletModel::createsKKCSpend(
         CWalletTx &wtxNew,
         std::vector<CZerocoinMint> &vMintsSelected,
+        bool fMintChange,
+        bool fMinimizeChange,
         CZerocoinSpendReceipt &receipt,
         std::list<std::pair<CBitcoinAddress*, CAmount>> outputs,
         std::string changeAddress
@@ -594,6 +582,8 @@ bool WalletModel::createsKKCSpend(
             receipt,
             vMintsSelected,
             vNewMints,
+            false, // No more mints
+            fMinimizeChange,
             outputs,
             changeAdd
     )) {
@@ -607,6 +597,8 @@ bool WalletModel::createsKKCSpend(
 
 bool WalletModel::sendsKKC(
         std::vector<CZerocoinMint> &vMintsSelected,
+        bool fMintChange,
+        bool fMinimizeChange,
         CZerocoinSpendReceipt &receipt,
         std::list<std::pair<CBitcoinAddress*, CAmount>> outputs,
         std::string changeAddress
@@ -624,6 +616,8 @@ bool WalletModel::sendsKKC(
             wtxNew,
             receipt,
             vMintsSelected,
+            false, // No more mints
+            fMinimizeChange,
             outputs,
             changeAdd
     );
@@ -633,6 +627,8 @@ bool WalletModel::sendsKKC(
 bool WalletModel::convertBacksKKC(
         CAmount value,
         std::vector<CZerocoinMint> &vMintsSelected,
+        bool fMintChange,
+        bool fMinimizeChange,
         CZerocoinSpendReceipt &receipt
 ){
     CWalletTx wtxNew;
@@ -641,6 +637,8 @@ bool WalletModel::convertBacksKKC(
             wtxNew,
             receipt,
             vMintsSelected,
+            false, // No more mints
+            fMinimizeChange,
             std::list<std::pair<CBitcoinAddress*, CAmount>>(),
             nullptr
     );

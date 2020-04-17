@@ -806,7 +806,6 @@ class KabberryTestFramework():
     def stake_block(self, node_id,
             nHeight,
             prevHhash,
-            prevModifier,
             stakeableUtxos,
             startTime=None,
             privKeyWIF=None,
@@ -816,7 +815,6 @@ class KabberryTestFramework():
         :param   node_id:           (int) index of the CTestNode used as rpc connection. Must own stakeableUtxos.
                  nHeight:           (int) height of the block being produced
                  prevHash:          (string) hex string of the previous block hash
-                 prevModifier       (string) hex string of the previous block stake modifier
                  stakeableUtxos:    ({bytes --> (int, bytes, int)} dictionary)
                                     maps CStake "uniqueness" (i.e. serialized COutPoint -or hash stake, for skkc-)
                                     to (amount, prevScript, timeBlockFrom).
@@ -842,10 +840,11 @@ class KabberryTestFramework():
         block = create_block(int(prevHhash, 16), coinbaseTx, nTime)
 
         # Find valid kernel hash - iterates stakeableUtxos, then block.nTime
-        block.solve_stake(stakeableUtxos, int(prevModifier, 16))
+        block.solve_stake(stakeableUtxos)
 
         # Check if this is a zPoS block or regular/cold stake - sign stake tx
         block_sig_key = CECKey()
+        prevout = None
         isZPoS = is_zerocoin(block.prevoutStake)
         if isZPoS:
             # !TODO: remove me
@@ -916,16 +915,7 @@ class KabberryTestFramework():
         assert_greater_than(len(self.nodes), node_id)
         nHeight = self.nodes[node_id].getblockcount()
         prevHhash = self.nodes[node_id].getblockhash(nHeight)
-        prevModifier = self.nodes[node_id].getblock(prevHhash)['stakeModifier']
-        return self.stake_block(node_id,
-                                nHeight+1,
-                                prevHhash,
-                                prevModifier,
-                                stakeableUtxos,
-                                btime,
-                                privKeyWIF,
-                                vtx,
-                                fDoubleSpend)
+        return self.stake_block(node_id, nHeight+1, prevHhash, stakeableUtxos, btime, privKeyWIF, vtx, fDoubleSpend)
 
 
     def check_tx_in_chain(self, node_id, txid):

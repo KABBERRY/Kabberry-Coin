@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef KABBERRY_STAKEINPUT_H
-#define KABBERRY_STAKEINPUT_H
+#ifndef Kabberry_STAKEINPUT_H
+#define Kabberry_STAKEINPUT_H
 
 #include "chain.h"
 #include "streams.h"
@@ -31,14 +31,14 @@ public:
 
 };
 
-class CPivStake : public CStakeInput
+class CKKCStake : public CStakeInput
 {
 private:
     CTransaction txFrom;
     unsigned int nPosition;
 
 public:
-    CPivStake(){}
+    CKKCStake(){}
 
     bool SetInput(CTransaction txPrev, unsigned int n);
 
@@ -52,4 +52,4 @@ public:
 };
 
 
-#endif //KABBERRY_STAKEINPUT_H
+#endif //Kabberry_STAKEINPUT_H

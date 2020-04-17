@@ -12,6 +12,7 @@ QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/coincontroldialog.ui \
+  qt/forms/blockexplorer.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/governancepage.ui \
   qt/forms/helpmessagedialog.ui \
@@ -81,6 +82,7 @@ QT_MOC_CPP = \
   qt/moc_bitcoinamountfield.cpp \
   qt/kabberry/moc_kabberrygui.cpp \
   qt/moc_bitcoinunits.cpp \
+  qt/moc_blockexplorer.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
@@ -197,6 +199,7 @@ BITCOIN_QT_H = \
   qt/bitcoinamountfield.h \
   qt/kabberry/kabberrygui.h \
   qt/bitcoinunits.h \
+  qt/blockexplorer.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
@@ -525,8 +528,6 @@ RES_ICONS = \
   qt/kabberry/res/img/dark/ic-transaction-cs-contract-inactive.svg \
   qt/kabberry/res/img/img-qr.svg \
   qt/kabberry/res/img/ic-check-connect-off.svg \
-  qt/kabberry/res/img/ic-check-tor-off.svg \
-  qt/kabberry/res/img/ic-check-tor.svg \
   qt/kabberry/res/img/ic-label.svg \
   qt/kabberry/res/img/ic-transaction-received.svg \
   qt/kabberry/res/img/dark/ic-transaction-received.svg \
@@ -583,6 +584,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/bitcoinamountfield.cpp \
   qt/kabberry/kabberrygui.cpp \
   qt/bitcoinunits.cpp \
+  qt/blockexplorer.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
   qt/guiutil.cpp \
@@ -606,6 +608,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
+  qt/blockexplorer.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
   qt/editaddressdialog.cpp \

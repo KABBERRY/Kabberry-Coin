@@ -104,7 +104,7 @@ public:
     boost::signals2::signal<void(const std::string& title, int nProgress)> ShowProgress;
 
     /** New block has been accepted */
-    boost::signals2::signal<void(bool fInitialDownload, const CBlockIndex* newTip)> NotifyBlockTip;
+	    boost::signals2::signal<void(bool fInitialDownload, const CBlockIndex* newTip)> NotifyBlockTip;
 
     /** New block has been accepted and is over a certain size */
     boost::signals2::signal<void(int size, const uint256& hash)> NotifyBlockSize;

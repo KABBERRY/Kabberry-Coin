@@ -61,7 +61,11 @@ PublicCoinSpend::PublicCoinSpend(libzerocoin::ZerocoinParams* params, Stream& st
 
 }
 
-bool PublicCoinSpend::Verify() const {
+bool PublicCoinSpend::Verify(const libzerocoin::Accumulator& a, bool verifyParams) const {
+    return validate();
+}
+
+bool PublicCoinSpend::validate() const {
     bool fUseV1Params = getCoinVersion() < libzerocoin::PrivateCoin::PUBKEY_VERSION;
     if (version < PUBSPEND_SCHNORR) {
         // spend contains the randomness of the coin
@@ -127,16 +131,6 @@ const uint256 PublicCoinSpend::signatureHash() const
 
 namespace sKKCModule {
 
-    // Return stream of CoinSpend from tx input scriptsig
-    CDataStream ScriptSigToSerializedSpend(const CScript& scriptSig)
-    {
-        std::vector<char, zero_after_free_allocator<char> > data;
-        // skip opcode and data-len
-        uint8_t byteskip = ((uint8_t) scriptSig[1] + 2);
-        data.insert(data.end(), scriptSig.begin() + byteskip, scriptSig.end());
-        return CDataStream(data, SER_NETWORK, PROTOCOL_VERSION);
-    }
-
     bool createInput(CTxIn &in, CZerocoinMint &mint, uint256 hashTxOut, const int spendVersion) {
         // check that this spend is allowed
         const bool fUseV1Params = mint.GetVersion() < libzerocoin::PrivateCoin::PUBKEY_VERSION;
@@ -182,10 +176,15 @@ namespace sKKCModule {
         return true;
     }
 
-    PublicCoinSpend parseCoinSpend(const CTxIn &in)
-    {
+    PublicCoinSpend parseCoinSpend(const CTxIn &in) {
         libzerocoin::ZerocoinParams *params = Params().Zerocoin_Params(false);
-        CDataStream serializedCoinSpend = ScriptSigToSerializedSpend(in.scriptSig);
+        // skip opcode and data-len
+        uint8_t byteskip(in.scriptSig[1]);
+        byteskip += 2;
+        std::vector<char, zero_after_free_allocator<char> > data;
+        data.insert(data.end(), in.scriptSig.begin() + byteskip, in.scriptSig.end());
+        CDataStream serializedCoinSpend(data, SER_NETWORK, PROTOCOL_VERSION);
+
         return PublicCoinSpend(params, serializedCoinSpend);
     }
 
@@ -219,7 +218,7 @@ namespace sKKCModule {
                 libzerocoin::IntToZerocoinDenomination(in.nSequence)) != prevOut.nValue) {
             return error("PublicCoinSpend validateInput :: input nSequence different to prevout value");
         }
-        return publicSpend.Verify();
+        return publicSpend.validate();
     }
 
     bool ParseZerocoinPublicSpend(const CTxIn &txIn, const CTransaction& tx, CValidationState& state, PublicCoinSpend& publicSpend)

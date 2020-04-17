@@ -1,7 +1,0 @@
-[main]
-host = https://www.transifex.com
-
-[kabberry-project-translations.qt-translation-40x]
-file_filter = src/qt/locale/kabberry_<lang>.ts
-source_file = src/qt/locale/kabberry_en.ts
-source_lang = en

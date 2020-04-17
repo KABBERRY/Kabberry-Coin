@@ -36,7 +36,7 @@ BasicTestingSetup::BasicTestingSetup()
         SetupEnvironment();
         fPrintToDebugLog = false; // don't want to write to debug.log file
         fCheckBlockIndex = true;
-        SelectParams(CBaseChainParams::MAIN);
+        SelectParams(CBaseChainParams::UNITTEST);
 }
 BasicTestingSetup::~BasicTestingSetup()
 {
@@ -56,11 +56,6 @@ TestingSetup::TestingSetup()
         pcoinsdbview = new CCoinsViewDB(1 << 23, true);
         pcoinsTip = new CCoinsViewCache(pcoinsdbview);
         InitBlockIndex();
-        {
-            CValidationState state;
-            bool ok = ActivateBestChain(state);
-            BOOST_CHECK(ok);
-        }
 #ifdef ENABLE_WALLET
         bool fFirstRun;
         pwalletMain = new CWallet("wallet.dat");

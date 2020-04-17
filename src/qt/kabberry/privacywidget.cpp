@@ -286,10 +286,14 @@ void PrivacyWidget::mint(CAmount value){
 void PrivacyWidget::spend(CAmount value){
     CZerocoinSpendReceipt receipt;
     std::vector<CZerocoinMint> selectedMints;
+    bool mintChange = false;
+    bool minimizeChange = false;
 
     if(!walletModel->convertBacksKKC(
             value,
             selectedMints,
+            mintChange,
+            minimizeChange,
             receipt
     )){
         inform(receipt.GetStatusMessage().data());

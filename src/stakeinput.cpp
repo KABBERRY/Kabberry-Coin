@@ -4,39 +4,39 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "stakeinput.h"
-
 #include "chain.h"
+
 #include "main.h"
 #include "txdb.h"
 #include "skkc/deterministicmint.h"
 #include "wallet/wallet.h"
 
 
-bool CPivStake::SetInput(CTransaction txPrev, unsigned int n)
+bool CKKCStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
     this->nPosition = n;
     return true;
 }
 
-bool CPivStake::GetTxFrom(CTransaction& tx) const
+bool CKKCStake::GetTxFrom(CTransaction& tx) const
 {
     tx = txFrom;
     return true;
 }
 
-bool CPivStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CKKCStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     txIn = CTxIn(txFrom.GetHash(), nPosition);
     return true;
 }
 
-CAmount CPivStake::GetValue() const
+CAmount CKKCStake::GetValue()
 {
     return txFrom.vout[nPosition].nValue;
 }
 
-bool CPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
+bool CKKCStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
 {
     std::vector<valtype> vSolutions;
     txnouttype whichType;
@@ -69,24 +69,22 @@ bool CPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmoun
     vout.emplace_back(CTxOut(0, scriptPubKey));
 
     // Calculate if we need to split the output
-    if (pwallet->nStakeSplitThreshold > 0) {
-        int nSplit = nTotal / (static_cast<CAmount>(pwallet->nStakeSplitThreshold * COIN));
-        if (nSplit > 1) {
-            // if nTotal is twice or more of the threshold; create more outputs
-            int txSizeMax = MAX_STANDARD_TX_SIZE >> 11; // limit splits to <10% of the max TX size (/2048)
-            if (nSplit > txSizeMax)
-                nSplit = txSizeMax;
-            for (int i = nSplit; i > 1; i--) {
-                LogPrintf("%s: StakeSplit: nTotal = %d; adding output %d of %d\n", __func__, nTotal, (nSplit-i)+2, nSplit);
-                vout.emplace_back(CTxOut(0, scriptPubKey));
-            }
+    int nSplit = nTotal / (static_cast<CAmount>(pwallet->nStakeSplitThreshold * COIN));
+    if (nSplit > 1) {
+        // if nTotal is twice or more of the threshold; create more outputs
+        int txSizeMax = MAX_STANDARD_TX_SIZE >> 11; // limit splits to <10% of the max TX size (/2048)
+        if (nSplit > txSizeMax)
+            nSplit = txSizeMax;
+        for (int i = nSplit; i > 1; i--) {
+            LogPrintf("%s: StakeSplit: nTotal = %d; adding output %d of %d\n", __func__, nTotal, (nSplit-i)+2, nSplit);
+            vout.emplace_back(CTxOut(0, scriptPubKey));
         }
     }
 
     return true;
 }
 
-CDataStream CPivStake::GetUniqueness() const
+CDataStream CKKCStake::GetUniqueness() const
 {
     //The unique identifier for a KKC stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
@@ -95,7 +93,7 @@ CDataStream CPivStake::GetUniqueness() const
 }
 
 //The block that the UTXO was added to the chain
-CBlockIndex* CPivStake::GetIndexFrom()
+CBlockIndex* CKKCStake::GetIndexFrom()
 {
     if (pindexFrom)
         return pindexFrom;

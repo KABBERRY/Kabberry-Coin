@@ -309,6 +309,7 @@ int minimizeChange(
 // -------------------------------------------------------------------------------------------------------
 int calculateChange(
     int nMaxNumberOfSpends,
+    bool fMinimizeChange,
     const CAmount nValueTarget,
     const std::map<libzerocoin::CoinDenomination, CAmount>& mapOfDenomsHeld,
     std::map<libzerocoin::CoinDenomination, CAmount>& mapOfDenomsUsed)
@@ -334,7 +335,7 @@ int calculateChange(
         std::map<libzerocoin::CoinDenomination, CAmount> mapChange = getChange(nChangeAmount);
         int nChangeCount = getNumberOfCoinsUsed(mapChange);
 
-        // always try to minimize change
+        if (fMinimizeChange) {
             libzerocoin::CoinDenomination nextToMaxDenom = getNextLowerDenomHeld(minDenomOverTarget, mapOfDenomsHeld);
             int newChangeCount = minimizeChange(nMaxNumberOfSpends, nChangeCount,
                                                 nextToMaxDenom, nValueTarget,
@@ -348,6 +349,7 @@ int calculateChange(
                 mapOfDenomsUsed.at(denom) = 0;
             // Then reset as before previous clearing
             mapOfDenomsUsed.at(minDenomOverTarget) = 1;
+        }
 
         return nChangeCount;
 
@@ -385,6 +387,11 @@ int calculateChange(
                                           maxDenomHeld, nValueTarget,
                                           mapOfDenomsHeld, mapOfMinDenomsUsed);
 
+        int nNumSpends = getNumberOfCoinsUsed(mapOfMinDenomsUsed);
+
+        if (!fMinimizeChange && (nCoinCount < nNumSpends)) {
+            return nMaxChangeCount;
+        }
 
         mapOfDenomsUsed = mapOfMinDenomsUsed;
         return nChangeCount;
@@ -395,7 +402,7 @@ int calculateChange(
 // Given a Target Spend Amount, attempt to meet it with a set of coins where less than nMaxNumberOfSpends
 // 'spends' are required
 // -------------------------------------------------------------------------------------------------------
-std::vector<CMintMeta> SelectMintsFromList(const CAmount nValueTarget, CAmount& nSelectedValue, int nMaxNumberOfSpends,
+std::vector<CMintMeta> SelectMintsFromList(const CAmount nValueTarget, CAmount& nSelectedValue, int nMaxNumberOfSpends, bool fMinimizeChange,
                                                int& nCoinsReturned, const std::list<CMintMeta>& listMints,
                                                const std::map<libzerocoin::CoinDenomination, CAmount> mapOfDenomsHeld, int& nNeededSpends)
 {
@@ -418,7 +425,7 @@ std::vector<CMintMeta> SelectMintsFromList(const CAmount nValueTarget, CAmount& 
     }
     // Since either too many spends needed or can not spend the exact amount,
     // calculate the change needed and the map of coins used
-    nCoinsReturned = calculateChange(nMaxNumberOfSpends, nValueTarget, mapOfDenomsHeld, mapOfDenomsUsed);
+    nCoinsReturned = calculateChange(nMaxNumberOfSpends, fMinimizeChange, nValueTarget, mapOfDenomsHeld, mapOfDenomsUsed);
     if (nCoinsReturned == 0) {
         LogPrint("zero", "%s: Problem getting change (TBD) or Too many spends %d\n", __func__, nValueTarget);
         vSelectedMints.clear();

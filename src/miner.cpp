@@ -13,7 +13,6 @@
 
 #include "amount.h"
 #include "consensus/merkle.h"
-#include "consensus/tx_verify.h" // needed in case of no ENABLE_WALLET
 #include "hash.h"
 #include "main.h"
 #include "masternode-sync.h"
@@ -93,7 +92,11 @@ public:
 
 void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
 {
-    pblock->nTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
+    if (Params().IsTimeProtocolV2(pindexPrev->nHeight+1)) {
+        pblock->nTime = GetCurrentTimeSlot();
+    } else {
+        pblock->nTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
+    }
 
     // Updating time can change work required on testnet:
     if (Params().AllowMinDifficultyBlocks())
@@ -130,7 +133,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     pblock->nVersion = 7;       //!> Removes accumulator checkpoints
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
-    if (Params().IsRegTestNet()) {
+    if (Params().MineBlocksOnDemand()) {
         if (nHeight < Params().Zerocoin_StartHeight()) pblock->nVersion = 3;
         pblock->nVersion = GetArg("-blockversion", pblock->nVersion);
     }
@@ -205,11 +208,36 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             double dPriority = 0;
             CAmount nTotalIn = 0;
             bool fMissingInputs = false;
+            uint256 txid = tx.GetHash();
             bool hasZerocoinSpends = tx.HasZerocoinSpendInputs();
             if (hasZerocoinSpends)
                 nTotalIn = tx.GetZerocoinSpent();
 
             for (const CTxIn& txin : tx.vin) {
+                //zerocoinspend has special vin
+                if (hasZerocoinSpends) {
+                    //Give a high priority to zerocoinspends to get into the next block
+                    //Priority = (age^6+100000)*amount - gives higher priority to skkcs that have been in mempool long
+                    //and higher priority to skkcs that are large in value
+                    int64_t nTimeSeen = GetAdjustedTime();
+                    double nConfs = 100000;
+
+                    auto it = mapZerocoinspends.find(txid);
+                    if (it != mapZerocoinspends.end()) {
+                        nTimeSeen = it->second;
+                    } else {
+                        //for some reason not in map, add it
+                        mapZerocoinspends[txid] = nTimeSeen;
+                    }
+
+                    double nTimePriority = std::pow(GetAdjustedTime() - nTimeSeen, 6);
+
+                    // sKKC spends can have very large priority, use non-overflowing safe functions
+                    dPriority = double_safe_addition(dPriority, (nTimePriority * nConfs));
+                    dPriority = double_safe_multiplication(dPriority, nTotalIn);
+
+                    continue;
+                }
 
                 // Read prev transaction
                 if (!view.HaveCoins(txin.prevout.hash)) {
@@ -509,7 +537,7 @@ CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet)
     if ((nHeightNext > nLastPOWBlock)) {
         LogPrintf("%s: Aborting PoW block creation during PoS phase\n", __func__);
         // sleep 1/2 a block time so we don't go into a tight loop.
-        MilliSleep((Params().GetConsensus().nTargetSpacing * 1000) >> 1);
+        MilliSleep((Params().TargetSpacing() * 1000) >> 1);
         return nullptr;
     }
 
@@ -572,8 +600,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
 {
     LogPrintf("KabberryMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    util::ThreadRename("kabberry-miner");
-    const int64_t nSpacingMillis = Params().GetConsensus().nTargetSpacing * 1000;
+    RenameThread("kabberry-miner");
 
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
@@ -582,13 +609,13 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
     while (fGenerateBitcoins || fProofOfStake) {
         CBlockIndex* pindexPrev = GetChainTip();
         if (!pindexPrev) {
-            MilliSleep(nSpacingMillis);       // sleep a block
+            MilliSleep(Params().TargetSpacing() * 1000);       // sleep a block
             continue;
         }
         if (fProofOfStake) {
             if (pindexPrev->nHeight < Params().LAST_POW_BLOCK()) {
                 // The last PoW block hasn't even been mined yet.
-                MilliSleep(nSpacingMillis);       // sleep a block
+                MilliSleep(Params().TargetSpacing() * 1000);       // sleep a block
                 continue;
             }
 
@@ -666,7 +693,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
 
                     // In regression test mode, stop mining after a block is found. This
                     // allows developers to controllably generate a block on demand.
-                    if (Params().IsRegTestNet())
+                    if (Params().MineBlocksOnDemand())
                         throw boost::thread_interrupted();
 
                     break;

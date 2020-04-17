@@ -40,7 +40,7 @@ TopBar::TopBar(KabberryGUI* _mainWindow, QWidget *parent) :
     ui->containerTop->setProperty("cssClass", "container-top");
 #endif
 
-    std::initializer_list<QWidget*> lblTitles = {ui->labelTitle1, ui->labelTitleAvailablesKKC, ui->labelTitle3, ui->labelTitle4, ui->labelTitlePendingsKKC, ui->labelTitleImmaturesKKC};
+    std::initializer_list<QWidget*> lblTitles = {ui->labelTitle1, ui->labelTitle2, ui->labelTitle3, ui->labelTitle4, ui->labelTitle5, ui->labelTitle6};
     setCssProperty(lblTitles, "text-title-topbar");
     QFont font;
     font.setWeight(QFont::Light);
@@ -49,7 +49,7 @@ TopBar::TopBar(KabberryGUI* _mainWindow, QWidget *parent) :
     // Amount information top
     ui->widgetTopAmount->setVisible(false);
     setCssProperty({ui->labelAmountTopKKC, ui->labelAmountTopsKKC}, "amount-small-topbar");
-    setCssProperty({ui->labelAmountKKC, ui->labelAvailablesKKC}, "amount-topbar");
+    setCssProperty({ui->labelAmountKKC, ui->labelAmountsKKC}, "amount-topbar");
     setCssProperty({ui->labelPendingKKC, ui->labelPendingsKKC, ui->labelImmatureKKC, ui->labelImmaturesKKC}, "amount-small-topbar");
 
     // Progress Sync
@@ -70,10 +70,6 @@ TopBar::TopBar(KabberryGUI* _mainWindow, QWidget *parent) :
 
     ui->pushButtonConnection->setButtonClassStyle("cssClass", "btn-check-connect-inactive");
     ui->pushButtonConnection->setButtonText("No Connection");
-
-    ui->pushButtonTor->setButtonClassStyle("cssClass", "btn-check-tor-inactive");
-    ui->pushButtonTor->setButtonText("Tor Disabled");
-    ui->pushButtonTor->setChecked(false);
 
     ui->pushButtonStack->setButtonClassStyle("cssClass", "btn-check-stack-inactive");
     ui->pushButtonStack->setButtonText("Staking Disabled");
@@ -366,9 +362,6 @@ void TopBar::updateStakingStatus(){
     setStakingStatusActive(walletModel &&
                            !walletModel->isWalletLocked() &&
                            walletModel->isStakingStatusActive());
-
-    // Taking advantage of this timer to update Tor status if needed.
-    updateTorIcon();
 }
 
 void TopBar::setNumConnections(int count) {
@@ -478,7 +471,7 @@ void TopBar::setNumBlocks(int count) {
     ui->pushButtonSync->setButtonText(tr(text.data()));
 }
 
-void TopBar::loadWalletModel() {
+void TopBar::loadWalletModel(){
     connect(walletModel, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
             SLOT(updateBalances(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
     connect(walletModel->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
@@ -490,25 +483,6 @@ void TopBar::loadWalletModel() {
     onColdStakingClicked();
 
     isInitializing = false;
-}
-
-void TopBar::updateTorIcon() {
-    std::string ip_port;
-    bool torEnabled = clientModel->getTorInfo(ip_port);
-
-    if (torEnabled) {
-        if(!ui->pushButtonTor->isChecked()) {
-            ui->pushButtonTor->setChecked(true);
-            ui->pushButtonTor->setButtonClassStyle("cssClass", "btn-check-tor", true);
-        }
-        QString ip_port_q = QString::fromStdString(ip_port);
-        ui->pushButtonTor->setButtonText(tr("Tor is <b>enabled</b>: %1").arg(ip_port_q));
-    } else {
-        if (ui->pushButtonTor->isChecked()) {
-            ui->pushButtonTor->setChecked(false);
-            ui->pushButtonTor->setButtonClassStyle("cssClass", "btn-check-tor-inactive", true);
-        }
-    }
 }
 
 void TopBar::refreshStatus(){
@@ -539,7 +513,8 @@ void TopBar::refreshStatus(){
     updateStyle(ui->pushButtonLock);
 }
 
-void TopBar::updateDisplayUnit() {
+void TopBar::updateDisplayUnit()
+{
     if (walletModel && walletModel->getOptionsModel()) {
         int displayUnitPrev = nDisplayUnit;
         nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
@@ -554,7 +529,7 @@ void TopBar::updateDisplayUnit() {
 void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                             const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                             const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance,
-                            const CAmount& delegatedBalance, const CAmount& coldStakedBalance) {
+                            const CAmount& delegatedBalance, const CAmount& coldStakedBalance){
 
     // Locked balance. //TODO move this to the signal properly in the future..
     CAmount nLockedBalance = 0;
@@ -573,28 +548,16 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     QString totalsKKC = GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true);
     // Top
     ui->labelAmountTopKKC->setText(totalKKC);
+    ui->labelAmountTopsKKC->setText(totalsKKC);
 
     // Expanded
     ui->labelAmountKKC->setText(totalKKC);
+    ui->labelAmountsKKC->setText(totalsKKC);
 
     ui->labelPendingKKC->setText(GUIUtil::formatBalance(unconfirmedBalance, nDisplayUnit));
+    ui->labelPendingsKKC->setText(GUIUtil::formatBalance(unconfirmedZerocoinBalance, nDisplayUnit, true));
 
     ui->labelImmatureKKC->setText(GUIUtil::formatBalance(immatureBalance, nDisplayUnit));
-
-    // Update display state and/or values for sKKC balances as necessary
-    bool fHaveZerocoins = zerocoinBalance > 0;
-
-    // Set visibility of sKKC label titles/values
-    ui->typeSpacerTop->setVisible(fHaveZerocoins);
-    ui->typeSpacerExpanded->setVisible(fHaveZerocoins);
-    ui->labelAmountTopsKKC->setVisible(fHaveZerocoins);
-    ui->zerocoinBalances->setVisible(fHaveZerocoins);
-
-    // Top
-    ui->labelAmountTopsKKC->setText(totalsKKC);
-    // Expanded
-    ui->labelAvailablesKKC->setText(totalsKKC);
-    ui->labelPendingsKKC->setText(GUIUtil::formatBalance(unconfirmedZerocoinBalance, nDisplayUnit, true));
     ui->labelImmaturesKKC->setText(GUIUtil::formatBalance(immatureZerocoinBalance, nDisplayUnit, true));
 }
 

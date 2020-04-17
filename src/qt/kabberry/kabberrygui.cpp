@@ -129,6 +129,7 @@ KabberryGUI::KabberryGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         sendWidget = new SendWidget(this);
         receiveWidget = new ReceiveWidget(this);
         addressesWidget = new AddressesWidget(this);
+        privacyWidget = new PrivacyWidget(this);
         masterNodesWidget = new MasterNodesWidget(this);
         coldStakingWidget = new ColdStakingWidget(this);
         settingsWidget = new SettingsWidget(this);
@@ -138,6 +139,7 @@ KabberryGUI::KabberryGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         stackedContainer->addWidget(sendWidget);
         stackedContainer->addWidget(receiveWidget);
         stackedContainer->addWidget(addressesWidget);
+        stackedContainer->addWidget(privacyWidget);
         stackedContainer->addWidget(masterNodesWidget);
         stackedContainer->addWidget(coldStakingWidget);
         stackedContainer->addWidget(settingsWidget);
@@ -201,6 +203,7 @@ void KabberryGUI::connectActions() {
     connect(sendWidget, &SendWidget::showHide, this, &KabberryGUI::showHide);
     connect(receiveWidget, &ReceiveWidget::showHide, this, &KabberryGUI::showHide);
     connect(addressesWidget, &AddressesWidget::showHide, this, &KabberryGUI::showHide);
+    connect(privacyWidget, &PrivacyWidget::showHide, this, &KabberryGUI::showHide);
     connect(masterNodesWidget, &MasterNodesWidget::showHide, this, &KabberryGUI::showHide);
     connect(masterNodesWidget, &MasterNodesWidget::execDialog, this, &KabberryGUI::execDialog);
     connect(coldStakingWidget, &ColdStakingWidget::showHide, this, &KabberryGUI::showHide);
@@ -479,7 +482,7 @@ void KabberryGUI::goToAddresses(){
 }
 
 void KabberryGUI::goToPrivacy(){
-    if (privacyWidget) showTop(privacyWidget);
+    showTop(privacyWidget);
 }
 
 void KabberryGUI::goToMasterNodes(){
@@ -584,19 +587,10 @@ bool KabberryGUI::addWallet(const QString& name, WalletModel* walletModel)
     receiveWidget->setWalletModel(walletModel);
     sendWidget->setWalletModel(walletModel);
     addressesWidget->setWalletModel(walletModel);
+    privacyWidget->setWalletModel(walletModel);
     masterNodesWidget->setWalletModel(walletModel);
     coldStakingWidget->setWalletModel(walletModel);
     settingsWidget->setWalletModel(walletModel);
-
-	    // Privacy screen
-    if (walletModel->getZerocoinBalance() > 0) {
-        privacyWidget = new PrivacyWidget(this);
-        stackedContainer->addWidget(privacyWidget);
-
-        privacyWidget->setWalletModel(walletModel);
-        connect(privacyWidget, &PrivacyWidget::message, this, &KabberryGUI::message);
-        connect(privacyWidget, &PrivacyWidget::showHide, this, &KabberryGUI::showHide);
-    }
 
     // Connect actions..
     connect(privacyWidget, &PrivacyWidget::message, this, &KabberryGUI::message);
