@@ -137,7 +137,7 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
 
         stake = std::unique_ptr<CStakeInput>(new CLegacysKKCStake(spend));
 
-        // sPos contextual checks
+        // zPoS contextual checks
         /* Only for IBD (between Zerocoin_Block_V2_Start and Zerocoin_Block_Last_Checkpoint) */
         if (nPreviousBlockHeight < Params().Zerocoin_Block_V2_Start() ||
                 nPreviousBlockHeight > Params().Zerocoin_Block_Last_Checkpoint())
@@ -167,9 +167,9 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
             return error("%s : VerifyScript failed on coinstake %s %s", __func__, tx.GetHash().ToString(), strErr);
         }
 
-        CKKCStake* kkcInput = new CKKCStake();
-        kkcInput->SetInput(txPrev, txin.prevout.n);
-        stake = std::unique_ptr<CStakeInput>(kkcInput);
+        CPivStake* pivInput = new CPivStake();
+        pivInput->SetInput(txPrev, txin.prevout.n);
+        stake = std::unique_ptr<CStakeInput>(pivInput);
     }
     return true;
 }

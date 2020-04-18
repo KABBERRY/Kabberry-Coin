@@ -35,6 +35,7 @@ PublicCoin::PublicCoin(const ZerocoinParams* p, const CBigNum& coin, const CoinD
     if (!this->params->initialized) {
         throw std::runtime_error("Params are not initialized");
     }
+
     if (denomination == 0) {
         throw std::runtime_error("Denomination does not exist");
     }

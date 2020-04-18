@@ -4,39 +4,39 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "stakeinput.h"
-#include "chain.h"
 
+#include "chain.h"
 #include "main.h"
 #include "txdb.h"
 #include "skkc/deterministicmint.h"
 #include "wallet/wallet.h"
 
 
-bool CKKCStake::SetInput(CTransaction txPrev, unsigned int n)
+bool CPivStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
     this->nPosition = n;
     return true;
 }
 
-bool CKKCStake::GetTxFrom(CTransaction& tx) const
+bool CPivStake::GetTxFrom(CTransaction& tx) const
 {
     tx = txFrom;
     return true;
 }
 
-bool CKKCStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CPivStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     txIn = CTxIn(txFrom.GetHash(), nPosition);
     return true;
 }
 
-CAmount CKKCStake::GetValue()
+CAmount CPivStake::GetValue() const
 {
     return txFrom.vout[nPosition].nValue;
 }
 
-bool CKKCStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
+bool CPivStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
 {
     std::vector<valtype> vSolutions;
     txnouttype whichType;
@@ -84,7 +84,7 @@ bool CKKCStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmoun
     return true;
 }
 
-CDataStream CKKCStake::GetUniqueness() const
+CDataStream CPivStake::GetUniqueness() const
 {
     //The unique identifier for a KKC stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
@@ -93,7 +93,7 @@ CDataStream CKKCStake::GetUniqueness() const
 }
 
 //The block that the UTXO was added to the chain
-CBlockIndex* CKKCStake::GetIndexFrom()
+CBlockIndex* CPivStake::GetIndexFrom()
 {
     if (pindexFrom)
         return pindexFrom;
