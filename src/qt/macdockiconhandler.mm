@@ -124,5 +124,5 @@ void MacDockIconHandler::handleDockIconClickEvent()
         this->mainWindow->show();
     }
 
-    Q_EMIT this->dockIconClicked();
+    emit this->dockIconClicked();
 }

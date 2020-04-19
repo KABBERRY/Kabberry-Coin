@@ -28,7 +28,7 @@ public:
     CFeeRate getFeeRate();
     void clear();
 
-public Q_SLOTS:
+public slots:
     void onRecommendedChecked();
     void onCustomChecked();
     void updateFee();

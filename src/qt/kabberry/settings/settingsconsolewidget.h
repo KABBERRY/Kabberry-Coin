@@ -43,7 +43,7 @@ public:
         CMD_ERROR
     };
 
-public Q_SLOTS:
+public slots:
     void clear();
     void message(int category, const QString& message, bool html = false);
     /** Go forward or back in history */
@@ -55,10 +55,10 @@ public Q_SLOTS:
 protected:
     virtual bool eventFilter(QObject* obj, QEvent* event) override;
 
-protected Q_SLOTS:
+protected slots:
     void changeTheme(bool isLightTheme, QString &theme) override;
 
-Q_SIGNALS:
+signals:
     // For RPC command executor
     void stopExecutor();
     void cmdCommandRequest(const QString& command);
@@ -73,7 +73,7 @@ private:
 
     void startExecutor();
 
-private Q_SLOTS:
+private slots:
     void on_lineEdit_returnPressed();
 
 

@@ -79,7 +79,7 @@ void ExpandableButton::setExpanded(){
 void ExpandableButton::enterEvent(QEvent *) {
     if(!this->isAnimating){
         setExpanded();
-        Q_EMIT Mouse_Hover();
+        emit Mouse_Hover();
     }
     update();
 }
@@ -88,16 +88,16 @@ void ExpandableButton::leaveEvent(QEvent *) {
     if(!keepExpanded){
         this->setSmall();
     }
-    Q_EMIT Mouse_HoverLeave();
+    emit Mouse_HoverLeave();
 }
 
 void ExpandableButton::mousePressEvent(){
-    Q_EMIT Mouse_Pressed();
+    emit Mouse_Pressed();
 }
 
 void ExpandableButton::mousePressEvent(QMouseEvent *ev)
 {
-    Q_EMIT Mouse_Pressed();
+    emit Mouse_Pressed();
 }
 
 void ExpandableButton::on_pushButton_clicked(bool checked)

@@ -83,3 +83,4 @@ namespace AccumulatorCheckpoints
         return Checkpoint();
     }
 }
+

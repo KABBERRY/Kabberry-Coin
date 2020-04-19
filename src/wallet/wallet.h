@@ -12,7 +12,6 @@
 #include "addressbook.h"
 #include "amount.h"
 #include "base58.h"
-#include "consensus/tx_verify.h"
 #include "crypter.h"
 #include "kernel.h"
 #include "key.h"
@@ -101,7 +100,7 @@ enum ZerocoinSpendStatus {
     sKKC_TRX_FUNDS_PROBLEMS = 6,                    // Everything related to available funds
     sKKC_TRX_CREATE = 7,                            // Everything related to create the transaction
     sKKC_TRX_CHANGE = 8,                            // Everything related to transaction change
-    sKKC_TXMINT_GENERAL = 9,                        // General errors in MintsToInputVectorPublicSpend
+    sKKC_TXMINT_GENERAL = 9,                        // General errors in MintToTxIn
     sKKC_INVALID_COIN = 10,                         // Selected mint coin is not valid
     sKKC_FAILED_ACCUMULATOR_INITIALIZATION = 11,    // Failed to initialize witness
     sKKC_INVALID_WITNESS = 12,                      // Spend coin transaction did not verify
@@ -211,7 +210,7 @@ public:
     // Zerocoin additions
     bool CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransaction& txNew, std::vector<CDeterministicMint>& vDMints, CReserveKey* reservekey, int64_t& nFeeRet, std::string& strFailReason, const CCoinControl* coinControl = NULL, const bool isZCSpendChange = false);
 
-    bool CreateZCPublicSpendTransaction(
+    bool CreateZerocoinSpendTransaction(
             CAmount nValue,
             CWalletTx& wtxNew,
             CReserveKey& reserveKey,
@@ -221,9 +220,13 @@ public:
             bool fMintChange,
             bool fMinimizeChange,
             std::list<std::pair<CBitcoinAddress*,CAmount>> addressesTo,
-            CBitcoinAddress* changeAddress = nullptr);
+            CBitcoinAddress* changeAddress = nullptr,
+            bool isPublicSpend = true);
 
     bool CheckCoinSpend(libzerocoin::CoinSpend& spend, libzerocoin::Accumulator& accumulator, CZerocoinSpendReceipt& receipt);
+    bool MintToTxIn(CZerocoinMint zerocoinSelected, const uint256& hashTxOut, CTxIn& newTxIn, CZerocoinSpendReceipt& receipt, libzerocoin::SpendType spendType, CBlockIndex* pindexCheckpoint = nullptr, bool isPublicSpend = true);
+    bool MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelected, const uint256& hashTxOut, std::vector<CTxIn>& vin,
+                            CZerocoinSpendReceipt& receipt, libzerocoin::SpendType spendType, CBlockIndex* pindexCheckpoint = nullptr);
     // Public coin spend input creation
     bool MintsToInputVectorPublicSpend(std::map<CBigNum, CZerocoinMint>& mapMintsSelected, const uint256& hashTxOut, std::vector<CTxIn>& vin,
                                        CZerocoinSpendReceipt& receipt, libzerocoin::SpendType spendType, CBlockIndex* pindexCheckpoint = nullptr);
@@ -239,7 +242,8 @@ public:
             bool fMintChange,
             bool fMinimizeChange,
             std::list<std::pair<CBitcoinAddress*,CAmount>> addressesTo,
-            CBitcoinAddress* changeAddress = nullptr
+            CBitcoinAddress* changeAddress = nullptr,
+            bool isPublicSpend = true
     );
 
     std::string ResetMintZerocoin();
@@ -671,9 +675,16 @@ public:
      * >=1 : this many blocks deep in the main chain
      */
     int GetDepthInMainChain(const CBlockIndex*& pindexRet, bool enableIX = true) const;
-    int GetDepthInMainChain(bool enableIX = true) const;
-    bool IsInMainChain() const;
-    bool IsInMainChainImmature() const;
+    int GetDepthInMainChain(bool enableIX = true) const
+    {
+        const CBlockIndex* pindexRet;
+        return GetDepthInMainChain(pindexRet, enableIX);
+    }
+    bool IsInMainChain() const
+    {
+        const CBlockIndex* pindexRet;
+        return GetDepthInMainChain(pindexRet, false) > 0;
+    }
     int GetBlocksToMaturity() const;
     bool AcceptToMemoryPool(bool fLimitFree = true, bool fRejectInsaneFee = true, bool ignoreFees = false);
     int GetTransactionLockSignatures() const;

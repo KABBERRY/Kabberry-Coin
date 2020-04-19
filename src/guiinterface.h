@@ -17,7 +17,6 @@
 class CBasicKeyStore;
 class CWallet;
 class uint256;
-class CBlockIndex;
 
 /** General change type (added, updated, removed). */
 enum ChangeType {
@@ -104,7 +103,7 @@ public:
     boost::signals2::signal<void(const std::string& title, int nProgress)> ShowProgress;
 
     /** New block has been accepted */
-    boost::signals2::signal<void(bool fInitialDownload, const CBlockIndex* newTip)> NotifyBlockTip;
+    boost::signals2::signal<void(const uint256& hash)> NotifyBlockTip;
 
     /** New block has been accepted and is over a certain size */
     boost::signals2::signal<void(int size, const uint256& hash)> NotifyBlockSize;

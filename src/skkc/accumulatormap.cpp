@@ -100,3 +100,5 @@ uint256 AccumulatorMap::GetCheckpoint()
 
     return nCheckpoint;
 }
+
+

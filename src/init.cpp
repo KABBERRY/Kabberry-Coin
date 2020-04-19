@@ -622,19 +622,12 @@ std::string LicenseInfo()
            "\n";
 }
 
-static void BlockNotifyCallback(bool initialSync, const CBlockIndex *pBlockIndex)
+static void BlockNotifyCallback(const uint256& hashNewTip)
 {
-
-    if (initialSync || !pBlockIndex)
-        return;
-
     std::string strCmd = GetArg("-blocknotify", "");
 
-    if (!strCmd.empty()) {
-        boost::replace_all(strCmd, "%s", pBlockIndex->GetBlockHash().GetHex());
-        std::thread t(runCommand, strCmd);
-        t.detach(); // thread runs free
-    }
+    boost::replace_all(strCmd, "%s", hashNewTip.GetHex());
+    boost::thread t(runCommand, strCmd); // thread runs free
 }
 
 static void BlockSizeNotifyCallback(int size, const uint256& hashNewTip)
@@ -1546,6 +1539,7 @@ bool AppInit2()
                         return InitError(strprintf("ZerocoinSupply Recalculation failed: %d vs %d", pblockindex->GetZerocoinSupply()/COIN , skkcSupplyCheckpoint/COIN));
                 }
 
+
                 if (!fReindex) {
                     uiInterface.InitMessage(_("Verifying blocks..."));
 
@@ -1555,7 +1549,7 @@ bool AppInit2()
                     {
                         LOCK(cs_main);
                         CBlockIndex *tip = chainActive[chainActive.Height()];
-                        RPCNotifyBlockChange(true, tip);
+                        RPCNotifyBlockChange(tip->GetBlockHash());
                         if (tip && tip->nTime > GetAdjustedTime() + 2 * 60 * 60) {
                             strLoadError = _("The block database contains a block which appears to be from the future. "
                                              "This may be due to your computer's date and time being set incorrectly. "

@@ -49,7 +49,7 @@ public:
     void loadWalletModel() override;
     void changeTheme(bool isLightTheme, QString &theme) override;
 
-private Q_SLOTS:
+private slots:
     void onAddRecipientClicked();
     void clearAll();
     void checkBoxChanged();

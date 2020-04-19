@@ -31,7 +31,7 @@ public:
     void showEvent(QShowEvent *event) override;
     int res = -1;
 
-private Q_SLOTS:
+private slots:
     void onNextClicked();
     void onCopyClicked();
     void onCopyUriClicked();

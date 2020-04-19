@@ -24,7 +24,7 @@ public:
 
     void loadClientModel() override;
 
-private Q_SLOTS:
+private slots:
     void setNumConnections(int count);
     void setNumBlocks(int count);
     void openNetworkMonitor();

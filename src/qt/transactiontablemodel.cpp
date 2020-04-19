@@ -328,7 +328,7 @@ TransactionTableModel::~TransactionTableModel()
 void TransactionTableModel::updateAmountColumnTitle()
 {
     columns[Amount] = BitcoinUnits::getAmountColumnTitle(walletModel->getOptionsModel()->getDisplayUnit());
-    Q_EMIT headerDataChanged(Qt::Horizontal, Amount, Amount);
+    emit headerDataChanged(Qt::Horizontal, Amount, Amount);
 }
 
 void TransactionTableModel::updateTransaction(const QString& hash, int status, bool showTransaction)
@@ -340,7 +340,7 @@ void TransactionTableModel::updateTransaction(const QString& hash, int status, b
     priv->updateWallet(updated, status, showTransaction, rec);
 
     if (!rec.isNull())
-        Q_EMIT txArrived(hash, rec.isCoinStake(), rec.isAnyColdStakingType());
+        emit txArrived(hash, rec.isCoinStake(), rec.isAnyColdStakingType());
 }
 
 void TransactionTableModel::updateConfirmations()
@@ -349,8 +349,8 @@ void TransactionTableModel::updateConfirmations()
     // Invalidate status (number of confirmations) and (possibly) description
     //  for all rows. Qt is smart enough to only actually request the data for the
     //  visible rows.
-    Q_EMIT dataChanged(index(0, Status), index(priv->size() - 1, Status));
-    Q_EMIT dataChanged(index(0, ToAddress), index(priv->size() - 1, ToAddress));
+    emit dataChanged(index(0, Status), index(priv->size() - 1, Status));
+    emit dataChanged(index(0, ToAddress), index(priv->size() - 1, ToAddress));
 }
 
 int TransactionTableModel::rowCount(const QModelIndex& parent) const
@@ -802,7 +802,7 @@ void TransactionTableModel::updateDisplayUnit()
 {
     // emit dataChanged to update Amount column with the current unit
     updateAmountColumnTitle();
-    Q_EMIT dataChanged(index(0, Amount), index(priv->size() - 1, Amount));
+    emit dataChanged(index(0, Amount), index(priv->size() - 1, Amount));
 }
 
 // queue notifications to show a non freezing progress dialog e.g. for rescan

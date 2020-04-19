@@ -35,7 +35,7 @@ public:
     void setWalletModel(WalletModel* _model, const QString& type);
     void setType(const QString& type);
     void changeTheme(bool isLightTheme, QString& theme) override;
-Q_SIGNALS:
+signals:
     void contactSelected(QString address, QString label);
 private:
     FurAbstractListItemDelegate* delegate = nullptr;
@@ -43,7 +43,7 @@ private:
     AddressFilterProxyModel *filter = nullptr;
     QListView *list;
     QFrame *frameList;
-private Q_SLOTS:
+private slots:
     void handleClick(const QModelIndex &index);
 };
 

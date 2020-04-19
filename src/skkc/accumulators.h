@@ -72,3 +72,4 @@ public:
 };
 
 #endif //Kabberry_ACCUMULATORS_H
+

@@ -28,7 +28,7 @@ public:
     void updateStatus(WalletModel::EncryptionStatus status);
     int lock = 0;
     bool isHovered();
-Q_SIGNALS:
+signals:
     void Mouse_Entered();
     void Mouse_Leave();
 
@@ -37,7 +37,7 @@ protected:
     virtual void enterEvent(QEvent *);
     virtual void leaveEvent(QEvent *);
 
-public Q_SLOTS:
+public slots:
     void onLockClicked();
     void onUnlockClicked();
     void onStakingClicked();

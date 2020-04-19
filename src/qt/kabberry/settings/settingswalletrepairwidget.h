@@ -24,11 +24,11 @@ public:
     /** Build parameter list for restart */
     void buildParameterlist(QString arg);
 
-Q_SIGNALS:
+signals:
     /** Get restart command-line parameters and handle restart */
     void handleRestart(QStringList args);
 
-public Q_SLOTS:
+public slots:
     void walletSalvage();
     void walletRescan();
     void walletZaptxes1();

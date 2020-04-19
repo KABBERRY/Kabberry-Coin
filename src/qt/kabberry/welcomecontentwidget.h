@@ -28,10 +28,10 @@ public:
     void setModel(OptionsModel *model);
     void checkLanguage();
 
-Q_SIGNALS:
+signals:
     void onLanguageSelected();
 
-public Q_SLOTS:
+public slots:
     void onNextClicked();
     void onBackClicked();
     void onSkipClicked();

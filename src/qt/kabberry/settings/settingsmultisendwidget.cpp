@@ -22,7 +22,7 @@ MultiSendModel::MultiSendModel(QObject *parent) : QAbstractTableModel(parent){
 }
 
 void MultiSendModel::updateList(){
-    Q_EMIT dataChanged(index(0, 0, QModelIndex()), index((int) pwalletMain->vMultiSend.size(), 5, QModelIndex()) );
+    emit dataChanged(index(0, 0, QModelIndex()), index((int) pwalletMain->vMultiSend.size(), 5, QModelIndex()) );
 }
 
 int MultiSendModel::rowCount(const QModelIndex &parent) const{

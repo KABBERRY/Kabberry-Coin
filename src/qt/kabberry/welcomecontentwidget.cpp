@@ -177,7 +177,7 @@ void WelcomeContentWidget::initLanguages(){
     /* Language selector */
     QDir translations(":translations");
     ui->comboBoxLanguage->addItem(QString("(") + tr("default") + QString(")"), QVariant(""));
-    Q_FOREACH (const QString& langStr, translations.entryList()) {
+    foreach (const QString& langStr, translations.entryList()) {
         QLocale locale(langStr);
 
         /** check if the locale name consists of 2 parts (language_country) */
@@ -201,7 +201,7 @@ void WelcomeContentWidget::checkLanguage(){
     QSettings settings;
     if (settings.value("language") != sel){
         settings.setValue("language", sel);
-        Q_EMIT onLanguageSelected();
+        emit onLanguageSelected();
     }
 }
 

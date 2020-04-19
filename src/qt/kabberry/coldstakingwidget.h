@@ -49,10 +49,10 @@ public:
     void run(int type) override;
     void onError(QString error, int type) override;
 
-public Q_SLOTS:
+public slots:
     void walletSynced(bool sync);
 
-private Q_SLOTS:
+private slots:
     void changeTheme(bool isLightTheme, QString &theme) override;
     void handleAddressClicked(const QModelIndex &index);
     void handleMyColdAddressClicked(const QModelIndex &rIndex);

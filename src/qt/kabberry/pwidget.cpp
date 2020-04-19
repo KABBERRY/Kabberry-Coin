@@ -34,7 +34,7 @@ void PWidget::onChangeTheme(bool isLightTheme, QString& theme){
 }
 
 void PWidget::showHideOp(bool show){
-    Q_EMIT showHide(show);
+    emit showHide(show);
 }
 
 void PWidget::inform(const QString& message){
@@ -52,11 +52,11 @@ bool PWidget::ask(const QString& title, const QString& message){
 }
 
 void PWidget::showDialog(QDialog *dlg, int xDiv, int yDiv){
-    Q_EMIT execDialog(dlg, xDiv, yDiv);
+    emit execDialog(dlg, xDiv, yDiv);
 }
 
 void PWidget::emitMessage(const QString& title, const QString& body, unsigned int style, bool* ret){
-    Q_EMIT message(title, body, style, ret);
+    emit message(title, body, style, ret);
 }
 
 class WorkerTask : public QRunnable {

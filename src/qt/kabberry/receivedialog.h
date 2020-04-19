@@ -25,7 +25,7 @@ public:
 
     void updateQr(QString address);
 
-private Q_SLOTS:
+private slots:
     void onCopy();
 private:
     Ui::ReceiveDialog *ui;

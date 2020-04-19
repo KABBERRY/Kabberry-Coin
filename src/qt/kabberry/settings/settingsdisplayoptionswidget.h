@@ -26,7 +26,7 @@ public:
     void initLanguages();
     void loadClientModel() override;
 
-public Q_SLOTS:
+public slots:
     void onResetClicked();
 
 private:

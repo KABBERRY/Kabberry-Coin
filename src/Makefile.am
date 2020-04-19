@@ -99,10 +99,7 @@ BITCOIN_CORE_H = \
   compat/endian.h \
   compat/sanity.h \
   compressor.h \
-  consensus/consensus.h \
   consensus/merkle.h \
-  consensus/validation.h \
-  consensus/tx_verify.h \
   primitives/block.h \
   primitives/transaction.h \
   core_io.h \
@@ -190,7 +187,6 @@ BITCOIN_CORE_H = \
   skkc/skkctracker.h \
   skkc/skkcwallet.h \
   skkc/skkcmodule.h \
-  skkc/spos.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -212,7 +208,6 @@ libbitcoin_server_a_SOURCES = \
   blocksignature.cpp \
   chain.cpp \
   checkpoints.cpp \
-  consensus/tx_verify.cpp \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
@@ -286,7 +281,6 @@ libbitcoin_wallet_a_SOURCES = \
   skkc/skkctracker.cpp \
   stakeinput.cpp \
   skkc/skkcmodule.cpp \
-  skkc/spos.cpp \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library

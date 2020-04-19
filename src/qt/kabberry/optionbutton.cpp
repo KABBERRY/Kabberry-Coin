@@ -62,7 +62,7 @@ void OptionButton::setActive(bool isActive){
 
 void OptionButton::setChecked(bool checked){
     ui->labelArrow3->setChecked(checked);
-    Q_EMIT clicked();
+    emit clicked();
 }
 
 void OptionButton::mousePressEvent(QMouseEvent *qevent){

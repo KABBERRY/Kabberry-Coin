@@ -763,8 +763,17 @@ class KabberryTestFramework():
                 prevouts[outPoint.serialize_uniqueness()] = (outValue, prevScript, prevTime)
 
             else:
+                # get mint checkpoint
+                if nHeight == -1:
+                    nHeight = rpc_conn.getblockcount()
+                checkpointBlock = rpc_conn.getblock(rpc_conn.getblockhash(nHeight), True)
+                checkpoint = int(checkpointBlock['acc_checkpoint'], 16)
+                # parse checksum and get checksumblock time
+                pos = vZC_DENOMS.index(utxo['denomination'])
+                checksum = (checkpoint >> (32 * (len(vZC_DENOMS) - 1 - pos))) & 0xFFFFFFFF
+                prevTime = rpc_conn.getchecksumblock(hex(checksum), utxo['denomination'], True)['time']
                 uniqueness = bytes.fromhex(utxo['hash stake'])[::-1]
-                prevouts[uniqueness] = (int(utxo["denomination"]) * COIN, utxo["serial hash"], 0)
+                prevouts[uniqueness] = (int(utxo["denomination"]) * COIN, utxo["serial hash"], prevTime)
 
         return prevouts
 
@@ -847,8 +856,12 @@ class KabberryTestFramework():
         prevout = None
         isZPoS = is_zerocoin(block.prevoutStake)
         if isZPoS:
-            # !TODO: remove me
-            raise Exception("zPOS tests discontinued")
+            _, serialHash, _ = stakeableUtxos[block.prevoutStake]
+            raw_stake = rpc_conn.createrawzerocoinstake(serialHash)
+            stake_tx_signed_raw_hex = raw_stake["hex"]
+            stake_pkey = raw_stake["private-key"]
+            block_sig_key.set_compressed(True)
+            block_sig_key.set_secretbytes(bytes.fromhex(stake_pkey))
 
         else:
             coinstakeTx_unsigned = CTransaction()

@@ -58,10 +58,10 @@ class RPCExecutor : public QObject
 {
     Q_OBJECT
 
-public Q_SLOTS:
+public slots:
      void requestCommand(const QString& command);
 
-Q_SIGNALS:
+signals:
      void reply(int category, const QString& command);
 };
 
@@ -80,7 +80,7 @@ public:
         timer.start(millis);
     }
     ~QtRPCTimerBase() {}
-private Q_SLOTS:
+private slots:
             void timeout() { func(); }
 private:
     QTimer timer;
@@ -125,7 +125,7 @@ bool parseCommandLineSettings(std::vector<std::string>& args, const std::string&
         STATE_ESCAPE_DOUBLEQUOTED
     } state = STATE_EATING_SPACES;
     std::string curarg;
-    Q_FOREACH (char ch, strCommand) {
+    foreach (char ch, strCommand) {
         switch (state) {
             case STATE_ARGUMENT:      // In or after argument
             case STATE_EATING_SPACES: // Handle runs of whitespace
@@ -202,7 +202,7 @@ void RPCExecutor::requestCommand(const QString& command)
 {
     std::vector<std::string> args;
     if (!parseCommandLineSettings(args, command.toStdString())) {
-        Q_EMIT reply(SettingsConsoleWidget::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
+        emit reply(SettingsConsoleWidget::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
         return;
     }
     if (args.empty())
@@ -223,19 +223,19 @@ void RPCExecutor::requestCommand(const QString& command)
         else
             strPrint = result.write(2);
 
-        Q_EMIT reply(SettingsConsoleWidget::CMD_REPLY, QString::fromStdString(strPrint));
+        emit reply(SettingsConsoleWidget::CMD_REPLY, QString::fromStdString(strPrint));
     } catch (UniValue& objError) {
         try // Nice formatting for standard-format error
         {
             int code = find_value(objError, "code").get_int();
             std::string message = find_value(objError, "message").get_str();
-            Q_EMIT reply(SettingsConsoleWidget::CMD_ERROR, QString::fromStdString(message) + " (code " + QString::number(code) + ")");
+            emit reply(SettingsConsoleWidget::CMD_ERROR, QString::fromStdString(message) + " (code " + QString::number(code) + ")");
         } catch (std::runtime_error&) // raised when converting to invalid type, i.e. missing code or message
         {                             // Show raw JSON object
-            Q_EMIT reply(SettingsConsoleWidget::CMD_ERROR, QString::fromStdString(objError.write()));
+            emit reply(SettingsConsoleWidget::CMD_ERROR, QString::fromStdString(objError.write()));
         }
     } catch (std::exception& e) {
-        Q_EMIT reply(SettingsConsoleWidget::CMD_ERROR, QString("Error: ") + QString::fromStdString(e.what()));
+        emit reply(SettingsConsoleWidget::CMD_ERROR, QString("Error: ") + QString::fromStdString(e.what()));
     }
 }
 
@@ -294,7 +294,7 @@ SettingsConsoleWidget::SettingsConsoleWidget(KabberryGUI* _window, QWidget *pare
 SettingsConsoleWidget::~SettingsConsoleWidget()
 {
     GUIUtil::saveWindowGeometry("nRPCConsoleWindow", this);
-    Q_EMIT stopExecutor();
+    emit stopExecutor();
     RPCUnsetTimerInterface(rpcTimerInterface);
     delete rpcTimerInterface;
     delete ui;
@@ -446,7 +446,7 @@ void SettingsConsoleWidget::on_lineEdit_returnPressed()
 
     if (!cmd.isEmpty()) {
         message(CMD_REQUEST, cmd);
-        Q_EMIT cmdCommandRequest(cmd);
+        emit cmdCommandRequest(cmd);
         // Remove command, if already in history
         history.removeOne(cmd);
         // Append command to history

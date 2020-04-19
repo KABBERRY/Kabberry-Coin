@@ -22,7 +22,7 @@ public:
 
     void updateView(QString address, QString label, QString status, bool wasCollateralAccepted);
 
-Q_SIGNALS:
+signals:
     void onMenuClicked();
 private:
     Ui::MNRow *ui;

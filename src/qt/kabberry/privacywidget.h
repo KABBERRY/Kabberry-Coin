@@ -36,7 +36,7 @@ public:
     ~PrivacyWidget();
 
     void loadWalletModel() override;
-private Q_SLOTS:
+private slots:
     void changeTheme(bool isLightTheme, QString &theme) override;
     void onCoinControlClicked();
     void onDenomClicked();

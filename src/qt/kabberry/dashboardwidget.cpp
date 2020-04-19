@@ -832,7 +832,7 @@ void DashboardWidget::processNewTransaction(const QModelIndex& parent, int start
     QString type = txModel->index(start, TransactionTableModel::Type, parent).data().toString();
     QString address = txModel->index(start, TransactionTableModel::ToAddress, parent).data().toString();
 
-    Q_EMIT incomingTransaction(date, walletModel->getOptionsModel()->getDisplayUnit(), amount, type, address);
+    emit incomingTransaction(date, walletModel->getOptionsModel()->getDisplayUnit(), amount, type, address);
 }
 
 DashboardWidget::~DashboardWidget(){

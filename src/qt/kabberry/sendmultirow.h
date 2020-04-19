@@ -56,11 +56,11 @@ public:
     int getEditWidth();
     int getMenuBtnWidth();
 
-public Q_SLOTS:
+public slots:
     void clear();
     void updateDisplayUnit();
 
-Q_SIGNALS:
+signals:
     void removeEntry(SendMultiRow* entry);
     void onContactsClicked(SendMultiRow* entry);
     void onMenuClicked(SendMultiRow* entry);
@@ -72,7 +72,7 @@ protected:
     virtual void enterEvent(QEvent *) override ;
     virtual void leaveEvent(QEvent *) override ;
 
-private Q_SLOTS:
+private slots:
     void amountChanged(const QString&);
     bool addressChanged(const QString&);
     void deleteClicked();

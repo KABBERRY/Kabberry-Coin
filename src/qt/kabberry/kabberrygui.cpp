@@ -240,7 +240,7 @@ KabberryGUI::~KabberryGUI() {
 /** Get restart command-line parameters and request restart */
 void KabberryGUI::handleRestart(QStringList args){
     if (!ShutdownRequested())
-        Q_EMIT requestedRestart(args);
+        emit requestedRestart(args);
 }
 
 
@@ -514,7 +514,7 @@ void KabberryGUI::changeTheme(bool isLightTheme){
     this->setStyleSheet(css);
 
     // Notify
-    Q_EMIT themeChanged(isLightTheme, css);
+    emit themeChanged(isLightTheme, css);
 
     // Update style
     updateStyle(this);
@@ -526,7 +526,7 @@ void KabberryGUI::resizeEvent(QResizeEvent* event){
     // background
     showHide(opEnabled);
     // Notify
-    Q_EMIT windowResizeEvent(event);
+    emit windowResizeEvent(event);
 }
 
 bool KabberryGUI::execDialog(QDialog *dialog, int xDiv, int yDiv){

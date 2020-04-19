@@ -90,7 +90,7 @@ private:
     };
     friend class CCoinControlWidgetItem;
 
-private Q_SLOTS:
+private slots:
     void showMenu(const QPoint&);
     void copyAmount();
     void copyLabel();

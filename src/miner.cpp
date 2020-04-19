@@ -13,7 +13,6 @@
 
 #include "amount.h"
 #include "consensus/merkle.h"
-#include "consensus/tx_verify.h" // needed in case of no ENABLE_WALLET
 #include "hash.h"
 #include "main.h"
 #include "masternode-sync.h"
@@ -29,6 +28,7 @@
 #endif
 #include "validationinterface.h"
 #include "masternode-payments.h"
+#include "skkc/accumulators.h"
 #include "blocksignature.h"
 #include "spork.h"
 #include "invalid.h"
@@ -590,9 +590,8 @@ int nMintableLastCheck = 0;
 void CheckForCoins(CWallet* pwallet, const int minutes)
 {
     //control the amount of times the client will check for mintable coins
-    int nTimeNow = GetTime();
-    if ((nTimeNow - nMintableLastCheck > minutes * 60)) {
-        nMintableLastCheck = nTimeNow;
+    if ((GetTime() - nMintableLastCheck > minutes * 60)) {
+        nMintableLastCheck = GetTime();
         fStakeableCoins = pwallet->StakeableCoins();
     }
 }

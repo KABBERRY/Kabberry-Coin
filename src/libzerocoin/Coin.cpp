@@ -23,7 +23,7 @@ namespace libzerocoin {
 //PublicCoin class
 PublicCoin::PublicCoin(const ZerocoinParams* p):
     params(p) {
-    if (!this->params->initialized) {
+    if (this->params->initialized == false) {
         throw std::runtime_error("Params are not initialized");
     }
     // Assume this will get set by another method later
@@ -31,12 +31,18 @@ PublicCoin::PublicCoin(const ZerocoinParams* p):
 };
 
 PublicCoin::PublicCoin(const ZerocoinParams* p, const CBigNum& coin, const CoinDenomination d):
-    params(p), value(coin), denomination(d) {
-    if (!this->params->initialized) {
+    params(p), value(coin) {
+    if (this->params->initialized == false) {
         throw std::runtime_error("Params are not initialized");
     }
 
+    denomination = d;
+    for(const CoinDenomination denom : zerocoinDenomList) {
+        if(denom == d)
+            denomination = d;
+    }
     if (denomination == 0) {
+        std::cout << "denom does not exist\n";
         throw std::runtime_error("Denomination does not exist");
     }
 };
@@ -63,7 +69,7 @@ bool PublicCoin::validate() const
 //PrivateCoin class
 PrivateCoin::PrivateCoin(const ZerocoinParams* p, const CoinDenomination denomination, bool fMintNew): params(p), publicCoin(p) {
     // Verify that the parameters are valid
-    if(!this->params->initialized) {
+    if(this->params->initialized == false) {
         throw std::runtime_error("Params are not initialized");
     }
 

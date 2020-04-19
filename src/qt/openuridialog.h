@@ -25,10 +25,10 @@ public:
     QString getURI();
     void showEvent(QShowEvent *event) override;
 
-protected Q_SLOTS:
+protected slots:
     void accept() override;
 
-private Q_SLOTS:
+private slots:
     void on_selectFileButton_clicked();
 
 private:

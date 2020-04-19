@@ -26,7 +26,7 @@ public:
     void showEvent(QShowEvent *event) override;
 protected:
     void resizeEvent(QResizeEvent *event) override;
-public Q_SLOTS:
+public slots:
     void onSignMessageButtonSMClicked();
     void onVerifyMessage();
     void onPasteButtonSMClicked();

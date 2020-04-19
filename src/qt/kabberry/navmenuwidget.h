@@ -26,11 +26,11 @@ public:
     void loadWalletModel() override;
     virtual void showEvent(QShowEvent *event) override;
 
-public Q_SLOTS:
+public slots:
     void selectSettings();
     void onShowHideColdStakingChanged(bool show);
 
-private Q_SLOTS:
+private slots:
     void onSendClicked();
     void onDashboardClicked();
     void onPrivacyClicked();

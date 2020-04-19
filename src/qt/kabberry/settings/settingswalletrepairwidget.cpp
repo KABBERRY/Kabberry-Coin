@@ -158,7 +158,7 @@ void SettingsWalletRepairWidget::buildParameterlist(QString arg)
     args.append(arg);
 
     // Send command-line arguments to KabberryGUI::handleRestart()
-    Q_EMIT handleRestart(args);
+    emit handleRestart(args);
 }
 
 SettingsWalletRepairWidget::~SettingsWalletRepairWidget()

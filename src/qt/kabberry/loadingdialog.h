@@ -24,9 +24,9 @@ public:
     ~Worker(){
         runnable = nullptr;
     }
-public Q_SLOTS:
+public slots:
     void process();
-Q_SIGNALS:
+signals:
     void finished();
     void error(QString err, int type);
 
@@ -46,7 +46,7 @@ public:
 
     void execute(Runnable *runnable, int type);
 
-public Q_SLOTS:
+public slots:
     void finished();
     void loadingTextChange();
 

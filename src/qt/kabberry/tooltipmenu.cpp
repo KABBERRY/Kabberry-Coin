@@ -59,22 +59,22 @@ void TooltipMenu::setLastBtnVisible(bool visible) {
 
 void TooltipMenu::deleteClicked(){
     hide();
-    Q_EMIT onDeleteClicked();
+    emit onDeleteClicked();
 }
 
 void TooltipMenu::copyClicked(){
     hide();
-    Q_EMIT onCopyClicked();
+    emit onCopyClicked();
 }
 
 void TooltipMenu::editClicked(){
     hide();
-    Q_EMIT onEditClicked();
+    emit onEditClicked();
 }
 
 void TooltipMenu::lastClicked() {
     hide();
-    Q_EMIT onLastClicked();
+    emit onLastClicked();
 }
 
 void TooltipMenu::showEvent(QShowEvent *event){

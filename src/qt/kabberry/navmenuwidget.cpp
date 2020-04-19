@@ -145,7 +145,7 @@ void NavMenuWidget::onReceiveClicked(){
 
 void NavMenuWidget::onNavSelected(QWidget* active, bool startup) {
     QString start = "btn-nav-";
-    Q_FOREACH (QWidget* w, btns) {
+    foreach (QWidget* w, btns) {
         QString clazz = start + w->property("name").toString();
         if (w == active) {
             clazz += "-active";
