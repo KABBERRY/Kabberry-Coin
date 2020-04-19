@@ -10,7 +10,6 @@
 #include "main.h"
 #include "txdb.h"
 #include "wallet/walletdb.h"
-#include "skkc/accumulators.h"
 #include "skkc/skkcwallet.h"
 #include "witness.h"
 
@@ -466,7 +465,6 @@ std::set<CMintMeta> CsKKCTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, 
         mempool.getTransactions(setMempool);
     }
 
-    std::map<libzerocoin::CoinDenomination, int> mapMaturity = GetMintMaturityHeight();
     for (auto& it : mapSerialHashes) {
         CMintMeta mint = it.second;
 
@@ -489,8 +487,6 @@ std::set<CMintMeta> CsKKCTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, 
         if (fMatureOnly) {
             // Not confirmed
             if (!mint.nHeight || mint.nHeight > chainActive.Height() - Params().Zerocoin_MintRequiredConfirmations())
-                continue;
-            if (mint.nHeight >= mapMaturity.at(mint.denom))
                 continue;
         }
 
