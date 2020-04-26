@@ -37,12 +37,12 @@ public:
     }
     void setSmall();
     void setExpanded();
-signals:
+Q_SIGNALS:
     void Mouse_Pressed();
     void Mouse_Hover();
     void Mouse_HoverLeave();
 
-public slots:
+public Q_SLOTS:
     void setText2(QString text2);
 
     QString getText(){
@@ -56,7 +56,7 @@ protected:
     //virtual void mouseMoveEvent(QMouseEvent *ev);
     virtual void mousePressEvent(QMouseEvent *ev);
 
-private slots:
+private Q_SLOTS:
 
     void on_pushButton_clicked(bool checked);
 

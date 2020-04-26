@@ -27,7 +27,7 @@ public:
 
     bool res = false;
 
-public slots:
+public Q_SLOTS:
     void ok();
 private:
     Ui::AddNewContactDialog *ui;
