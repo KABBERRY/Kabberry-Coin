@@ -48,7 +48,7 @@ public:
     void setModel(AddressTableModel* model);
     const QString& getReturnValue() const { return returnValue; }
 
-public slots:	public Q_SLOTS:
+public Q_SLOTS:
     void done(int retval);
 
 private:
@@ -84,7 +84,7 @@ private Q_SLOTS:
     void selectNewAddress(const QModelIndex& parent, int begin, int /*end*/);
 
 
-signals:	Q_SIGNALS:
+Q_SIGNALS:
     void sendCoins(QString addr);
 };
 
