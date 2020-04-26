@@ -410,7 +410,7 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
 
     //Construct the stakeinput object
     if (txin.IsZerocoinSpend()) {
-        libzerocoin::CoinSpend spend = CheckZerocoinSpend(txin);
+        libzerocoin::CoinSpend spend = TxInToZerocoinSpend(txin);
         if (spend.getSpendType() != libzerocoin::SpendType::STAKE)
             return error("%s : spend is using the wrong SpendType (%d)", __func__, (int)spend.getSpendType());
 
