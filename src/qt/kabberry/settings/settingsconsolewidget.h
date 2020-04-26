@@ -55,7 +55,7 @@ public Q_SLOTS:
 protected:
     virtual bool eventFilter(QObject* obj, QEvent* event) override;
 
-protected slots:	protected Q_SLOTS:
+protected Q_SLOTS:	protected Q_SLOTS:
     void changeTheme(bool isLightTheme, QString &theme) override;
 
 Q_SIGNALS:
