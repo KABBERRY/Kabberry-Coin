@@ -14,6 +14,7 @@
 #include "util.h"
 #include "stakeinput.h"
 #include "utilmoneystr.h"
+#include "skkcchain.h"
 
 // v1 modifier interval.
 static const int64_t OLD_MODIFIER_INTERVAL = 2087;
@@ -510,5 +511,6 @@ int64_t GetCurrentTimeSlot()
 {
     return GetTimeSlot(GetAdjustedTime());
 }
+
 
 
