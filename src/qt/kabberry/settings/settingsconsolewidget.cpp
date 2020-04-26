@@ -58,10 +58,10 @@ class RPCExecutor : public QObject
 {
     Q_OBJECT
 
-public slots:
+public Q_SLOTS:
      void requestCommand(const QString& command);
 
-signals:
+Q_SIGNALS:
      void reply(int category, const QString& command);
 };
 
@@ -80,7 +80,7 @@ public:
         timer.start(millis);
     }
     ~QtRPCTimerBase() {}
-private slots:
+private Q_SLOTS:
             void timeout() { func(); }
 private:
     QTimer timer;
@@ -125,7 +125,7 @@ bool parseCommandLineSettings(std::vector<std::string>& args, const std::string&
         STATE_ESCAPE_DOUBLEQUOTED
     } state = STATE_EATING_SPACES;
     std::string curarg;
-    foreach (char ch, strCommand) {
+    Q_FOREACH (char ch, strCommand) {
         switch (state) {
             case STATE_ARGUMENT:      // In or after argument
             case STATE_EATING_SPACES: // Handle runs of whitespace
@@ -202,7 +202,7 @@ void RPCExecutor::requestCommand(const QString& command)
 {
     std::vector<std::string> args;
     if (!parseCommandLineSettings(args, command.toStdString())) {
-        emit reply(SettingsConsoleWidget::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
+        Q_EMIT reply(SettingsConsoleWidget::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
         return;
     }
     if (args.empty())
@@ -223,19 +223,19 @@ void RPCExecutor::requestCommand(const QString& command)
         else
             strPrint = result.write(2);
 
-        emit reply(SettingsConsoleWidget::CMD_REPLY, QString::fromStdString(strPrint));
+        Q_EMIT reply(SettingsConsoleWidget::CMD_REPLY, QString::fromStdString(strPrint));
     } catch (UniValue& objError) {
         try // Nice formatting for standard-format error
         {
             int code = find_value(objError, "code").get_int();
             std::string message = find_value(objError, "message").get_str();
-            emit reply(SettingsConsoleWidget::CMD_ERROR, QString::fromStdString(message) + " (code " + QString::number(code) + ")");
+            Q_EMIT reply(SettingsConsoleWidget::CMD_ERROR, QString::fromStdString(message) + " (code " + QString::number(code) + ")");
         } catch (std::runtime_error&) // raised when converting to invalid type, i.e. missing code or message
         {                             // Show raw JSON object
-            emit reply(SettingsConsoleWidget::CMD_ERROR, QString::fromStdString(objError.write()));
+            Q_EMIT reply(SettingsConsoleWidget::CMD_ERROR, QString::fromStdString(objError.write()));
         }
     } catch (std::exception& e) {
-        emit reply(SettingsConsoleWidget::CMD_ERROR, QString("Error: ") + QString::fromStdString(e.what()));
+        Q_EMIT reply(SettingsConsoleWidget::CMD_ERROR, QString("Error: ") + QString::fromStdString(e.what()));
     }
 }
 
@@ -294,7 +294,7 @@ SettingsConsoleWidget::SettingsConsoleWidget(KabberryGUI* _window, QWidget *pare
 SettingsConsoleWidget::~SettingsConsoleWidget()
 {
     GUIUtil::saveWindowGeometry("nRPCConsoleWindow", this);
-    emit stopExecutor();
+    Q_EMIT stopExecutor();
     RPCUnsetTimerInterface(rpcTimerInterface);
     delete rpcTimerInterface;
     delete ui;
@@ -338,7 +338,7 @@ bool SettingsConsoleWidget::eventFilter(QObject* obj, QEvent* event)
                 break;
             default:
                 // Typing in messages widget brings focus to line edit, and redirects key there
-                // Exclude most combinations and keys that emit no text, except paste shortcuts
+                // Exclude most combinations and keys that Q_EMIT no text, except paste shortcuts
                 if (obj == ui->messagesWidget && ((!mod && !keyevt->text().isEmpty() && key != Qt::Key_Tab) ||
                                                   ((mod & Qt::ControlModifier) && key == Qt::Key_V) ||
                                                   ((mod & Qt::ShiftModifier) && key == Qt::Key_Insert))) {
@@ -446,7 +446,7 @@ void SettingsConsoleWidget::on_lineEdit_returnPressed()
 
     if (!cmd.isEmpty()) {
         message(CMD_REQUEST, cmd);
-        emit cmdCommandRequest(cmd);
+        Q_EMIT cmdCommandRequest(cmd);
         // Remove command, if already in history
         history.removeOne(cmd);
         // Append command to history
