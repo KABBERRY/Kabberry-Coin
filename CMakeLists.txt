@@ -357,6 +357,7 @@ set(WALLET_SOURCES
         ./src/skkc/skkcwallet.cpp
         ./src/skkc/skkctracker.cpp
         ./src/skkc/skkcmodule.cpp
+		./src/skkc/zpos.cpp
         ./src/stakeinput.cpp
         )
 add_library(WALLET_A STATIC ${BitcoinHeaders} ${WALLET_SOURCES})

@@ -189,6 +189,7 @@ BITCOIN_CORE_H = \
   skkc/skkctracker.h \
   skkc/skkcwallet.h \
   skkc/skkcmodule.h \
+  skkc/zpos.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -283,6 +284,7 @@ libbitcoin_wallet_a_SOURCES = \
   skkc/skkctracker.cpp \
   stakeinput.cpp \
   skkc/skkcmodule.cpp \
+  skkc/zpos.cpp \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library

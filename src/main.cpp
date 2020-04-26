@@ -4,7 +4,7 @@
 // Copyright (c) 2011-2013 The PPCoin developers
 // Copyright (c) 2013-2014 The NovaCoin Developers
 // Copyright (c) 2014-2018 The BlackCoin Developers
-// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2015-2020 The PIVX developers
 // Copyright (c) 2018-2020 The Kabberry developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -932,7 +932,6 @@ int GetIXConfirmations(uint256 nTXHash)
 
     return 0;
 }
-
 
 bool CheckZerocoinMint(const uint256& txHash, const CTxOut& txout, CValidationState& state, bool fCheckOnly)
 {
@@ -2276,6 +2275,7 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
     } else {
         ret = blockValue * 0.8; // 80% Masternode,  20% PoS
     }
+
     return ret;
 }
 
@@ -3741,7 +3741,6 @@ void ReprocessBlocks(int nBlocks)
 
 /*
     DisconnectBlockAndInputs
-
     Remove conflicting blocks for successful SwiftX transaction locks
     This should be very rare (Probably will never happen)
 */
@@ -4140,8 +4139,6 @@ CBlockIndex* AddToBlockIndex(const CBlock& block)
                 LogPrintf("AddToBlockIndex() : ComputeNextStakeModifier() failed \n");
             pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
             pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
-            if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
-                LogPrintf("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
         } else {
             // compute v2 stake modifier
             pindexNew->nStakeModifierV2 = ComputeStakeModifier(pindexNew->pprev, block.vtx[1].vin[0].prevout.hash);
@@ -5182,7 +5179,6 @@ bool TestBlockValidity(CValidationState& state, const CBlock& block, CBlockIndex
 
     return true;
 }
-
 
 bool CheckDiskSpace(uint64_t nAdditionalBytes)
 {
