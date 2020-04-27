@@ -93,11 +93,7 @@ public:
 
 void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
 {
-    if (Params().IsTimeProtocolV2(pindexPrev->nHeight+1)) {
-        pblock->nTime = GetCurrentTimeSlot();
-    } else {
-        pblock->nTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
-    }
+    pblock->nTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
 
     // Updating time can change work required on testnet:
     if (Params().AllowMinDifficultyBlocks())
@@ -743,6 +739,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 // Changing pblock->nTime can change work required on testnet:
                 hashTarget.SetCompact(pblock->nBits);
             }
+
         }
     }
 }
