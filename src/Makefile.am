@@ -102,6 +102,7 @@ BITCOIN_CORE_H = \
   consensus/consensus.h \
   consensus/merkle.h \
   consensus/validation.h \
+  consensus/tx_verify.h \
   primitives/block.h \
   primitives/transaction.h \
   core_io.h \
@@ -184,7 +185,6 @@ BITCOIN_CORE_H = \
   skkcchain.h \
   skkc/deterministicmint.h \
   skkc/mintpool.h \
-  skkc/witness.h \
   skkc/zerocoin.h \
   skkc/skkctracker.h \
   skkc/skkcwallet.h \
@@ -211,6 +211,7 @@ libbitcoin_server_a_SOURCES = \
   blocksignature.cpp \
   chain.cpp \
   checkpoints.cpp \
+  consensus/tx_verify.cpp \
   httprpc.cpp \
   httpserver.cpp \
   init.cpp \
@@ -279,7 +280,6 @@ libbitcoin_wallet_a_SOURCES = \
   skkc/deterministicmint.cpp \
   skkc/zerocoin.cpp \
   skkc/mintpool.cpp \
-  skkc/witness.cpp \
   skkc/skkcwallet.cpp \
   skkc/skkctracker.cpp \
   stakeinput.cpp \
@@ -330,7 +330,6 @@ libzerocoin_libbitcoin_zerocoin_a_CPPFLAGS = $(AM_CPPFLAGS) $(BOOST_CPPFLAGS)
 libzerocoin_libbitcoin_zerocoin_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/Accumulator.h \
-  libzerocoin/AccumulatorProofOfKnowledge.h \
   libzerocoin/bignum.h \
   libzerocoin/Coin.h \
   libzerocoin/CoinRandomnessSchnorrSignature.h \
@@ -339,20 +338,16 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/Denominations.h \
   libzerocoin/ParamGeneration.h \
   libzerocoin/Params.h \
-  libzerocoin/SerialNumberSignatureOfKnowledge.h \
   libzerocoin/SpendType.h \
   libzerocoin/ZerocoinDefines.h \
   libzerocoin/bignum.cpp \
   libzerocoin/Accumulator.cpp \
-  libzerocoin/AccumulatorProofOfKnowledge.cpp \
   libzerocoin/Coin.cpp \
   libzerocoin/CoinRandomnessSchnorrSignature.cpp \
   libzerocoin/CoinSpend.cpp \
-  libzerocoin/Commitment.cpp \
   libzerocoin/Denominations.cpp \
   libzerocoin/ParamGeneration.cpp \
-  libzerocoin/Params.cpp \
-  libzerocoin/SerialNumberSignatureOfKnowledge.cpp
+  libzerocoin/Params.cpp
 if USE_NUM_GMP
   libzerocoin_libbitcoin_zerocoin_a_SOURCES += libzerocoin/bignum_gmp.cpp
 endif

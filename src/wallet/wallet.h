@@ -12,6 +12,7 @@
 #include "addressbook.h"
 #include "amount.h"
 #include "base58.h"
+#include "consensus/tx_verify.h"
 #include "crypter.h"
 #include "kernel.h"
 #include "key.h"
@@ -222,7 +223,6 @@ public:
             std::list<std::pair<CBitcoinAddress*,CAmount>> addressesTo,
             CBitcoinAddress* changeAddress = nullptr);
 
-    bool CheckCoinSpend(libzerocoin::CoinSpend& spend, libzerocoin::Accumulator& accumulator, CZerocoinSpendReceipt& receipt);
     // Public coin spend input creation
     bool MintsToInputVectorPublicSpend(std::map<CBigNum, CZerocoinMint>& mapMintsSelected, const uint256& hashTxOut, std::vector<CTxIn>& vin,
                                        CZerocoinSpendReceipt& receipt, libzerocoin::SpendType spendType, CBlockIndex* pindexCheckpoint = nullptr);

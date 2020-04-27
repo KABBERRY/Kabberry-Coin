@@ -11,7 +11,6 @@
 #include "txdb.h"
 #include "wallet/walletdb.h"
 #include "skkc/skkcwallet.h"
-#include "witness.h"
 
 
 CsKKCTracker::CsKKCTracker(std::string strWalletFile)

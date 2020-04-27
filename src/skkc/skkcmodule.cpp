@@ -61,11 +61,8 @@ PublicCoinSpend::PublicCoinSpend(libzerocoin::ZerocoinParams* params, Stream& st
 
 }
 
-bool PublicCoinSpend::Verify(const libzerocoin::Accumulator& a, bool verifyParams) const {
-    return validate();
-}
+bool PublicCoinSpend::Verify() const {
 
-bool PublicCoinSpend::validate() const {
     bool fUseV1Params = getCoinVersion() < libzerocoin::PrivateCoin::PUBKEY_VERSION;
     if (version < PUBSPEND_SCHNORR) {
         // spend contains the randomness of the coin
@@ -218,7 +215,7 @@ namespace sKKCModule {
                 libzerocoin::IntToZerocoinDenomination(in.nSequence)) != prevOut.nValue) {
             return error("PublicCoinSpend validateInput :: input nSequence different to prevout value");
         }
-        return publicSpend.validate();
+        return publicSpend.Verify();
     }
 
     bool ParseZerocoinPublicSpend(const CTxIn &txIn, const CTransaction& tx, CValidationState& state, PublicCoinSpend& publicSpend)
