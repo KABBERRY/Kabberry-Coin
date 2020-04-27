@@ -229,7 +229,6 @@ Create (and optionally verify) the signed Windows binaries:
     ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../kabberry/contrib/gitian-descriptors/gitian-win-signer.yml
     ./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-win-signed ../kabberry/contrib/gitian-descriptors/gitian-win-signer.yml
     mv build/out/kabberry-*win64-setup.exe ../kabberry-${VERSION}-win64-setup.exe
-    mv build/out/kabberry-*win32-setup.exe ../kabberry-${VERSION}-win32-setup.exe
     popd
 
 Commit your signature for the signed macOS/Windows binaries:
@@ -259,8 +258,6 @@ kabberry-${VERSION}-x86_64-linux-gnu.tar.gz
 kabberry-${VERSION}-osx64.tar.gz
 kabberry-${VERSION}-osx.dmg
 kabberry-${VERSION}.tar.gz
-kabberry-${VERSION}-win32-setup.exe
-kabberry-${VERSION}-win32.zip
 kabberry-${VERSION}-win64-setup.exe
 kabberry-${VERSION}-win64.zip
 ```
