@@ -72,7 +72,6 @@ BOOST_AUTO_TEST_CASE(denomination_to_value_test)
 BOOST_AUTO_TEST_CASE(zerocoin_spend_test241)
 {
     const int nMaxNumberOfSpends = 4;
-    const bool fMinimizeChange = false;
     const int DenomAmounts[] = {1, 2, 3, 4, 0, 0, 0, 0};
     CAmount nSelectedValue;
     std::list<CMintMeta> listMints;
@@ -127,7 +126,6 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test241)
     for (int i = 0; i < CoinsHeld; i++) {
         std::vector<CMintMeta> vSpends = SelectMintsFromList(nValueTarget, nSelectedValue,
                                                                  nMaxNumberOfSpends,
-                                                                 fMinimizeChange,
                                                                  nCoinsReturned,
                                                                  listMints,
                                                                  mapDenom,
@@ -157,7 +155,6 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test241)
 BOOST_AUTO_TEST_CASE(zerocoin_spend_test115)
 {
     const int nMaxNumberOfSpends = 4;
-    const bool fMinimizeChange = false;
     const int DenomAmounts[] = {0, 1, 1, 2, 0, 0, 0, 0};
     CAmount nSelectedValue;
     std::list<CMintMeta> listMints;
@@ -206,7 +203,6 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test115)
 
     std::vector<CMintMeta> vSpends = SelectMintsFromList(nValueTarget, nSelectedValue,
                                                              nMaxNumberOfSpends,
-                                                             fMinimizeChange,
                                                              nCoinsReturned,
                                                              listMints,
                                                              mapDenom,
@@ -292,7 +288,6 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_245)
     for (int i = 0; i < CoinsHeld; i++) {
         std::vector<CMintMeta> vSpends = SelectMintsFromList(nValueTarget, nSelectedValue,
                                                                  nMaxNumberOfSpends,
-                                                                 false,
                                                                  nCoinsReturned,
                                                                  listMints,
                                                                  mapOfDenomsHeld,
@@ -314,7 +309,6 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_245)
 
         std::vector<CMintMeta> vSpendsAlt = SelectMintsFromList(nValueTarget, nSelectedValue,
                                                                     nMaxNumberOfSpends,
-                                                                    true,
                                                                     nCoinsReturned,
                                                                     listMints,
                                                                     mapOfDenomsHeld,
@@ -397,7 +391,6 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_145)
     for (int i = 0; i < CoinsHeld; i++) {
         std::vector<CMintMeta> vSpends = SelectMintsFromList(nValueTarget, nSelectedValue,
                                                                  nMaxNumberOfSpends,
-                                                                 false,
                                                                  nCoinsReturned,
                                                                  listMints,
                                                                  mapOfDenomsHeld,
@@ -419,7 +412,6 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_145)
 
         std::vector<CMintMeta> vSpendsAlt = SelectMintsFromList(nValueTarget, nSelectedValue,
                                                                     nMaxNumberOfSpends,
-                                                                    true,
                                                                     nCoinsReturned,
                                                                     listMints,
                                                                     mapOfDenomsHeld,
@@ -449,7 +441,6 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_145)
 BOOST_AUTO_TEST_CASE(zerocoin_spend_test99)
 {
     const int nMaxNumberOfSpends = 4;
-    const bool fMinimizeChange = false;
     const int DenomAmounts[] = {0, 1, 4, 2, 1, 0, 0, 0};
     CAmount nSelectedValue;
     std::list<CMintMeta> listMints;
@@ -498,9 +489,8 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test99)
 
     std::vector<CMintMeta> vSpends = SelectMintsFromList(nValueTarget, nSelectedValue,
                                                              nMaxNumberOfSpends,
-                                                             fMinimizeChange,
                                                              nCoinsReturned,
-                                                            listMints,
+                                                             listMints,
                                                              mapOfDenomsHeld,
                                                              nNeededSpends);
 

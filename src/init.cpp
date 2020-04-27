@@ -560,10 +560,6 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-budgetvotemode=<mode>", _("Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)"));
 
     strUsage += HelpMessageGroup(_("Zerocoin options:"));
-#ifdef ENABLE_WALLET
-    strUsage += HelpMessageOpt("-backupskkc=<n>", strprintf(_("Enable automatic wallet backups triggered after each sKKC minting (0-1, default: %u)"), 1));
-    strUsage += HelpMessageOpt("-skkcbackuppath=<dir|file>", _("Specify custom backup path to add a copy of any automatic sKKC backup. If set as dir, every backup generates a timestamped file. If set as file, will rewrite to that file every backup. If backuppath is set as well, 4 backups will happen"));
-#endif // ENABLE_WALLET
     strUsage += HelpMessageOpt("-reindexzerocoin=<n>", strprintf(_("Delete all zerocoin spends and mints that have been recorded to the blockchain database and reindex them (0-1, default: %u)"), 0));
 
     strUsage += HelpMessageGroup(_("SwiftX options:"));
@@ -1739,9 +1735,6 @@ bool AppInit2()
 
         //Inititalize sKKCWallet
         uiInterface.InitMessage(_("Syncing sKKC wallet..."));
-
-        bool fEnablesKKCBackups = GetBoolArg("-backupskkc", true);
-        pwalletMain->setsKKCAutoBackups(fEnablesKKCBackups);
 
         //Load zerocoin mint hashes to memory
         pwalletMain->skkcTracker->Init();
