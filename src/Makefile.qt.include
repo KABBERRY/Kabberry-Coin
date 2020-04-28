@@ -528,8 +528,6 @@ RES_ICONS = \
   qt/kabberry/res/img/dark/ic-transaction-cs-contract-inactive.svg \
   qt/kabberry/res/img/img-qr.svg \
   qt/kabberry/res/img/ic-check-connect-off.svg \
-  qt/kabberry/res/img/ic-check-tor-off.svg \
-  qt/kabberry/res/img/ic-check-tor.svg \
   qt/kabberry/res/img/ic-label.svg \
   qt/kabberry/res/img/ic-transaction-received.svg \
   qt/kabberry/res/img/dark/ic-transaction-received.svg \
