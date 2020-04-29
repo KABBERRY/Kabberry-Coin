@@ -96,7 +96,7 @@ void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
     pblock->nTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
 
     // Updating time can change work required on testnet:
-    if (Params().AllowMinDifficultyBlocks())
+    if (Params().GetConsensus().fPowAllowMinDifficultyBlocks)
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
 }
 
@@ -509,7 +509,7 @@ CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet)
     if ((nHeightNext > nLastPOWBlock)) {
         LogPrintf("%s: Aborting PoW block creation during PoS phase\n", __func__);
         // sleep 1/2 a block time so we don't go into a tight loop.
-        MilliSleep((Params().GetConsensus().nTargetSpacing * 1000) >> 1);
+        MilliSleep((Params().TargetSpacing() * 1000) >> 1);
         return nullptr;
     }
 
@@ -573,7 +573,6 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
     LogPrintf("KabberryMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("kabberry-miner");
-    const int64_t nSpacingMillis = Params().GetConsensus().nTargetSpacing * 1000;
 
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
@@ -582,13 +581,13 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
     while (fGenerateBitcoins || fProofOfStake) {
         CBlockIndex* pindexPrev = GetChainTip();
         if (!pindexPrev) {
-            MilliSleep(nSpacingMillis);       // sleep a block
+            MilliSleep(Params().TargetSpacing() * 1000);       // sleep a block
             continue;
         }
         if (fProofOfStake) {
             if (pindexPrev->nHeight < Params().LAST_POW_BLOCK()) {
                 // The last PoW block hasn't even been mined yet.
-                MilliSleep(nSpacingMillis);       // sleep a block
+                MilliSleep(Params().TargetSpacing() * 1000);       // sleep a block
                 continue;
             }
 
@@ -711,7 +710,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
 
             // Update nTime every few seconds
             UpdateTime(pblock, pindexPrev);
-            if (Params().AllowMinDifficultyBlocks()) {
+            if (Params().GetConsensus().fPowAllowMinDifficultyBlocks) {
                 // Changing pblock->nTime can change work required on testnet:
                 hashTarget.SetCompact(pblock->nBits);
             }

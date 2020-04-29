@@ -159,7 +159,7 @@ int CChainParams::FutureBlockTimeDrift(const int nHeight) const
 {
     if (IsTimeProtocolV2(nHeight))
         // PoS (TimeV2): 14 seconds
-        return consensus.nTimeSlotLength - 1;
+        return TimeSlotLength() - 1;
 
     // PoS (TimeV1): 3 minutes
     // PoW: 2 hours
@@ -173,7 +173,7 @@ bool CChainParams::IsValidBlockTimeStamp(const int64_t nTime, const int nHeight)
         return true;
 
     // Time protocol v2 requires time in slots
-    return (nTime % consensus.nTimeSlotLength) == 0;
+    return (nTime % TimeSlotLength()) == 0;
 }
 
 class CMainParams : public CChainParams
@@ -184,25 +184,17 @@ public:
         networkID = CBaseChainParams::MAIN;
         strNetworkID = "main";
 
+        consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         consensus.nCoinbaseMaturity = 25;
         consensus.nTargetTimespan = 40 * 60;
-        consensus.nTargetTimespanV2 = 40 * 60;
         consensus.nTargetSpacing = 1.5 * 60;
-        consensus.nTimeSlotLength = 15;
-        consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = false;
 
         // height based activations
         consensus.height_start_BIP65 = 573000;
 
-        // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
-
-        // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -225,6 +217,10 @@ public:
         nRejectBlockOutdatedMajority = 10260; // 95%
         nToCheckBlockUpgradeMajority = 10800; // Approximate expected amount of blocks in 7 days (1440*7.5)
         nMinerThreads = 0;
+        nTargetSpacing = 1.5 * 60;  // Kabberry: 1.5 minute
+        nTargetTimespan = 40 * 60;                      // 40 minutes
+        nTimeSlotLength = 15;                           // 15 seconds
+        nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
         nStakeMinAge = 60 * 60;                         // 1 hour
         nStakeMinDepth = 600;
         nFutureTimeDriftPoW = 7200;
@@ -289,7 +285,6 @@ public:
         convertSeed6(vFixedSeeds, pnSeed6_main, ARRAYLEN(pnSeed6_main));
 
         fMiningRequiresPeers = true;
-        fAllowMinDifficultyBlocks = false;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         fSkipProofOfWorkCheck = false;
@@ -341,26 +336,17 @@ public:
     {
         networkID = CBaseChainParams::TESTNET;
         strNetworkID = "test";
-	
+
+        consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20;
         consensus.nCoinbaseMaturity = 15;
         consensus.nTargetTimespan = 40 * 60;
-        consensus.nTargetTimespanV2 = 30 * 60;
         consensus.nTargetSpacing = 1 * 60;
-        consensus.nTimeSlotLength = 15;
-        consensus.fPowAllowMinDifficultyBlocks = false;
-        consensus.fPowNoRetargeting = false;
 
         // height based activations
         consensus.height_start_BIP65 = 851019;
-
-        // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
-
-        // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -440,7 +426,6 @@ public:
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
 
         fMiningRequiresPeers = false;
-        fAllowMinDifficultyBlocks = true;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
         fTestnetToBeDeprecatedFieldRPC = true;
@@ -474,25 +459,17 @@ public:
         networkID = CBaseChainParams::REGTEST;
         strNetworkID = "regtest";
 
+        consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20;
         consensus.nCoinbaseMaturity = 100;
         consensus.nTargetTimespan = 40 * 60;
-        consensus.nTargetTimespanV2 = 30 * 60;
         consensus.nTargetSpacing = 1 * 60;
-        consensus.nTimeSlotLength = 15;
-        consensus.fPowAllowMinDifficultyBlocks = true;
-        consensus.fPowNoRetargeting = true;
 
         // height based activations
         consensus.height_start_BIP65 = 851019; // Not defined for regtest. Inherit TestNet value.
 
-        // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
-
-        // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -551,7 +528,6 @@ public:
         vSeeds.clear();      //! Testnet mode doesn't have any DNS seeds.
 
         fMiningRequiresPeers = false;
-        fAllowMinDifficultyBlocks = true;
         fDefaultConsistencyChecks = true;
         fRequireStandard = false;
         fSkipProofOfWorkCheck = true;

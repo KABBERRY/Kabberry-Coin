@@ -73,13 +73,12 @@ public:
     bool HeadersFirstSyncingActive() const { return fHeadersFirstSyncingActive; };
     /** Default value for -checkmempool and -checkblockindex argument */
     bool DefaultConsistencyChecks() const { return fDefaultConsistencyChecks; }
-    /** Allow mining of a min-difficulty block */
-    bool AllowMinDifficultyBlocks() const { return fAllowMinDifficultyBlocks; }
     /** Skip proof-of-work check: allow mining of any difficulty block */
     bool SkipProofOfWorkCheck() const { return fSkipProofOfWorkCheck; }
     /** Make standard checks */
     bool RequireStandard() const { return fRequireStandard; }
-
+    int64_t TargetSpacing() const { return nTargetSpacing; }
+    int64_t TargetTimespan(const bool fV2 = true) const { return fV2 ? nTargetTimespan_V2 : nTargetTimespan; }
 
     /** returns the coinstake maturity (min depth required) **/
     int COINSTAKE_MIN_AGE() const { return nStakeMinAge; }
@@ -89,6 +88,7 @@ public:
     /** Time Protocol V2 **/
     int BlockStartTimeProtocolV2() const { return nBlockTimeProtocolV2; }
     bool IsTimeProtocolV2(const int nHeight) const { return nHeight >= BlockStartTimeProtocolV2(); }
+    int TimeSlotLength() const { return nTimeSlotLength; }
     int FutureBlockTimeDrift(const int nHeight) const;
     bool IsValidBlockTimeStamp(const int64_t nTime, const int nHeight) const;
 
@@ -172,6 +172,9 @@ protected:
     int nEnforceBlockUpgradeMajority;
     int nRejectBlockOutdatedMajority;
     int nToCheckBlockUpgradeMajority;
+    int64_t nTargetSpacing;
+    int64_t nTargetTimespan;
+    int64_t nTargetTimespan_V2;
     int nLastPOWBlock;
     int64_t nKabberryBadBlockTime;
     unsigned int nKabberryBadBlocknBits;
@@ -181,6 +184,7 @@ protected:
     int nStakeMinAge;
     int nFutureTimeDriftPoW;
     int nFutureTimeDriftPoS;
+    int nTimeSlotLength;
 
     int nModifierUpdateBlock;
     int nMinerThreads;
@@ -191,7 +195,6 @@ protected:
     CBlock genesis;
     std::vector<CAddress> vFixedSeeds;
     bool fMiningRequiresPeers;
-    bool fAllowMinDifficultyBlocks;
     bool fDefaultConsistencyChecks;
     bool fRequireStandard;
     bool fSkipProofOfWorkCheck;
