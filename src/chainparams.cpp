@@ -188,6 +188,7 @@ public:
         consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
+        consensus.nMaxMoneyOut = 60000000 * COIN;
         consensus.nCoinbaseMaturity = 25;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1.5 * 60;
@@ -342,6 +343,7 @@ public:
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20;
         consensus.nCoinbaseMaturity = 15;
+        consensus.nMaxMoneyOut = 43199500 * COIN;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1 * 60;
 
@@ -464,6 +466,7 @@ public:
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20;
         consensus.nCoinbaseMaturity = 100;
+        consensus.nMaxMoneyOut = 43199500 * COIN;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1 * 60;
 
