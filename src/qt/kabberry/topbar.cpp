@@ -40,7 +40,7 @@ TopBar::TopBar(KabberryGUI* _mainWindow, QWidget *parent) :
     ui->containerTop->setProperty("cssClass", "container-top");
 #endif
 
-    std::initializer_list<QWidget*> lblTitles = {ui->labelTitle1, ui->labelTitle2, ui->labelTitle3, ui->labelTitle4, ui->labelTitle5, ui->labelTitle6};
+    std::initializer_list<QWidget*> lblTitles = {ui->labelTitle1, ui->labelTitleAvailablesKKC, ui->labelTitle3, ui->labelTitle4, ui->labelTitlePendingsKKC, ui->labelTitleImmaturesKKC};
     setCssProperty(lblTitles, "text-title-topbar");
     QFont font;
     font.setWeight(QFont::Light);
@@ -49,7 +49,7 @@ TopBar::TopBar(KabberryGUI* _mainWindow, QWidget *parent) :
     // Amount information top
     ui->widgetTopAmount->setVisible(false);
     setCssProperty({ui->labelAmountTopKKC, ui->labelAmountTopsKKC}, "amount-small-topbar");
-    setCssProperty({ui->labelAmountKKC, ui->labelAmountsKKC}, "amount-topbar");
+    setCssProperty({ui->labelAmountKKC, ui->labelAvailablesKKC}, "amount-topbar");
     setCssProperty({ui->labelPendingKKC, ui->labelPendingsKKC, ui->labelImmatureKKC, ui->labelImmaturesKKC}, "amount-small-topbar");
 
     // Progress Sync
@@ -478,7 +478,7 @@ void TopBar::setNumBlocks(int count) {
     ui->pushButtonSync->setButtonText(tr(text.data()));
 }
 
-void TopBar::loadWalletModel(){
+void TopBar::loadWalletModel() {
     connect(walletModel, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
             SLOT(updateBalances(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
     connect(walletModel->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
@@ -539,8 +539,7 @@ void TopBar::refreshStatus(){
     updateStyle(ui->pushButtonLock);
 }
 
-void TopBar::updateDisplayUnit()
-{
+void TopBar::updateDisplayUnit() {
     if (walletModel && walletModel->getOptionsModel()) {
         int displayUnitPrev = nDisplayUnit;
         nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
@@ -555,7 +554,7 @@ void TopBar::updateDisplayUnit()
 void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                             const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                             const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance,
-                            const CAmount& delegatedBalance, const CAmount& coldStakedBalance){
+                            const CAmount& delegatedBalance, const CAmount& coldStakedBalance) {
 
     // Locked balance. //TODO move this to the signal properly in the future..
     CAmount nLockedBalance = 0;
@@ -572,18 +571,29 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     // Set
     QString totalKKC = GUIUtil::formatBalance(kkcAvailableBalance, nDisplayUnit);
     QString totalsKKC = GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true);
+
+    // KKC
     // Top
     ui->labelAmountTopKKC->setText(totalKKC);
-    ui->labelAmountTopsKKC->setText(totalsKKC);
-
     // Expanded
     ui->labelAmountKKC->setText(totalKKC);
-    ui->labelAmountsKKC->setText(totalsKKC);
-
     ui->labelPendingKKC->setText(GUIUtil::formatBalance(unconfirmedBalance, nDisplayUnit));
-    ui->labelPendingsKKC->setText(GUIUtil::formatBalance(unconfirmedZerocoinBalance, nDisplayUnit, true));
-
     ui->labelImmatureKKC->setText(GUIUtil::formatBalance(immatureBalance, nDisplayUnit));
+
+    // Update display state and/or values for sKKC balances as necessary
+    bool fHaveZerocoins = zerocoinBalance > 0;
+
+    // Set visibility of sKKC label titles/values
+    ui->typeSpacerTop->setVisible(fHaveZerocoins);
+    ui->typeSpacerExpanded->setVisible(fHaveZerocoins);
+    ui->labelAmountTopsKKC->setVisible(fHaveZerocoins);
+    ui->zerocoinBalances->setVisible(fHaveZerocoins);
+
+    // Top
+    ui->labelAmountTopsKKC->setText(totalsKKC);
+    // Expanded
+    ui->labelAvailablesKKC->setText(totalsKKC);
+    ui->labelPendingsKKC->setText(GUIUtil::formatBalance(unconfirmedZerocoinBalance, nDisplayUnit, true));
     ui->labelImmaturesKKC->setText(GUIUtil::formatBalance(immatureZerocoinBalance, nDisplayUnit, true));
 }
 
