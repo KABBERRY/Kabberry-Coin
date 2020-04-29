@@ -185,9 +185,9 @@ public:
         strNetworkID = "main";
 
         consensus.BIP65Height = 573000; // 82629b7a9978f5c7ea3f70a12db92633a7d2e436711500db28b97efd48b1e527
-        consensus.powLimit   = uint256S("00000ffff0000000000000000000000000000000000000000000000000000000");
-        consensus.posLimitv1 = uint256S("000000ffff000000000000000000000000000000000000000000000000000000");
-        consensus.posLimitv2 = uint256S("00000ffff0000000000000000000000000000000000000000000000000000000");
+        consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
+        consensus.posLimitV1 = ~uint256(0) >> 24;
+        consensus.posLimitV2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         consensus.nCoinbaseMaturity = 25;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1.5 * 60;
@@ -210,9 +210,6 @@ public:
         pchMessageStart[3] = 0xe9;
         vAlertPubKey = ParseHex("04c2c3cca22211d722d46e91ec78de67e13ea86b03fffab53609b90ed641a0770772d1780e59b65b9f22de7ac704b3dd31f7182c1ddb537e4024af2676155814e1");
         nDefaultPort = 34124;
-        bnProofOfWorkLimit = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
-        bnProofOfStakeLimit = ~uint256(0) >> 24;
-        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         nMaxReorganizationDepth = 100;
 
         genesis = CreateGenesisBlock(1545970000, 1160284, 0x1e0ffff0, 1, 0 * COIN);
@@ -346,9 +343,9 @@ public:
         strNetworkID = "test";
 	
         consensus.BIP65Height = 851019;
-        consensus.powLimit   = uint256S("00000ffff0000000000000000000000000000000000000000000000000000000");
-        consensus.posLimitv1 = uint256S("000000ffff000000000000000000000000000000000000000000000000000000");
-        consensus.posLimitv2 = uint256S("00000ffff0000000000000000000000000000000000000000000000000000000");
+        consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
+        consensus.posLimitV1 = ~uint256(0) >> 24;
+        consensus.posLimitV2 = ~uint256(0) >> 20;
         consensus.nCoinbaseMaturity = 15;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1 * 60;
@@ -474,9 +471,9 @@ public:
         strNetworkID = "regtest";
 
         consensus.BIP65Height = 1808634; // 82629b7a9978f5c7ea3f70a12db92633a7d2e436711500db28b97efd48b1e527
-        consensus.powLimit   = uint256S("ffff000000000000000000000000000000000000000000000000000000000000");
-        consensus.posLimitv1 = uint256S("000000ffff000000000000000000000000000000000000000000000000000000");
-        consensus.posLimitv2 = uint256S("00000ffff0000000000000000000000000000000000000000000000000000000");
+        consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
+        consensus.posLimitV1 = ~uint256(0) >> 24;
+        consensus.posLimitV2 = ~uint256(0) >> 20;
         consensus.nCoinbaseMaturity = 100;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1 * 60;
