@@ -40,9 +40,9 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
 
     if (pindexLast->nHeight > Params().LAST_POW_BLOCK()) {
         const bool fTimeV2 = Params().IsTimeProtocolV2(pindexLast->nHeight+1);
-        uint256 bnTargetLimit = (~uint256(0) >> 24);
-        int64_t nTargetSpacing = 60;
-        int64_t nTargetTimespan = 60 * 40;
+        const uint256 bnTargetLimit = Params().ProofOfStakeLimit(fTimeV2);
+        const int64_t nTargetSpacing = Params().TargetSpacing();
+        const int64_t nTargetTimespan = Params().TargetTimespan(fTimeV2);
 
         int64_t nActualSpacing = 0;
         if (pindexLast->nHeight != 0)
