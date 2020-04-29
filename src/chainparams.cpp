@@ -164,17 +164,17 @@ public:
         nDefaultPort = 34124;
         bnProofOfWorkLimit = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         bnProofOfStakeLimit = ~uint256(0) >> 24;
-        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
+        bnProofOfStakeLimit_V2 = ~uint256(0) >> 24; // 60/4 = 15 ==> use 2**4 higher limit
         nSubsidyHalvingInterval = 259000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 5040; // 75%
         nRejectBlockOutdatedMajority = 6384; // 95%
         nToCheckBlockUpgradeMajority = 6720; // Approximate expected amount of blocks in 7 days (960*7)
         nMinerThreads = 0;
-        nTargetSpacing = 1.5 * 60;  // Kabberry: 1.5 minute
-        nTargetTimespan = 40 * 60;                      // 40 minutes
+        nTargetSpacing = 60;  // Kabberry: 1.5 minute
+        nTargetTimespan = 60 * 40;                      // 40 minutes
         nTimeSlotLength = 15;                           // 15 seconds
-        nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
+        nTargetTimespan_V2 = 60 * 40;  // 30 minutes
         nMaturity = 25;
         nStakeMinAge = 60 * 60;                         // 1 hour
         nStakeMinDepth = 600;
