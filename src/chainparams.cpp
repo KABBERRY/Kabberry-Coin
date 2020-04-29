@@ -184,7 +184,6 @@ public:
         networkID = CBaseChainParams::MAIN;
         strNetworkID = "main";
 
-        consensus.BIP65Height = 573000; // 82629b7a9978f5c7ea3f70a12db92633a7d2e436711500db28b97efd48b1e527
         consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
@@ -193,6 +192,9 @@ public:
         consensus.nTargetSpacing = 1.5 * 60;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
+
+        // height based activations
+        consensus.height_start_BIP65 = 573000;
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
@@ -342,7 +344,6 @@ public:
         networkID = CBaseChainParams::TESTNET;
         strNetworkID = "test";
 	
-        consensus.BIP65Height = 851019;
         consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20;
@@ -351,6 +352,9 @@ public:
         consensus.nTargetSpacing = 1 * 60;
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
+
+        // height based activations
+        consensus.height_start_BIP65 = 851019;
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
@@ -470,7 +474,6 @@ public:
         networkID = CBaseChainParams::REGTEST;
         strNetworkID = "regtest";
 
-        consensus.BIP65Height = 1808634; // 82629b7a9978f5c7ea3f70a12db92633a7d2e436711500db28b97efd48b1e527
         consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20;
@@ -479,6 +482,9 @@ public:
         consensus.nTargetSpacing = 1 * 60;
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
+
+        // height based activations
+        consensus.height_start_BIP65 = 851019; // Not defined for regtest. Inherit TestNet value.
 
         // The best chain should have at least this much work.
         consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000");
