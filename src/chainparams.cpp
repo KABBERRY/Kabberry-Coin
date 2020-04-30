@@ -464,7 +464,7 @@ public:
 
         // height based activations
         consensus.height_start_BIP65 = 851019; // Not defined for regtest. Inherit TestNet value.
-        consensus.height_start_StakeModifierV2 = consensus.height_last_PoW + 1; // start with modifier V2 on regtest
+        consensus.height_start_StakeModifierV2 = consensus.height_start_BIP65 + 1; // start with modifier V2 on regtest
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
