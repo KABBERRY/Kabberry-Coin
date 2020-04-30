@@ -144,17 +144,6 @@ libzerocoin::ZerocoinParams* CChainParams::Zerocoin_Params(bool useModulusV1) co
     return &ZCParamsDec;
 }
 
-bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime,
-        const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const
-{
-    // before stake modifier V2, the age required was 60 * 60 (1 hour).
-    if (!IsStakeModifierV2(contextHeight))
-        return (utxoFromBlockTime + nStakeMinAge <= contextTime);
-
-    // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
-    return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
-}
-
 int CChainParams::FutureBlockTimeDrift(const int nHeight) const
 {
     if (IsTimeProtocolV2(nHeight))
@@ -188,13 +177,16 @@ public:
         consensus.powLimit   = ~uint256(0) >> 20; // Kabberry starting difficulty is 1 / 2^12
         consensus.posLimitV1 = ~uint256(0) >> 24;
         consensus.posLimitV2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
-        consensus.nMaxMoneyOut = 60000000 * COIN;
         consensus.nCoinbaseMaturity = 25;
+        consensus.nMaxMoneyOut = 60000000 * COIN;
+        consensus.nStakeMinAge = 60 * 60;
+        consensus.nStakeMinDepth = 600;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1.5 * 60;
 
         // height based activations
         consensus.height_start_BIP65 = 573000;
+        consensus.height_start_StakeModifierV2 = 572000;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -222,8 +214,6 @@ public:
         nTargetTimespan = 40 * 60;                      // 40 minutes
         nTimeSlotLength = 15;                           // 15 seconds
         nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
-        nStakeMinAge = 60 * 60;                         // 1 hour
-        nStakeMinDepth = 600;
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
@@ -246,7 +236,6 @@ public:
         nBlockDoubleAccumulated = 1999999999;
         nEnforceNewSporkKey = 1575115200; //!> Sporks signed after (GMT): Tuesday, May 1, 2018 7:00:00 AM GMT must use the new spork key
         nRejectOldSporkKey = 1577707200; //!> Fully reject old spork key after (GMT): Friday, June 1, 2018 12:00:00 AM
-        nBlockStakeModifierlV2 = 572000;
         // Activation height for TimeProtocolV2, Blocks V7 and newMessageSignatures
         nBlockTimeProtocolV2 = 575000;
 
@@ -344,11 +333,14 @@ public:
         consensus.posLimitV2 = ~uint256(0) >> 20;
         consensus.nCoinbaseMaturity = 15;
         consensus.nMaxMoneyOut = 43199500 * COIN;
+        consensus.nStakeMinAge = 60 * 60;
+        consensus.nStakeMinDepth = 100;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1 * 60;
 
         // height based activations
         consensus.height_start_BIP65 = 851019;
+        consensus.height_start_StakeModifierV2 = 1214000;
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -375,7 +367,6 @@ public:
         nLastPOWBlock = 200;
         nKabberryBadBlockTime = 1489001494; // Skip nBit validation of Block 259201 per PR #915
         nKabberryBadBlocknBits = 0x1e0a20bd; // Skip nBit validation of Block 201 per PR #915
-        nStakeMinDepth = 100;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nZerocoinStartHeight = 201576;
@@ -389,7 +380,6 @@ public:
         nBlockZerocoinV2 = 444020; //!> The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1521604800; //!> Sporks signed after Wednesday, March 21, 2018 4:00:00 AM GMT must use the new spork key
         nRejectOldSporkKey = 1522454400; //!> Reject old spork key after Saturday, March 31, 2018 12:00:00 AM GMT
-        nBlockStakeModifierlV2 = 1214000;
         // Activation height for TimeProtocolV2, Blocks V7 and newMessageSignatures
         nBlockTimeProtocolV2 = 1347000;
 
@@ -467,12 +457,14 @@ public:
         consensus.posLimitV2 = ~uint256(0) >> 20;
         consensus.nCoinbaseMaturity = 100;
         consensus.nMaxMoneyOut = 43199500 * COIN;
+        consensus.nStakeMinAge = 0;
+        consensus.nStakeMinDepth = 0;
         consensus.nTargetTimespan = 40 * 60;
         consensus.nTargetSpacing = 1 * 60;
 
         // height based activations
         consensus.height_start_BIP65 = 851019; // Not defined for regtest. Inherit TestNet value.
-
+        consensus.height_start_StakeModifierV2 = consensus.height_last_PoW + 1; // start with modifier V2 on regtest
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -496,8 +488,6 @@ public:
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 1;
         nLastPOWBlock = 250;
-        nStakeMinAge = 0;
-        nStakeMinDepth = 0;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 0; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nZerocoinStartHeight = 300;
@@ -507,7 +497,6 @@ public:
         nBlockRecalculateAccumulators = 999999999; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 999999999; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 999999999; //Last valid accumulator checkpoint
-        nBlockStakeModifierlV2 = nLastPOWBlock + 1; // start with modifier V2 on regtest
         nBlockTimeProtocolV2 = 999999999;
 
         nMintRequiredConfirmations = 10;

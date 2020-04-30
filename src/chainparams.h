@@ -80,10 +80,6 @@ public:
     int64_t TargetSpacing() const { return nTargetSpacing; }
     int64_t TargetTimespan(const bool fV2 = true) const { return fV2 ? nTargetTimespan_V2 : nTargetTimespan; }
 
-    /** returns the coinstake maturity (min depth required) **/
-    int COINSTAKE_MIN_AGE() const { return nStakeMinAge; }
-    int COINSTAKE_MIN_DEPTH() const { return nStakeMinDepth; }
-    bool HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime, const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const;
 
     /** Time Protocol V2 **/
     int BlockStartTimeProtocolV2() const { return nBlockTimeProtocolV2; }
@@ -146,7 +142,6 @@ public:
     int Zerocoin_StartTime() const { return nZerocoinStartTime; }
     int Block_Enforce_Invalid() const { return nBlockEnforceInvalidUTXO; }
     int Zerocoin_Block_V2_Start() const { return nBlockZerocoinV2; }
-    bool IsStakeModifierV2(const int nHeight) const { return nHeight >= nBlockStakeModifierlV2; }
     int NewSigsActive(const int nHeight) const { return nHeight >= nBlockEnforceNewMessageSignatures; }
     int Block_V7_StartHeight() const { return nBlockV7StartHeight; }
 
@@ -180,8 +175,6 @@ protected:
     unsigned int nKabberryBadBlocknBits;
     int nMasternodeCountDrift;
     int nMaturity;
-    int nStakeMinDepth;
-    int nStakeMinAge;
     int nFutureTimeDriftPoW;
     int nFutureTimeDriftPoS;
     int nTimeSlotLength;
@@ -231,7 +224,6 @@ protected:
     int nBlockZerocoinV2;
     int nBlockDoubleAccumulated;
     int nPublicZCSpends;
-    int nBlockStakeModifierlV2;
     int nBlockTimeProtocolV2;
     int nBlockEnforceNewMessageSignatures;
     int nBlockV7StartHeight;
