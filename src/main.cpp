@@ -2671,87 +2671,6 @@ void AddWrappedSerialsInflation()
     uiInterface.ShowProgress("", 100);
 }
 
-void RecalculatesKKCMinted()
-{
-    CBlockIndex *pindex = chainActive[Params().Zerocoin_StartHeight()];
-    const int chainHeight = chainActive.Height();
-    uiInterface.ShowProgress(_("Recalculating minted sKKC..."), 0);
-    while (true) {
-        // Log Message and feedback message every 1000 blocks
-        if (pindex->nHeight % 1000 == 0) {
-            LogPrintf("%s : block %d...\n", __func__, pindex->nHeight);
-            int percent = std::max(1, std::min(99, (int)((double)(pindex->nHeight - Params().Zerocoin_StartHeight()) * 100 / (chainHeight - Params().Zerocoin_StartHeight()))));
-            uiInterface.ShowProgress(_("Recalculating minted sKKC..."), percent);
-        }
-
-        //overwrite possibly wrong vMintsInBlock data
-        CBlock block;
-        assert(ReadBlockFromDisk(block, pindex));
-
-        std::list<CZerocoinMint> listMints;
-        BlockToZerocoinMintList(block, listMints, true);
-
-        std::vector<libzerocoin::CoinDenomination> vDenomsBefore = pindex->vMintDenominationsInBlock;
-        pindex->vMintDenominationsInBlock.clear();
-        for (auto mint : listMints)
-            pindex->vMintDenominationsInBlock.emplace_back(mint.GetDenomination());
-
-        if (pindex->nHeight < chainHeight)
-            pindex = chainActive.Next(pindex);
-        else
-            break;
-    }
-    uiInterface.ShowProgress("", 100);
-}
-
-void RecalculatesKKCSpent()
-{
-    CBlockIndex* pindex = chainActive[Params().Zerocoin_StartHeight()];
-    const int chainHeight = chainActive.Height();
-    uiInterface.ShowProgress(_("Recalculating spent sKKC..."), 0);
-    while (true) {
-        if (pindex->nHeight % 1000 == 0) {
-            LogPrintf("%s : block %d...\n", __func__, pindex->nHeight);
-            int percent = std::max(1, std::min(99, (int)((double)(pindex->nHeight - Params().Zerocoin_StartHeight()) * 100 / (chainHeight - Params().Zerocoin_StartHeight()))));
-            uiInterface.ShowProgress(_("Recalculating spent sKKC..."), percent);
-        }
-
-        //Rewrite sKKC supply
-        CBlock block;
-        assert(ReadBlockFromDisk(block, pindex));
-
-        std::list<libzerocoin::CoinDenomination> listDenomsSpent = ZerocoinSpendListFromBlock(block, true);
-
-        //Reset the supply to previous block
-        pindex->mapZerocoinSupply = pindex->pprev->mapZerocoinSupply;
-
-        //Add mints to sKKC supply
-        for (auto denom : libzerocoin::zerocoinDenomList) {
-            long nDenomAdded = count(pindex->vMintDenominationsInBlock.begin(), pindex->vMintDenominationsInBlock.end(), denom);
-            pindex->mapZerocoinSupply.at(denom) += nDenomAdded;
-        }
-
-        //Remove spends from sKKC supply
-        for (auto denom : listDenomsSpent)
-            pindex->mapZerocoinSupply.at(denom)--;
-
-        // Add inflation from Wrapped Serials if block is Zerocoin_Block_EndFakeSerial()
-        if (pindex->nHeight == Params().Zerocoin_Block_EndFakeSerial() + 1)
-            for (auto denom : libzerocoin::zerocoinDenomList) {
-                pindex->mapZerocoinSupply.at(denom) += GetWrapppedSerialInflation(denom);
-            }
-
-        //Rewrite money supply
-        assert(pblocktree->WriteBlockIndex(CDiskBlockIndex(pindex)));
-
-        if (pindex->nHeight < chainHeight)
-            pindex = chainActive.Next(pindex);
-        else
-            break;
-    }
-    uiInterface.ShowProgress("", 100);
-}
-
 bool RecalculateKKCSupply(int nHeightStart)
 {
     const int chainHeight = chainActive.Height();
@@ -2844,12 +2763,10 @@ bool UpdatesKKCSupply(const CBlock& block, CBlockIndex* pindex, bool fJustCheck)
 
     // Track zerocoin money supply
     CAmount nAmountZerocoinSpent = 0;
-    pindex->vMintDenominationsInBlock.clear();
     if (pindex->pprev) {
         std::set<uint256> setAddedToWallet;
         for (auto& m : listMints) {
             libzerocoin::CoinDenomination denom = m.GetDenomination();
-            pindex->vMintDenominationsInBlock.push_back(m.GetDenomination());
             pindex->mapZerocoinSupply.at(denom)++;
 
             //Remove any of our own mints from the mintpool
@@ -3092,8 +3009,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
     //A one-time event where money supply counts were off and recalculated on a certain block.
     if (pindex->nHeight == Params().Zerocoin_Block_RecalculateAccumulators() + 1) {
-        RecalculatesKKCMinted();
-        RecalculatesKKCSpent();
         RecalculateKKCSupply(Params().Zerocoin_StartHeight());
     }
 
@@ -3105,7 +3020,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     // track money supply and mint amount info
     CAmount nMoneySupplyPrev = pindex->pprev ? pindex->pprev->nMoneySupply : 0;
     pindex->nMoneySupply = nMoneySupplyPrev + nValueOut - nValueIn;
-    pindex->nMint = pindex->nMoneySupply - nMoneySupplyPrev + nFees;
+    const int64_t nMint = pindex->nMoneySupply - nMoneySupplyPrev + nFees;
 
     int64_t nTime1 = GetTimeMicros();
     nTimeConnect += nTime1 - nTimeStart;
@@ -3117,9 +3032,9 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         nExpectedMint += nFees;
 
     //Check that the block does not overmint
-    if (!IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
+    if (!IsBlockValueValid(block, nExpectedMint, nMint)) {
         return state.DoS(100, error("ConnectBlock() : reward pays too much (actual=%s vs limit=%s)",
-                                    FormatMoney(pindex->nMint), FormatMoney(nExpectedMint)),
+                                    FormatMoney(nMint), FormatMoney(nExpectedMint)),
                          REJECT_INVALID, "bad-cb-amount");
     }
 
@@ -3890,9 +3805,6 @@ CBlockIndex* AddToBlockIndex(const CBlock& block)
         pindexNew->nHeight = pindexNew->pprev->nHeight + 1;
         pindexNew->BuildSkip();
 
-        //update previous block pointer
-        pindexNew->pprev->pnext = pindexNew;
-
         // ppcoin: compute stake entropy bit for stake modifier
         if (!pindexNew->SetStakeEntropyBit(pindexNew->GetStakeEntropyBit()))
             LogPrintf("AddToBlockIndex() : SetStakeEntropyBit() failed \n");
@@ -3905,17 +3817,13 @@ CBlockIndex* AddToBlockIndex(const CBlock& block)
             pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
         } else {
             // compute v2 stake modifier
-            pindexNew->nStakeModifierV2 = ComputeStakeModifier(pindexNew->pprev, block.vtx[1].vin[0].prevout.hash);
+            pindexNew->SetStakeModifier(ComputeStakeModifier(pindexNew->pprev, block.vtx[1].vin[0].prevout.hash));
         }
     }
     pindexNew->nChainWork = (pindexNew->pprev ? pindexNew->pprev->nChainWork : 0) + GetBlockProof(*pindexNew);
     pindexNew->RaiseValidity(BLOCK_VALID_TREE);
     if (pindexBestHeader == NULL || pindexBestHeader->nChainWork < pindexNew->nChainWork)
         pindexBestHeader = pindexNew;
-
-    //update previous block pointer
-    if (pindexNew->nHeight)
-        pindexNew->pprev->pnext = pindexNew;
 
     setDirtyBlockIndex.insert(pindexNew);
 

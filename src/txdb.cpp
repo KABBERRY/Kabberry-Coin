@@ -217,7 +217,6 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
     pcursor->Seek(ssKeySet.str());
 
     // Load mapBlockIndex
-    uint256 nPreviousCheckpoint;
     while (pcursor->Valid()) {
         boost::this_thread::interruption_point();
         try {
@@ -234,7 +233,6 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                 // Construct block index object
                 CBlockIndex* pindexNew = InsertBlockIndex(diskindex.GetBlockHash());
                 pindexNew->pprev = InsertBlockIndex(diskindex.hashPrev);
-                pindexNew->pnext = InsertBlockIndex(diskindex.hashNext);
                 pindexNew->nHeight = diskindex.nHeight;
                 pindexNew->nFile = diskindex.nFile;
                 pindexNew->nDataPos = diskindex.nDataPos;
@@ -250,17 +248,11 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                 //zerocoin
                 pindexNew->nAccumulatorCheckpoint = diskindex.nAccumulatorCheckpoint;
                 pindexNew->mapZerocoinSupply = diskindex.mapZerocoinSupply;
-                pindexNew->vMintDenominationsInBlock = diskindex.vMintDenominationsInBlock;
 
                 //Proof Of Stake
-                pindexNew->nMint = diskindex.nMint;
                 pindexNew->nMoneySupply = diskindex.nMoneySupply;
                 pindexNew->nFlags = diskindex.nFlags;
-                if (!Params().GetConsensus().IsStakeModifierV2(pindexNew->nHeight)) {
-                    pindexNew->nStakeModifier = diskindex.nStakeModifier;
-                } else {
-                    pindexNew->nStakeModifierV2 = diskindex.nStakeModifierV2;
-                }
+                pindexNew->vStakeModifier = diskindex.vStakeModifier;
 
                 if (pindexNew->nHeight <= Params().LAST_POW_BLOCK()) {
                     if (!CheckProofOfWork(pindexNew->GetBlockHash(), pindexNew->nBits))
