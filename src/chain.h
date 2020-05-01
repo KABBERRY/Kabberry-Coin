@@ -181,9 +181,6 @@ public:
     //! pointer to the index of some further predecessor of this block
     CBlockIndex* pskip;
 
-    //ppcoin: trust score of block chain
-    uint256 bnChainTrust;
-
     //! height of the entry in the chain. The genesis block has height 0
     int nHeight;
 
@@ -220,12 +217,7 @@ public:
 
 
     // proof-of-stake specific fields
-    uint256 GetBlockTrust() const;
     uint64_t nStakeModifier;             // hash modifier for proof-of-stake
-    unsigned int nStakeModifierChecksum; // checksum of index; in-memeory only
-    COutPoint prevoutStake;
-    unsigned int nStakeTime;
-    uint256 hashProofOfStake;
     int64_t nMint;
     int64_t nMoneySupply;
     uint256 nStakeModifierV2;
@@ -265,9 +257,6 @@ public:
         nFlags = 0;
         nStakeModifier = 0;
         nStakeModifierV2 = uint256();
-        nStakeModifierChecksum = 0;
-        prevoutStake.SetNull();
-        nStakeTime = 0;
 
         nVersion = 0;
         hashMerkleRoot = uint256();
@@ -301,8 +290,6 @@ public:
 
         if (block.IsProofOfStake()) {
             SetProofOfStake();
-            prevoutStake = block.vtx[1].vin[0].prevout;
-            nStakeTime = block.nTime;
         }
     }
 
@@ -337,7 +324,8 @@ public:
         block.nTime = nTime;
         block.nBits = nBits;
         block.nNonce = nNonce;
-        block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
+        if (nVersion > 3 && nVersion < 7)
+            block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
         return block;
     }
 
@@ -560,15 +548,6 @@ public:
             READWRITE(nStakeModifierV2);
         }
 
-        if (IsProofOfStake()) {
-            READWRITE(prevoutStake);
-            READWRITE(nStakeTime);
-        } else {
-            const_cast<CDiskBlockIndex*>(this)->prevoutStake.SetNull();
-            const_cast<CDiskBlockIndex*>(this)->nStakeTime = 0;
-            const_cast<CDiskBlockIndex*>(this)->hashProofOfStake = uint256();
-        }
-
         // block header
         READWRITE(this->nVersion);
         READWRITE(hashPrev);
@@ -578,9 +557,11 @@ public:
         READWRITE(nBits);
         READWRITE(nNonce);
         if(this->nVersion > 3) {
-            READWRITE(nAccumulatorCheckpoint);
             READWRITE(mapZerocoinSupply);
-            READWRITE(vMintDenominationsInBlock);
+            if(this->nVersion < 7){
+                READWRITE(nAccumulatorCheckpoint);
+                READWRITE(vMintDenominationsInBlock);
+            }
         }
 
     }
@@ -594,7 +575,8 @@ public:
         block.nTime = nTime;
         block.nBits = nBits;
         block.nNonce = nNonce;
-        block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
+        if (nVersion > 3 && nVersion < 7)
+            block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
         return block.GetHash();
     }
 
