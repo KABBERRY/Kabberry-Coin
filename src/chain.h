@@ -325,7 +325,8 @@ public:
         block.nTime = nTime;
         block.nBits = nBits;
         block.nNonce = nNonce;
-        block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
+        if (nVersion > 3 && nVersion < 7)
+            block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
         return block;
     }
 
@@ -561,9 +562,11 @@ public:
         READWRITE(nBits);
         READWRITE(nNonce);
         if(this->nVersion > 3) {
-            READWRITE(nAccumulatorCheckpoint);
             READWRITE(mapZerocoinSupply);
-            READWRITE(vMintDenominationsInBlock);
+            if(this->nVersion < 7){
+                READWRITE(nAccumulatorCheckpoint);
+                READWRITE(vMintDenominationsInBlock);
+            }
         }
 
     }
@@ -577,7 +580,8 @@ public:
         block.nTime = nTime;
         block.nBits = nBits;
         block.nNonce = nNonce;
-        block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
+        if (nVersion > 3 && nVersion < 7)
+            block.nAccumulatorCheckpoint = nAccumulatorCheckpoint;
         return block.GetHash();
     }
 
