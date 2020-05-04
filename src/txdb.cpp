@@ -261,8 +261,6 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                 } else {
                     pindexNew->nStakeModifierV2 = diskindex.nStakeModifierV2;
                 }
-                pindexNew->prevoutStake = diskindex.prevoutStake;
-                pindexNew->nStakeTime = diskindex.nStakeTime;
                 pindexNew->hashProofOfStake = diskindex.hashProofOfStake;
 
                 if (pindexNew->nHeight <= Params().LAST_POW_BLOCK()) {

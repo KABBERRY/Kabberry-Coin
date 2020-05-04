@@ -219,8 +219,6 @@ public:
     // proof-of-stake specific fields
     uint64_t nStakeModifier;             // hash modifier for proof-of-stake
     unsigned int nStakeModifierChecksum; // checksum of index; in-memeory only
-    COutPoint prevoutStake;
-    unsigned int nStakeTime;
     uint256 hashProofOfStake;
     int64_t nMint;
     int64_t nMoneySupply;
@@ -262,8 +260,6 @@ public:
         nStakeModifier = 0;
         nStakeModifierV2 = uint256();
         nStakeModifierChecksum = 0;
-        prevoutStake.SetNull();
-        nStakeTime = 0;
 
         nVersion = 0;
         hashMerkleRoot = uint256();
@@ -297,8 +293,6 @@ public:
 
         if (block.IsProofOfStake()) {
             SetProofOfStake();
-            prevoutStake = block.vtx[1].vin[0].prevout;
-            nStakeTime = block.nTime;
         }
     }
 
@@ -556,12 +550,7 @@ public:
             READWRITE(nStakeModifierV2);
         }
 
-        if (IsProofOfStake()) {
-            READWRITE(prevoutStake);
-            READWRITE(nStakeTime);
-        } else {
-            const_cast<CDiskBlockIndex*>(this)->prevoutStake.SetNull();
-            const_cast<CDiskBlockIndex*>(this)->nStakeTime = 0;
+        if (!IsProofOfStake()) {
             const_cast<CDiskBlockIndex*>(this)->hashProofOfStake = uint256();
         }
 
