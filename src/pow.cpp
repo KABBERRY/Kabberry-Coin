@@ -43,7 +43,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         const bool fTimeV2 = Params().IsTimeProtocolV2(pindexLast->nHeight+1);
         const uint256 bnTargetLimit = Params().GetConsensus().ProofOfStakeLimit(fTimeV2);
         const int64_t nTargetSpacing = 60;
-        const int64_t nTargetTimespan = Params().TargetTimespan(fTimeV2);
+        const int64_t nTargetTimespan = 60 * 40;
 
         int64_t nActualSpacing = 0;
         if (pindexLast->nHeight != 0)
