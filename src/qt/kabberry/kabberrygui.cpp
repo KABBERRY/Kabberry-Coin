@@ -313,6 +313,12 @@ void KabberryGUI::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
         toggleHidden();
     }
 }
+#else
+void KabberryGUI::macosDockIconActivated()
+ {
+     show();
+     activateWindow();
+ }
 #endif
 
 void KabberryGUI::changeEvent(QEvent* e)
@@ -328,12 +334,6 @@ void KabberryGUI::changeEvent(QEvent* e)
             }
         }
     }
-#else
-void KabberryGUI::macosDockIconActivated()
- {
-     show();
-     activateWindow();
- }
 #endif
 }
 
