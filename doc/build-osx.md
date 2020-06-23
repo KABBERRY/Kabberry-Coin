@@ -38,12 +38,14 @@ from the root of the repository.
 
 **Note**: You only need Berkeley DB if the wallet is enabled (see [*Disable-wallet mode*](/doc/build-osx.md#disable-wallet-mode)).
 
+For the versions used, see https://github.com/KABBERRY/Kabberry-Coin/blob/master/doc/dependencies.md
+
 Build Kabberry Core
 ------------------------
 
 1. Clone the Kabberry Core source code:
 
-        git clone https://github.com/kabberry-project/kabberry
+        git clone https://github.com/KABBERRY/Kabberry-Coin.git
         cd kabberry
 
 2.  Make the Homebrew OpenSSL headers visible to the configure script  (do ```brew info openssl``` to find out why this is necessary, or if you use Homebrew with installation folders different from the default).
