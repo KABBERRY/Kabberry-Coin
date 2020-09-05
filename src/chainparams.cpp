@@ -226,27 +226,27 @@ public:
         nModifierUpdateBlock = 570000;
         nZerocoinStartHeight = 260000;    
         nZerocoinStartTime = 1567339200; // July 1, 2019 12:00:00 PM
-        nBlockEnforceSerialRange = 1999999999; //Enforce serial range starting this block
-        nBlockRecalculateAccumulators = 1999999999; //Trigger a recalculation of accumulators
+        nBlockEnforceSerialRange = 874000; //Enforce serial range starting this block
+        nBlockRecalculateAccumulators = 874000; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 1999999999; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 1999999999; //Last valid accumulator checkpoint
         nBlockEnforceInvalidUTXO = 1999999999; //Start enforcing the invalid UTXO's
         nInvalidAmountFiltered = 1*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
-        nBlockZerocoinV2 = 565000; //!> The block that zerocoin v2 becomes active - roughly Tuesday, May 8, 2018 4:00:00 AM GMT
+        nBlockZerocoinV2 = 874000; //!> The block that zerocoin v2 becomes active - roughly Tuesday, May 8, 2018 4:00:00 AM GMT
         nBlockDoubleAccumulated = 1999999999;
         nEnforceNewSporkKey = 1575115200; //!> Sporks signed after (GMT): Tuesday, May 1, 2018 7:00:00 AM GMT must use the new spork key
         nRejectOldSporkKey = 1577707200; //!> Fully reject old spork key after (GMT): Friday, June 1, 2018 12:00:00 AM
         // Activation height for TimeProtocolV2, Blocks V7 and newMessageSignatures
-        nBlockTimeProtocolV2 = 575000;
+        nBlockTimeProtocolV2 = 874000;
 
         // Public coin spend enforcement
-        nPublicZCSpends = 1880000;
+        nPublicZCSpends = 874000;
 
         // New P2P messages signatures
         nBlockEnforceNewMessageSignatures = nBlockTimeProtocolV2;
 
         // Blocks v7
-        nBlockLastAccumulatorCheckpoint = 1686240;
+        nBlockLastAccumulatorCheckpoint = 874000;
         nBlockV7StartHeight = nBlockTimeProtocolV2;
 
         // Fake Serial Attack
