@@ -94,7 +94,7 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     (167000, uint256("cdeba371d09cbad641d135eb180d98de22c2aa5dda25625e791359daa60fc2f6"))
     (560000, uint256("e2ca342dbe73671b62f8c4b48a0bafaebae28c7134c163d956ede7fd5c97be08"))
     (750000, uint256("31b0c1ffe8a83a0036fd9f2ae628c0c674dff6b9928907cfa211dd92fcb7c70c"))
-    // (863805, uint256("a755bd9a22b63c70d3db474f4b2b61a1f86c835b290a081bb3ec1ba2103eb4cb"))
+    (874000, uint256("998d0da3707c52f2aca151fdc444742ca6654b291471858ca11e989e3d99d54c"))
     // (867733, uint256("03b26296bf693de5782c76843d2fb649cb66d4b05550c6a79c047ff7e1c3ae15"))
     // (879650, uint256("227e1d2b738b6cd83c46d1d64617934ec899d77cee34336a56e61b71acd10bb2"))
     // (895400, uint256("7796a0274a608fac12d400198174e50beda992c1d522e52e5b95b884bc1beac6"))//block that serial# range is enforced
@@ -104,7 +104,7 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     ;
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1580092363, // * UNIX timestamp of last checkpoint block
+    1599275445, // * UNIX timestamp of last checkpoint block
     1200000,    // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
