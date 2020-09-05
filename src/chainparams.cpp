@@ -237,7 +237,7 @@ public:
         nEnforceNewSporkKey = 1575115200; //!> Sporks signed after (GMT): Tuesday, May 1, 2018 7:00:00 AM GMT must use the new spork key
         nRejectOldSporkKey = 1577707200; //!> Fully reject old spork key after (GMT): Friday, June 1, 2018 12:00:00 AM
         // Activation height for TimeProtocolV2, Blocks V7 and newMessageSignatures
-        nBlockTimeProtocolV2 = 874000;
+        nBlockTimeProtocolV2 = 575000;
 
         // Public coin spend enforcement
         nPublicZCSpends = 874000;
