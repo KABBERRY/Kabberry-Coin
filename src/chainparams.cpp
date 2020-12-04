@@ -240,7 +240,7 @@ public:
         nBlockTimeProtocolV2 = 575000;
 
         // Public coin spend enforcement
-        nPublicZCSpends = 1999999999;
+        nPublicZCSpends = 874000;
 
         // New P2P messages signatures
         nBlockEnforceNewMessageSignatures = nBlockTimeProtocolV2;
